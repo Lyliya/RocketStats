@@ -64,7 +64,7 @@ public:
 		{4, "Chaos"},
 		{10, "Ranked Duel"},
 		{11, "Ranked Doubles"},
-		{12, "Rankes Solo Standard"},
+		{12, "Ranked Solo Standard"},
 		{13, "Ranked Standard"},
 		{14, "Mutator Mashup"},
 		{15, "Snow Day"},
