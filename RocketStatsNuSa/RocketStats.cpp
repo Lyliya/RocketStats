@@ -457,16 +457,48 @@ void RocketStats::majRank(int _gameMode, float _currentMMR)
 void RocketStats::Render(CanvasWrapper canvas)
 {
 	bool RS_disp_ig = cvarManager->getCvar("RS_disp_ig").getBoolValue();
-	bool RS_disp_mmr = cvarManager->getCvar("RS_disp_mmr").getBoolValue();
+	/* bool RS_disp_mmr = cvarManager->getCvar("RS_disp_mmr").getBoolValue();
 	bool RS_disp_mmr_change = cvarManager->getCvar("RS_disp_mmr_change").getBoolValue();
 	bool RS_disp_wins = cvarManager->getCvar("RS_disp_wins").getBoolValue();
 	bool RS_disp_losses = cvarManager->getCvar("RS_disp_losses").getBoolValue();
 	bool RS_disp_streak = cvarManager->getCvar("RS_disp_streak").getBoolValue();
 	bool RS_disp_rank = cvarManager->getCvar("RS_disp_rank").getBoolValue();
-	bool RS_disp_gamemode = cvarManager->getCvar("RS_disp_gamemode").getBoolValue();
+	bool RS_disp_gamemode = cvarManager->getCvar("RS_disp_gamemode").getBoolValue(); */
 
+	if (!RS_disp_ig) {
+		return;
+	}
 
-	if (RS_disp_ig)
+	std::vector<std::string> RS_values = {
+		"RS_disp_mmr",
+		"RS_disp_mmr_change",
+		"RS_disp_wins",
+		"RS_disp_losses",
+		"RS_disp_streak",
+		"RS_disp_rank",
+		"RS_disp_gamemode",
+	};
+
+	Vector2 textPos = { 50, 50 };
+	for (auto& it : RS_values) {
+		bool tmp = cvarManager->getCvar(it).getBoolValue();
+
+		if (tmp) {
+			//Set the position
+			canvas.SetPosition(textPos);
+
+			//Set Color and Text for the value
+			if (it == "RS_disp_gamemode") {
+				canvas.SetColor(0, 0, 0, 255);
+				canvas.DrawString(getPlaylistName(currentPlaylist));
+			}
+
+			// Increase Y position;
+			textPos.Y += 20;
+		}
+	}
+
+	/* if (RS_disp_ig)
 	{
 		Vector2 drawLoc = { 10, 10 };
 		Vector2 size = { 200, 200 };
@@ -490,5 +522,5 @@ void RocketStats::Render(CanvasWrapper canvas)
 			canvas.SetColor(0, 0, 0, 255);
 			canvas.DrawString(currentRank);
 		}
-	}
+	} */
 }
