@@ -465,9 +465,30 @@ void RocketStats::Render(CanvasWrapper canvas)
 	bool RS_disp_rank = cvarManager->getCvar("RS_disp_rank").getBoolValue();
 	bool RS_disp_gamemode = cvarManager->getCvar("RS_disp_gamemode").getBoolValue();
 
-	Vector2 drawLoc = { 10, 10 };
-	Vector2 size = { 50, 50 };
-	canvas.SetPosition(drawLoc);
-	canvas.SetColor(255, 255, 255, 255);
-	canvas.FillBox(size);
+
+	if (RS_disp_ig)
+	{
+		Vector2 drawLoc = { 10, 10 };
+		Vector2 size = { 200, 200 };
+		canvas.SetPosition(drawLoc);
+		canvas.SetColor(255, 255, 255, 255);
+		canvas.FillBox(size);
+
+		// Draw GameMode
+		if (RS_disp_gamemode)
+		{
+			Vector2 gameModePos = { 50, 50 };
+			canvas.SetPosition(gameModePos);
+			canvas.SetColor(0, 0, 0, 255);
+			canvas.DrawString(getPlaylistName(currentPlaylist));
+		}
+
+		if (RS_disp_rank)
+		{
+			Vector2 gameModePos = { 100, 100 };
+			canvas.SetPosition(gameModePos);
+			canvas.SetColor(0, 0, 0, 255);
+			canvas.DrawString(currentRank);
+		}
+	}
 }
