@@ -54,6 +54,8 @@ void RocketStats::onLoad()
 	cvarManager->registerCvar("RS_disp_streak", "1", "Display the streak on the current game mode", true, true, 0, true, 1);
 	cvarManager->registerCvar("RS_disp_rank", "1", "Display the rank on the current game mode", true, true, 0, true, 1);
 	cvarManager->registerCvar("RS_disp_gamemode", "1", "Display the current game mode", true, true, 0, true, 1);
+	cvarManager->registerCvar("RS_x_position", "80", "Overlay X position", true, true, 0, true, 100);
+	cvarManager->registerCvar("RS_y_position", "10", "Overlay Y position", true, true, 0, true, 100);
 }
 
 void RocketStats::onUnload()
@@ -464,6 +466,8 @@ void RocketStats::Render(CanvasWrapper canvas)
 	bool RS_disp_streak = cvarManager->getCvar("RS_disp_streak").getBoolValue();
 	bool RS_disp_rank = cvarManager->getCvar("RS_disp_rank").getBoolValue();
 	bool RS_disp_gamemode = cvarManager->getCvar("RS_disp_gamemode").getBoolValue(); */
+	int RS_x_position = cvarManager->getCvar("RS_x_position").getIntValue();
+	int RS_y_position = cvarManager->getCvar("RS_y_position").getIntValue();
 
 	if (!RS_disp_ig) {
 		return;
@@ -487,14 +491,14 @@ void RocketStats::Render(CanvasWrapper canvas)
 	}
 
 	// Draw box here
-	Vector2 drawLoc = { 10, 10 };
-	Vector2 sizeBox = { 170, (21*size)};
+	Vector2 drawLoc = { RS_x_position, RS_y_position };
+	Vector2 sizeBox = { 170, (22*size)};
 	canvas.SetPosition(drawLoc);
 	canvas.SetColor(0, 0, 0, 150);
 	canvas.FillBox(sizeBox);
 
 	// Draw text
-	Vector2 textPos = { 20, 20 };
+	Vector2 textPos = { RS_x_position + 10, RS_y_position + 10 };
 	for (auto& it : RS_values) {
 		bool tmp = cvarManager->getCvar(it).getBoolValue();
 
