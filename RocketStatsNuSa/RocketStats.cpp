@@ -41,6 +41,15 @@ void RocketStats::onLoad()
 
 	initRankList();
 	initRank();
+
+	// Load Settings
+	cvarManager->registerCvar("RS_disp_mmr", "1", "Display the current MMR", true, true, 0, true, 1);
+	cvarManager->registerCvar("RS_disp_mmr_change", "1", "Display the MMR change on the current game mode", true, true, 0, true, 1);
+	cvarManager->registerCvar("RS_disp_wins", "1", "Display the wins on the current game mode", true, true, 0, true, 1);
+	cvarManager->registerCvar("RS_disp_losses", "1", "Display the losses on the current game mode", true, true, 0, true, 1);
+	cvarManager->registerCvar("RS_disp_streak", "1", "Display the streak on the current game mode", true, true, 0, true, 1);
+	cvarManager->registerCvar("RS_disp_rank", "1", "Display the rank on the current game mode", true, true, 0, true, 1);
+	cvarManager->registerCvar("RS_disp_gamemode", "1", "Display the current game mode", true, true, 0, true, 1);
 }
 
 void RocketStats::onUnload()

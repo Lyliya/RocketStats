@@ -1,0 +1,11 @@
+RocketStats Plugin
+0|Reset|RocketStats_reset_stats
+1|Display MMR|RS_disp_mmr
+1|Display MMR Change|RS_disp_mmr_change
+1|Display Wins|RS_disp_wins
+1|Display Losses|RS_disp_losses
+1|Display Streak|RS_disp_streak
+1|Display Rank|RS_disp_rank
+1|Display GameMode|RS_disp_gamemode
+8|
+9|Developped by Lyliya & NuSa
