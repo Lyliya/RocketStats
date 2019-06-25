@@ -26,7 +26,10 @@ void RocketStats::onLoad()
 	}
 	, "Reset Stats", PERMISSION_ALL);
 
+	// Register drawable
+	gameWrapper->RegisterDrawable(std::bind(&RocketStats::Render, this, std::placeholders::_1));
 
+	// Hook on Event
 	gameWrapper->HookEvent("Function GameEvent_TA.Countdown.BeginState", bind(&RocketStats::Start, this, std::placeholders::_1));
 	gameWrapper->HookEvent("Function TAGame.GameEvent_Soccar_TA.EventMatchEnded", bind(&RocketStats::GameEnd, this, std::placeholders::_1));
 	gameWrapper->HookEvent("Function CarComponent_Boost_TA.Active.BeginState", bind(&RocketStats::OnBoost, this, std::placeholders::_1));
@@ -461,4 +464,10 @@ void RocketStats::Render(CanvasWrapper canvas)
 	bool RS_disp_streak = cvarManager->getCvar("RS_disp_streak").getBoolValue();
 	bool RS_disp_rank = cvarManager->getCvar("RS_disp_rank").getBoolValue();
 	bool RS_disp_gamemode = cvarManager->getCvar("RS_disp_gamemode").getBoolValue();
+
+	Vector2 drawLoc = { 10, 10 };
+	Vector2 size = { 50, 50 };
+	canvas.SetPosition(drawLoc);
+	canvas.SetColor(255, 255, 255, 255);
+	canvas.FillBox(size);
 }
