@@ -392,9 +392,35 @@ void RocketStats::initRankList()
 		{"Grand_Champion", {1501.0f, 1631.0f}},
 	};
 
+	//1v1 Ranked code : 12
+	Ranks sv3Rank;
+	sv3Rank.nameMode = "solo 3v3";
+	sv3Rank._rank = {
+		{"Bronze_I", {0.0f, 153.0f}},
+		{"Bronze_II", {150.0f, 209.0f}},
+		{"Bronze_III", {210.0f, 274.0f}},
+		{"Silver_I", {266.0f, 329.0f}},
+		{"Silver_II", {328.0f, 387.0f}},
+		{"Silver_III", {389.0f, 443.0f}},
+		{"Gold_I", {449.0f, 506.0f}},
+		{"Gold_II", {510.0f, 563.0f}},
+		{"Gold_III", {571.0f, 623.0f}},
+		{"Platinum_I", {630.0f, 683.0f}},
+		{"Platinum_II", {692.0f, 745.0f}},
+		{"Platinum_III", {753.0f, 804.0f}},
+		{"Diamond_I", {815.0f, 881.0f}},
+		{"Diamond_II", {895.0f, 961.0f}},
+		{"Diamond_III", {975.0f, 1042.0f}},
+		{"Champion_I", {1055.0f, 1123.0f}},
+		{"Champion_II", {1124.0f, 1201.0f}},
+		{"Champion_III", {1211.0f, 1292.0f}},
+		{"Grand_Champion", {1287.0f, 1334.0f}},
+	};
+
 	listRank = {
 		{10, v1Rank},
-		{11, v2Rank}
+		{11, v2Rank},
+		{12, sv3Rank}
 	};
 }
 
