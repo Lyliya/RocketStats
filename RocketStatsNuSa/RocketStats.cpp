@@ -43,6 +43,7 @@ void RocketStats::onLoad()
 	initRank();
 
 	// Load Settings
+	cvarManager->registerCvar("RS_disp_ig", "1", "Display information panel", true, true, 0, true, 1);
 	cvarManager->registerCvar("RS_disp_mmr", "1", "Display the current MMR", true, true, 0, true, 1);
 	cvarManager->registerCvar("RS_disp_mmr_change", "1", "Display the MMR change on the current game mode", true, true, 0, true, 1);
 	cvarManager->registerCvar("RS_disp_wins", "1", "Display the wins on the current game mode", true, true, 0, true, 1);
@@ -452,5 +453,12 @@ void RocketStats::majRank(int _gameMode, float _currentMMR)
 
 void RocketStats::Render(CanvasWrapper canvas)
 {
-
+	bool RS_disp_ig = cvarManager->getCvar("RS_disp_ig").getBoolValue();
+	bool RS_disp_mmr = cvarManager->getCvar("RS_disp_mmr").getBoolValue();
+	bool RS_disp_mmr_change = cvarManager->getCvar("RS_disp_mmr_change").getBoolValue();
+	bool RS_disp_wins = cvarManager->getCvar("RS_disp_wins").getBoolValue();
+	bool RS_disp_losses = cvarManager->getCvar("RS_disp_losses").getBoolValue();
+	bool RS_disp_streak = cvarManager->getCvar("RS_disp_streak").getBoolValue();
+	bool RS_disp_rank = cvarManager->getCvar("RS_disp_rank").getBoolValue();
+	bool RS_disp_gamemode = cvarManager->getCvar("RS_disp_gamemode").getBoolValue();
 }
