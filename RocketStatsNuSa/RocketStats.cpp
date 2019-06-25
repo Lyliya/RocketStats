@@ -479,6 +479,16 @@ void RocketStats::Render(CanvasWrapper canvas)
 		"RS_disp_gamemode",
 	};
 
+	unsigned int size = 0;
+	for (auto& it : RS_values) {
+		bool tmp = cvarManager->getCvar(it).getBoolValue();
+		if (tmp)
+			size += 1;
+	}
+
+	// Draw box here
+
+	// Draw text
 	Vector2 textPos = { 50, 50 };
 	for (auto& it : RS_values) {
 		bool tmp = cvarManager->getCvar(it).getBoolValue();
