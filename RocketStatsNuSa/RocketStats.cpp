@@ -449,3 +449,8 @@ void RocketStats::majRank(int _gameMode, float _currentMMR)
 }
 
 #pragma endregion
+
+void RocketStats::Render(CanvasWrapper canvas)
+{
+
+}
