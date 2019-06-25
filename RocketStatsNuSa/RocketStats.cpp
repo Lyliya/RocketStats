@@ -505,7 +505,7 @@ void RocketStats::Render(CanvasWrapper canvas)
 			//Set Color and Text for the value
 			if (it == "RS_disp_gamemode") {
 				canvas.SetColor(180, 180, 180, 255);
-				canvas.DrawString(getPlaylistName(12), 1.0f, 1.0f);
+				canvas.DrawString(getPlaylistName(currentPlaylist), 1.0f, 1.0f);
 			}
 			else if (it == "RS_disp_rank")
 			{
@@ -515,19 +515,25 @@ void RocketStats::Render(CanvasWrapper canvas)
 			else if (it == "RS_disp_mmr")
 			{
 				canvas.SetColor(180, 180, 180, 255);
-				canvas.DrawString("MMR : " + std::to_string(stats[currentPlaylist].myMMR), 1.0f, 1.0f);
+				std::stringstream ss;
+				ss << std::fixed << std::setprecision(2) << stats[currentPlaylist].myMMR;
+				std::string mmr = ss.str();
+				canvas.DrawString("MMR : " + mmr, 1.0f, 1.0f);
 			}
 			else if (it == "RS_disp_mmr_change")
 			{
-				if (currentMMR >= 0)
+				std::stringstream ss;
+				ss << std::fixed << std::setprecision(2) << stats[currentPlaylist].MMRChange;
+				std::string mmr = ss.str();
+				if (stats[currentPlaylist].MMRChange >= 0)
 				{
 					canvas.SetColor(30, 224, 24, 255);
-					canvas.DrawString("MMRChange : +" + std::to_string(stats[currentPlaylist].MMRChange), 1.0f, 1.0f);
+					canvas.DrawString("MMRChange : +" + mmr, 1.0f, 1.0f);
 				}
 				else
 				{
 					canvas.SetColor(224, 24, 24, 255);
-					canvas.DrawString("MMRChange : " + std::to_string(stats[currentPlaylist].MMRChange), 1.0f, 1.0f);
+					canvas.DrawString("MMRChange : " + mmr, 1.0f, 1.0f);
 				}
 			}
 			else if (it == "RS_disp_wins")
