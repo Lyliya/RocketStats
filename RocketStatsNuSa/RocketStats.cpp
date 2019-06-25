@@ -73,7 +73,7 @@ void RocketStats::Start(std::string eventName)
 		// Get and Update MMR
 		MMRWrapper mmrw = gameWrapper->GetMMRWrapper();
 		currentPlaylist = mmrw.GetCurrentPlaylist();
-		cvarManager->log(std::to_string(currentPlaylist));
+		cvarManager->log("Current GameMode: " + getPlaylistName(currentPlaylist));
 		float save = mmrw.GetPlayerMMR(mySteamID, currentPlaylist);
 		if (stats[currentPlaylist].isInit == false) {
 			stats[currentPlaylist].myMMR = save;
@@ -112,6 +112,7 @@ void RocketStats::Start(std::string eventName)
 
 		// Set Game Started
 		isGameEnded = false;
+		isGameStarted = true;
 
 		majRank(currentPlaylist, stats[currentPlaylist].myMMR);
 	}
@@ -207,7 +208,7 @@ void RocketStats::GameEnd(std::string eventName)
 
 void RocketStats::GameDestroyed(std::string eventName) {
 	//Check if Game Ended, if not, RAGE QUIT or disconnect
-	if (isGameEnded == false) {
+	if (isGameStarted == true && isGameEnded == false) {
 		stats[currentPlaylist].losses += 1;
 		if (stats[currentPlaylist].streak > 0)
 		{
@@ -250,10 +251,10 @@ void RocketStats::GameDestroyed(std::string eventName) {
 			{
 				WriteInFile("RocketStats_MMRChange.txt", std::to_string(tmp));
 			}
-		}, 10);
-
-		isGameEnded = true;
+		}, 10);		
 	}
+	isGameEnded = true;
+	isGameStarted = false;
 }
 
 void RocketStats::OnBoost(std::string eventName) {
@@ -312,6 +313,14 @@ void RocketStats::WriteInFile(std::string _fileName, std::string _value)
 
 		myFile.close();
 	}
+}
+
+std::string RocketStats::getPlaylistName(int playlistID)
+{
+	if (playlistName.find(playlistID) != playlistName.end()) {
+		return playlistName.at(playlistID);
+	}
+	return "Unknown Game Mode";
 }
 
 #pragma region Rank/Div

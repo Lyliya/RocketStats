@@ -31,7 +31,8 @@ public:
 	void WriteInFile(std::string _fileName, std::string _value);
 	void GameDestroyed(std::string eventName);
 	int currentPlaylist;
-	int isGameEnded;
+	bool isGameEnded;
+	bool isGameStarted = false;
 
 	std::map<int, Stats> stats;
 
@@ -53,4 +54,22 @@ public:
 	string lastRank;
 
 	std::map<int, Ranks> listRank;
+
+	const std::map<int, std::string> playlistName = {
+		{1, "Duel"},
+		{2, "Doubles"},
+		{3, "Standard"},
+		{4, "Chaos"},
+		{10, "Ranked Duel"},
+		{11, "Ranked Doubles"},
+		{12, "Rankes Solo Standard"},
+		{13, "Ranked Standard"},
+		{14, "Mutator Mashup"},
+		{15, "Snow Day"},
+		{16, "Rocket Labs"},
+		{17, "Hoops"},
+		{18, "Rumble"},
+		{23, "Dropshot"},
+	};
+	std::string getPlaylistName(int playlistID);
 };
