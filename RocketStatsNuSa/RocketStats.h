@@ -30,6 +30,8 @@ public:
 	void OnBoostEnd(std::string eventName);
 	void WriteInFile(std::string _fileName, std::string _value);
 	void GameDestroyed(std::string eventName);
+	void Render(CanvasWrapper canvas);
+
 	int currentPlaylist;
 	bool isGameEnded;
 	bool isGameStarted = false;
