@@ -470,13 +470,13 @@ void RocketStats::Render(CanvasWrapper canvas)
 	}
 
 	std::vector<std::string> RS_values = {
+		"RS_disp_gamemode",
+		"RS_disp_rank",
 		"RS_disp_mmr",
 		"RS_disp_mmr_change",
 		"RS_disp_wins",
 		"RS_disp_losses",
 		"RS_disp_streak",
-		"RS_disp_rank",
-		"RS_disp_gamemode",
 	};
 
 	unsigned int size = 0;
@@ -487,9 +487,14 @@ void RocketStats::Render(CanvasWrapper canvas)
 	}
 
 	// Draw box here
+	Vector2 drawLoc = { 10, 10 };
+	Vector2 sizeBox = { 170, (21*size)};
+	canvas.SetPosition(drawLoc);
+	canvas.SetColor(0, 0, 0, 150);
+	canvas.FillBox(sizeBox);
 
 	// Draw text
-	Vector2 textPos = { 50, 50 };
+	Vector2 textPos = { 20, 20 };
 	for (auto& it : RS_values) {
 		bool tmp = cvarManager->getCvar(it).getBoolValue();
 
@@ -499,10 +504,55 @@ void RocketStats::Render(CanvasWrapper canvas)
 
 			//Set Color and Text for the value
 			if (it == "RS_disp_gamemode") {
-				canvas.SetColor(0, 0, 0, 255);
-				canvas.DrawString(getPlaylistName(currentPlaylist));
+				canvas.SetColor(180, 180, 180, 255);
+				canvas.DrawString(getPlaylistName(12), 1.0f, 1.0f);
 			}
-
+			else if (it == "RS_disp_rank")
+			{
+				canvas.SetColor(180, 180, 180, 255);
+				canvas.DrawString(currentRank, 1.0f, 1.0f);
+			}
+			else if (it == "RS_disp_mmr")
+			{
+				canvas.SetColor(180, 180, 180, 255);
+				canvas.DrawString("MMR : " + std::to_string(stats[currentPlaylist].myMMR), 1.0f, 1.0f);
+			}
+			else if (it == "RS_disp_mmr_change")
+			{
+				if (currentMMR >= 0)
+				{
+					canvas.SetColor(30, 224, 24, 255);
+					canvas.DrawString("MMRChange : +" + std::to_string(stats[currentPlaylist].MMRChange), 1.0f, 1.0f);
+				}
+				else
+				{
+					canvas.SetColor(224, 24, 24, 255);
+					canvas.DrawString("MMRChange : " + std::to_string(stats[currentPlaylist].MMRChange), 1.0f, 1.0f);
+				}
+			}
+			else if (it == "RS_disp_wins")
+			{
+				canvas.SetColor(30, 224, 24, 255);
+				canvas.DrawString("Win : " + std::to_string(stats[currentPlaylist].win), 1.0f, 1.0f);
+			}
+			else if (it == "RS_disp_losses")
+			{
+				canvas.SetColor(224, 24, 24, 255);
+				canvas.DrawString("Losses : " + std::to_string(stats[currentPlaylist].losses), 1.0f, 1.0f);
+			}
+			else if (it == "RS_disp_streak")
+			{
+				if (stats[currentPlaylist].streak >= 0)
+				{
+					canvas.SetColor(30, 224, 24, 255);
+					canvas.DrawString("Streak : +" + std::to_string(stats[currentPlaylist].streak), 1.0f, 1.0f);
+				}
+				else
+				{
+					canvas.SetColor(224, 24, 24, 255);
+					canvas.DrawString("Streak : " + std::to_string(stats[currentPlaylist].streak), 1.0f, 1.0f);
+				}
+			}
 			// Increase Y position;
 			textPos.Y += 20;
 		}
