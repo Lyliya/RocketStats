@@ -273,28 +273,28 @@ void RocketStats::GameDestroyed(std::string eventName) {
 void RocketStats::OnBoost(std::string eventName) {
 	//cvarManager->log("BOOOOST");
 
-	/*CarWrapper cWrap = gameWrapper->GetLocalCar();
+	CarWrapper cWrap = gameWrapper->GetLocalCar();
 
 	if (!cWrap.IsNull())
 	{
 		BoostWrapper bWrap = cWrap.GetBoostComponent();
 
 		cvarManager->log("BOOOOST ----> " + std::to_string(bWrap.GetbActive()));
-	}*/
+	}
 	return;
 }
 
 void RocketStats::OnBoostEnd(std::string eventName) {
 	//cvarManager->log("Stop BOOST");
 
-	/*CarWrapper cWrap = gameWrapper->GetLocalCar();
+	CarWrapper cWrap = gameWrapper->GetLocalCar();
 
 	if (!cWrap.IsNull())
 	{
 		BoostWrapper bWrap = cWrap.GetBoostComponent();
 
 		cvarManager->log("Stop BOOOOST ----> " + std::to_string(bWrap.GetbActive()));
-	}*/
+	}
 	return;
 }
 
@@ -365,7 +365,7 @@ void RocketStats::initRankList()
 		{"Grand_Champion", {1223.0f, 1300.0f}},
 	};
 
-	//2v2 Ranked code : 11
+	//1v1 Ranked code : 11
 	Ranks v2Rank;
 	v2Rank.nameMode = "2v2";
 	v2Rank._rank = {
@@ -390,35 +390,9 @@ void RocketStats::initRankList()
 		{"Grand_Champion", {1501.0f, 1631.0f}},
 	};
 
-	//solo 3v3 Ranked code : 12
-	Ranks sv3Rank;
-	sv3Rank.nameMode = "solo3v3";
-	sv3Rank._rank = {
-		{"Bronze_I", {0.0f, 153.0f}},
-		{"Bronze_II", {150.0f, 209.0f}},
-		{"Bronze_III", {210.0f, 274.0f}},
-		{"Silver_I", {266.0f, 329.0f}},
-		{"Silver_II", {328.0f, 387.0f}},
-		{"Silver_III", {398.0f, 443.0f}},
-		{"Gold_I", {449.0f, 506.0f}},
-		{"Gold_II", {510.0f, 563.0f}},
-		{"Gold_III", {571.0f, 623.0f}},
-		{"Platinum_I", {630.0f, 683.0f}},
-		{"Platinum_II", {692.0f, 745.0f}},
-		{"Platinum_III", {753.0f, 804.0f}},
-		{"Diamond_I", {815.0f, 881.0f}},
-		{"Diamond_II", {895.0f, 961.0f}},
-		{"Diamond_III", {975.0f, 1042.0f}},
-		{"Champion_I", {1055.0f, 1123.0f}},
-		{"Champion_II", {1124.0f, 1201.0f}},
-		{"Champion_III", {1211.0f, 1292.0f}},
-		{"Grand_Champion", {1287.0f, 1335.0f}},
-	};
-
 	listRank = {
 		{10, v1Rank},
-		{11, v2Rank},
-		{12, sv3Rank}
+		{11, v2Rank}
 	};
 }
 
@@ -541,19 +515,25 @@ void RocketStats::Render(CanvasWrapper canvas)
 			else if (it == "RS_disp_mmr")
 			{
 				canvas.SetColor(180, 180, 180, 255);
-				canvas.DrawString("MMR : " + std::to_string(stats[currentPlaylist].myMMR), 1.0f, 1.0f);
+				std::stringstream ss;
+				ss << std::fixed << std::setprecision(2) << stats[currentPlaylist].myMMR;
+				std::string mmr = ss.str();
+				canvas.DrawString("MMR : " + mmr, 1.0f, 1.0f);
 			}
 			else if (it == "RS_disp_mmr_change")
 			{
+				std::stringstream ss;
+				ss << std::fixed << std::setprecision(2) << stats[currentPlaylist].MMRChange;
+				std::string mmr = ss.str();
 				if (stats[currentPlaylist].MMRChange >= 0)
 				{
 					canvas.SetColor(30, 224, 24, 255);
-					canvas.DrawString("MMRChange : +" + std::to_string(stats[currentPlaylist].MMRChange), 1.0f, 1.0f);
+					canvas.DrawString("MMRChange : +" + mmr, 1.0f, 1.0f);
 				}
 				else
 				{
 					canvas.SetColor(224, 24, 24, 255);
-					canvas.DrawString("MMRChange : " + std::to_string(stats[currentPlaylist].MMRChange), 1.0f, 1.0f);
+					canvas.DrawString("MMRChange : " + mmr, 1.0f, 1.0f);
 				}
 			}
 			else if (it == "RS_disp_wins")
