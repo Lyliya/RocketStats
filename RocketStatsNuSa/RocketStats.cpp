@@ -552,8 +552,10 @@ void RocketStats::Render(CanvasWrapper canvas)
 			}
 			else if (it == "RS_disp_rank")
 			{
+				std::string tmpRank = currentRank;
+				std::replace(tmpRank.begin(), tmpRank.end(), '_', ' ');
 				canvas.SetColor(180, 180, 180, 255);
-				canvas.DrawString(currentRank, RS_scale, RS_scale);
+				canvas.DrawString(tmpRank, RS_scale, RS_scale);
 			}
 			else if (it == "RS_disp_mmr")
 			{
