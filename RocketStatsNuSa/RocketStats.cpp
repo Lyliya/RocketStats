@@ -56,6 +56,7 @@ void RocketStats::onLoad()
 	cvarManager->registerCvar("RS_disp_gamemode", "1", "Display the current game mode", true, true, 0, true, 1);
 	cvarManager->registerCvar("RS_x_position", "80", "Overlay X position", true, true, 0, true, 100);
 	cvarManager->registerCvar("RS_y_position", "10", "Overlay Y position", true, true, 0, true, 100);
+	cvarManager->registerCvar("RS_scale", "1", "Overlay scale", true, true, 1, true, 10);
 }
 
 void RocketStats::onUnload()
@@ -303,10 +304,12 @@ void RocketStats::OnBoostEnd(std::string eventName) {
 void RocketStats::ResetStats()
 {
 	for (auto& kv : stats) {
+		kv.second.myMMR = 0;
 		kv.second.MMRChange = 0;
 		kv.second.win = 0;
 		kv.second.losses = 0;
 		kv.second.streak = 0;
+		kv.second.isInit = 0;
 	}
 	WriteInFile("RocketStats_Win.txt", std::to_string(0));
 	WriteInFile("RocketStats_Streak.txt", std::to_string(0));
@@ -487,6 +490,7 @@ void RocketStats::Render(CanvasWrapper canvas)
 	bool RS_disp_ig = cvarManager->getCvar("RS_disp_ig").getBoolValue();
 	int RS_x_position = cvarManager->getCvar("RS_x_position").getIntValue();
 	int RS_y_position = cvarManager->getCvar("RS_y_position").getIntValue();
+	int RS_scale = cvarManager->getCvar("RS_scale").getIntValue();
 
 	if (!RS_disp_ig) {
 		return;
