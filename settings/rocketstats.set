@@ -12,7 +12,7 @@ RocketStats Plugin
 9|Place your overlay (Only if display information in game is check)
 5|X position|RS_x_position|0|100
 5|Y position|RS_y_position|0|100
-5|Scale|RS_scale|1|10
+4|Scale|RS_scale|1|10
 8|
 0|Reset|RocketStats_reset_stats
 8|
