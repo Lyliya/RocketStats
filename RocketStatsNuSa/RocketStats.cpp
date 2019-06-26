@@ -275,28 +275,40 @@ void RocketStats::GameDestroyed(std::string eventName) {
 void RocketStats::OnBoost(std::string eventName) {
 	//cvarManager->log("BOOOOST");
 
-	/*CarWrapper cWrap = gameWrapper->GetLocalCar();
+	if (gameWrapper->IsInReplay() || !gameWrapper->IsInFreeplay() || !gameWrapper->IsInOnlineGame())
+		return;
+	CarWrapper cWrap = gameWrapper->GetLocalCar();
 
 	if (!cWrap.IsNull())
 	{
 		BoostWrapper bWrap = cWrap.GetBoostComponent();
 
-		cvarManager->log("BOOOOST ----> " + std::to_string(bWrap.GetbActive()));
-	}*/
+		if (bWrap.GetbActive() == 1 && isBoosting == false) {
+			cvarManager->log("Tu boost");
+			isBoosting = true;
+		}
+		//cvarManager->log("BOOOOST ----> " + std::to_string(bWrap.GetbActive()));
+	}
 	return;
 }
 
 void RocketStats::OnBoostEnd(std::string eventName) {
 	//cvarManager->log("Stop BOOST");
 
-	/*CarWrapper cWrap = gameWrapper->GetLocalCar();
+	if (gameWrapper->IsInReplay() || !gameWrapper->IsInFreeplay() || !gameWrapper->IsInOnlineGame())
+		return;
+	CarWrapper cWrap = gameWrapper->GetLocalCar();
 
 	if (!cWrap.IsNull())
 	{
 		BoostWrapper bWrap = cWrap.GetBoostComponent();
 
-		cvarManager->log("Stop BOOOOST ----> " + std::to_string(bWrap.GetbActive()));
-	}*/
+		if (bWrap.GetbActive() == 0 && isBoosting == true) {
+			cvarManager->log("Tu ne boost plus");
+			isBoosting = false;
+		}
+		//cvarManager->log("BOOOOST ----> " + std::to_string(bWrap.GetbActive()));
+	}
 	return;
 }
 

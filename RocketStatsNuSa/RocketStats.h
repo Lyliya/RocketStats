@@ -35,6 +35,7 @@ public:
 	int currentPlaylist;
 	bool isGameEnded;
 	bool isGameStarted = false;
+	bool isBoosting = false;
 
 	std::map<int, Stats> stats;
 
