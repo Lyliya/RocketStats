@@ -35,7 +35,7 @@ void RocketStats::onLoad()
 	gameWrapper->HookEvent("Function CarComponent_Boost_TA.Active.BeginState", bind(&RocketStats::OnBoost, this, std::placeholders::_1));
 	gameWrapper->HookEvent("Function CarComponent_Boost_TA.Active.EndState", bind(&RocketStats::OnBoostEnd, this, std::placeholders::_1));
 	gameWrapper->HookEvent("Function TAGame.GameEvent_Soccar_TA.Destroyed", bind(&RocketStats::GameDestroyed, this, std::placeholders::_1));
-	cvarManager->log("Load 1.1");
+	//cvarManager->log("Load 1.1");
 
 	WriteInFile("RocketStats_Win.txt", std::to_string(0));
 	WriteInFile("RocketStats_Streak.txt", std::to_string(0));
@@ -66,7 +66,7 @@ void RocketStats::onUnload()
 	gameWrapper->UnhookEvent("Function CarComponent_Boost_TA.Active.BeginState");
 	gameWrapper->UnhookEvent("Function CarComponent_Boost_TA.Active.EndState");
 	gameWrapper->UnhookEvent("Function TAGame.GameEvent_Soccar_TA.Destroyed");
-	cvarManager->log("Unload 1.1");
+	//cvarManager->log("Unload 1.1");
 }
 
 void RocketStats::Start(std::string eventName)
@@ -84,12 +84,11 @@ void RocketStats::Start(std::string eventName)
 
 		// Get and Display SteamID
 		mySteamID = mePRI.GetUniqueId();
-		cvarManager->log("SteamID: " + std::to_string(mySteamID.ID));
 
 		// Get and Update MMR
 		MMRWrapper mmrw = gameWrapper->GetMMRWrapper();
 		currentPlaylist = mmrw.GetCurrentPlaylist();
-		cvarManager->log("Current GameMode: " + getPlaylistName(currentPlaylist));
+		//cvarManager->log("Current GameMode: " + getPlaylistName(currentPlaylist));
 		float save = mmrw.GetPlayerMMR(mySteamID, currentPlaylist);
 		if (stats[currentPlaylist].isInit == false) {
 			stats[currentPlaylist].myMMR = save;
@@ -164,7 +163,7 @@ void RocketStats::GameEnd(std::string eventName)
 				stats[currentPlaylist].streak += 1;
 			}
 
-			cvarManager->log("You WIN");
+			//cvarManager->log("You WIN");
 			WriteInFile("RocketStats_Win.txt", std::to_string(stats[currentPlaylist].win));
 		}
 		else {
@@ -179,7 +178,7 @@ void RocketStats::GameEnd(std::string eventName)
 				stats[currentPlaylist].streak -= 1;
 			}
 
-			cvarManager->log("You LOOSE");
+			//cvarManager->log("You LOOSE");
 			WriteInFile("RocketStats_Loose.txt", std::to_string(stats[currentPlaylist].losses));
 		}
 
@@ -195,15 +194,15 @@ void RocketStats::GameEnd(std::string eventName)
 		gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
 			MMRWrapper mmrw = gameWrapper->GetMMRWrapper();
 			float save = mmrw.GetPlayerMMR(mySteamID, currentPlaylist);
-			cvarManager->log("Current Playlist: " + std::to_string(currentPlaylist));
-			cvarManager->log("New MMR: " + std::to_string(save));
-			cvarManager->log("Initial MMR: " + std::to_string(stats[currentPlaylist].myMMR));
+			//cvarManager->log("Current Playlist: " + std::to_string(currentPlaylist));
+			//cvarManager->log("New MMR: " + std::to_string(save));
+			//cvarManager->log("Initial MMR: " + std::to_string(stats[currentPlaylist].myMMR));
 
 			stats[currentPlaylist].MMRChange = stats[currentPlaylist].MMRChange + (save - stats[currentPlaylist].myMMR);
 			stats[currentPlaylist].myMMR = save;
 			int tmp = ((stats[currentPlaylist].MMRChange < 0) ? -1 : 1) * std::round(fabs(stats[currentPlaylist].MMRChange));
-			cvarManager->log(std::string("MMR Change: ") + std::to_string(tmp));
-			cvarManager->log(std::string("MMR: ") + std::to_string(stats[currentPlaylist].myMMR));
+			//cvarManager->log(std::string("MMR Change: ") + std::to_string(tmp));
+			//cvarManager->log(std::string("MMR: ") + std::to_string(stats[currentPlaylist].myMMR));
 
 			if (tmp > 0)
 			{
@@ -235,7 +234,7 @@ void RocketStats::GameDestroyed(std::string eventName) {
 			stats[currentPlaylist].streak -= 1;
 		}
 
-		cvarManager->log("You LOOSE");
+		//cvarManager->log("You LOOSE");
 		if (stats[currentPlaylist].streak > 0)
 		{
 			WriteInFile("RocketStats_Streak.txt", "+ " + std::to_string(stats[currentPlaylist].streak));
@@ -249,15 +248,15 @@ void RocketStats::GameDestroyed(std::string eventName) {
 		gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
 			MMRWrapper mmrw = gameWrapper->GetMMRWrapper();
 			float save = mmrw.GetPlayerMMR(mySteamID, currentPlaylist);
-			cvarManager->log("Current Playlist: " + std::to_string(currentPlaylist));
-			cvarManager->log("New MMR: " + std::to_string(save));
-			cvarManager->log("Initial MMR: " + std::to_string(stats[currentPlaylist].myMMR));
+			//cvarManager->log("Current Playlist: " + std::to_string(currentPlaylist));
+			//cvarManager->log("New MMR: " + std::to_string(save));
+			//cvarManager->log("Initial MMR: " + std::to_string(stats[currentPlaylist].myMMR));
 
 			stats[currentPlaylist].MMRChange = stats[currentPlaylist].MMRChange + (save - stats[currentPlaylist].myMMR);
 			stats[currentPlaylist].myMMR = save;
 			int tmp = ((stats[currentPlaylist].MMRChange < 0) ? -1 : 1) * std::round(fabs(stats[currentPlaylist].MMRChange));
-			cvarManager->log(std::string("MMR Change: ") + std::to_string(tmp));
-			cvarManager->log(std::string("MMR: ") + std::to_string(stats[currentPlaylist].myMMR));
+			//cvarManager->log(std::string("MMR Change: ") + std::to_string(tmp));
+			//cvarManager->log(std::string("MMR: ") + std::to_string(stats[currentPlaylist].myMMR));
 
 			if (tmp > 0)
 			{
@@ -276,28 +275,28 @@ void RocketStats::GameDestroyed(std::string eventName) {
 void RocketStats::OnBoost(std::string eventName) {
 	//cvarManager->log("BOOOOST");
 
-	CarWrapper cWrap = gameWrapper->GetLocalCar();
+	/*CarWrapper cWrap = gameWrapper->GetLocalCar();
 
 	if (!cWrap.IsNull())
 	{
 		BoostWrapper bWrap = cWrap.GetBoostComponent();
 
 		cvarManager->log("BOOOOST ----> " + std::to_string(bWrap.GetbActive()));
-	}
+	}*/
 	return;
 }
 
 void RocketStats::OnBoostEnd(std::string eventName) {
 	//cvarManager->log("Stop BOOST");
 
-	CarWrapper cWrap = gameWrapper->GetLocalCar();
+	/*CarWrapper cWrap = gameWrapper->GetLocalCar();
 
 	if (!cWrap.IsNull())
 	{
 		BoostWrapper bWrap = cWrap.GetBoostComponent();
 
 		cvarManager->log("Stop BOOOOST ----> " + std::to_string(bWrap.GetbActive()));
-	}
+	}*/
 	return;
 }
 
@@ -435,13 +434,9 @@ void RocketStats::initRank()
 	currentRank = "norank";
 	lastRank = "norank";
 
-	cvarManager->log(std::string("Ouverture file "));
-
 	string _value = "<meta http-equiv = \"refresh\" content = \"5\" /><img src = \"current.png\" width = \"40\" height = \"40\" />";
 
 	WriteInFile("RocketStats_images/current_image.html", _value);
-
-	cvarManager->log(std::string("Close file "));
 }
 
 void RocketStats::majRank(int _gameMode, float _currentMMR)
@@ -452,27 +447,19 @@ void RocketStats::majRank(int _gameMode, float _currentMMR)
 
 	if (currentGameMode >= 10 && currentGameMode <= 13)	
 	{
-		cvarManager->log(std::string("Current Game Mode -----> ") + std::to_string(currentGameMode));
-
 		for (auto it = listRank[currentGameMode]._rank.begin(); it != listRank[currentGameMode]._rank.end(); it++)
 		{
 			if (currentMMR >= it->second.first && currentMMR <= it->second.second)
 			{
 				currentRank = it->first;
-
-				cvarManager->log(std::string("Rank ") + currentRank);
 			}
 		}
 
 		if (currentRank != lastRank)
 		{
-			cvarManager->log(std::string("Ouverture file "));
-
 			string _value = "<meta http-equiv = \"refresh\" content = \"5\" /><img src = \"" + currentRank + ".png" + "\" width = \"40\" height = \"40\" />";
 
 			WriteInFile("RocketStats_images/current_image.html", _value);
-
-			cvarManager->log(std::string("Close file "));
 		}
 	}
 	else
@@ -490,7 +477,7 @@ void RocketStats::Render(CanvasWrapper canvas)
 	bool RS_disp_ig = cvarManager->getCvar("RS_disp_ig").getBoolValue();
 	int RS_x_position = cvarManager->getCvar("RS_x_position").getIntValue();
 	int RS_y_position = cvarManager->getCvar("RS_y_position").getIntValue();
-	int RS_scale = cvarManager->getCvar("RS_scale").getIntValue();
+	float RS_scale = cvarManager->getCvar("RS_scale").getFloatValue();
 
 	if (!RS_disp_ig) {
 		return;
@@ -513,18 +500,18 @@ void RocketStats::Render(CanvasWrapper canvas)
 			size += 1;
 	}
 
-	int xPos = (canvas.GetSize().X - 170) / 100;
-	int yPos = (canvas.GetSize().Y - (23 * size)) / 100;
+	int xPos = canvas.GetSize().X / 100;
+	int yPos = canvas.GetSize().Y / 100;
 
 	// Draw box here
 	Vector2 drawLoc = { xPos *RS_x_position, yPos * RS_y_position};
-	Vector2 sizeBox = { 170, (23*size)};
+	Vector2 sizeBox = { 170 * RS_scale, (23*size) * RS_scale };
 	canvas.SetPosition(drawLoc);
 	canvas.SetColor(0, 0, 0, 150);
 	canvas.FillBox(sizeBox);
 
 	// Draw text
-	Vector2 textPos = { drawLoc.X + 10, drawLoc.Y + 10 };
+	Vector2 textPos = { (drawLoc.X + 10), (drawLoc.Y + 10) };
 	for (auto& it : RS_values) {
 		bool tmp = cvarManager->getCvar(it).getBoolValue();
 
@@ -535,12 +522,12 @@ void RocketStats::Render(CanvasWrapper canvas)
 			//Set Color and Text for the value
 			if (it == "RS_disp_gamemode") {
 				canvas.SetColor(180, 180, 180, 255);
-				canvas.DrawString(getPlaylistName(currentPlaylist), 1.0f, 1.0f);
+				canvas.DrawString(getPlaylistName(currentPlaylist), RS_scale, RS_scale);
 			}
 			else if (it == "RS_disp_rank")
 			{
 				canvas.SetColor(180, 180, 180, 255);
-				canvas.DrawString(currentRank, 1.0f, 1.0f);
+				canvas.DrawString(currentRank, RS_scale, RS_scale);
 			}
 			else if (it == "RS_disp_mmr")
 			{
@@ -548,7 +535,7 @@ void RocketStats::Render(CanvasWrapper canvas)
 				std::stringstream ss;
 				ss << std::fixed << std::setprecision(2) << stats[currentPlaylist].myMMR;
 				std::string mmr = ss.str();
-				canvas.DrawString("MMR : " + mmr, 1.0f, 1.0f);
+				canvas.DrawString("MMR : " + mmr, RS_scale, RS_scale);
 			}
 			else if (it == "RS_disp_mmr_change")
 			{
@@ -558,39 +545,39 @@ void RocketStats::Render(CanvasWrapper canvas)
 				if (stats[currentPlaylist].MMRChange >= 0)
 				{
 					canvas.SetColor(30, 224, 24, 255);
-					canvas.DrawString("MMRChange : +" + mmr, 1.0f, 1.0f);
+					canvas.DrawString("MMRChange : +" + mmr, RS_scale, RS_scale);
 				}
 				else
 				{
 					canvas.SetColor(224, 24, 24, 255);
-					canvas.DrawString("MMRChange : " + mmr, 1.0f, 1.0f);
+					canvas.DrawString("MMRChange : " + mmr, RS_scale, RS_scale);
 				}
 			}
 			else if (it == "RS_disp_wins")
 			{
 				canvas.SetColor(30, 224, 24, 255);
-				canvas.DrawString("Win : " + std::to_string(stats[currentPlaylist].win), 1.0f, 1.0f);
+				canvas.DrawString("Win : " + std::to_string(stats[currentPlaylist].win), RS_scale, RS_scale);
 			}
 			else if (it == "RS_disp_losses")
 			{
 				canvas.SetColor(224, 24, 24, 255);
-				canvas.DrawString("Losses : " + std::to_string(stats[currentPlaylist].losses), 1.0f, 1.0f);
+				canvas.DrawString("Losses : " + std::to_string(stats[currentPlaylist].losses), RS_scale, RS_scale);
 			}
 			else if (it == "RS_disp_streak")
 			{
 				if (stats[currentPlaylist].streak >= 0)
 				{
 					canvas.SetColor(30, 224, 24, 255);
-					canvas.DrawString("Streak : +" + std::to_string(stats[currentPlaylist].streak), 1.0f, 1.0f);
+					canvas.DrawString("Streak : +" + std::to_string(stats[currentPlaylist].streak), RS_scale, RS_scale);
 				}
 				else
 				{
 					canvas.SetColor(224, 24, 24, 255);
-					canvas.DrawString("Streak : " + std::to_string(stats[currentPlaylist].streak), 1.0f, 1.0f);
+					canvas.DrawString("Streak : " + std::to_string(stats[currentPlaylist].streak), RS_scale, RS_scale);
 				}
 			}
 			// Increase Y position;
-			textPos.Y += 20;
+			textPos.Y += (20 * RS_scale);
 		}
 	}
 }
