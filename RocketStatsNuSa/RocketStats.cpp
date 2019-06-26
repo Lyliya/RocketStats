@@ -460,7 +460,7 @@ void RocketStats::initRank()
 	currentRank = "norank";
 	lastRank = "norank";
 
-	string _value = "<meta http-equiv = \"refresh\" content = \"5\" /><img src = \"current.png\" width = \"40\" height = \"40\" />";
+	string _value = "<meta http-equiv = \"refresh\" content = \"5\" /><img src = \"current.png\" width = \"100\" height = \"100\" />";
 
 	WriteInFile("RocketStats_images/current_image.html", _value);
 }
@@ -483,14 +483,14 @@ void RocketStats::majRank(int _gameMode, float _currentMMR)
 
 		if (currentRank != lastRank)
 		{
-			string _value = "<meta http-equiv = \"refresh\" content = \"5\" /><img src = \"" + currentRank + ".png" + "\" width = \"40\" height = \"40\" />";
+			string _value = "<meta http-equiv = \"refresh\" content = \"5\" /><img src = \"" + currentRank + ".png" + "\" width = \"100\" height = \"100\" />";
 
 			WriteInFile("RocketStats_images/current_image.html", _value);
 		}
 	}
 	else
 	{
-		string _value = "<meta http-equiv = \"refresh\" content = \"5\" /><img src = \"current.png\" width = \"40\" height = \"40\" />";
+		string _value = "<meta http-equiv = \"refresh\" content = \"5\" /><img src = \"current.png\" width = \"100\" height = \"100\" />";
 
 		WriteInFile("RocketStats_images/current_image.html", _value);
 	}
