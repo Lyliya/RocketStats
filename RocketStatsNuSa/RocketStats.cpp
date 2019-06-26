@@ -100,7 +100,7 @@ void RocketStats::Start(std::string eventName)
 
 		if (tmp > 0)
 		{
-			WriteInFile("RocketStats_MMRChange.txt", "+ " + std::to_string(tmp));
+			WriteInFile("RocketStats_MMRChange.txt", "+" + std::to_string(tmp));
 		}
 		else
 		{
@@ -111,7 +111,7 @@ void RocketStats::Start(std::string eventName)
 
 		if (stats[currentPlaylist].streak > 0)
 		{
-			WriteInFile("RocketStats_Streak.txt", "+ " + std::to_string(stats[currentPlaylist].streak));
+			WriteInFile("RocketStats_Streak.txt", "+" + std::to_string(stats[currentPlaylist].streak));
 		}
 		else
 		{
@@ -184,7 +184,7 @@ void RocketStats::GameEnd(std::string eventName)
 
 		if (stats[currentPlaylist].streak > 0)
 		{
-			WriteInFile("RocketStats_Streak.txt","+ " + std::to_string(stats[currentPlaylist].streak));
+			WriteInFile("RocketStats_Streak.txt","+" + std::to_string(stats[currentPlaylist].streak));
 		}
 		else
 		{
@@ -207,7 +207,7 @@ void RocketStats::GameEnd(std::string eventName)
 
 			if (tmp > 0)
 			{
-				WriteInFile("RocketStats_MMRChange.txt","+ " + std::to_string(tmp));
+				WriteInFile("RocketStats_MMRChange.txt","+" + std::to_string(tmp));
 			}
 			else
 			{
@@ -236,7 +236,7 @@ void RocketStats::GameDestroyed(std::string eventName) {
 		//cvarManager->log("You LOOSE");
 		if (stats[currentPlaylist].streak > 0)
 		{
-			WriteInFile("RocketStats_Streak.txt", "+ " + std::to_string(stats[currentPlaylist].streak));
+			WriteInFile("RocketStats_Streak.txt", "+" + std::to_string(stats[currentPlaylist].streak));
 		}
 		else
 		{
@@ -260,7 +260,7 @@ void RocketStats::GameDestroyed(std::string eventName) {
 
 			if (tmp > 0)
 			{
-				WriteInFile("RocketStats_MMRChange.txt", "+ " + std::to_string(tmp));
+				WriteInFile("RocketStats_MMRChange.txt", "+" + std::to_string(tmp));
 			}
 			else
 			{
