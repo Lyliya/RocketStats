@@ -485,13 +485,6 @@ void RocketStats::majRank(int _gameMode, float _currentMMR)
 void RocketStats::Render(CanvasWrapper canvas)
 {
 	bool RS_disp_ig = cvarManager->getCvar("RS_disp_ig").getBoolValue();
-	/* bool RS_disp_mmr = cvarManager->getCvar("RS_disp_mmr").getBoolValue();
-	bool RS_disp_mmr_change = cvarManager->getCvar("RS_disp_mmr_change").getBoolValue();
-	bool RS_disp_wins = cvarManager->getCvar("RS_disp_wins").getBoolValue();
-	bool RS_disp_losses = cvarManager->getCvar("RS_disp_losses").getBoolValue();
-	bool RS_disp_streak = cvarManager->getCvar("RS_disp_streak").getBoolValue();
-	bool RS_disp_rank = cvarManager->getCvar("RS_disp_rank").getBoolValue();
-	bool RS_disp_gamemode = cvarManager->getCvar("RS_disp_gamemode").getBoolValue(); */
 	int RS_x_position = cvarManager->getCvar("RS_x_position").getIntValue();
 	int RS_y_position = cvarManager->getCvar("RS_y_position").getIntValue();
 
@@ -516,15 +509,18 @@ void RocketStats::Render(CanvasWrapper canvas)
 			size += 1;
 	}
 
+	int xPos = (canvas.GetSize().X - 170) / 100;
+	int yPos = (canvas.GetSize().Y - (23 * size)) / 100;
+
 	// Draw box here
-	Vector2 drawLoc = { RS_x_position, RS_y_position };
-	Vector2 sizeBox = { 170, (22*size)};
+	Vector2 drawLoc = { xPos *RS_x_position, yPos * RS_y_position};
+	Vector2 sizeBox = { 170, (23*size)};
 	canvas.SetPosition(drawLoc);
 	canvas.SetColor(0, 0, 0, 150);
 	canvas.FillBox(sizeBox);
 
 	// Draw text
-	Vector2 textPos = { RS_x_position + 10, RS_y_position + 10 };
+	Vector2 textPos = { drawLoc.X + 10, drawLoc.Y + 10 };
 	for (auto& it : RS_values) {
 		bool tmp = cvarManager->getCvar(it).getBoolValue();
 
@@ -593,30 +589,4 @@ void RocketStats::Render(CanvasWrapper canvas)
 			textPos.Y += 20;
 		}
 	}
-
-	/* if (RS_disp_ig)
-	{
-		Vector2 drawLoc = { 10, 10 };
-		Vector2 size = { 200, 200 };
-		canvas.SetPosition(drawLoc);
-		canvas.SetColor(255, 255, 255, 255);
-		canvas.FillBox(size);
-
-		// Draw GameMode
-		if (RS_disp_gamemode)
-		{
-			Vector2 gameModePos = { 50, 50 };
-			canvas.SetPosition(gameModePos);
-			canvas.SetColor(0, 0, 0, 255);
-			canvas.DrawString(getPlaylistName(currentPlaylist));
-		}
-
-		if (RS_disp_rank)
-		{
-			Vector2 gameModePos = { 100, 100 };
-			canvas.SetPosition(gameModePos);
-			canvas.SetColor(0, 0, 0, 255);
-			canvas.DrawString(currentRank);
-		}
-	} */
 }
