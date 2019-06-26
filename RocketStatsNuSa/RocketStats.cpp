@@ -369,7 +369,7 @@ void RocketStats::initRankList()
 		{"Grand_Champion", {1223.0f, 1300.0f}},
 	};
 
-	//1v1 Ranked code : 11
+	//2v2 Ranked code : 11
 	Ranks v2Rank;
 	v2Rank.nameMode = "2v2";
 	v2Rank._rank = {
@@ -394,7 +394,7 @@ void RocketStats::initRankList()
 		{"Grand_Champion", {1501.0f, 1631.0f}},
 	};
 
-	//1v1 Ranked code : 12
+	//solo 3v3 Ranked code : 12
 	Ranks sv3Rank;
 	sv3Rank.nameMode = "solo 3v3";
 	sv3Rank._rank = {
@@ -419,10 +419,36 @@ void RocketStats::initRankList()
 		{"Grand_Champion", {1287.0f, 1334.0f}},
 	};
 
+	//3v3 Standard Ranked code : 13
+	Ranks v3Rank;
+	v3Rank.nameMode = "solo 3v3";
+	v3Rank._rank = {
+		{"Bronze_I", {0.0f, 184.0f}},
+		{"Bronze_II", {185.0f, 251.0f}},
+		{"Bronze_III", {248.0f, 309.0f}},
+		{"Silver_I", {308.0f, 366.0f}},
+		{"Silver_II", {369.0f, 423.0f}},
+		{"Silver_III", {430.0f, 485.0f}},
+		{"Gold_I", {489.0f, 545.0f}},
+		{"Gold_II", {548.0f, 604.0f}},
+		{"Gold_III", {612.0f, 682.0f}},
+		{"Platinum_I", {695.0f, 761.0f}},
+		{"Platinum_II", {773.0f, 841.0f}},
+		{"Platinum_III", {854.0f, 920.0f}},
+		{"Diamond_I", {934.0f, 1001.0f}},
+		{"Diamond_II", {1012.0f, 1080.0f}},
+		{"Diamond_III", {1095.0f, 1180.0f}},
+		{"Champion_I", {1195.0f, 1280.0f}},
+		{"Champion_II", {1295.0f, 1380.0f}},
+		{"Champion_III", {1395.0f, 1499.0f}},
+		{"Grand_Champion", {1501.0f, 1629.0f}},
+	};
+
 	listRank = {
 		{10, v1Rank},
 		{11, v2Rank},
-		{12, sv3Rank}
+		{12, sv3Rank},
+		{13, v3Rank}
 	};
 }
 
