@@ -203,6 +203,7 @@ void RocketStats::GameEnd(std::string eventName)
 			int tmp = ((stats[currentPlaylist].MMRChange < 0) ? -1 : 1) * std::round(fabs(stats[currentPlaylist].MMRChange));
 			//cvarManager->log(std::string("MMR Change: ") + std::to_string(tmp));
 			//cvarManager->log(std::string("MMR: ") + std::to_string(stats[currentPlaylist].myMMR));
+			majRank(currentPlaylist, stats[currentPlaylist].myMMR);
 
 			if (tmp > 0)
 			{
@@ -216,8 +217,6 @@ void RocketStats::GameEnd(std::string eventName)
 
 		// Reset myTeamNum security
 		myTeamNum = -1;
-
-		majRank(currentPlaylist, stats[currentPlaylist].myMMR);
 	}
 }
 
@@ -257,6 +256,7 @@ void RocketStats::GameDestroyed(std::string eventName) {
 			int tmp = ((stats[currentPlaylist].MMRChange < 0) ? -1 : 1) * std::round(fabs(stats[currentPlaylist].MMRChange));
 			//cvarManager->log(std::string("MMR Change: ") + std::to_string(tmp));
 			//cvarManager->log(std::string("MMR: ") + std::to_string(stats[currentPlaylist].myMMR));
+			majRank(currentPlaylist, stats[currentPlaylist].myMMR);
 
 			if (tmp > 0)
 			{
@@ -471,7 +471,7 @@ void RocketStats::majRank(int _gameMode, float _currentMMR)
 	currentMMR = _currentMMR;
 	lastRank == currentRank;
 
-	if (currentGameMode >= 10 && currentGameMode <= 13)	
+	if (currentGameMode >= 10 && currentGameMode <= 13)
 	{
 		for (auto it = listRank[currentGameMode]._rank.begin(); it != listRank[currentGameMode]._rank.end(); it++)
 		{
