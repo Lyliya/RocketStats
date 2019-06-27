@@ -57,6 +57,7 @@ void RocketStats::onLoad()
 	cvarManager->registerCvar("RS_x_position", "80", "Overlay X position", true, true, 0, true, 100);
 	cvarManager->registerCvar("RS_y_position", "10", "Overlay Y position", true, true, 0, true, 100);
 	cvarManager->registerCvar("RS_scale", "1", "Overlay scale", true, true, 1, true, 10);
+	cvarManager->registerCvar("RS_disp_active", "0", "", true, true, 0, true, 1);
 }
 
 void RocketStats::onUnload()
@@ -518,7 +519,13 @@ void RocketStats::Render(CanvasWrapper canvas)
 	float RS_scale = cvarManager->getCvar("RS_scale").getFloatValue();
 
 	if (!RS_disp_ig) {
+		cvarManager->log("False");
+		cvarManager->registerCvar("RS_disp_active", "0", "", true, true, 0, true, 1);
 		return;
+	}
+	else {
+		cvarManager->registerCvar("RS_disp_active", "1", "", true, true, 0, true, 1);
+		cvarManager->log("true");
 	}
 
 	std::vector<std::string> RS_values = {
