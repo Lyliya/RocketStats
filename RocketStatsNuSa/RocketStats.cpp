@@ -58,6 +58,8 @@ void RocketStats::onLoad()
 	cvarManager->registerCvar("RS_y_position", "10", "Overlay Y position", true, true, 0, true, 100);
 	cvarManager->registerCvar("RS_scale", "1", "Overlay scale", true, true, 1, true, 10);
 	cvarManager->registerCvar("RS_disp_active", "0", "", true, true, 0, true, 1);
+
+	WriteInFile("RocketStats_images/BoostState.txt", std::to_string(-1));
 }
 
 void RocketStats::onUnload()
@@ -131,6 +133,7 @@ void RocketStats::Start(std::string eventName)
 		isGameStarted = true;
 
 		majRank(currentPlaylist, stats[currentPlaylist].myMMR);
+		WriteInFile("RocketStats_images/BoostState.txt", std::to_string(0));
 	}
 }
 
