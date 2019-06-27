@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>RocketStats</title>
+</head>
+<body>
+  <video autoplay muted loop src="noboost.webm" id="vid1" position="absolute" z-index="1" hidden></video>
+  <video autoplay muted loop src="boost.webm" id="vid2" position="absolute" z-index="2" hidden></video>
+  <script>
+    document.getElementById("vid1").currentTime = 0;
+    document.getElementById("vid2").currentTime = 0;
+    let save = "0";
+    window.setInterval(() => {
+      fetch('file.txt').then(response => response.text()).then(text => {
+        if (text == "1" && save != text) {
+          // Boost
+          document.getElementById("vid1").hidden = false;
+          document.getElementById("vid2").hidden = true;
+        } else if (text == "0" && save != text) {
+          // No Boost
+          document.getElementById("vid1").hidden = true;
+          document.getElementById("vid2").hidden = false;
+        } else if (text == "-1" && save != text) {
+          document.getElementById("vid1").hidden = false;
+          document.getElementById("vid2").hidden = false;
+        }
+        save = text;
+      })
+    }, 100)
+  </script>
+</body>
+</html>
