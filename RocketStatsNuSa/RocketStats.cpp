@@ -276,7 +276,7 @@ void RocketStats::GameDestroyed(std::string eventName) {
 void RocketStats::OnBoost(std::string eventName) {
 	//cvarManager->log("BOOOOST");
 
-	if (gameWrapper->IsInReplay() || !gameWrapper->IsInFreeplay() || !gameWrapper->IsInOnlineGame())
+	/*if (gameWrapper->IsInReplay())
 		return;
 	CarWrapper cWrap = gameWrapper->GetLocalCar();
 
@@ -287,16 +287,19 @@ void RocketStats::OnBoost(std::string eventName) {
 		if (bWrap.GetbActive() == 1 && isBoosting == false) {
 			cvarManager->log("Tu boost");
 			isBoosting = true;
+			//rename("./bakkesmod/RocketStats_images/current_boost.png", "./bakkesmod/RocketStats_images/pasboost.png");
+			//rename("./bakkesmod/RocketStats_images/boost.png", "./bakkesmod/RocketStats_images/current_boost.png");
 		}
 		//cvarManager->log("BOOOOST ----> " + std::to_string(bWrap.GetbActive()));
-	}
+	}*/
+
 	return;
 }
 
 void RocketStats::OnBoostEnd(std::string eventName) {
 	//cvarManager->log("Stop BOOST");
 
-	if (gameWrapper->IsInReplay() || !gameWrapper->IsInFreeplay() || !gameWrapper->IsInOnlineGame())
+	/*if (gameWrapper->IsInReplay())
 		return;
 	CarWrapper cWrap = gameWrapper->GetLocalCar();
 
@@ -307,11 +310,15 @@ void RocketStats::OnBoostEnd(std::string eventName) {
 		if (bWrap.GetbActive() == 0 && isBoosting == true) {
 			cvarManager->log("Tu ne boost plus");
 			isBoosting = false;
+
+			//rename("./bakkesmod/RocketStats_images/current_boost.png", "./bakkesmod/RocketStats_images/boost.png");
+			//rename("./bakkesmod/RocketStats_images/pasboost.png", "./bakkesmod/RocketStats_images/current_boost.png");
 		}
 		//cvarManager->log("BOOOOST ----> " + std::to_string(bWrap.GetbActive()));
-	}
+	}*/
 	return;
 }
+
 
 void RocketStats::ResetStats()
 {
