@@ -14,7 +14,7 @@
     document.getElementById("vid2").currentTime = 0;
     let save = "0";
     window.setInterval(() => {
-      fetch('file.txt').then(response => response.text()).then(text => {
+      fetch('BoostState.txt').then(response => response.text()).then(text => {
         if (text == "1" && save != text) {
           // Boost
           document.getElementById("vid1").hidden = false;
