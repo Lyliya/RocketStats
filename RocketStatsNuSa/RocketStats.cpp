@@ -524,13 +524,10 @@ void RocketStats::Render(CanvasWrapper canvas)
 	int RS_x_position = cvarManager->getCvar("RS_x_position").getIntValue();
 	int RS_y_position = cvarManager->getCvar("RS_y_position").getIntValue();
 	float RS_scale = cvarManager->getCvar("RS_scale").getFloatValue();
+	cvarManager->getCvar("RS_disp_active").setValue(RS_disp_ig);
 
 	if (!RS_disp_ig) {
-		cvarManager->registerCvar("RS_disp_active", "0", "", true, true, 0, true, 1);
 		return;
-	}
-	else {
-		cvarManager->registerCvar("RS_disp_active", "1", "", true, true, 0, true, 1);
 	}
 
 	std::vector<std::string> RS_values = {
