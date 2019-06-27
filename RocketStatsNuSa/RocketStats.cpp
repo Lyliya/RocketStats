@@ -218,6 +218,8 @@ void RocketStats::GameEnd(std::string eventName)
 
 		// Reset myTeamNum security
 		myTeamNum = -1;
+
+		WriteInFile("RocketStats_images/BoostState.txt", std::to_string(-1));
 	}
 }
 
@@ -271,6 +273,7 @@ void RocketStats::GameDestroyed(std::string eventName) {
 	}
 	isGameEnded = true;
 	isGameStarted = false;
+	WriteInFile("RocketStats_images/BoostState.txt", std::to_string(-1));
 }
 
 void RocketStats::OnBoost(std::string eventName) {
@@ -287,8 +290,8 @@ void RocketStats::OnBoost(std::string eventName) {
 		if (!bWrap.IsNull() && bWrap.GetbActive() == 1 && isBoosting == false) {
 			cvarManager->log("Tu boost");
 			isBoosting = true;
-			rename("./bakkesmod/RocketStats_images/current_boost.gif", "./bakkesmod/RocketStats_images/pasboost.gif");
-			rename("./bakkesmod/RocketStats_images/boost.gif", "./bakkesmod/RocketStats_images/current_boost.gif");
+			
+			WriteInFile("RocketStats_images/BoostState.txt", std::to_string(1));
 		}
 		//cvarManager->log("BOOOOST ----> " + std::to_string(bWrap.GetbActive()));
 	}
@@ -311,8 +314,7 @@ void RocketStats::OnBoostEnd(std::string eventName) {
 			cvarManager->log("Tu ne boost plus");
 			isBoosting = false;
 
-			rename("./bakkesmod/RocketStats_images/current_boost.gif", "./bakkesmod/RocketStats_images/boost.gif");
-			rename("./bakkesmod/RocketStats_images/pasboost.gif", "./bakkesmod/RocketStats_images/current_boost.gif");
+			WriteInFile("RocketStats_images/BoostState.txt", std::to_string(0));
 		}
 		//cvarManager->log("BOOOOST ----> " + std::to_string(bWrap.GetbActive()));
 	}
