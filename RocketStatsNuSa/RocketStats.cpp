@@ -276,7 +276,7 @@ void RocketStats::GameDestroyed(std::string eventName) {
 void RocketStats::OnBoost(std::string eventName) {
 	//cvarManager->log("BOOOOST");
 
-	/*if (gameWrapper->IsInReplay())
+	if (gameWrapper->IsInReplay())
 		return;
 	CarWrapper cWrap = gameWrapper->GetLocalCar();
 
@@ -284,14 +284,14 @@ void RocketStats::OnBoost(std::string eventName) {
 	{
 		BoostWrapper bWrap = cWrap.GetBoostComponent();
 
-		if (bWrap.GetbActive() == 1 && isBoosting == false) {
+		if (!bWrap.IsNull() && bWrap.GetbActive() == 1 && isBoosting == false) {
 			cvarManager->log("Tu boost");
 			isBoosting = true;
-			//rename("./bakkesmod/RocketStats_images/current_boost.png", "./bakkesmod/RocketStats_images/pasboost.png");
-			//rename("./bakkesmod/RocketStats_images/boost.png", "./bakkesmod/RocketStats_images/current_boost.png");
+			rename("./bakkesmod/RocketStats_images/current_boost.gif", "./bakkesmod/RocketStats_images/pasboost.gif");
+			rename("./bakkesmod/RocketStats_images/boost.gif", "./bakkesmod/RocketStats_images/current_boost.gif");
 		}
 		//cvarManager->log("BOOOOST ----> " + std::to_string(bWrap.GetbActive()));
-	}*/
+	}
 
 	return;
 }
@@ -299,7 +299,7 @@ void RocketStats::OnBoost(std::string eventName) {
 void RocketStats::OnBoostEnd(std::string eventName) {
 	//cvarManager->log("Stop BOOST");
 
-	/*if (gameWrapper->IsInReplay())
+	if (gameWrapper->IsInReplay())
 		return;
 	CarWrapper cWrap = gameWrapper->GetLocalCar();
 
@@ -307,15 +307,15 @@ void RocketStats::OnBoostEnd(std::string eventName) {
 	{
 		BoostWrapper bWrap = cWrap.GetBoostComponent();
 
-		if (bWrap.GetbActive() == 0 && isBoosting == true) {
+		if (!bWrap.IsNull() && bWrap.GetbActive() == 0 && isBoosting == true) {
 			cvarManager->log("Tu ne boost plus");
 			isBoosting = false;
 
-			//rename("./bakkesmod/RocketStats_images/current_boost.png", "./bakkesmod/RocketStats_images/boost.png");
-			//rename("./bakkesmod/RocketStats_images/pasboost.png", "./bakkesmod/RocketStats_images/current_boost.png");
+			rename("./bakkesmod/RocketStats_images/current_boost.gif", "./bakkesmod/RocketStats_images/boost.gif");
+			rename("./bakkesmod/RocketStats_images/pasboost.gif", "./bakkesmod/RocketStats_images/current_boost.gif");
 		}
 		//cvarManager->log("BOOOOST ----> " + std::to_string(bWrap.GetbActive()));
-	}*/
+	}
 	return;
 }
 
@@ -526,13 +526,11 @@ void RocketStats::Render(CanvasWrapper canvas)
 	float RS_scale = cvarManager->getCvar("RS_scale").getFloatValue();
 
 	if (!RS_disp_ig) {
-		cvarManager->log("False");
 		cvarManager->registerCvar("RS_disp_active", "0", "", true, true, 0, true, 1);
 		return;
 	}
 	else {
 		cvarManager->registerCvar("RS_disp_active", "1", "", true, true, 0, true, 1);
-		cvarManager->log("true");
 	}
 
 	std::vector<std::string> RS_values = {
