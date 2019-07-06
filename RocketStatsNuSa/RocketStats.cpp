@@ -72,6 +72,8 @@ void RocketStats::onUnload()
 
 void RocketStats::Start(std::string eventName)
 {
+	WriteInFile("RocketStats_images/BoostState.txt", std::to_string(0));
+
 	if (gameWrapper->IsInOnlineGame()) {
 		CarWrapper me = gameWrapper->GetLocalCar();
 		if (me.IsNull()) {
