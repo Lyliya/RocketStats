@@ -393,7 +393,7 @@ void RocketStats::initRankList()
 		{"Champion_I", {995.0f, 1062.0f}},
 		{"Champion_II", {1074.0f, 1144.0f}},
 		{"Champion_III", {1155.0f, 1223.0f}},
-		{"Grand_Champion", {1223.0f, 1300.0f}},
+		{"Grand_Champion", {1223.0f, 9999.0f}},
 	};
 
 	//2v2 Ranked code : 11
@@ -418,7 +418,7 @@ void RocketStats::initRankList()
 		{"Champion_I", {1195.0f, 1280.0f}},
 		{"Champion_II", {1285.0f, 1380.0f}},
 		{"Champion_III", {1395.0f, 1500.0f}},
-		{"Grand_Champion", {1501.0f, 1631.0f}},
+		{"Grand_Champion", {1501.0f, 9999.0f}},
 	};
 
 	//solo 3v3 Ranked code : 12
@@ -443,7 +443,7 @@ void RocketStats::initRankList()
 		{"Champion_I", {1055.0f, 1123.0f}},
 		{"Champion_II", {1124.0f, 1201.0f}},
 		{"Champion_III", {1211.0f, 1292.0f}},
-		{"Grand_Champion", {1287.0f, 1334.0f}},
+		{"Grand_Champion", {1287.0f, 9999.0f}},
 	};
 
 	//3v3 Standard Ranked code : 13
@@ -468,7 +468,7 @@ void RocketStats::initRankList()
 		{"Champion_I", {1195.0f, 1280.0f}},
 		{"Champion_II", {1295.0f, 1380.0f}},
 		{"Champion_III", {1395.0f, 1499.0f}},
-		{"Grand_Champion", {1501.0f, 1629.0f}},
+		{"Grand_Champion", {1501.0f, 9999.0f}},
 	};
 
 	listRank = {
