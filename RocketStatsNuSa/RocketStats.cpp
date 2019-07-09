@@ -22,7 +22,6 @@ void RocketStats::onLoad()
 {
 	cvarManager->registerNotifier("RocketStats_reset_stats", [this](std::vector<string> params) {
 		ResetStats();
-
 	}
 	, "Reset Stats", PERMISSION_ALL);
 
@@ -58,6 +57,7 @@ void RocketStats::onLoad()
 	cvarManager->registerCvar("RS_y_position", "10", "Overlay Y position", true, true, 0, true, 100);
 	cvarManager->registerCvar("RS_scale", "1", "Overlay scale", true, true, 1, true, 10);
 	cvarManager->registerCvar("RS_disp_active", "0", "", true, true, 0, true, 1);
+	cvarManager->registerCvar("RocketStats_stop_boost", "1", "Stop Boost animation", true, true, 0, true, 1);
 
 	WriteInFile("RocketStats_images/BoostState.txt", std::to_string(-1));
 }
@@ -74,8 +74,6 @@ void RocketStats::onUnload()
 
 void RocketStats::Start(std::string eventName)
 {
-	WriteInFile("RocketStats_images/BoostState.txt", std::to_string(0));
-
 	if (gameWrapper->IsInOnlineGame()) {
 		CarWrapper me = gameWrapper->GetLocalCar();
 		if (me.IsNull()) {
@@ -284,6 +282,12 @@ void RocketStats::GameDestroyed(std::string eventName) {
 void RocketStats::OnBoost(std::string eventName) {
 	//cvarManager->log("BOOOOST");
 
+	// Check if boost enabled in options
+	bool IsBoostEnabled = cvarManager->getCvar("RocketStats_stop_boost").getBoolValue();
+	if (IsBoostEnabled == false) {
+		return;
+	}
+
 	if (gameWrapper->IsInReplay())
 		return;
 	CarWrapper cWrap = gameWrapper->GetLocalCar();
@@ -293,7 +297,7 @@ void RocketStats::OnBoost(std::string eventName) {
 		BoostWrapper bWrap = cWrap.GetBoostComponent();
 
 		if (!bWrap.IsNull() && bWrap.GetbActive() == 1 && isBoosting == false) {
-			cvarManager->log("Tu boost");
+			//cvarManager->log("Tu boost");
 			isBoosting = true;
 			
 			WriteInFile("RocketStats_images/BoostState.txt", std::to_string(1));
@@ -305,7 +309,11 @@ void RocketStats::OnBoost(std::string eventName) {
 }
 
 void RocketStats::OnBoostEnd(std::string eventName) {
-	//cvarManager->log("Stop BOOST");
+
+	// Check if boost enabled in options
+	bool IsBoostEnabled = cvarManager->getCvar("RocketStats_stop_boost").getBoolValue();
+	if (!IsBoostEnabled)
+		return;
 
 	if (gameWrapper->IsInReplay())
 		return;
@@ -316,7 +324,7 @@ void RocketStats::OnBoostEnd(std::string eventName) {
 		BoostWrapper bWrap = cWrap.GetBoostComponent();
 
 		if (!bWrap.IsNull() && bWrap.GetbActive() == 0 && isBoosting == true) {
-			cvarManager->log("Tu ne boost plus");
+			//cvarManager->log("Tu ne boost plus");
 			isBoosting = false;
 
 			WriteInFile("RocketStats_images/BoostState.txt", std::to_string(0));
@@ -326,6 +334,11 @@ void RocketStats::OnBoostEnd(std::string eventName) {
 	return;
 }
 
+// Act as toggle
+void RocketStats::StopBoost()
+{
+	cvarManager->log("hey");
+}
 
 void RocketStats::ResetStats()
 {

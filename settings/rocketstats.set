@@ -15,6 +15,7 @@ RocketStats Plugin
 5|Y position|RS_y_position|0|100
 4|Scale|RS_scale|1|10
 11|
+1|Enable Boost|RocketStats_stop_boost
 8|
 0|Reset|RocketStats_reset_stats
 8|

@@ -45,6 +45,7 @@ public:
 	void initRankList();
 	
 	void ResetStats();
+	void StopBoost();
 	
 	//Var
 	int myTeamNum = -1;
