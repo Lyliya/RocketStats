@@ -288,7 +288,7 @@ void RocketStats::OnBoost(std::string eventName) {
 		return;
 	}
 
-	if (gameWrapper->IsInReplay())
+	if (gameWrapper->IsInReplay() || isBoosting)
 		return;
 	CarWrapper cWrap = gameWrapper->GetLocalCar();
 
@@ -315,7 +315,7 @@ void RocketStats::OnBoostEnd(std::string eventName) {
 	if (!IsBoostEnabled)
 		return;
 
-	if (gameWrapper->IsInReplay())
+	if (gameWrapper->IsInReplay() || !isBoosting)
 		return;
 	CarWrapper cWrap = gameWrapper->GetLocalCar();
 
