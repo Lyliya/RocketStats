@@ -502,7 +502,7 @@ void RocketStats::initRank()
 
 	string _value = "<meta http-equiv = \"refresh\" content = \"5\" /><img src = \"current.png\" width = \"100\" height = \"100\" />";
 
-	WriteInFile("RocketStats_images/current_image.html", _value);
+	WriteInFile("RocketStats_images/rank.html", _value);
 }
 
 void RocketStats::majRank(int _gameMode, float _currentMMR)
@@ -525,14 +525,14 @@ void RocketStats::majRank(int _gameMode, float _currentMMR)
 		{
 			string _value = "<meta http-equiv = \"refresh\" content = \"5\" /><img src = \"" + currentRank + ".png" + "\" width = \"100\" height = \"100\" />";
 
-			WriteInFile("RocketStats_images/current_image.html", _value);
+			WriteInFile("RocketStats_images/rank.html", _value);
 		}
 	}
 	else
 	{
 		string _value = "<meta http-equiv = \"refresh\" content = \"5\" /><img src = \"current.png\" width = \"100\" height = \"100\" />";
 
-		WriteInFile("RocketStats_images/current_image.html", _value);
+		WriteInFile("RocketStats_images/rank.html", _value);
 	}
 }
 
