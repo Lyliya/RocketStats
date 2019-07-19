@@ -40,6 +40,7 @@ void RocketStats::onLoad()
 	WriteInFile("RocketStats_Streak.txt", std::to_string(0));
 	WriteInFile("RocketStats_Loose.txt", std::to_string(0));
 	WriteInFile("RocketStats_MMRChange.txt", std::to_string(0));
+	WriteInFile("RocketStats_MMR.txt", std::to_string(0));
 
 	initRankList();
 	initRank();
@@ -133,6 +134,7 @@ void RocketStats::Start(std::string eventName)
 		isGameStarted = true;
 
 		majRank(currentPlaylist, stats[currentPlaylist].myMMR);
+		WriteInFile("RocketStats_MMR.txt", std::to_string((int)stats[currentPlaylist].myMMR));
 		WriteInFile("RocketStats_images/BoostState.txt", std::to_string(0));
 	}
 }
@@ -209,6 +211,8 @@ void RocketStats::GameEnd(std::string eventName)
 			//cvarManager->log(std::string("MMR: ") + std::to_string(stats[currentPlaylist].myMMR));
 			majRank(currentPlaylist, stats[currentPlaylist].myMMR);
 
+			WriteInFile("RocketStats_MMR.txt", std::to_string((int)stats[currentPlaylist].myMMR));
+
 			if (tmp > 0)
 			{
 				WriteInFile("RocketStats_MMRChange.txt","+" + std::to_string(tmp));
@@ -263,6 +267,8 @@ void RocketStats::GameDestroyed(std::string eventName) {
 			//cvarManager->log(std::string("MMR Change: ") + std::to_string(tmp));
 			//cvarManager->log(std::string("MMR: ") + std::to_string(stats[currentPlaylist].myMMR));
 			majRank(currentPlaylist, stats[currentPlaylist].myMMR);
+
+			WriteInFile("RocketStats_MMR.txt", std::to_string((int)stats[currentPlaylist].myMMR));
 
 			if (tmp > 0)
 			{
@@ -354,6 +360,7 @@ void RocketStats::ResetStats()
 	WriteInFile("RocketStats_Streak.txt", std::to_string(0));
 	WriteInFile("RocketStats_Loose.txt", std::to_string(0));
 	WriteInFile("RocketStats_MMRChange.txt", std::to_string(0));
+	WriteInFile("RocketStats_MMR.txt", std::to_string(0));
 
 	initRank();
 }
