@@ -25,6 +25,18 @@ void RocketStats::onLoad()
 	}
 	, "Reset Stats", PERMISSION_ALL);
 
+	// Unload
+	cvarManager->registerNotifier("RocketStats_unload", [this](std::vector<string> params) {
+		togglePlugin(false);
+		}
+	, "Unload Plugin", PERMISSION_ALL);
+
+	//Load
+	cvarManager->registerNotifier("RocketStats_load", [this](std::vector<string> params) {
+		togglePlugin(true);
+		}
+	, "Load Plugin", PERMISSION_ALL);
+
 	// Register drawable
 	gameWrapper->RegisterDrawable(std::bind(&RocketStats::Render, this, std::placeholders::_1));
 
@@ -70,7 +82,47 @@ void RocketStats::onUnload()
 	gameWrapper->UnhookEvent("Function CarComponent_Boost_TA.Active.BeginState");
 	gameWrapper->UnhookEvent("Function CarComponent_Boost_TA.Active.EndState");
 	gameWrapper->UnhookEvent("Function TAGame.GameEvent_Soccar_TA.Destroyed");
+	gameWrapper->UnregisterDrawables();
 	//cvarManager->log("Unload 1.1");
+}
+
+void RocketStats::togglePlugin(bool state) {
+	if (state == isLoad) {
+		return;
+	}
+	else {
+		if (state == false) {
+			// Unload Plugin
+			gameWrapper->UnhookEvent("Function GameEvent_TA.Countdown.BeginState");
+			gameWrapper->UnhookEvent("Function TAGame.GameEvent_Soccar_TA.EventMatchEnded");
+			gameWrapper->UnhookEvent("Function CarComponent_Boost_TA.Active.BeginState");
+			gameWrapper->UnhookEvent("Function CarComponent_Boost_TA.Active.EndState");
+			gameWrapper->UnhookEvent("Function TAGame.GameEvent_Soccar_TA.Destroyed");
+			gameWrapper->UnregisterDrawables();
+			isLoad = state;
+		}
+		else if (state == true) {
+			// Load Plugin
+			gameWrapper->HookEvent("Function GameEvent_TA.Countdown.BeginState", bind(&RocketStats::Start, this, std::placeholders::_1));
+			gameWrapper->HookEvent("Function TAGame.GameEvent_Soccar_TA.EventMatchEnded", bind(&RocketStats::GameEnd, this, std::placeholders::_1));
+			gameWrapper->HookEvent("Function CarComponent_Boost_TA.Active.BeginState", bind(&RocketStats::OnBoost, this, std::placeholders::_1));
+			gameWrapper->HookEvent("Function CarComponent_Boost_TA.Active.EndState", bind(&RocketStats::OnBoostEnd, this, std::placeholders::_1));
+			gameWrapper->HookEvent("Function TAGame.GameEvent_Soccar_TA.Destroyed", bind(&RocketStats::GameDestroyed, this, std::placeholders::_1));
+			gameWrapper->RegisterDrawable(std::bind(&RocketStats::Render, this, std::placeholders::_1));
+
+			WriteInFile("RocketStats_Win.txt", std::to_string(0));
+			WriteInFile("RocketStats_Streak.txt", std::to_string(0));
+			WriteInFile("RocketStats_Loose.txt", std::to_string(0));
+			WriteInFile("RocketStats_MMRChange.txt", std::to_string(0));
+			WriteInFile("RocketStats_MMR.txt", std::to_string(0));
+			WriteInFile("RocketStats_images/BoostState.txt", std::to_string(-1));
+
+			initRankList();
+			initRank();
+
+			isLoad = state;
+		}
+	}
 }
 
 void RocketStats::Start(std::string eventName)

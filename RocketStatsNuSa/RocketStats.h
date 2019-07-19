@@ -46,6 +46,7 @@ public:
 	
 	void ResetStats();
 	void StopBoost();
+	void togglePlugin(bool state);
 	
 	//Var
 	int myTeamNum = -1;
@@ -56,6 +57,8 @@ public:
 	float currentMMR;
 	string currentRank;
 	string lastRank;
+
+	bool isLoad = true;
 
 	std::map<int, Ranks> listRank;
 

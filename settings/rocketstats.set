@@ -18,5 +18,7 @@ RocketStats Plugin
 1|Enable Boost|RocketStats_stop_boost
 8|
 0|Reset|RocketStats_reset_stats
+0|Load|RocketStats_load
+0|Unload|RocketStats_unload
 8|
 9|Developped by @Lyliiya & @NuSa_yt for @Maylie_2298
