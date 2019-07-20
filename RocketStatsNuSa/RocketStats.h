@@ -31,6 +31,7 @@ public:
 	void WriteInFile(std::string _fileName, std::string _value);
 	void GameDestroyed(std::string eventName);
 	void Render(CanvasWrapper canvas);
+	void ComputeMMR(int intervalTime);
 
 	int currentPlaylist;
 	bool isGameEnded;

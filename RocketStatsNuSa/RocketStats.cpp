@@ -249,31 +249,7 @@ void RocketStats::GameEnd(std::string eventName)
 			WriteInFile("RocketStats_Streak.txt", std::to_string(stats[currentPlaylist].streak));
 		}
 
-		gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
-			MMRWrapper mmrw = gameWrapper->GetMMRWrapper();
-			float save = mmrw.GetPlayerMMR(mySteamID, currentPlaylist);
-			//cvarManager->log("Current Playlist: " + std::to_string(currentPlaylist));
-			//cvarManager->log("New MMR: " + std::to_string(save));
-			//cvarManager->log("Initial MMR: " + std::to_string(stats[currentPlaylist].myMMR));
-
-			stats[currentPlaylist].MMRChange = stats[currentPlaylist].MMRChange + (save - stats[currentPlaylist].myMMR);
-			stats[currentPlaylist].myMMR = save;
-			int tmp = ((stats[currentPlaylist].MMRChange < 0) ? -1 : 1) * std::round(fabs(stats[currentPlaylist].MMRChange));
-			//cvarManager->log(std::string("MMR Change: ") + std::to_string(tmp));
-			//cvarManager->log(std::string("MMR: ") + std::to_string(stats[currentPlaylist].myMMR));
-			majRank(currentPlaylist, stats[currentPlaylist].myMMR);
-
-			WriteInFile("RocketStats_MMR.txt", std::to_string((int)stats[currentPlaylist].myMMR));
-
-			if (tmp > 0)
-			{
-				WriteInFile("RocketStats_MMRChange.txt","+" + std::to_string(tmp));
-			}
-			else
-			{
-				WriteInFile("RocketStats_MMRChange.txt", std::to_string(tmp));
-			}
-		}, 3);
+		ComputeMMR(3);
 
 		// Reset myTeamNum security
 		myTeamNum = -1;
@@ -335,6 +311,33 @@ void RocketStats::GameDestroyed(std::string eventName) {
 	isGameEnded = true;
 	isGameStarted = false;
 	WriteInFile("RocketStats_images/BoostState.txt", std::to_string(-1));
+}
+
+void RocketStats::ComputeMMR(int intervalTime) {
+	gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
+		MMRWrapper mmrw = gameWrapper->GetMMRWrapper();
+		float save = mmrw.GetPlayerMMR(mySteamID, currentPlaylist);
+
+		if (save <= 0) {
+			return ComputeMMR(1);
+		}
+
+		stats[currentPlaylist].MMRChange = stats[currentPlaylist].MMRChange + (save - stats[currentPlaylist].myMMR);
+		stats[currentPlaylist].myMMR = save;
+		int tmp = ((stats[currentPlaylist].MMRChange < 0) ? -1 : 1) * std::round(fabs(stats[currentPlaylist].MMRChange));
+		majRank(currentPlaylist, stats[currentPlaylist].myMMR);
+
+		WriteInFile("RocketStats_MMR.txt", std::to_string((int)stats[currentPlaylist].myMMR));
+
+		if (tmp > 0)
+		{
+			WriteInFile("RocketStats_MMRChange.txt", "+" + std::to_string(tmp));
+		}
+		else
+		{
+			WriteInFile("RocketStats_MMRChange.txt", std::to_string(tmp));
+		}
+	}, intervalTime);
 }
 
 void RocketStats::OnBoost(std::string eventName) {
