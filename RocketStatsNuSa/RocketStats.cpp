@@ -53,6 +53,7 @@ void RocketStats::onLoad()
 	WriteInFile("RocketStats_Loose.txt", std::to_string(0));
 	WriteInFile("RocketStats_MMRChange.txt", std::to_string(0));
 	WriteInFile("RocketStats_MMR.txt", std::to_string(0));
+	WriteInFile("RocketStats_Rank.txt", "");
 
 	initRankList();
 	initRank();
@@ -115,6 +116,7 @@ void RocketStats::togglePlugin(bool state) {
 			WriteInFile("RocketStats_Loose.txt", std::to_string(0));
 			WriteInFile("RocketStats_MMRChange.txt", std::to_string(0));
 			WriteInFile("RocketStats_MMR.txt", std::to_string(0));
+			WriteInFile("RocketStats_Rank.txt", "");
 			WriteInFile("RocketStats_images/BoostState.txt", std::to_string(-1));
 
 			initRankList();
@@ -416,6 +418,7 @@ void RocketStats::ResetStats()
 	WriteInFile("RocketStats_Loose.txt", std::to_string(0));
 	WriteInFile("RocketStats_MMRChange.txt", std::to_string(0));
 	WriteInFile("RocketStats_MMR.txt", std::to_string(0));
+	WriteInFile("RocketStats_Rank.txt", "");
 
 	initRank();
 }
@@ -588,6 +591,7 @@ void RocketStats::majRank(int _gameMode, float _currentMMR)
 			string _value = "<meta http-equiv = \"refresh\" content = \"5\" /><img src = \"" + currentRank + ".png" + "\" width = \"100\" height = \"100\" />";
 
 			WriteInFile("RocketStats_images/rank.html", _value);
+			WriteInFile("RocketStats_Rank.txt", currentRank);
 		}
 	}
 	else
@@ -595,6 +599,7 @@ void RocketStats::majRank(int _gameMode, float _currentMMR)
 		string _value = "<meta http-equiv = \"refresh\" content = \"5\" /><img src = \"current.png\" width = \"100\" height = \"100\" />";
 
 		WriteInFile("RocketStats_images/rank.html", _value);
+		WriteInFile("RocketStats_Rank.txt", currentRank);
 	}
 }
 
