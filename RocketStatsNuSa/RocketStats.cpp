@@ -16,7 +16,7 @@
 #include <iostream>
 #include <fstream>
 
-BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "1.0", 0)
+BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "1.1", 0)
 
 void RocketStats::onLoad()
 {
@@ -46,7 +46,6 @@ void RocketStats::onLoad()
 	gameWrapper->HookEvent("Function CarComponent_Boost_TA.Active.BeginState", bind(&RocketStats::OnBoost, this, std::placeholders::_1));
 	gameWrapper->HookEvent("Function CarComponent_Boost_TA.Active.EndState", bind(&RocketStats::OnBoostEnd, this, std::placeholders::_1));
 	gameWrapper->HookEvent("Function TAGame.GameEvent_Soccar_TA.Destroyed", bind(&RocketStats::GameDestroyed, this, std::placeholders::_1));
-	//cvarManager->log("Load 1.1");
 
 	WriteInFile("RocketStats_Win.txt", std::to_string(0));
 	WriteInFile("RocketStats_Streak.txt", std::to_string(0));
@@ -54,6 +53,7 @@ void RocketStats::onLoad()
 	WriteInFile("RocketStats_MMRChange.txt", std::to_string(0));
 	WriteInFile("RocketStats_MMR.txt", std::to_string(0));
 	WriteInFile("RocketStats_Rank.txt", "");
+	WriteInFile("RocketStats_GameMode.txt", "");
 
 	initRankList();
 	initRank();
@@ -84,7 +84,6 @@ void RocketStats::onUnload()
 	gameWrapper->UnhookEvent("Function CarComponent_Boost_TA.Active.EndState");
 	gameWrapper->UnhookEvent("Function TAGame.GameEvent_Soccar_TA.Destroyed");
 	gameWrapper->UnregisterDrawables();
-	//cvarManager->log("Unload 1.1");
 }
 
 void RocketStats::togglePlugin(bool state) {
@@ -117,6 +116,7 @@ void RocketStats::togglePlugin(bool state) {
 			WriteInFile("RocketStats_MMRChange.txt", std::to_string(0));
 			WriteInFile("RocketStats_MMR.txt", std::to_string(0));
 			WriteInFile("RocketStats_Rank.txt", "");
+			WriteInFile("RocketStats_GameMode.txt", "");
 			WriteInFile("RocketStats_images/BoostState.txt", std::to_string(-1));
 
 			initRankList();
@@ -146,6 +146,7 @@ void RocketStats::Start(std::string eventName)
 		// Get and Update MMR
 		MMRWrapper mmrw = gameWrapper->GetMMRWrapper();
 		currentPlaylist = mmrw.GetCurrentPlaylist();
+		WriteInFile("RocketStats_GameMode.txt", getPlaylistName(currentPlaylist));
 		//cvarManager->log("Current GameMode: " + getPlaylistName(currentPlaylist));
 		float save = mmrw.GetPlayerMMR(mySteamID, currentPlaylist);
 		if (stats[currentPlaylist].isInit == false) {
@@ -231,7 +232,7 @@ void RocketStats::GameEnd(std::string eventName)
 			stats[currentPlaylist].losses += 1;
 			if (stats[currentPlaylist].streak > 0)
 			{
-				stats[currentPlaylist].streak = 0;
+				stats[currentPlaylist].streak = -1;
 			}
 			else
 			{
@@ -400,7 +401,7 @@ void RocketStats::OnBoostEnd(std::string eventName) {
 // Act as toggle
 void RocketStats::StopBoost()
 {
-	cvarManager->log("hey");
+	//cvarManager->log("hey");
 }
 
 void RocketStats::ResetStats()
@@ -419,6 +420,7 @@ void RocketStats::ResetStats()
 	WriteInFile("RocketStats_MMRChange.txt", std::to_string(0));
 	WriteInFile("RocketStats_MMR.txt", std::to_string(0));
 	WriteInFile("RocketStats_Rank.txt", "");
+	WriteInFile("RocketStats_GameMode.txt", "");
 
 	initRank();
 }
@@ -427,7 +429,7 @@ void RocketStats::WriteInFile(std::string _fileName, std::string _value)
 {
 	ofstream myFile;
 
-	myFile.open("./bakkesmod/RocketStats/" + _fileName, ios::out | ios::trunc);
+	myFile.open("./bakkesmod/data/RocketStats/" + _fileName, ios::out | ios::trunc);
 
 	if (myFile.is_open())
 	{
