@@ -429,7 +429,7 @@ void RocketStats::WriteInFile(std::string _fileName, std::string _value)
 {
 	ofstream myFile;
 
-	myFile.open("./bakkesmod/data/RocketStats/" + _fileName, ios::out | ios::trunc);
+	myFile.open("./bakkesmod/RocketStats/" + _fileName, ios::out | ios::trunc);
 
 	if (myFile.is_open())
 	{
