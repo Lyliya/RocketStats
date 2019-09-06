@@ -11,12 +11,60 @@
 #include "utils/parser.h"
 #include <chrono>
 #include <thread>
+#include <cmath>
+#include <stdio.h>
 
 // File include
 #include <iostream>
 #include <fstream>
 
-BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "1.1", 0)
+BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "1.2", 0)
+
+#pragma region Helpers
+int HexadecimalToDecimal(std::string hex) {
+	int hexLength = hex.length();
+	double dec = 0;
+
+	for (int i = 0; i < hexLength; ++i)
+	{
+		char b = hex[i];
+
+		if (b >= 48 && b <= 57)
+			b -= 48;
+		else if (b >= 65 && b <= 70)
+			b -= 55;
+		else if (b >= 97 && b <= 102) {
+			b -= 87;
+		}
+
+		dec += b * pow(16, ((hexLength - i) - 1));
+	}
+
+	return (int)dec;
+}
+
+RGB HexadecimalToRGB(std::string hex) {
+	if (hex[0] != '#' || hex.length() != 7) {
+		RGB tmp;
+		tmp.r = 180;
+		tmp.g = 180;
+		tmp.b = 180;
+		return tmp;
+	}
+	else {
+		if (hex[0] == '#')
+			hex = hex.erase(0, 1);
+
+		RGB color;
+
+		color.r = (unsigned char)HexadecimalToDecimal(hex.substr(0, 2));
+		color.g = (unsigned char)HexadecimalToDecimal(hex.substr(2, 2));
+		color.b = (unsigned char)HexadecimalToDecimal(hex.substr(4, 2));
+
+		return color;
+	}
+}
+#pragma endregion
 
 void RocketStats::onLoad()
 {
@@ -72,6 +120,16 @@ void RocketStats::onLoad()
 	cvarManager->registerCvar("RS_scale", "1", "Overlay scale", true, true, 1, true, 10);
 	cvarManager->registerCvar("RS_disp_active", "0", "", true, true, 0, true, 1);
 	cvarManager->registerCvar("RocketStats_stop_boost", "1", "Stop Boost animation", true, true, 0, true, 1);
+	cvarManager->registerCvar("RS_session", "0", "Display session stats", true, true, 0, true, 1, true);
+	cvarManager->registerCvar("RS_custom_color", "0", "Display custom colors", true, true, 0, true, 1, true);
+	cvarManager->registerCvar("RS_Color_MMR", "#b4b4b4", "Display session stats", true, true, 0, true, 1, true);
+	cvarManager->registerCvar("RS_Color_MMRChange", "#b4b4b4", "Display session stats", true, true, 0, true, 1, true);
+	cvarManager->registerCvar("RS_Color_Wins", "#1fe018", "Display session stats", true, true, 0, true, 1, true);
+	cvarManager->registerCvar("RS_Color_Losses", "#e01818", "Display session stats", true, true, 0, true, 1, true);
+	cvarManager->registerCvar("RS_Color_Streak", "#b4b4b4", "Display session stats", true, true, 0, true, 1, true);
+	cvarManager->registerCvar("RS_Color_Rank", "#b4b4b4", "Display session stats", true, true, 0, true, 1, true);
+	cvarManager->registerCvar("RS_Color_GameMode", "#b4b4b4", "Display session stats", true, true, 0, true, 1, true);
+	cvarManager->registerCvar("RS_Color_Background", "#000000", "Display session stats", true, true, 0, true, 1, true);
 
 	WriteInFile("RocketStats_images/BoostState.txt", std::to_string(-1));
 }
@@ -147,7 +205,9 @@ void RocketStats::Start(std::string eventName)
 		MMRWrapper mmrw = gameWrapper->GetMMRWrapper();
 		currentPlaylist = mmrw.GetCurrentPlaylist();
 		WriteInFile("RocketStats_GameMode.txt", getPlaylistName(currentPlaylist));
-		//cvarManager->log("Current GameMode: " + getPlaylistName(currentPlaylist));
+		
+		//Session or Gamemode
+
 		float save = mmrw.GetPlayerMMR(mySteamID, currentPlaylist);
 		if (stats[currentPlaylist].isInit == false) {
 			stats[currentPlaylist].myMMR = save;
@@ -155,29 +215,12 @@ void RocketStats::Start(std::string eventName)
 		}
 		stats[currentPlaylist].MMRChange = stats[currentPlaylist].MMRChange + (save - stats[currentPlaylist].myMMR);
 		stats[currentPlaylist].myMMR = save;
-		int tmp = ((stats[currentPlaylist].MMRChange < 0) ? -1 : 1) * std::round(fabs(stats[currentPlaylist].MMRChange));
-
-		if (tmp > 0)
-		{
-			WriteInFile("RocketStats_MMRChange.txt", "+" + std::to_string(tmp));
-		}
-		else
-		{
-			WriteInFile("RocketStats_MMRChange.txt", std::to_string(tmp));
-		}
-
-		WriteInFile("RocketStats_Win.txt", std::to_string(stats[currentPlaylist].win));
-
-		if (stats[currentPlaylist].streak > 0)
-		{
-			WriteInFile("RocketStats_Streak.txt", "+" + std::to_string(stats[currentPlaylist].streak));
-		}
-		else
-		{
-			WriteInFile("RocketStats_Streak.txt", std::to_string(stats[currentPlaylist].streak));
-		}
-
-		WriteInFile("RocketStats_Loose.txt", std::to_string(stats[currentPlaylist].losses));
+		
+		writeMMRChange();
+		writeWin();
+		writeStreak();
+		writeLosses();
+		writeMMR();
 
 
 
@@ -189,7 +232,6 @@ void RocketStats::Start(std::string eventName)
 		isGameStarted = true;
 
 		majRank(currentPlaylist, stats[currentPlaylist].myMMR);
-		WriteInFile("RocketStats_MMR.txt", std::to_string((int)stats[currentPlaylist].myMMR));
 		WriteInFile("RocketStats_images/BoostState.txt", std::to_string(0));
 	}
 }
@@ -214,45 +256,43 @@ void RocketStats::GameEnd(std::string eventName)
 		if (myTeamNum == winningTeam.GetTeamNum()) {
 			// On Win, Increase streak and Win Number
 			stats[currentPlaylist].win += 1;
+			session.win += 1;
 
 			if (stats[currentPlaylist].streak < 0)
 			{
+				session.streak = 1;
 				stats[currentPlaylist].streak = 1;
 			}
 			else
 			{
+				session.streak += 1;
 				stats[currentPlaylist].streak += 1;
 			}
 
 			//cvarManager->log("You WIN");
-			WriteInFile("RocketStats_Win.txt", std::to_string(stats[currentPlaylist].win));
+			writeWin();
 		}
 		else {
 			// On Loose, Increase Win Number and decrease streak
 			stats[currentPlaylist].losses += 1;
+			session.losses += 1;
 			if (stats[currentPlaylist].streak > 0)
 			{
+				session.streak = -1;
 				stats[currentPlaylist].streak = -1;
 			}
 			else
 			{
+				session.streak -= 1;
 				stats[currentPlaylist].streak -= 1;
 			}
 
 			//cvarManager->log("You LOOSE");
-			WriteInFile("RocketStats_Loose.txt", std::to_string(stats[currentPlaylist].losses));
-		}
-
-		if (stats[currentPlaylist].streak > 0)
-		{
-			WriteInFile("RocketStats_Streak.txt","+" + std::to_string(stats[currentPlaylist].streak));
-		}
-		else
-		{
-			WriteInFile("RocketStats_Streak.txt", std::to_string(stats[currentPlaylist].streak));
+			writeLosses();
 		}
 
 		ComputeMMR(3);
+		writeStreak();
 
 		// Reset myTeamNum security
 		myTeamNum = -1;
@@ -264,52 +304,24 @@ void RocketStats::GameEnd(std::string eventName)
 void RocketStats::GameDestroyed(std::string eventName) {
 	//Check if Game Ended, if not, RAGE QUIT or disconnect
 	if (isGameStarted == true && isGameEnded == false) {
+		session.losses += 1;
 		stats[currentPlaylist].losses += 1;
 		if (stats[currentPlaylist].streak > 0)
 		{
-			stats[currentPlaylist].streak = 0;
+			session.streak = 0;
+			stats[currentPlaylist].streak = -1;
 		}
 		else
 		{
+			session.streak -= 1;
 			stats[currentPlaylist].streak -= 1;
 		}
 
 		//cvarManager->log("You LOOSE");
-		if (stats[currentPlaylist].streak > 0)
-		{
-			WriteInFile("RocketStats_Streak.txt", "+" + std::to_string(stats[currentPlaylist].streak));
-		}
-		else
-		{
-			WriteInFile("RocketStats_Streak.txt", std::to_string(stats[currentPlaylist].streak));
-		}
-		WriteInFile("RocketStats_Loose.txt", std::to_string(stats[currentPlaylist].losses));
+		writeStreak();
+		writeLosses();
 
-		gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
-			MMRWrapper mmrw = gameWrapper->GetMMRWrapper();
-			float save = mmrw.GetPlayerMMR(mySteamID, currentPlaylist);
-			//cvarManager->log("Current Playlist: " + std::to_string(currentPlaylist));
-			//cvarManager->log("New MMR: " + std::to_string(save));
-			//cvarManager->log("Initial MMR: " + std::to_string(stats[currentPlaylist].myMMR));
-
-			stats[currentPlaylist].MMRChange = stats[currentPlaylist].MMRChange + (save - stats[currentPlaylist].myMMR);
-			stats[currentPlaylist].myMMR = save;
-			int tmp = ((stats[currentPlaylist].MMRChange < 0) ? -1 : 1) * std::round(fabs(stats[currentPlaylist].MMRChange));
-			//cvarManager->log(std::string("MMR Change: ") + std::to_string(tmp));
-			//cvarManager->log(std::string("MMR: ") + std::to_string(stats[currentPlaylist].myMMR));
-			majRank(currentPlaylist, stats[currentPlaylist].myMMR);
-
-			WriteInFile("RocketStats_MMR.txt", std::to_string((int)stats[currentPlaylist].myMMR));
-
-			if (tmp > 0)
-			{
-				WriteInFile("RocketStats_MMRChange.txt", "+" + std::to_string(tmp));
-			}
-			else
-			{
-				WriteInFile("RocketStats_MMRChange.txt", std::to_string(tmp));
-			}
-		}, 10);		
+		ComputeMMR(10);
 	}
 	isGameEnded = true;
 	isGameStarted = false;
@@ -327,20 +339,29 @@ void RocketStats::ComputeMMR(int intervalTime) {
 
 		stats[currentPlaylist].MMRChange = stats[currentPlaylist].MMRChange + (save - stats[currentPlaylist].myMMR);
 		stats[currentPlaylist].myMMR = save;
-		int tmp = ((stats[currentPlaylist].MMRChange < 0) ? -1 : 1) * std::round(fabs(stats[currentPlaylist].MMRChange));
 		majRank(currentPlaylist, stats[currentPlaylist].myMMR);
 
-		WriteInFile("RocketStats_MMR.txt", std::to_string((int)stats[currentPlaylist].myMMR));
-
-		if (tmp > 0)
-		{
-			WriteInFile("RocketStats_MMRChange.txt", "+" + std::to_string(tmp));
-		}
-		else
-		{
-			WriteInFile("RocketStats_MMRChange.txt", std::to_string(tmp));
-		}
+		SessionStats();
+		writeMMR();
+		writeMMRChange();
 	}, intervalTime);
+}
+
+void RocketStats::SessionStats() {
+	Stats tmp;
+	auto it = playlistName.begin();
+
+	for (; it != playlistName.end(); it++) {
+		tmp.myMMR += stats[it->first].myMMR;
+		tmp.MMRChange += stats[it->first].MMRChange;
+		tmp.win += stats[it->first].win;
+		tmp.losses += stats[it->first].losses;
+	}
+
+	session.myMMR = tmp.myMMR;
+	session.MMRChange = tmp.MMRChange;
+	session.win = tmp.win;
+	session.losses = tmp.losses;
 }
 
 void RocketStats::OnBoost(std::string eventName) {
@@ -414,6 +435,12 @@ void RocketStats::ResetStats()
 		kv.second.streak = 0;
 		kv.second.isInit = 0;
 	}
+	session.myMMR = 0;
+	session.MMRChange = 0;
+	session.win = 0;
+	session.losses = 0;
+	session.streak = 0;
+	session.isInit = 0;
 	WriteInFile("RocketStats_Win.txt", std::to_string(0));
 	WriteInFile("RocketStats_Streak.txt", std::to_string(0));
 	WriteInFile("RocketStats_Loose.txt", std::to_string(0));
@@ -619,6 +646,20 @@ void RocketStats::Render(CanvasWrapper canvas)
 		return;
 	}
 
+	bool RS_session = cvarManager->getCvar("RS_session").getBoolValue();
+	Stats current = (RS_session == true) ? session : stats[currentPlaylist];
+
+	// CustomColor
+	bool custom_color = cvarManager->getCvar("RS_custom_color").getBoolValue();
+	std::string RS_Color_MMR = cvarManager->getCvar("RS_Color_MMR").getStringValue();
+	std::string RS_Color_MMRChange = cvarManager->getCvar("RS_Color_MMRChange").getStringValue();
+	std::string RS_Color_Wins = cvarManager->getCvar("RS_Color_Wins").getStringValue();
+	std::string RS_Color_Losses = cvarManager->getCvar("RS_Color_Losses").getStringValue();
+	std::string RS_Color_Streak = cvarManager->getCvar("RS_Color_Streak").getStringValue();
+	std::string RS_Color_Rank = cvarManager->getCvar("RS_Color_Rank").getStringValue();
+	std::string RS_Color_Gamemode = cvarManager->getCvar("RS_Color_GameMode").getStringValue();
+	std::string RS_Color_Background = cvarManager->getCvar("RS_Color_Background").getStringValue();
+
 	std::vector<std::string> RS_values = {
 		"RS_disp_gamemode",
 		"RS_disp_rank",
@@ -643,7 +684,15 @@ void RocketStats::Render(CanvasWrapper canvas)
 	Vector2 drawLoc = { xPos *RS_x_position, yPos * RS_y_position};
 	Vector2 sizeBox = { 170 * RS_scale, (23*size) * RS_scale };
 	canvas.SetPosition(drawLoc);
-	canvas.SetColor(0, 0, 0, 150);
+
+	//Set background Color
+	if (custom_color) {
+		RGB background_color = HexadecimalToRGB(RS_Color_Background);
+		canvas.SetColor(background_color.r, background_color.g, background_color.b, 150);
+	}
+	else {
+		canvas.SetColor(0, 0, 0, 150);
+	}
 	canvas.FillBox(sizeBox);
 
 	// Draw text
@@ -657,65 +706,158 @@ void RocketStats::Render(CanvasWrapper canvas)
 
 			//Set Color and Text for the value
 			if (it == "RS_disp_gamemode") {
-				canvas.SetColor(180, 180, 180, 255);
+				RGB gamemode_color = HexadecimalToRGB(RS_Color_Gamemode);
+				canvas.SetColor(gamemode_color.r, gamemode_color.g, gamemode_color.b, 255);
+				//canvas.SetColor(180, 180, 180, 255);
 				canvas.DrawString(getPlaylistName(currentPlaylist), RS_scale, RS_scale);
 			}
 			else if (it == "RS_disp_rank")
 			{
 				std::string tmpRank = currentRank;
 				std::replace(tmpRank.begin(), tmpRank.end(), '_', ' ');
-				canvas.SetColor(180, 180, 180, 255);
+				RGB rank_color = HexadecimalToRGB(RS_Color_Rank);
+				canvas.SetColor(rank_color.r, rank_color.g, rank_color.b, 255);
+				//canvas.SetColor(180, 180, 180, 255);
 				canvas.DrawString(tmpRank, RS_scale, RS_scale);
 			}
 			else if (it == "RS_disp_mmr")
 			{
-				canvas.SetColor(180, 180, 180, 255);
+				RGB mmr_color = HexadecimalToRGB(RS_Color_MMR);
+				canvas.SetColor(mmr_color.r, mmr_color.g, mmr_color.b, 255);
+				//canvas.SetColor(180, 180, 180, 255);
 				std::stringstream ss;
-				ss << std::fixed << std::setprecision(2) << stats[currentPlaylist].myMMR;
+				ss << std::fixed << std::setprecision(2) << current.myMMR;
 				std::string mmr = ss.str();
 				canvas.DrawString("MMR : " + mmr, RS_scale, RS_scale);
 			}
 			else if (it == "RS_disp_mmr_change")
 			{
 				std::stringstream ss;
-				ss << std::fixed << std::setprecision(2) << stats[currentPlaylist].MMRChange;
+				ss << std::fixed << std::setprecision(2) << current.MMRChange;
 				std::string mmr = ss.str();
-				if (stats[currentPlaylist].MMRChange >= 0)
+				if (current.MMRChange >= 0)
 				{
-					canvas.SetColor(30, 224, 24, 255);
+					if (custom_color == true) {
+						RGB MMRChange_color = HexadecimalToRGB(RS_Color_MMRChange);
+						canvas.SetColor(MMRChange_color.r, MMRChange_color.g, MMRChange_color.b, 255);
+					}
+					else {
+						canvas.SetColor(30, 224, 24, 255);
+					}
 					canvas.DrawString("MMRChange : +" + mmr, RS_scale, RS_scale);
 				}
 				else
 				{
-					canvas.SetColor(224, 24, 24, 255);
+					if (custom_color == true) {
+						RGB MMRChange_color = HexadecimalToRGB(RS_Color_MMRChange);
+						canvas.SetColor(MMRChange_color.r, MMRChange_color.g, MMRChange_color.b, 255);
+					}
+					else {
+						canvas.SetColor(224, 24, 24, 255);
+					}
 					canvas.DrawString("MMRChange : " + mmr, RS_scale, RS_scale);
 				}
 			}
 			else if (it == "RS_disp_wins")
 			{
-				canvas.SetColor(30, 224, 24, 255);
-				canvas.DrawString("Win : " + std::to_string(stats[currentPlaylist].win), RS_scale, RS_scale);
+				if (custom_color) {
+					RGB wins_color = HexadecimalToRGB(RS_Color_Wins);
+					canvas.SetColor(wins_color.r, wins_color.g, wins_color.b, 255);
+				}
+				else {
+					canvas.SetColor(30, 224, 24, 255);
+				}
+				canvas.DrawString("Win : " + std::to_string(current.win), RS_scale, RS_scale);
 			}
 			else if (it == "RS_disp_losses")
 			{
-				canvas.SetColor(224, 24, 24, 255);
-				canvas.DrawString("Losses : " + std::to_string(stats[currentPlaylist].losses), RS_scale, RS_scale);
+				if (custom_color) {
+					RGB losses_color = HexadecimalToRGB(RS_Color_Losses);
+					canvas.SetColor(losses_color.r, losses_color.g, losses_color.b, 255);
+				}
+				else {
+					canvas.SetColor(224, 24, 24, 255);
+				}
+				canvas.DrawString("Losses : " + std::to_string(current.losses), RS_scale, RS_scale);
 			}
 			else if (it == "RS_disp_streak")
 			{
-				if (stats[currentPlaylist].streak >= 0)
+				if (current.streak >= 0)
 				{
-					canvas.SetColor(30, 224, 24, 255);
-					canvas.DrawString("Streak : +" + std::to_string(stats[currentPlaylist].streak), RS_scale, RS_scale);
+					if (custom_color == true) {
+						RGB streak_color = HexadecimalToRGB(RS_Color_Streak);
+						canvas.SetColor(streak_color.r, streak_color.g, streak_color.b, 255);
+					}
+					else {
+						canvas.SetColor(30, 224, 24, 255);
+					}
+					canvas.DrawString("Streak : +" + std::to_string(current.streak), RS_scale, RS_scale);
 				}
 				else
 				{
-					canvas.SetColor(224, 24, 24, 255);
-					canvas.DrawString("Streak : " + std::to_string(stats[currentPlaylist].streak), RS_scale, RS_scale);
+					if (custom_color == true) {
+						RGB streak_color = HexadecimalToRGB(RS_Color_Streak);
+						canvas.SetColor(streak_color.r, streak_color.g, streak_color.b, 255);
+					}
+					else {
+						canvas.SetColor(224, 24, 24, 255);
+					}
+					canvas.DrawString("Streak : " + std::to_string(current.streak), RS_scale, RS_scale);
 				}
 			}
 			// Increase Y position;
 			textPos.Y += (20 * RS_scale);
 		}
 	}
+}
+
+void RocketStats::writeMMR()
+{
+	bool RS_session = cvarManager->getCvar("RS_session").getBoolValue();
+
+	WriteInFile("RocketStats_MMR.txt", std::to_string((int)stats[currentPlaylist].myMMR));
+}
+void RocketStats::writeMMRChange()
+{
+	bool RS_session = cvarManager->getCvar("RS_session").getBoolValue();
+	Stats current = (RS_session == true) ? session : stats[currentPlaylist];
+	int tmp = ((current.MMRChange < 0) ? -1 : 1) * std::round(fabs(current.MMRChange));
+
+	if (tmp >= 0) {
+		WriteInFile("RocketStats_MMRChange.txt", "+" + std::to_string(tmp));
+	}
+	else {
+		WriteInFile("RocketStats_MMRChange.txt", std::to_string(tmp));
+	}
+}
+
+void RocketStats::writeStreak()
+{
+	bool RS_session = cvarManager->getCvar("RS_session").getBoolValue();
+	Stats current = (RS_session == true) ? session : stats[currentPlaylist];
+
+	if (current.streak > 0)
+	{
+		WriteInFile("RocketStats_Streak.txt", "+" + std::to_string(current.streak));
+	}
+	else
+	{
+		WriteInFile("RocketStats_Streak.txt", std::to_string(current.streak));
+	}
+}
+
+void RocketStats::writeWin()
+{
+	bool RS_session = cvarManager->getCvar("RS_session").getBoolValue();
+	Stats current = (RS_session == true) ? session : stats[currentPlaylist];
+
+	WriteInFile("RocketStats_Win.txt", std::to_string(current.win));
+}
+
+void RocketStats::writeLosses()
+{
+	bool RS_session = cvarManager->getCvar("RS_session").getBoolValue();
+	Stats current = (RS_session == true) ? session : stats[currentPlaylist];
+
+	WriteInFile("RocketStats_Loose.txt", std::to_string(current.losses));
 }

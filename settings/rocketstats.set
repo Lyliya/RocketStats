@@ -1,5 +1,6 @@
 RocketStats Plugin
 9|Check/Uncheck what you want to display
+1|Display session information instead of game mode|RS_session
 1|Display information in game|RS_disp_ig
 10|RS_disp_active
 1|Display MMR|RS_disp_mmr
@@ -14,6 +15,16 @@ RocketStats Plugin
 5|X position|RS_x_position|0|100
 5|Y position|RS_y_position|0|100
 4|Scale|RS_scale|1|10
+9|Change overlay Color (Hexadecimal)
+1|Use Custom Color|RS_custom_color
+12|MMR|RS_Color_MMR
+12|MMR Change|RS_Color_MMRChange
+12|Wins|RS_Color_Wins
+12|Losses|RS_Color_Losses
+12|Streak|RS_Color_Streak
+12|Rank|RS_Color_Rank
+12|GameMode|RS_Color_GameMode
+12|Background|RS_Color_Background
 11|
 1|Enable Boost|RocketStats_stop_boost
 8|
@@ -21,5 +32,5 @@ RocketStats Plugin
 0|Load|RocketStats_load
 0|Unload|RocketStats_unload
 8|
-9|Version 1.1, Developped by @Lyliiya & @NuSa_yt for @Maylie_2298
+9|Version 1.2, Developped by @Lyliiya & @NuSa_yt for @Maylie_2298
 9|Donate : https://www.paypal.me/rocketstats

@@ -9,6 +9,12 @@ typedef struct {
 	bool isInit = 0;
 } Stats;
 
+typedef struct {
+	unsigned char r;
+	unsigned char g;
+	unsigned char b;
+} RGB;
+
 class RocketStats : public BakkesMod::Plugin::BakkesModPlugin
 {
 
@@ -32,6 +38,14 @@ public:
 	void GameDestroyed(std::string eventName);
 	void Render(CanvasWrapper canvas);
 	void ComputeMMR(int intervalTime);
+	void SessionStats();
+
+	// Write info in file
+	void writeMMR();
+	void writeMMRChange();
+	void writeStreak();
+	void writeWin();
+	void writeLosses();
 
 	int currentPlaylist;
 	bool isGameEnded;
@@ -39,6 +53,7 @@ public:
 	bool isBoosting = false;
 
 	std::map<int, Stats> stats;
+	Stats session;
 
 	//Ranked function
 	void initRank();
