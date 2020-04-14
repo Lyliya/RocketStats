@@ -1,7 +1,7 @@
 #pragma once
 #pragma comment( lib, "bakkesmod.lib" )
 #include "bakkesmod/plugin/bakkesmodplugin.h"
-
+#include "bakkesmod\plugin\pluginwindow.h"
 
 typedef struct {
 	float myMMR, MMRChange = 0;

@@ -18,7 +18,7 @@
 #include <iostream>
 #include <fstream>
 
-BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "1.2", 0)
+BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "1.3", 0)
 
 #pragma region Helpers
 int HexadecimalToDecimal(std::string hex) {
@@ -70,7 +70,7 @@ void RocketStats::onLoad()
 {
 	cvarManager->registerNotifier("RocketStats_reset_stats", [this](std::vector<string> params) {
 		ResetStats();
-	}
+		}
 	, "Reset Stats", PERMISSION_ALL);
 
 	// Unload
@@ -205,7 +205,7 @@ void RocketStats::Start(std::string eventName)
 		MMRWrapper mmrw = gameWrapper->GetMMRWrapper();
 		currentPlaylist = mmrw.GetCurrentPlaylist();
 		WriteInFile("RocketStats_GameMode.txt", getPlaylistName(currentPlaylist));
-		
+
 		//Session or Gamemode
 
 		float save = mmrw.GetPlayerMMR(mySteamID, currentPlaylist);
@@ -215,7 +215,7 @@ void RocketStats::Start(std::string eventName)
 		}
 		stats[currentPlaylist].MMRChange = stats[currentPlaylist].MMRChange + (save - stats[currentPlaylist].myMMR);
 		stats[currentPlaylist].myMMR = save;
-		
+
 		writeMMRChange();
 		writeWin();
 		writeStreak();
@@ -344,7 +344,7 @@ void RocketStats::ComputeMMR(int intervalTime) {
 		SessionStats();
 		writeMMR();
 		writeMMRChange();
-	}, intervalTime);
+		}, intervalTime);
 }
 
 void RocketStats::SessionStats() {
@@ -384,7 +384,7 @@ void RocketStats::OnBoost(std::string eventName) {
 		if (!bWrap.IsNull() && bWrap.GetbActive() == 1 && isBoosting == false) {
 			//cvarManager->log("Tu boost");
 			isBoosting = true;
-			
+
 			WriteInFile("RocketStats_images/BoostState.txt", std::to_string(1));
 		}
 		//cvarManager->log("BOOOOST ----> " + std::to_string(bWrap.GetbActive()));
@@ -681,8 +681,8 @@ void RocketStats::Render(CanvasWrapper canvas)
 	int yPos = canvas.GetSize().Y / 100;
 
 	// Draw box here
-	Vector2 drawLoc = { xPos *RS_x_position, yPos * RS_y_position};
-	Vector2 sizeBox = { 170 * RS_scale, (23*size) * RS_scale };
+	Vector2 drawLoc = { xPos * RS_x_position, yPos * RS_y_position };
+	Vector2 sizeBox = { 170 * RS_scale, (23 * size) * RS_scale };
 	canvas.SetPosition(drawLoc);
 
 	//Set background Color
