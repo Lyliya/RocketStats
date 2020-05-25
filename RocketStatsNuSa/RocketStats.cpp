@@ -18,7 +18,7 @@
 #include <iostream>
 #include <fstream>
 
-BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "1.3", 0)
+BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "1.4", 0)
 
 #pragma region Helpers
 int HexadecimalToDecimal(std::string hex) {
