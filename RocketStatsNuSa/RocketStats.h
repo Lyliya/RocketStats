@@ -4,8 +4,11 @@
 #include "bakkesmod\plugin\pluginwindow.h"
 
 typedef struct {
-	float myMMR, MMRChange = 0;
-	int win, losses, streak = 0;
+	float myMMR = 0;
+	float MMRChange = 0;
+	int win = 0;
+	int losses = 0;
+	int streak = 0;
 	bool isInit = 0;
 } Stats;
 
