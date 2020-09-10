@@ -27,7 +27,7 @@ class RocketStats : public BakkesMod::Plugin::BakkesModPlugin
 	}Ranks;
 
 private : 
-	shared_ptr<bool> enabled;
+	std::shared_ptr<bool> enabled;
 
 public:
 	//Function
@@ -74,8 +74,8 @@ public:
 	int lastGameMode;
 	int currentGameMode;
 	float currentMMR;
-	string currentRank;
-	string lastRank;
+	std::string currentRank;
+	std::string lastRank;
 
 	bool isLoad = true;
 

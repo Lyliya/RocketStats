@@ -68,19 +68,19 @@ RGB HexadecimalToRGB(std::string hex) {
 
 void RocketStats::onLoad()
 {
-	cvarManager->registerNotifier("RocketStats_reset_stats", [this](std::vector<string> params) {
+	cvarManager->registerNotifier("RocketStats_reset_stats", [this](std::vector<std::string> params) {
 		ResetStats();
 		}
 	, "Reset Stats", PERMISSION_ALL);
 
 	// Unload
-	cvarManager->registerNotifier("RocketStats_unload", [this](std::vector<string> params) {
+	cvarManager->registerNotifier("RocketStats_unload", [this](std::vector<std::string> params) {
 		togglePlugin(false);
 		}
 	, "Unload Plugin", PERMISSION_ALL);
 
 	//Load
-	cvarManager->registerNotifier("RocketStats_load", [this](std::vector<string> params) {
+	cvarManager->registerNotifier("RocketStats_load", [this](std::vector<std::string> params) {
 		togglePlugin(true);
 		}
 	, "Load Plugin", PERMISSION_ALL);
@@ -454,9 +454,9 @@ void RocketStats::ResetStats()
 
 void RocketStats::WriteInFile(std::string _fileName, std::string _value)
 {
-	ofstream myFile;
+	std::ofstream myFile;
 
-	myFile.open("./bakkesmod/RocketStats/" + _fileName, ios::out | ios::trunc);
+	myFile.open("./bakkesmod/RocketStats/" + _fileName, std::ios::out | std::ios::trunc);
 
 	if (myFile.is_open())
 	{
@@ -483,24 +483,24 @@ void RocketStats::initRankList()
 	v1Rank.nameMode = "1v1";
 	v1Rank._rank = {
 		{"Bronze_I", {0.0f, 153.0f}},
-		{"Bronze_II", {142.0f, 204.0f}},
-		{"Bronze_III", {207.0f, 264.0f}},
-		{"Silver_I", {272.0f, 326.0f}},
-		{"Silver_II", {327.0f, 384.0f}},
-		{"Silver_III", {389.0f, 444.0f}},
-		{"Gold_I", {453.0f, 504.0f}},
-		{"Gold_II", {507.0f, 566.0f}},
-		{"Gold_III", {572.0f, 624.0f}},
-		{"Platinum_I", {632.0f, 685.0f}},
-		{"Platinum_II", {686.0f, 745.0f}},
-		{"Platinum_III", {752.0f, 805.0f}},
-		{"Diamond_I", {812.0f, 865.0f}},
-		{"Diamond_II", {866.0f, 925.0f}},
-		{"Diamond_III", {929.0f, 983.0f}},
-		{"Champion_I", {995.0f, 1062.0f}},
-		{"Champion_II", {1074.0f, 1144.0f}},
-		{"Champion_III", {1155.0f, 1223.0f}},
-		{"Grand_Champion", {1223.0f, 9999.0f}},
+		{"Bronze_II", {148.0f, 213.9f}},
+		{"Bronze_III", {214.0f, 272.9f}},
+		{"Silver_I", {273.0f, 331.9f}},
+		{"Silver_II", {332.0f, 391.9f}},
+		{"Silver_III", {392.0f, 452.9f}},
+		{"Gold_I", {453.0f, 511.9f}},
+		{"Gold_II", {512.0f, 571.9f}},
+		{"Gold_III", {572.0f, 631.9f}},
+		{"Platinum_I", {632.0f, 686.9f}},
+		{"Platinum_II", {687.0f, 745.9f}},
+		{"Platinum_III", {746.0f, 810.9f}},
+		{"Diamond_I", {811.0f, 869.9f}},
+		{"Diamond_II", {870.0f, 925.9f}},
+		{"Diamond_III", {926.0f, 994.9f}},
+		{"Champion_I", {995.0f, 1073.9f}},
+		{"Champion_II", {1074.0f, 1151.9f}},
+		{"Champion_III", {1152.0f, 1220.9f}},
+		{"Grand_Champion", {1221.0f, 9999.0f}},
 	};
 
 	//2v2 Ranked code : 11
@@ -594,7 +594,7 @@ void RocketStats::initRank()
 	currentRank = "norank";
 	lastRank = "norank";
 
-	string _value = "<meta http-equiv = \"refresh\" content = \"5\" /><img src = \"current.png\" width = \"100\" height = \"100\" />";
+	std::string _value = "<meta http-equiv = \"refresh\" content = \"5\" /><img src = \"current.png\" width = \"100\" height = \"100\" />";
 
 	WriteInFile("RocketStats_images/rank.html", _value);
 }
@@ -617,7 +617,7 @@ void RocketStats::majRank(int _gameMode, float _currentMMR)
 
 		if (currentRank != lastRank)
 		{
-			string _value = "<meta http-equiv = \"refresh\" content = \"5\" /><img src = \"" + currentRank + ".png" + "\" width = \"100\" height = \"100\" />";
+			std::string _value = "<meta http-equiv = \"refresh\" content = \"5\" /><img src = \"" + currentRank + ".png" + "\" width = \"100\" height = \"100\" />";
 
 			WriteInFile("RocketStats_images/rank.html", _value);
 			WriteInFile("RocketStats_Rank.txt", currentRank);
@@ -625,7 +625,7 @@ void RocketStats::majRank(int _gameMode, float _currentMMR)
 	}
 	else
 	{
-		string _value = "<meta http-equiv = \"refresh\" content = \"5\" /><img src = \"current.png\" width = \"100\" height = \"100\" />";
+		std::string _value = "<meta http-equiv = \"refresh\" content = \"5\" /><img src = \"current.png\" width = \"100\" height = \"100\" />";
 
 		WriteInFile("RocketStats_images/rank.html", _value);
 		WriteInFile("RocketStats_Rank.txt", currentRank);
