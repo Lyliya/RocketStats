@@ -14,21 +14,29 @@
     document.getElementById("vid2").currentTime = 0;
     let save = "0";
     window.setInterval(() => {
-      fetch('BoostState.txt').then(response => response.text()).then(text => {
-        if (text == "1" && save != text) {
-          // Boost
-          document.getElementById("vid1").hidden = false;
-          document.getElementById("vid2").hidden = true;
-        } else if (text == "0" && save != text) {
-          // No Boost
-          document.getElementById("vid1").hidden = true;
-          document.getElementById("vid2").hidden = false;
-        } else if (text == "-1" && save != text) {
-          document.getElementById("vid1").hidden = true;
-          document.getElementById("vid2").hidden = true;
-        }
-        save = text;
-      })
+	  var rawFile = new XMLHttpRequest();
+		rawFile.open("GET", 'BoostState.txt', false);
+		rawFile.onreadystatechange = function () {
+			if(rawFile.readyState === 4) {
+				if(rawFile.status === 200 || rawFile.status == 0) {
+					var allText = rawFile.responseText;
+					if (allText == "1" && save != allText) {
+					// Boost
+					document.getElementById("vid1").hidden = false;
+					document.getElementById("vid2").hidden = true;
+					} else if (allText == "0" && save != allText) {
+					// No Boost
+					document.getElementById("vid1").hidden = true;
+					document.getElementById("vid2").hidden = false;
+					} else if (allText == "-1" && save != allText) {
+					document.getElementById("vid1").hidden = true;
+					document.getElementById("vid2").hidden = true;
+					}
+					save = allText;
+				}
+			}
+		}
+		rawFile.send(null);
     }, 100)
   </script>
 </body>

@@ -1,9 +1,9 @@
 #pragma once
-#pragma comment( lib, "bakkesmod.lib" )
+#pragma comment( lib, "pluginsdk.lib" )
 #include "bakkesmod/plugin/bakkesmodplugin.h"
-#include "bakkesmod\plugin\pluginwindow.h"
+#include "bakkesmod/plugin/pluginwindow.h"
 
-typedef struct {
+typedef struct Stats {
 	float myMMR = 0;
 	float MMRChange = 0;
 	int win = 0;
@@ -12,7 +12,7 @@ typedef struct {
 	bool isInit = 0;
 } Stats;
 
-typedef struct {
+typedef struct RGB {
 	unsigned char r;
 	unsigned char g;
 	unsigned char b;
@@ -21,10 +21,10 @@ typedef struct {
 class RocketStats : public BakkesMod::Plugin::BakkesModPlugin
 {
 
-	typedef struct {
+	typedef struct Ranks {
 		std::string nameMode;
 		std::map<std::string, std::pair<float, float>> _rank;
-	}Ranks;
+	} Ranks;
 
 private : 
 	std::shared_ptr<bool> enabled;
@@ -91,11 +91,11 @@ public:
 		{12, "Ranked Solo Standard"},
 		{13, "Ranked Standard"},
 		{14, "Mutator Mashup"},
-		{15, "Snow Day"},
 		{16, "Rocket Labs"},
-		{17, "Hoops"},
-		{18, "Rumble"},
-		{23, "Dropshot"},
+		{27, "Hoops"},
+		{28, "Rumble"},
+		{29, "Dropshot"},
+		{30, "Snowday"},
 	};
 	std::string getPlaylistName(int playlistID);
 };
