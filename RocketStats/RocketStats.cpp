@@ -66,6 +66,74 @@ RGB HexadecimalToRGB(std::string hex) {
 }
 #pragma endregion
 
+std::string GetRank(int tierID) {
+	switch (tierID) {
+	case(0):
+		return "Unranked";
+		break;
+	case(1):
+		return "Bronze_I";
+		break;
+	case(2):
+		return "Bronze_II";
+		break;
+	case(3):
+		return "Bronze_III";
+		break;
+	case(4):
+		return "Silver_I";
+		break;
+	case(5):
+		return "Silver_II";
+		break;
+	case(6):
+		return "Silver_III";
+		break;
+	case(7):
+		return "Gold_I";
+		break;
+	case(8):
+		return "Gold_II";
+		break;
+	case(9):
+		return "Gold _III";
+		break;
+	case(10):
+		return "Platinum_I";
+		break;
+	case(11):
+		return "Platinum_II";
+		break;
+	case(12):
+		return "Platinum_III";
+		break;
+	case(13):
+		return "Diamond_I";
+		break;
+	case(14):
+		return "Diamond_II";
+		break;
+	case(15):
+		return "Diamond_III";
+		break;
+	case(16):
+		return "Champion_I";
+		break;
+	case(17):
+		return "Champion_II";
+		break;
+	case(18):
+		return "Champion_III";
+		break;
+	case(19):
+		return "Grand_Champion";
+		break;
+	default:
+		return "norank";
+		break;
+	}
+}
+
 void RocketStats::onLoad()
 {
 	cvarManager->registerNotifier("RocketStats_reset_stats", [this](std::vector<std::string> params) {
@@ -103,7 +171,6 @@ void RocketStats::onLoad()
 	WriteInFile("RocketStats_Rank.txt", "");
 	WriteInFile("RocketStats_GameMode.txt", "");
 
-	initRankList();
 	initRank();
 
 	// Load Settings
@@ -177,7 +244,6 @@ void RocketStats::togglePlugin(bool state) {
 			WriteInFile("RocketStats_GameMode.txt", "");
 			WriteInFile("RocketStats_images/BoostState.txt", std::to_string(-1));
 
-			initRankList();
 			initRank();
 
 			isLoad = state;
@@ -204,6 +270,7 @@ void RocketStats::Start(std::string eventName)
 		// Get and Update MMR
 		MMRWrapper mmrw = gameWrapper->GetMMRWrapper();
 		currentPlaylist = mmrw.GetCurrentPlaylist();
+		int rankTier = mmrw.GetPlayerRank(mySteamID, currentPlaylist).Tier;
 		WriteInFile("RocketStats_GameMode.txt", getPlaylistName(currentPlaylist));
 
 		//Session or Gamemode
@@ -231,7 +298,7 @@ void RocketStats::Start(std::string eventName)
 		isGameEnded = false;
 		isGameStarted = true;
 
-		majRank(currentPlaylist, stats[currentPlaylist].myMMR);
+		majRank(currentPlaylist, stats[currentPlaylist].myMMR, rankTier);
 		WriteInFile("RocketStats_images/BoostState.txt", std::to_string(0));
 	}
 }
@@ -332,6 +399,7 @@ void RocketStats::ComputeMMR(int intervalTime) {
 	gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
 		MMRWrapper mmrw = gameWrapper->GetMMRWrapper();
 		float save = mmrw.GetPlayerMMR(mySteamID, currentPlaylist);
+		int rankTier = mmrw.GetPlayerRank(mySteamID, currentPlaylist).Tier;
 
 		if (save <= 0) {
 			return ComputeMMR(1);
@@ -339,7 +407,7 @@ void RocketStats::ComputeMMR(int intervalTime) {
 
 		stats[currentPlaylist].MMRChange = stats[currentPlaylist].MMRChange + (save - stats[currentPlaylist].myMMR);
 		stats[currentPlaylist].myMMR = save;
-		majRank(currentPlaylist, stats[currentPlaylist].myMMR);
+		majRank(currentPlaylist, stats[currentPlaylist].myMMR, rankTier);
 
 		SessionStats();
 		writeMMR();
@@ -428,14 +496,14 @@ void RocketStats::StopBoost()
 void RocketStats::ResetStats()
 {
 	for (auto& kv : stats) {
-		kv.second.myMMR = 0;
+		kv.second.myMMR = 100.0f;
 		kv.second.MMRChange = 0;
 		kv.second.win = 0;
 		kv.second.losses = 0;
 		kv.second.streak = 0;
 		kv.second.isInit = 0;
 	}
-	session.myMMR = 0;
+	session.myMMR = 100.0f;
 	session.MMRChange = 0;
 	session.win = 0;
 	session.losses = 0;
@@ -475,221 +543,6 @@ std::string RocketStats::getPlaylistName(int playlistID)
 }
 
 #pragma region Rank/Div
-
-void RocketStats::initRankList()
-{
-	//1v1 Ranked code : 10
-	Ranks v1Rank;
-	v1Rank.nameMode = "1v1";
-	v1Rank._rank = {
-		{"Bronze_I", {0.0f, 153.0f}},
-		{"Bronze_II", {153.0f, 202.0f}},
-		{"Bronze_III", {213.0f, 264.0f}},
-		{"Silver_I", {273.0f, 324.0f}},
-		{"Silver_II", {332.0f, 384.0f}},
-		{"Silver_III", {392.0f, 445.0f}},
-		{"Gold_I", {453.0f, 505.0f}},
-		{"Gold_II", {513.0f, 565.0f}},
-		{"Gold_III", {572.0f, 625.0f}},
-		{"Platinum_I", {628.0f, 685.0f}},
-		{"Platinum_II", {687.0f, 745.0f}},
-		{"Platinum_III", {752.0f, 805.0f}},
-		{"Diamond_I", {808.0f, 865.0f}},
-		{"Diamond_II", {867.0f, 925.0f}},
-		{"Diamond_III", {926.0f, 985.0f}},
-		{"Champion_I", {995.0f, 1060.0f}},
-		{"Champion_II", {1075, 1143.0f}},
-		{"Champion_III", {1147.0f, 1220.0f}},
-		{"Grand_Champion", {1221.0f, 9999.0f}},
-	};
-
-	//2v2 Ranked code : 11
-	Ranks v2Rank;
-	v2Rank.nameMode = "2v2";
-	v2Rank._rank = {
-		{"Bronze_I", {0.0f, 180.0f}},
-		{"Bronze_II", {189.0f, 244.0f}},
-		{"Bronze_III", {250.0f, 304.0f}},
-		{"Silver_I", {310.0f, 364.0f}},
-		{"Silver_II", {369.0f, 425.0f}},
-		{"Silver_III", {429.0f, 484.0f}},
-		{"Gold_I", {488.0f, 545.0f}},
-		{"Gold_II", {549.0f, 604.0f}},
-		{"Gold_III", {612.0f, 680.0f}},
-		{"Platinum_I", {692.0f, 760.0f}},
-		{"Platinum_II", {772.0f, 840.0f}},
-		{"Platinum_III", {852.0f, 920.0f}},
-		{"Diamond_I", {933.0f, 1000.0f}},
-		{"Diamond_II", {1012.0f, 1080.0f}},
-		{"Diamond_III", {1093.0f, 1180.0f}},
-		{"Champion_I", {1195.0f, 1280.0f}},
-		{"Champion_II", {1294.0f, 1380.0f}},
-		{"Champion_III", {1395.0f, 1499.0f}},
-		{"Grand_Champion", {1500.0f, 9999.0f}},
-	};
-
-	//solo 3v3 Ranked code : 12
-	Ranks sv3Rank;
-	sv3Rank.nameMode = "solo 3v3";
-	sv3Rank._rank = {
-		{"Bronze_I", {0.0f, 154.0f}},
-		{"Bronze_II", {151.0f, 208.0f}},
-		{"Bronze_III", {209.0f, 270.0f}},
-		{"Silver_I", {270.0f, 323.0f}},
-		{"Silver_II", {329.0f, 384.0f}},
-		{"Silver_III", {390.0f, 443.0f}},
-		{"Gold_I", {451.0f, 503.0f}},
-		{"Gold_II", {511.0f, 562.0f}},
-		{"Gold_III", {572.0f, 622.0f}},
-		{"Platinum_I", {635.0f, 683.0f}},
-		{"Platinum_II", {692.0f, 742.0f}},
-		{"Platinum_III", {749.0f, 804.0f}},
-		{"Diamond_I", {815.0f, 880.0f}},
-		{"Diamond_II", {895.0f, 960.0f}},
-		{"Diamond_III", {975.0f, 1041.0f}},
-		{"Champion_I", {1055.0f, 1120.0f}},
-		{"Champion_II", {1134.0f, 1203.0f}},
-		{"Champion_III", {1210.0f, 1283.0f}},
-		{"Grand_Champion", {1287.0f, 9999.0f}},
-	};
-
-	//3v3 Standard Ranked code : 13
-	Ranks v3Rank;
-	v3Rank.nameMode = "3v3";
-	v3Rank._rank = {
-		{"Bronze_I", {0.0f, 180.0f}},
-		{"Bronze_II", {189.0f, 244.0f}},
-		{"Bronze_III", {247.0f, 301.0f}},
-		{"Silver_I", {310.0f, 364.0f}},
-		{"Silver_II", {369.0f, 425.0f}},
-		{"Silver_III", {429.0f, 485.0f}},
-		{"Gold_I", {490.0f, 545.0f}},
-		{"Gold_II", {549.0f, 604.0f}},
-		{"Gold_III", {612.0f, 680.0f}},
-		{"Platinum_I", {693.0f, 760.0f}},
-		{"Platinum_II", {771.0f, 840.0f}},
-		{"Platinum_III", {852.0f, 920.0f}},
-		{"Diamond_I", {933.0f, 1000.0f}},
-		{"Diamond_II", {1011.0f, 1080.0f}},
-		{"Diamond_III", {1094.0f, 1180.0f}},
-		{"Champion_I", {1195.0f, 1280.0f}},
-		{"Champion_II", {1294.0f, 1380.0f}},
-		{"Champion_III", {1395.0f, 1500.0f}},
-		{"Grand_Champion", {1500.0f, 9999.0f}},
-	};
-
-	// Hoops code : 27
-	Ranks hopRank;
-	hopRank.nameMode = "hoops";
-	hopRank._rank = {
-		{"Bronze_I", {0.0f, 140.0f}},
-		{"Bronze_II", {141.0f, 203.0f}},
-		{"Bronze_III", {201.0f, 271.0f}},
-		{"Silver_I", {262.0f, 320.0f}},
-		{"Silver_II", {322.0f, 389.0f}},
-		{"Silver_III", {386.0f, 440.0f}},
-		{"Gold_I", {449.0f, 500.0f}},
-		{"Gold_II", {515.0f, 560.0f}},
-		{"Gold_III", {572.0f, 622.0f}},
-		{"Platinum_I", {632.0f, 683.0f}},
-		{"Platinum_II", {693.0f, 741.0f}},
-		{"Platinum_III", {752.0f, 804.0f}},
-		{"Diamond_I", {807.0f, 864.0f}},
-		{"Diamond_II", {868.0f, 922.0f}},
-		{"Diamond_III", {935.0f, 1000.0f}},
-		{"Champion_I", {1012.0f, 1082.0f}},
-		{"Champion_II", {1087.0f, 1162.0f}},
-		{"Champion_III", {1167.0f, 1240.0f}},
-		{"Grand_Champion", {1242.0f, 9999.0f}},
-	};
-
-	// Rumble code : 28
-	Ranks rumRank;
-	rumRank.nameMode = "rumble";
-	rumRank._rank = {
-		{"Bronze_I", {0.0f, 154.0f}},
-		{"Bronze_II", {146.0f, 211.0f}},
-		{"Bronze_III", {205.0f, 262.0f}},
-		{"Silver_I", {266.0f, 324.0f}},
-		{"Silver_II", {329.0f, 388.0f}},
-		{"Silver_III", {391.0f, 440.0f}},
-		{"Gold_I", {450.0f, 501.0f}},
-		{"Gold_II", {511.0f, 565.0f}},
-		{"Gold_III", {569.0f, 622.0f}},
-		{"Platinum_I", {630.0f, 685.0f}},
-		{"Platinum_II", {691.0f, 743.0f}},
-		{"Platinum_III", {748.0f, 802.0f}},
-		{"Diamond_I", {810.0f, 863.0f}},
-		{"Diamond_II", {870.0f, 923.0f}},
-		{"Diamond_III", {933.0f, 1000.0f}},
-		{"Champion_I", {1014.0f, 1081.0f}},
-		{"Champion_II", {1090.0f, 1160.0f}},
-		{"Champion_III", {1170.0f, 1240.0f}},
-		{"Grand_Champion", {1241.0f, 9999.0f}},
-	};
-
-	// Dropshot code : 29
-	Ranks dropRank;
-	dropRank.nameMode = "dropshot";
-	dropRank._rank = {
-		{"Bronze_I", {0.0f, 151.0f}},
-		{"Bronze_II", {146.0f, 206.0f}},
-		{"Bronze_III", {205.0f, 271.0f}},
-		{"Silver_I", {264.0f, 333.0f}},
-		{"Silver_II", {329.0f, 380.0f}},
-		{"Silver_III", {387.0f, 440.0f}},
-		{"Gold_I", {450.0f, 501.0f}},
-		{"Gold_II", {507.0f, 560.0f}},
-		{"Gold_III", {573.0f, 620.0f}},
-		{"Platinum_I", {635.0f, 681.0f}},
-		{"Platinum_II", {690.0f, 742.0f}},
-		{"Platinum_III", {755.0f, 802.0f}},
-		{"Diamond_I", {813.0f, 863.0f}},
-		{"Diamond_II", {870.0f, 924.0f}},
-		{"Diamond_III", {935.0f, 1000.0f}},
-		{"Champion_I", {1015.0f, 1081.0f}},
-		{"Champion_II", {1087.0f, 1160.0f}},
-		{"Champion_III", {1174.0f, 1253.0f}},
-		{"Grand_Champion", {1243.0f, 9999.0f}},
-	};
-
-	// Snowday code : 30
-	Ranks snowRank;
-	snowRank.nameMode = "snowday";
-	snowRank._rank = {
-		{"Bronze_I", {0.0f, 153.0f}},
-		{"Bronze_II", {154.0f, 213.0f}},
-		{"Bronze_III", {208.0f, 268.0f}},
-		{"Silver_I", {267.0f, 333.0f}},
-		{"Silver_II", {323.0f, 392.0f}},
-		{"Silver_III", {382.0f, 452.0f}},
-		{"Gold_I", {449.0f, 503.0f}},
-		{"Gold_II", {515.0f, 568.0f}},
-		{"Gold_III", {575.0f, 620.0f}},
-		{"Platinum_I", {635.0f, 682.0f}},
-		{"Platinum_II", {695.0f, 740.0f}},
-		{"Platinum_III", {750.0f, 800.0f}},
-		{"Diamond_I", {813.0f, 861.0f}},
-		{"Diamond_II", {867.0f, 923.0f}},
-		{"Diamond_III", {935.0f, 1000.0f}},
-		{"Champion_I", {1015.0f, 1080.0f}},
-		{"Champion_II", {1089.0f, 1160.0f}},
-		{"Champion_III", {1170.0f, 1239.0f}},
-		{"Grand_Champion", {1241.0f, 9999.0f}},
-	};
-
-	listRank = {
-		{10, v1Rank},
-		{11, v2Rank},
-		{12, sv3Rank},
-		{13, v3Rank},
-		{27, hopRank},
-		{28, rumRank},
-		{29, dropRank},
-		{30, snowRank}
-	};
-}
-
 void RocketStats::initRank()
 {
 	lastGameMode = 0;
@@ -703,7 +556,7 @@ void RocketStats::initRank()
 	WriteInFile("RocketStats_images/rank.html", _value);
 }
 
-void RocketStats::majRank(int _gameMode, float _currentMMR)
+void RocketStats::majRank(int _gameMode, float _currentMMR, int rankTier)
 {
 	currentGameMode = _gameMode;
 	currentMMR = _currentMMR;
@@ -711,13 +564,7 @@ void RocketStats::majRank(int _gameMode, float _currentMMR)
 
 	if (currentGameMode >= 10 && currentGameMode <= 13 || currentGameMode >= 27 && currentGameMode <= 30)
 	{
-		for (auto it = listRank[currentGameMode]._rank.begin(); it != listRank[currentGameMode]._rank.end(); it++)
-		{
-			if (currentMMR >= it->second.first && currentMMR <= it->second.second)
-			{
-				currentRank = it->first;
-			}
-		}
+		currentRank = GetRank(rankTier);
 
 		if (currentRank != lastRank)
 		{

@@ -60,8 +60,7 @@ public:
 
 	//Ranked function
 	void initRank();
-	void majRank(int _gameMode, float _currentMMR);
-	void initRankList();
+	void majRank(int _gameMode, float _currentMMR, int rankTier);
 	
 	void ResetStats();
 	void StopBoost();
