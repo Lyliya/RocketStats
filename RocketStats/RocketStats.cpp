@@ -566,7 +566,7 @@ void RocketStats::majRank(int _gameMode, float _currentMMR, SkillRank playerRank
 	if (currentGameMode >= 10 && currentGameMode <= 13 || currentGameMode >= 27 && currentGameMode <= 30)
 	{
 		currentRank = GetRank(playerRank.Tier);
-		currentDivision = " Division " + playerRank.Division;
+		currentDivision = " Division " + std::to_string(playerRank.Division+1);
 
 		if (currentRank != lastRank)
 		{
@@ -635,7 +635,7 @@ void RocketStats::Render(CanvasWrapper canvas)
 
 	// Draw box here
 	Vector2 drawLoc = { xPos * RS_x_position, yPos * RS_y_position };
-	Vector2 sizeBox = { 170 * RS_scale, (23 * size) * RS_scale };
+	Vector2 sizeBox = { 175 * RS_scale, (23 * size) * RS_scale };
 	canvas.SetPosition(drawLoc);
 
 	//Set background Color
