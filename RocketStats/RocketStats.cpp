@@ -66,76 +66,28 @@ RGB HexadecimalToRGB(std::string hex) {
 }
 #pragma endregion
 
-std::string GetRank(int tierID) {
-	switch (tierID) {
-	case(0):
-		return "Unranked";
-		break;
-	case(1):
-		return "Bronze_I";
-		break;
-	case(2):
-		return "Bronze_II";
-		break;
-	case(3):
-		return "Bronze_III";
-		break;
-	case(4):
-		return "Silver_I";
-		break;
-	case(5):
-		return "Silver_II";
-		break;
-	case(6):
-		return "Silver_III";
-		break;
-	case(7):
-		return "Gold_I";
-		break;
-	case(8):
-		return "Gold_II";
-		break;
-	case(9):
-		return "Gold_III";
-		break;
-	case(10):
-		return "Platinum_I";
-		break;
-	case(11):
-		return "Platinum_II";
-		break;
-	case(12):
-		return "Platinum_III";
-		break;
-	case(13):
-		return "Diamond_I";
-		break;
-	case(14):
-		return "Diamond_II";
-		break;
-	case(15):
-		return "Diamond_III";
-		break;
-	case(16):
-		return "Champion_I";
-		break;
-	case(17):
-		return "Champion_II";
-		break;
-	case(18):
-		return "Champion_III";
-		break;
-	case(19):
-		return "Grand_Champion";
-		break;
-	default:
+std::string RocketStats::GetRank(int tierID) {
+	if (tierID >= rank_nb) {
+		return rank[tierID].name;
+	}
+	else {
 		return "norank";
-		break;
 	}
 }
 
 void RocketStats::onLoad()
 {
+	crown = std::make_shared<ImageWrapper>("./bakkesmod/RocketStats/RocketStats_images/crown.png", true);
+	win = std::make_shared<ImageWrapper>("./bakkesmod/RocketStats/RocketStats_images/win.png", true);
+	loose = std::make_shared<ImageWrapper>("./bakkesmod/RocketStats/RocketStats_images/loose.png", true);
+
+	for (int i = 0; i < rank_nb; i++) {
+		rank[i].image = std::make_shared<ImageWrapper>("./bakkesmod/RocketStats/RocketStats_images/" + rank[i].name + ".png", true);
+		if (rank[i].image->LoadForCanvas()) {
+			cvarManager->log(rank[i].name + " : image load");
+		}
+	}
+
 	cvarManager->registerNotifier("RocketStats_reset_stats", [this](std::vector<std::string> params) {
 		ResetStats();
 		}
@@ -270,7 +222,8 @@ void RocketStats::Start(std::string eventName)
 		// Get and Update MMR
 		MMRWrapper mmrw = gameWrapper->GetMMRWrapper();
 		currentPlaylist = mmrw.GetCurrentPlaylist();
-		int rankTier = mmrw.GetPlayerRank(mySteamID, currentPlaylist).Tier;
+		SkillRank playerRank = mmrw.GetPlayerRank(mySteamID, currentPlaylist);
+		currentTier = playerRank.Tier;
 		WriteInFile("RocketStats_GameMode.txt", getPlaylistName(currentPlaylist));
 
 		//Session or Gamemode
@@ -289,8 +242,6 @@ void RocketStats::Start(std::string eventName)
 		writeLosses();
 		writeMMR();
 
-
-
 		// Get TeamNum
 		myTeamNum = myTeam.GetTeamNum();
 
@@ -298,7 +249,7 @@ void RocketStats::Start(std::string eventName)
 		isGameEnded = false;
 		isGameStarted = true;
 
-		majRank(currentPlaylist, stats[currentPlaylist].myMMR, rankTier);
+		majRank(currentPlaylist, stats[currentPlaylist].myMMR, playerRank);
 		WriteInFile("RocketStats_images/BoostState.txt", std::to_string(0));
 	}
 }
@@ -399,15 +350,16 @@ void RocketStats::ComputeMMR(int intervalTime) {
 	gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
 		MMRWrapper mmrw = gameWrapper->GetMMRWrapper();
 		float save = mmrw.GetPlayerMMR(mySteamID, currentPlaylist);
-		int rankTier = mmrw.GetPlayerRank(mySteamID, currentPlaylist).Tier;
+		SkillRank playerRank = mmrw.GetPlayerRank(mySteamID, currentPlaylist);
 
 		if (save <= 0) {
 			return ComputeMMR(1);
 		}
 
+		currentTier = playerRank.Tier;
 		stats[currentPlaylist].MMRChange = stats[currentPlaylist].MMRChange + (save - stats[currentPlaylist].myMMR);
 		stats[currentPlaylist].myMMR = save;
-		majRank(currentPlaylist, stats[currentPlaylist].myMMR, rankTier);
+		majRank(currentPlaylist, stats[currentPlaylist].myMMR, playerRank);
 
 		SessionStats();
 		writeMMR();
@@ -548,6 +500,7 @@ void RocketStats::initRank()
 	lastGameMode = 0;
 	currentGameMode = 0;
 	currentMMR = 0;
+	currentDivision = "nodiv";
 	currentRank = "norank";
 	lastRank = "norank";
 
@@ -556,7 +509,7 @@ void RocketStats::initRank()
 	WriteInFile("RocketStats_images/rank.html", _value);
 }
 
-void RocketStats::majRank(int _gameMode, float _currentMMR, int rankTier)
+void RocketStats::majRank(int _gameMode, float _currentMMR, SkillRank playerRank)
 {
 	currentGameMode = _gameMode;
 	currentMMR = _currentMMR;
@@ -564,7 +517,8 @@ void RocketStats::majRank(int _gameMode, float _currentMMR, int rankTier)
 
 	if (currentGameMode >= 10 && currentGameMode <= 13 || currentGameMode >= 27 && currentGameMode <= 30)
 	{
-		currentRank = GetRank(rankTier);
+		currentRank = GetRank(playerRank.Tier);
+		currentDivision = " Division " + std::to_string(playerRank.Division + 1);
 
 		if (currentRank != lastRank)
 		{
@@ -600,6 +554,78 @@ void RocketStats::Render(CanvasWrapper canvas)
 	bool RS_session = cvarManager->getCvar("RS_session").getBoolValue();
 	Stats current = (RS_session == true) ? session : stats[currentPlaylist];
 
+	auto canSize = canvas.GetSize();
+	Vector2 imagePos = { 0.82 * canSize.X, 0.80 * canSize.Y };
+	Vector2 textPos_tmp = { 0.835 * canSize.X, 0.805 * canSize.Y };
+
+	// Display Rank
+	std::string tmpRank = currentRank;
+	if (currentTier >= rank_nb) {
+		currentTier = 0;
+	}
+	auto image = rank[currentTier].image;
+	std::replace(tmpRank.begin(), tmpRank.end(), '_', ' ');
+	canvas.SetColor(255, 255, 255, 255);
+	canvas.SetPosition(imagePos);
+	if (image->IsLoadedForCanvas()) canvas.DrawTexture(image.get(), 0.5f);
+	canvas.SetPosition(textPos_tmp);
+	canvas.DrawString(tmpRank, 2.5f, 2.5f);
+
+	// Move
+	imagePos.Y += 50;
+	textPos_tmp.Y += 50;
+
+	// Display MMR
+	std::stringstream ss;
+	ss << std::fixed << std::setprecision(2) << current.myMMR;
+	std::string mmr = ss.str();
+	std::stringstream ss_change;
+	ss_change << std::fixed << std::setprecision(2) << current.MMRChange;
+	std::string change = ss_change.str();
+	canvas.SetColor(255, 255, 255, 255);
+	canvas.SetPosition(imagePos);
+	if (crown->IsLoadedForCanvas()) canvas.DrawTexture(crown.get(), 0.5f);
+	canvas.SetPosition(textPos_tmp);
+	canvas.SetColor(255, 255, 255, 255);
+	if (current.MMRChange > 0) {
+		change = "+" + change;
+	}
+	canvas.DrawString(mmr + " (" + change + ")", 2.0f, 2.0f);
+
+	// Move
+	imagePos.Y += 50;
+	textPos_tmp.Y += 50;
+
+	// Display Win
+	canvas.SetColor(255, 255, 255, 255);
+	canvas.SetPosition(imagePos);
+	if (win->IsLoadedForCanvas()) canvas.DrawTexture(win.get(), 0.5f);
+	canvas.SetPosition(textPos_tmp);
+	canvas.SetColor(0, 255, 0, 255);
+	canvas.DrawString(std::to_string(current.win), 2.0f, 2.0f);
+
+	imagePos.Y += 50;
+	textPos_tmp.Y += 50;
+
+	canvas.SetColor(255, 255, 255, 255);
+	canvas.SetPosition(imagePos);
+	if (loose->IsLoadedForCanvas()) canvas.DrawTexture(loose.get(), 0.5f);
+	canvas.SetPosition(textPos_tmp);
+	canvas.SetColor(255, 0, 0, 255);
+	canvas.DrawString(std::to_string(current.losses), 2.0f, 2.0f);
+
+	textPos_tmp.X += 75;
+	textPos_tmp.Y -= 26;
+
+	canvas.SetColor(255, 255, 255, 255);
+	canvas.SetPosition(textPos_tmp);
+	canvas.SetColor(0, 255, 0, 255);
+	std::string streak = std::to_string(current.streak);
+	if (current.streak > 0) {
+		streak = "+" + streak;
+	}
+	canvas.DrawString(streak, 2.0f, 2.0f);
+
 	// CustomColor
 	bool custom_color = cvarManager->getCvar("RS_custom_color").getBoolValue();
 	std::string RS_Color_MMR = cvarManager->getCvar("RS_Color_MMR").getStringValue();
@@ -633,7 +659,7 @@ void RocketStats::Render(CanvasWrapper canvas)
 
 	// Draw box here
 	Vector2 drawLoc = { xPos * RS_x_position, yPos * RS_y_position };
-	Vector2 sizeBox = { 170 * RS_scale, (23 * size) * RS_scale };
+	Vector2 sizeBox = { 175 * RS_scale, (23 * size) * RS_scale };
 	canvas.SetPosition(drawLoc);
 
 	//Set background Color
@@ -664,7 +690,7 @@ void RocketStats::Render(CanvasWrapper canvas)
 			}
 			else if (it == "RS_disp_rank")
 			{
-				std::string tmpRank = currentRank;
+				std::string tmpRank = currentRank + currentDivision;
 				std::replace(tmpRank.begin(), tmpRank.end(), '_', ' ');
 				RGB rank_color = HexadecimalToRGB(RS_Color_Rank);
 				canvas.SetColor(rank_color.r, rank_color.g, rank_color.b, 255);
