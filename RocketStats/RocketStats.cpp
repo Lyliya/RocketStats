@@ -96,7 +96,7 @@ std::string GetRank(int tierID) {
 		return "Gold_II";
 		break;
 	case(9):
-		return "Gold _III";
+		return "Gold_III";
 		break;
 	case(10):
 		return "Platinum_I";
