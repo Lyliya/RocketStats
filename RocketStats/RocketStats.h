@@ -21,11 +21,6 @@ typedef struct RGB {
 class RocketStats : public BakkesMod::Plugin::BakkesModPlugin
 {
 
-	typedef struct Ranks {
-		std::string nameMode;
-		std::map<std::string, std::pair<float, float>> _rank;
-	} Ranks;
-
 private : 
 	std::shared_ptr<bool> enabled;
 
@@ -60,7 +55,7 @@ public:
 
 	//Ranked function
 	void initRank();
-	void majRank(int _gameMode, float _currentMMR, int rankTier);
+	void majRank(int _gameMode, float _currentMMR, SkillRank playerRank);
 	
 	void ResetStats();
 	void StopBoost();
@@ -74,11 +69,10 @@ public:
 	int currentGameMode;
 	float currentMMR;
 	std::string currentRank;
+	std::string currentDivision;
 	std::string lastRank;
 
 	bool isLoad = true;
-
-	std::map<int, Ranks> listRank;
 
 	const std::map<int, std::string> playlistName = {
 		{1, "Duel"},

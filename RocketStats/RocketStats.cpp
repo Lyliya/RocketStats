@@ -270,7 +270,7 @@ void RocketStats::Start(std::string eventName)
 		// Get and Update MMR
 		MMRWrapper mmrw = gameWrapper->GetMMRWrapper();
 		currentPlaylist = mmrw.GetCurrentPlaylist();
-		int rankTier = mmrw.GetPlayerRank(mySteamID, currentPlaylist).Tier;
+		SkillRank playerRank = mmrw.GetPlayerRank(mySteamID, currentPlaylist);
 		WriteInFile("RocketStats_GameMode.txt", getPlaylistName(currentPlaylist));
 
 		//Session or Gamemode
@@ -298,7 +298,7 @@ void RocketStats::Start(std::string eventName)
 		isGameEnded = false;
 		isGameStarted = true;
 
-		majRank(currentPlaylist, stats[currentPlaylist].myMMR, rankTier);
+		majRank(currentPlaylist, stats[currentPlaylist].myMMR, playerRank);
 		WriteInFile("RocketStats_images/BoostState.txt", std::to_string(0));
 	}
 }
@@ -399,7 +399,7 @@ void RocketStats::ComputeMMR(int intervalTime) {
 	gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
 		MMRWrapper mmrw = gameWrapper->GetMMRWrapper();
 		float save = mmrw.GetPlayerMMR(mySteamID, currentPlaylist);
-		int rankTier = mmrw.GetPlayerRank(mySteamID, currentPlaylist).Tier;
+		SkillRank playerRank = mmrw.GetPlayerRank(mySteamID, currentPlaylist);
 
 		if (save <= 0) {
 			return ComputeMMR(1);
@@ -407,7 +407,7 @@ void RocketStats::ComputeMMR(int intervalTime) {
 
 		stats[currentPlaylist].MMRChange = stats[currentPlaylist].MMRChange + (save - stats[currentPlaylist].myMMR);
 		stats[currentPlaylist].myMMR = save;
-		majRank(currentPlaylist, stats[currentPlaylist].myMMR, rankTier);
+		majRank(currentPlaylist, stats[currentPlaylist].myMMR, playerRank);
 
 		SessionStats();
 		writeMMR();
@@ -549,6 +549,7 @@ void RocketStats::initRank()
 	currentGameMode = 0;
 	currentMMR = 0;
 	currentRank = "norank";
+	currentDivision = "nodiv";
 	lastRank = "norank";
 
 	std::string _value = "<meta http-equiv = \"refresh\" content = \"5\" /><img src = \"current.png\" width = \"100\" height = \"100\" />";
@@ -556,7 +557,7 @@ void RocketStats::initRank()
 	WriteInFile("RocketStats_images/rank.html", _value);
 }
 
-void RocketStats::majRank(int _gameMode, float _currentMMR, int rankTier)
+void RocketStats::majRank(int _gameMode, float _currentMMR, SkillRank playerRank)
 {
 	currentGameMode = _gameMode;
 	currentMMR = _currentMMR;
@@ -564,7 +565,8 @@ void RocketStats::majRank(int _gameMode, float _currentMMR, int rankTier)
 
 	if (currentGameMode >= 10 && currentGameMode <= 13 || currentGameMode >= 27 && currentGameMode <= 30)
 	{
-		currentRank = GetRank(rankTier);
+		currentRank = GetRank(playerRank.Tier);
+		currentDivision = " Division " + playerRank.Division;
 
 		if (currentRank != lastRank)
 		{
@@ -664,7 +666,8 @@ void RocketStats::Render(CanvasWrapper canvas)
 			}
 			else if (it == "RS_disp_rank")
 			{
-				std::string tmpRank = currentRank;
+
+				std::string tmpRank = currentRank+currentDivision;
 				std::replace(tmpRank.begin(), tmpRank.end(), '_', ' ');
 				RGB rank_color = HexadecimalToRGB(RS_Color_Rank);
 				canvas.SetColor(rank_color.r, rank_color.g, rank_color.b, 255);
