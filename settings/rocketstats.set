@@ -4,27 +4,15 @@ RocketStats Plugin
 1|Display information in game|RS_disp_ig
 10|RS_disp_active
 1|Display MMR|RS_disp_mmr
-1|Display MMR Change|RS_disp_mmr_change
 1|Display Wins|RS_disp_wins
 1|Display Losses|RS_disp_losses
 1|Display Streak|RS_disp_streak
 1|Display Rank |RS_disp_rank
-1|Display GameMode|RS_disp_gamemode
 8|
 9|Place your overlay (Only if display information in game is check)
-5|X position|RS_x_position|0|100
-5|Y position|RS_y_position|0|100
-4|Scale|RS_scale|1|10
+4|X position|RS_x_position|0|1.0
+4|Y position|RS_y_position|0|1.0
 9|Change overlay Color (Hexadecimal)
-1|Use Custom Color|RS_custom_color
-12|MMR|RS_Color_MMR
-12|MMR Change|RS_Color_MMRChange
-12|Wins|RS_Color_Wins
-12|Losses|RS_Color_Losses
-12|Streak|RS_Color_Streak
-12|Rank|RS_Color_Rank
-12|GameMode|RS_Color_GameMode
-12|Background|RS_Color_Background
 11|
 1|Enable Boost|RocketStats_stop_boost
 8|
@@ -32,5 +20,7 @@ RocketStats Plugin
 0|Load|RocketStats_load
 0|Unload|RocketStats_unload
 8|
-9|Version 1.4 (bug fixes), Developped by @Lyliiya & @NuSa_yt for @Maylie_tv
+9|Version 2.0, Developped by @Lyliiya & @NuSa_yt for @Maylie_tv
+9|Updated in 1.5 by Th3Ant#9411
+9|Update in 2.0 by Lyliya#4276, Larsluph#7713, Th3Ant#9411 & NuSa#0666 (New overlay, new ranks, bugfix)
 9|Donate : https://www.paypal.me/rocketstats

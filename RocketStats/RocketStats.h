@@ -62,6 +62,13 @@ public:
 	void StopBoost();
 	void togglePlugin(bool state);
 	
+	void DisplayRank(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp);
+	void DisplayMMR(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current);
+	void DisplayWins(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current);
+	void DisplayLoose(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current);
+	void DisplayStreak(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current);
+
+
 	//Var
 	int myTeamNum = -1;
 	SteamID mySteamID;
