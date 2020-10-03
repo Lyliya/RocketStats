@@ -506,8 +506,14 @@ void RocketStats::majRank(int _gameMode, float _currentMMR, SkillRank playerRank
 
 	if (currentGameMode >= 10 && currentGameMode <= 13 || currentGameMode >= 27 && currentGameMode <= 30)
 	{
-		currentRank = GetRank(playerRank.Tier);
-		currentDivision = " Division " + std::to_string(playerRank.Division + 1);
+		if (playerRank.MatchesPlayed < 10 && playerRank.Tier == 0) {
+			currentRank = "Placement matches: ";
+			currentDivision = std::to_string(playerRank.MatchesPlayed) + "/10";
+		}
+		else {
+			currentRank = GetRank(playerRank.Tier);
+			currentDivision = " Div. " + std::to_string(playerRank.Division+1);
+		}
 
 		if (currentRank != lastRank)
 		{
@@ -519,6 +525,9 @@ void RocketStats::majRank(int _gameMode, float _currentMMR, SkillRank playerRank
 	}
 	else
 	{
+		currentRank = "norank";
+		currentDivision = " nodiv";
+
 		std::string _value = "<meta http-equiv = \"refresh\" content = \"5\" /><img src = \"current.png\" width = \"100\" height = \"100\" />";
 
 		WriteInFile("RocketStats_images/rank.html", _value);
