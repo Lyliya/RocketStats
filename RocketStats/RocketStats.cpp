@@ -67,7 +67,8 @@ RGB HexadecimalToRGB(std::string hex) {
 #pragma endregion
 
 std::string RocketStats::GetRank(int tierID) {
-	if (tierID >= rank_nb) {
+	cvarManager->log("tier:" + std::to_string(tierID));
+	if (tierID <= rank_nb) {
 		return rank[tierID].name;
 	}
 	else {
@@ -489,7 +490,7 @@ void RocketStats::initRank()
 	lastGameMode = 0;
 	currentGameMode = 0;
 	currentMMR = 0;
-	currentDivision = "nodiv";
+	currentDivision = " nodiv";
 	currentRank = "norank";
 	lastRank = "norank";
 
@@ -507,7 +508,7 @@ void RocketStats::majRank(int _gameMode, float _currentMMR, SkillRank playerRank
 	if (currentGameMode >= 10 && currentGameMode <= 13 || currentGameMode >= 27 && currentGameMode <= 30)
 	{
 		currentRank = GetRank(playerRank.Tier);
-		currentDivision = " Division " + std::to_string(playerRank.Division + 1);
+		currentDivision = " Div. " + std::to_string(playerRank.Division + 1);
 
 		if (currentRank != lastRank)
 		{
@@ -540,7 +541,7 @@ void RocketStats::DisplayRank(CanvasWrapper canvas, Vector2 imagePos, Vector2 te
 	canvas.SetPosition(imagePos);
 	if (image->IsLoadedForCanvas()) canvas.DrawTexture(image.get(), 0.5f);
 	canvas.SetPosition(textPos_tmp);
-	canvas.DrawString(tmpRank, 2.5f, 2.5f);
+	canvas.DrawString(tmpRank + currentDivision, 2.5f, 2.5f);
 }
 
 void RocketStats::DisplayMMR(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current) {
@@ -582,7 +583,12 @@ void RocketStats::DisplayStreak(CanvasWrapper canvas, Vector2 imagePos, Vector2 
 {
 	canvas.SetColor(255, 255, 255, 255);
 	canvas.SetPosition(textPos_tmp);
-	canvas.SetColor(0, 255, 0, 255);
+	if (current.streak < 0) {
+		canvas.SetColor(255, 0, 0, 255);
+	}
+	else {
+		canvas.SetColor(0, 255, 0, 255);
+	}
 	std::string streak = std::to_string(current.streak);
 	if (current.streak > 0) {
 		streak = "+" + streak;
