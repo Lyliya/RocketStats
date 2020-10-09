@@ -20,12 +20,6 @@ typedef struct RGB {
 
 class RocketStats : public BakkesMod::Plugin::BakkesModPlugin
 {
-
-	typedef struct Ranks {
-		std::string nameMode;
-		std::map<std::string, std::pair<float, float>> _rank;
-	} Ranks;
-
 private : 
 	std::shared_ptr<bool> enabled;
 
@@ -55,17 +49,26 @@ public:
 	bool isGameStarted = false;
 	bool isBoosting = false;
 
+	std::string GetRank(int tierID);
+
 	std::map<int, Stats> stats;
 	Stats session;
 
 	//Ranked function
 	void initRank();
-	void majRank(int _gameMode, float _currentMMR, int rankTier);
+	void majRank(int _gameMode, float _currentMMR, SkillRank playerRank);
 	
 	void ResetStats();
 	void StopBoost();
 	void togglePlugin(bool state);
 	
+	void DisplayRank(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp);
+	void DisplayMMR(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current);
+	void DisplayWins(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current);
+	void DisplayLoose(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current);
+	void DisplayStreak(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current);
+
+
 	//Var
 	int myTeamNum = -1;
 	SteamID mySteamID;
@@ -73,12 +76,49 @@ public:
 	int lastGameMode;
 	int currentGameMode;
 	float currentMMR;
+	int currentTier;
+	std::string currentDivision;
 	std::string currentRank;
 	std::string lastRank;
 
+	std::shared_ptr<ImageWrapper> crown;
+	std::shared_ptr<ImageWrapper> win;
+	std::shared_ptr<ImageWrapper> loose;
+
 	bool isLoad = true;
 
-	std::map<int, Ranks> listRank;
+	int rank_nb = 23;
+
+	typedef struct s_ranks {
+		std::string name;
+		std::shared_ptr<ImageWrapper> image;
+	} t_ranks;
+
+	t_ranks rank[23] = {
+		{"Unranked", nullptr},
+		{"Bronze_I", nullptr},
+		{"Bronze_II", nullptr},
+		{"Bronze_III", nullptr},
+		{"Silver_I", nullptr},
+		{"Silver_II", nullptr},
+		{"Silver_III", nullptr},
+		{"Gold_I", nullptr},
+		{"Gold_II", nullptr},
+		{"Gold_III", nullptr},
+		{"Platinum_I", nullptr},
+		{"Platinum_II", nullptr},
+		{"Platinum_III", nullptr},
+		{"Diamond_I", nullptr},
+		{"Diamond_II", nullptr},
+		{"Diamond_III", nullptr},
+		{"Champion_I", nullptr},
+		{"Champion_II", nullptr},
+		{"Champion_III", nullptr},
+		{"Grand_Champion_I", nullptr},
+		{"Grand_Champion_II", nullptr},
+		{"Grand_Champion_III", nullptr},
+		{"Supersonic_Legend", nullptr},
+	};
 
 	const std::map<int, std::string> playlistName = {
 		{1, "Duel"},

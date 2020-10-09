@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>RocketStats</title>
+</head>
+<body>
+  <video autoplay muted loop src="boost.webm" id="vid1" position="absolute" z-index="1" hidden></video>
+  <video autoplay muted loop src="noboost.webm" id="vid2" position="absolute" z-index="2" hidden></video>
+  <script>
+    document.getElementById("vid1").currentTime = 0;
+    document.getElementById("vid2").currentTime = 0;
+    let save = "0";
+    window.setInterval(() => {
+	  var rawFile = new XMLHttpRequest();
+		rawFile.open("GET", 'BoostState.txt', false);
+		rawFile.onreadystatechange = function () {
+			if(rawFile.readyState === 4) {
+				if(rawFile.status === 200 || rawFile.status == 0) {
+					var allText = rawFile.responseText;
+					if (allText == "1" && save != allText) {
+					// Boost
+					document.getElementById("vid1").hidden = false;
+					document.getElementById("vid2").hidden = true;
+					} else if (allText == "0" && save != allText) {
+					// No Boost
+					document.getElementById("vid1").hidden = true;
+					document.getElementById("vid2").hidden = false;
+					} else if (allText == "-1" && save != allText) {
+					document.getElementById("vid1").hidden = true;
+					document.getElementById("vid2").hidden = true;
+					}
+					save = allText;
+				}
+			}
+		}
+		rawFile.send(null);
+    }, 100)
+  </script>
+</body>
+</html>
