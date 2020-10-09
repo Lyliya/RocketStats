@@ -612,27 +612,31 @@ void RocketStats::Render(CanvasWrapper canvas)
 
 	auto canSize = canvas.GetSize();
 	Vector2 imagePos = { RS_x_position * canSize.X, RS_y_position * canSize.Y };
-	Vector2 textPos_tmp = { (RS_x_position + 0.015) * canSize.X, (RS_y_position + 0.005) * canSize.Y }; //{ 0.835 * canSize.X, 0.805 * canSize.Y };
+	//Vector2 textPos_tmp = { (RS_x_position + 0.015) * canSize.X, (RS_y_position + 0.005) * canSize.Y }; //{ 0.835 * canSize.X, 0.805 * canSize.Y };
+	Vector2 textPos_tmp = imagePos;
+
+	textPos_tmp.X += canSize.X * 3 / 100;
+	textPos_tmp.Y += canSize.Y * 1 / 100;
 
 	// Display Rank
 	if (cvarManager->getCvar("RS_disp_rank").getBoolValue()) {
 		DisplayRank(canvas, imagePos, textPos_tmp);
-		imagePos.Y += 50;
-		textPos_tmp.Y += 50;
+		imagePos.Y += canSize.Y * 4 / 100;
+		textPos_tmp.Y += canSize.Y * 4 / 100;
 	}
 	
 	// Display MMR
 	if (cvarManager->getCvar("RS_disp_mmr").getBoolValue()) {
 		DisplayMMR(canvas, imagePos, textPos_tmp, current);
-		imagePos.Y += 50;
-		textPos_tmp.Y += 50;
+		imagePos.Y += canSize.Y * 4 / 100;
+		textPos_tmp.Y += canSize.Y * 4 / 100;
 	}
 
 	// Display Win
 	if (cvarManager->getCvar("RS_disp_wins").getBoolValue()) {
 		DisplayWins(canvas, imagePos, textPos_tmp, current);
-		imagePos.Y += 50;
-		textPos_tmp.Y += 50;
+		imagePos.Y += canSize.Y * 4 / 100;
+		textPos_tmp.Y += canSize.Y * 4 / 100;
 	}
 
 	// Display Loose
@@ -641,8 +645,8 @@ void RocketStats::Render(CanvasWrapper canvas)
 	}
 
 	if (cvarManager->getCvar("RS_disp_streak").getBoolValue()) {
-		textPos_tmp.X += 75;
-		textPos_tmp.Y -= 26;
+		textPos_tmp.X += canSize.Y * 5 / 100;
+		textPos_tmp.Y -= canSize.Y * 2 / 100;
 		DisplayStreak(canvas, imagePos, textPos_tmp, current);
 	}
 
