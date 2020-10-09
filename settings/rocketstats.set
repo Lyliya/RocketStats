@@ -12,7 +12,6 @@ RocketStats Plugin
 9|Place your overlay (Only if display information in game is check)
 4|X position|RS_x_position|0|1.0
 4|Y position|RS_y_position|0|1.0
-9|Change overlay Color (Hexadecimal)
 11|
 1|Enable Boost|RocketStats_stop_boost
 8|
@@ -23,4 +22,5 @@ RocketStats Plugin
 9|Version 2.0, Developped by @Lyliiya & @NuSa_yt for @Maylie_tv
 9|Updated in 1.5 by Th3Ant#9411
 9|Update in 2.0 by Lyliya#4276, Larsluph#7713, Th3Ant#9411 & NuSa#0666 (New overlay, new ranks, bugfix)
+9|Update in 2.1 by Lyliya#4276, Th3Ant#9411, Larsluph#7713 (resolution fix, placement match) 
 9|Donate : https://www.paypal.me/rocketstats
