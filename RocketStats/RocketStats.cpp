@@ -134,7 +134,7 @@ void RocketStats::onLoad()
 	cvarManager->registerCvar("RS_disp_streak", "1", "Display the streak on the current game mode", true, true, 0, true, 1);
 	cvarManager->registerCvar("RS_disp_rank", "1", "Display the rank on the current game mode", true, true, 0, true, 1);
 	// cvarManager->registerCvar("RS_disp_gamemode", "1", "Display the current game mode", true, true, 0, true, 1);
-	cvarManager->registerCvar("RS_x_position", "0.900", "Overlay X position", true, true, 0, true, 1.0f);
+	cvarManager->registerCvar("RS_x_position", "0.700", "Overlay X position", true, true, 0, true, 1.0f);
 	cvarManager->registerCvar("RS_y_position", "0.575", "Overlay Y position", true, true, 0, true, 1.0f);
 	cvarManager->registerCvar("RS_disp_active", "0", "", true, true, 0, true, 1);
 	cvarManager->registerCvar("RocketStats_stop_boost", "1", "Stop Boost animation", true, true, 0, true, 1);
@@ -507,8 +507,17 @@ void RocketStats::majRank(int _gameMode, float _currentMMR, SkillRank playerRank
 
 	if (currentGameMode >= 10 && currentGameMode <= 13 || currentGameMode >= 27 && currentGameMode <= 30)
 	{
-		currentRank = GetRank(playerRank.Tier);
-		currentDivision = " Div. " + std::to_string(playerRank.Division + 1);
+		if (playerRank.MatchesPlayed < 10 && playerRank.Tier == 0) {
+			currentDivision = " Division " + std::to_string(playerRank.Division + 1);
+			currentRank = "Placement: ";
+			currentDivision = std::to_string(playerRank.MatchesPlayed) + "/10";
+		}
+		else {
+			currentRank = GetRank(playerRank.Tier);
+			currentDivision = " Div. " + std::to_string(playerRank.Division + 1);
+		}
+		//currentRank = GetRank(playerRank.Tier);
+		//currentDivision = " Div. " + std::to_string(playerRank.Division + 1);
 
 		if (currentRank != lastRank)
 		{
@@ -520,6 +529,9 @@ void RocketStats::majRank(int _gameMode, float _currentMMR, SkillRank playerRank
 	}
 	else
 	{
+		currentRank = "norank";
+		currentDivision = " nodiv";
+
 		std::string _value = "<meta http-equiv = \"refresh\" content = \"5\" /><img src = \"current.png\" width = \"100\" height = \"100\" />";
 
 		WriteInFile("RocketStats_images/rank.html", _value);
@@ -541,7 +553,7 @@ void RocketStats::DisplayRank(CanvasWrapper canvas, Vector2 imagePos, Vector2 te
 	canvas.SetPosition(imagePos);
 	if (image->IsLoadedForCanvas()) canvas.DrawTexture(image.get(), 0.5f);
 	canvas.SetPosition(textPos_tmp);
-	canvas.DrawString(tmpRank + currentDivision, 2.5f, 2.5f);
+	canvas.DrawString(tmpRank + currentDivision, 2.0f, 2.0f);
 }
 
 void RocketStats::DisplayMMR(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current) {
@@ -612,31 +624,30 @@ void RocketStats::Render(CanvasWrapper canvas)
 
 	auto canSize = canvas.GetSize();
 	Vector2 imagePos = { RS_x_position * canSize.X, RS_y_position * canSize.Y };
-	//Vector2 textPos_tmp = { (RS_x_position + 0.015) * canSize.X, (RS_y_position + 0.005) * canSize.Y }; //{ 0.835 * canSize.X, 0.805 * canSize.Y };
 	Vector2 textPos_tmp = imagePos;
 
-	textPos_tmp.X += canSize.X * 3 / 100;
-	textPos_tmp.Y += canSize.Y * 1 / 100;
+	textPos_tmp.X += 50;
+	textPos_tmp.Y += 10;
 
 	// Display Rank
 	if (cvarManager->getCvar("RS_disp_rank").getBoolValue()) {
 		DisplayRank(canvas, imagePos, textPos_tmp);
-		imagePos.Y += canSize.Y * 4 / 100;
-		textPos_tmp.Y += canSize.Y * 4 / 100;
+		imagePos.Y += 50;
+		textPos_tmp.Y += 50;
 	}
 	
 	// Display MMR
 	if (cvarManager->getCvar("RS_disp_mmr").getBoolValue()) {
 		DisplayMMR(canvas, imagePos, textPos_tmp, current);
-		imagePos.Y += canSize.Y * 4 / 100;
-		textPos_tmp.Y += canSize.Y * 4 / 100;
+		imagePos.Y += 50;
+		textPos_tmp.Y += 50;
 	}
 
 	// Display Win
 	if (cvarManager->getCvar("RS_disp_wins").getBoolValue()) {
 		DisplayWins(canvas, imagePos, textPos_tmp, current);
-		imagePos.Y += canSize.Y * 4 / 100;
-		textPos_tmp.Y += canSize.Y * 4 / 100;
+		imagePos.Y += 50;
+		textPos_tmp.Y += 50;
 	}
 
 	// Display Loose
@@ -645,8 +656,8 @@ void RocketStats::Render(CanvasWrapper canvas)
 	}
 
 	if (cvarManager->getCvar("RS_disp_streak").getBoolValue()) {
-		textPos_tmp.X += canSize.Y * 5 / 100;
-		textPos_tmp.Y -= canSize.Y * 2 / 100;
+		textPos_tmp.X += 75;
+		textPos_tmp.Y -= 25;
 		DisplayStreak(canvas, imagePos, textPos_tmp, current);
 	}
 
