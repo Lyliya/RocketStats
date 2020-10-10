@@ -364,13 +364,12 @@ void RocketStats::SessionStats() {
 	auto it = playlistName.begin();
 
 	for (; it != playlistName.end(); it++) {
-		tmp.myMMR += stats[it->first].myMMR;
 		tmp.MMRChange += stats[it->first].MMRChange;
 		tmp.win += stats[it->first].win;
 		tmp.losses += stats[it->first].losses;
 	}
 
-	session.myMMR = tmp.myMMR;
+	session.myMMR = stats[currentPlaylist].myMMR;
 	session.MMRChange = tmp.MMRChange;
 	session.win = tmp.win;
 	session.losses = tmp.losses;
