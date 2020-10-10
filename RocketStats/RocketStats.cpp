@@ -18,7 +18,7 @@
 #include <iostream>
 #include <fstream>
 
-BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "2.0", 0)
+BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "2.2", 0)
 
 #pragma region Helpers
 int HexadecimalToDecimal(std::string hex) {
@@ -127,15 +127,17 @@ void RocketStats::onLoad()
 	initRank();
 
 	// Load Settings
+	cvarManager->registerCvar("RS_Use_v1", "0", "Use the v1 overlay", true, true, 0, true, 1);
 	cvarManager->registerCvar("RS_disp_ig", "1", "Display information panel", true, true, 0, true, 1);
 	cvarManager->registerCvar("RS_disp_mmr", "1", "Display the current MMR", true, true, 0, true, 1);
 	cvarManager->registerCvar("RS_disp_wins", "1", "Display the wins on the current game mode", true, true, 0, true, 1);
 	cvarManager->registerCvar("RS_disp_losses", "1", "Display the losses on the current game mode", true, true, 0, true, 1);
 	cvarManager->registerCvar("RS_disp_streak", "1", "Display the streak on the current game mode", true, true, 0, true, 1);
 	cvarManager->registerCvar("RS_disp_rank", "1", "Display the rank on the current game mode", true, true, 0, true, 1);
-	// cvarManager->registerCvar("RS_disp_gamemode", "1", "Display the current game mode", true, true, 0, true, 1);
+	cvarManager->registerCvar("RS_disp_gamemode", "1", "Display the current game mode", true, true, 0, true, 1);
 	cvarManager->registerCvar("RS_x_position", "0.700", "Overlay X position", true, true, 0, true, 1.0f);
 	cvarManager->registerCvar("RS_y_position", "0.575", "Overlay Y position", true, true, 0, true, 1.0f);
+	cvarManager->registerCvar("RS_scale", "1", "Overlay scale", true, true, 0, true, 10);
 	cvarManager->registerCvar("RS_disp_active", "0", "", true, true, 0, true, 1);
 	cvarManager->registerCvar("RocketStats_stop_boost", "1", "Stop Boost animation", true, true, 0, true, 1);
 	cvarManager->registerCvar("RS_session", "0", "Display session stats", true, true, 0, true, 1, true);
@@ -541,7 +543,7 @@ void RocketStats::majRank(int _gameMode, float _currentMMR, SkillRank playerRank
 
 #pragma endregion
 
-void RocketStats::DisplayRank(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp)
+void RocketStats::DisplayRank(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, float scale)
 {
 	std::string tmpRank = currentRank;
 	if (currentTier >= rank_nb) {
@@ -551,12 +553,12 @@ void RocketStats::DisplayRank(CanvasWrapper canvas, Vector2 imagePos, Vector2 te
 	std::replace(tmpRank.begin(), tmpRank.end(), '_', ' ');
 	canvas.SetColor(255, 255, 255, 255);
 	canvas.SetPosition(imagePos);
-	if (image->IsLoadedForCanvas()) canvas.DrawTexture(image.get(), 0.5f);
+	if (image->IsLoadedForCanvas()) canvas.DrawTexture(image.get(), 0.5f * scale);
 	canvas.SetPosition(textPos_tmp);
-	canvas.DrawString(tmpRank + currentDivision, 2.0f, 2.0f);
+	canvas.DrawString(tmpRank + currentDivision, 2.0f * scale, 2.0f * scale);
 }
 
-void RocketStats::DisplayMMR(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current) {
+void RocketStats::DisplayMMR(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale) {
 	std::stringstream ss;
 	ss << std::fixed << std::setprecision(2) << current.myMMR;
 	std::string mmr = ss.str();
@@ -565,33 +567,33 @@ void RocketStats::DisplayMMR(CanvasWrapper canvas, Vector2 imagePos, Vector2 tex
 	std::string change = ss_change.str();
 	canvas.SetColor(255, 255, 255, 255);
 	canvas.SetPosition(imagePos);
-	if (crown->IsLoadedForCanvas()) canvas.DrawTexture(crown.get(), 0.5f);
+	if (crown->IsLoadedForCanvas()) canvas.DrawTexture(crown.get(), 0.5f * scale);
 	canvas.SetPosition(textPos_tmp);
 	canvas.SetColor(255, 255, 255, 255);
 	if (current.MMRChange > 0) {
 		change = "+" + change;
 	}
-	canvas.DrawString(mmr + " (" + change + ")", 2.0f, 2.0f);
+	canvas.DrawString(mmr + " (" + change + ")", 2.0f * scale, 2.0f * scale);
 }
-void RocketStats::DisplayWins(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current)
+void RocketStats::DisplayWins(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale)
 {
 	canvas.SetColor(255, 255, 255, 255);
 	canvas.SetPosition(imagePos);
-	if (win->IsLoadedForCanvas()) canvas.DrawTexture(win.get(), 0.5f);
+	if (win->IsLoadedForCanvas()) canvas.DrawTexture(win.get(), 0.5f * scale);
 	canvas.SetPosition(textPos_tmp);
 	canvas.SetColor(0, 255, 0, 255);
-	canvas.DrawString(std::to_string(current.win), 2.0f, 2.0f);
+	canvas.DrawString(std::to_string(current.win), 2.0f * scale, 2.0f * scale);
 }
-void RocketStats::DisplayLoose(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current)
+void RocketStats::DisplayLoose(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale)
 {
 	canvas.SetColor(255, 255, 255, 255);
 	canvas.SetPosition(imagePos);
-	if (loose->IsLoadedForCanvas()) canvas.DrawTexture(loose.get(), 0.5f);
+	if (loose->IsLoadedForCanvas()) canvas.DrawTexture(loose.get(), 0.5f * scale);
 	canvas.SetPosition(textPos_tmp);
 	canvas.SetColor(255, 0, 0, 255);
-	canvas.DrawString(std::to_string(current.losses), 2.0f, 2.0f);
+	canvas.DrawString(std::to_string(current.losses), 2.0f * scale, 2.0f * scale);
 }
-void RocketStats::DisplayStreak(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current)
+void RocketStats::DisplayStreak(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale)
 {
 	canvas.SetColor(255, 255, 255, 255);
 	canvas.SetPosition(textPos_tmp);
@@ -605,14 +607,16 @@ void RocketStats::DisplayStreak(CanvasWrapper canvas, Vector2 imagePos, Vector2 
 	if (current.streak > 0) {
 		streak = "+" + streak;
 	}
-	canvas.DrawString(streak, 2.0f, 2.0f);
+	canvas.DrawString(streak, 2.0f * scale, 2.0f * scale);
 }
 
 void RocketStats::Render(CanvasWrapper canvas)
 {
+	bool RS_Use_v1 = cvarManager->getCvar("RS_Use_v1").getBoolValue();
 	bool RS_disp_ig = cvarManager->getCvar("RS_disp_ig").getBoolValue();
 	float RS_x_position = cvarManager->getCvar("RS_x_position").getFloatValue();
 	float RS_y_position = cvarManager->getCvar("RS_y_position").getFloatValue();
+	float RS_scale = cvarManager->getCvar("RS_scale").getFloatValue();
 	cvarManager->getCvar("RS_disp_active").setValue(RS_disp_ig);
 
 	if (!RS_disp_ig) {
@@ -622,205 +626,149 @@ void RocketStats::Render(CanvasWrapper canvas)
 	bool RS_session = cvarManager->getCvar("RS_session").getBoolValue();
 	Stats current = (RS_session == true) ? session : stats[currentPlaylist];
 
-	auto canSize = canvas.GetSize();
-	Vector2 imagePos = { RS_x_position * canSize.X, RS_y_position * canSize.Y };
-	Vector2 textPos_tmp = imagePos;
+	if (!RS_Use_v1) {
+		auto canSize = canvas.GetSize();
+		Vector2 imagePos = { RS_x_position * canSize.X, RS_y_position * canSize.Y };
+		Vector2 textPos_tmp = imagePos;
 
-	textPos_tmp.X += 50;
-	textPos_tmp.Y += 10;
+		textPos_tmp.X += 50 * RS_scale;
+		textPos_tmp.Y += 10 * RS_scale;
 
-	// Display Rank
-	if (cvarManager->getCvar("RS_disp_rank").getBoolValue()) {
-		DisplayRank(canvas, imagePos, textPos_tmp);
-		imagePos.Y += 50;
-		textPos_tmp.Y += 50;
-	}
-	
-	// Display MMR
-	if (cvarManager->getCvar("RS_disp_mmr").getBoolValue()) {
-		DisplayMMR(canvas, imagePos, textPos_tmp, current);
-		imagePos.Y += 50;
-		textPos_tmp.Y += 50;
-	}
+		// Display Rank
+		if (cvarManager->getCvar("RS_disp_rank").getBoolValue()) {
+			DisplayRank(canvas, imagePos, textPos_tmp, RS_scale);
+			imagePos.Y += 50 * RS_scale;
+			textPos_tmp.Y += 50 * RS_scale;
+		}
 
-	// Display Win
-	if (cvarManager->getCvar("RS_disp_wins").getBoolValue()) {
-		DisplayWins(canvas, imagePos, textPos_tmp, current);
-		imagePos.Y += 50;
-		textPos_tmp.Y += 50;
-	}
+		// Display MMR
+		if (cvarManager->getCvar("RS_disp_mmr").getBoolValue()) {
+			DisplayMMR(canvas, imagePos, textPos_tmp, current, RS_scale);
+			imagePos.Y += 50 * RS_scale;
+			textPos_tmp.Y += 50 * RS_scale;
+		}
 
-	// Display Loose
-	if (cvarManager->getCvar("RS_disp_losses").getBoolValue()) {
-		DisplayLoose(canvas, imagePos, textPos_tmp, current);
-	}
+		// Display Win
+		if (cvarManager->getCvar("RS_disp_wins").getBoolValue()) {
+			DisplayWins(canvas, imagePos, textPos_tmp, current, RS_scale);
+			imagePos.Y += 50 * RS_scale;
+			textPos_tmp.Y += 50 * RS_scale;
+		}
 
-	if (cvarManager->getCvar("RS_disp_streak").getBoolValue()) {
-		textPos_tmp.X += 75;
-		textPos_tmp.Y -= 25;
-		DisplayStreak(canvas, imagePos, textPos_tmp, current);
-	}
+		// Display Loose
+		if (cvarManager->getCvar("RS_disp_losses").getBoolValue()) {
+			DisplayLoose(canvas, imagePos, textPos_tmp, current, RS_scale);
+		}
 
-	// CustomColor
-	/* bool custom_color = cvarManager->getCvar("RS_custom_color").getBoolValue();
-	std::string RS_Color_MMR = cvarManager->getCvar("RS_Color_MMR").getStringValue();
-	std::string RS_Color_MMRChange = cvarManager->getCvar("RS_Color_MMRChange").getStringValue();
-	std::string RS_Color_Wins = cvarManager->getCvar("RS_Color_Wins").getStringValue();
-	std::string RS_Color_Losses = cvarManager->getCvar("RS_Color_Losses").getStringValue();
-	std::string RS_Color_Streak = cvarManager->getCvar("RS_Color_Streak").getStringValue();
-	std::string RS_Color_Rank = cvarManager->getCvar("RS_Color_Rank").getStringValue();
-	std::string RS_Color_Gamemode = cvarManager->getCvar("RS_Color_GameMode").getStringValue();
-	std::string RS_Color_Background = cvarManager->getCvar("RS_Color_Background").getStringValue();
-
-	std::vector<std::string> RS_values = {
-		"RS_disp_gamemode",
-		"RS_disp_rank",
-		"RS_disp_mmr",
-		"RS_disp_mmr_change",
-		"RS_disp_wins",
-		"RS_disp_losses",
-		"RS_disp_streak",
-	};
-
-	unsigned int size = 0;
-	for (auto& it : RS_values) {
-		bool tmp = cvarManager->getCvar(it).getBoolValue();
-		if (tmp)
-			size += 1;
-	}
-
-	int xPos = canvas.GetSize().X / 100;
-	int yPos = canvas.GetSize().Y / 100;
-
-	// Draw box here
-	Vector2 drawLoc = { xPos * RS_x_position, yPos * RS_y_position };
-	Vector2 sizeBox = { 175 * RS_scale, (23 * size) * RS_scale };
-	canvas.SetPosition(drawLoc);
-
-	//Set background Color
-	if (custom_color) {
-		RGB background_color = HexadecimalToRGB(RS_Color_Background);
-		canvas.SetColor(background_color.r, background_color.g, background_color.b, 150);
+		if (cvarManager->getCvar("RS_disp_streak").getBoolValue()) {
+			textPos_tmp.X += 75 * RS_scale;
+			textPos_tmp.Y -= 25 * RS_scale;
+			DisplayStreak(canvas, imagePos, textPos_tmp, current, RS_scale);
+		}
 	}
 	else {
-		canvas.SetColor(0, 0, 0, 150);
-	}
-	canvas.FillBox(sizeBox);
+		std::vector<std::string> RS_values = {
+			"RS_disp_gamemode",
+			"RS_disp_rank",
+			"RS_disp_mmr",
+			"RS_disp_wins",
+			"RS_disp_losses",
+			"RS_disp_streak",
+		};
 
-	// Draw text
-	Vector2 textPos = { (drawLoc.X + 10), (drawLoc.Y + 10) };
-	for (auto& it : RS_values) {
-		bool tmp = cvarManager->getCvar(it).getBoolValue();
-
-		if (tmp) {
-			//Set the position
-			canvas.SetPosition(textPos);
-
-			//Set Color and Text for the value
-			if (it == "RS_disp_gamemode") {
-				RGB gamemode_color = HexadecimalToRGB(RS_Color_Gamemode);
-				canvas.SetColor(gamemode_color.r, gamemode_color.g, gamemode_color.b, 255);
-				//canvas.SetColor(180, 180, 180, 255);
-				canvas.DrawString(getPlaylistName(currentPlaylist), RS_scale, RS_scale);
+		unsigned int size = 0;
+		for (auto& it : RS_values) {
+			bool tmp = cvarManager->getCvar(it).getBoolValue();
+			if (tmp)
+				size += 1;
+			if (it == "RS_disp_mmr") {
+				size += 1;
 			}
-			else if (it == "RS_disp_rank")
-			{
-				std::string tmpRank = currentRank + currentDivision;
-				std::replace(tmpRank.begin(), tmpRank.end(), '_', ' ');
-				RGB rank_color = HexadecimalToRGB(RS_Color_Rank);
-				canvas.SetColor(rank_color.r, rank_color.g, rank_color.b, 255);
-				//canvas.SetColor(180, 180, 180, 255);
-				canvas.DrawString(tmpRank, RS_scale, RS_scale);
-			}
-			else if (it == "RS_disp_mmr")
-			{
-				RGB mmr_color = HexadecimalToRGB(RS_Color_MMR);
-				canvas.SetColor(mmr_color.r, mmr_color.g, mmr_color.b, 255);
-				//canvas.SetColor(180, 180, 180, 255);
-				std::stringstream ss;
-				ss << std::fixed << std::setprecision(2) << current.myMMR;
-				std::string mmr = ss.str();
-				canvas.DrawString("MMR : " + mmr, RS_scale, RS_scale);
-			}
-			else if (it == "RS_disp_mmr_change")
-			{
-				std::stringstream ss;
-				ss << std::fixed << std::setprecision(2) << current.MMRChange;
-				std::string mmr = ss.str();
-				if (current.MMRChange >= 0)
-				{
-					if (custom_color == true) {
-						RGB MMRChange_color = HexadecimalToRGB(RS_Color_MMRChange);
-						canvas.SetColor(MMRChange_color.r, MMRChange_color.g, MMRChange_color.b, 255);
-					}
-					else {
-						canvas.SetColor(30, 224, 24, 255);
-					}
-					canvas.DrawString("MMRChange : +" + mmr, RS_scale, RS_scale);
-				}
-				else
-				{
-					if (custom_color == true) {
-						RGB MMRChange_color = HexadecimalToRGB(RS_Color_MMRChange);
-						canvas.SetColor(MMRChange_color.r, MMRChange_color.g, MMRChange_color.b, 255);
-					}
-					else {
-						canvas.SetColor(224, 24, 24, 255);
-					}
-					canvas.DrawString("MMRChange : " + mmr, RS_scale, RS_scale);
-				}
-			}
-			else if (it == "RS_disp_wins")
-			{
-				if (custom_color) {
-					RGB wins_color = HexadecimalToRGB(RS_Color_Wins);
-					canvas.SetColor(wins_color.r, wins_color.g, wins_color.b, 255);
-				}
-				else {
-					canvas.SetColor(30, 224, 24, 255);
-				}
-				canvas.DrawString("Win : " + std::to_string(current.win), RS_scale, RS_scale);
-			}
-			else if (it == "RS_disp_losses")
-			{
-				if (custom_color) {
-					RGB losses_color = HexadecimalToRGB(RS_Color_Losses);
-					canvas.SetColor(losses_color.r, losses_color.g, losses_color.b, 255);
-				}
-				else {
-					canvas.SetColor(224, 24, 24, 255);
-				}
-				canvas.DrawString("Losses : " + std::to_string(current.losses), RS_scale, RS_scale);
-			}
-			else if (it == "RS_disp_streak")
-			{
-				if (current.streak >= 0)
-				{
-					if (custom_color == true) {
-						RGB streak_color = HexadecimalToRGB(RS_Color_Streak);
-						canvas.SetColor(streak_color.r, streak_color.g, streak_color.b, 255);
-					}
-					else {
-						canvas.SetColor(30, 224, 24, 255);
-					}
-					canvas.DrawString("Streak : +" + std::to_string(current.streak), RS_scale, RS_scale);
-				}
-				else
-				{
-					if (custom_color == true) {
-						RGB streak_color = HexadecimalToRGB(RS_Color_Streak);
-						canvas.SetColor(streak_color.r, streak_color.g, streak_color.b, 255);
-					}
-					else {
-						canvas.SetColor(224, 24, 24, 255);
-					}
-					canvas.DrawString("Streak : " + std::to_string(current.streak), RS_scale, RS_scale);
-				}
-			}
-			// Increase Y position;
-			textPos.Y += (20 * RS_scale);
 		}
-	} */
+
+		// Draw box here
+		Vector2 drawLoc = { canvas.GetSize().X * RS_x_position, canvas.GetSize().Y * RS_y_position };
+		Vector2 sizeBox = { 175 * RS_scale, (23 * size) * RS_scale };
+		canvas.SetPosition(drawLoc);
+
+		//Set background Color
+		canvas.SetColor(0, 0, 0, 150);
+		canvas.FillBox(sizeBox);
+
+		// Draw text
+		Vector2 textPos = { (drawLoc.X + 10), (drawLoc.Y + 10) };
+		for (auto& it : RS_values) {
+			bool tmp = cvarManager->getCvar(it).getBoolValue();
+
+			if (tmp) {
+				//Set the position
+				canvas.SetPosition(textPos);
+
+				//Set Color and Text for the value
+				if (it == "RS_disp_gamemode") {
+					canvas.SetColor(180, 180, 180, 255);
+					canvas.DrawString(getPlaylistName(currentPlaylist), RS_scale, RS_scale);
+				}
+				else if (it == "RS_disp_rank")
+				{
+					std::string tmpRank = currentRank + currentDivision;
+					std::replace(tmpRank.begin(), tmpRank.end(), '_', ' ');
+					canvas.SetColor(180, 180, 180, 255);
+					canvas.DrawString(tmpRank, RS_scale, RS_scale);
+				}
+				else if (it == "RS_disp_mmr")
+				{
+					canvas.SetColor(180, 180, 180, 255);
+					std::stringstream ss;
+					ss << std::fixed << std::setprecision(2) << current.myMMR;
+					std::string mmr = ss.str();
+					canvas.DrawString("MMR : " + mmr, RS_scale, RS_scale);
+
+					textPos.Y += (20 * RS_scale);
+					canvas.SetPosition(textPos);
+
+					std::stringstream ss_change;
+					ss_change << std::fixed << std::setprecision(2) << current.MMRChange;
+					std::string mmrchange = ss_change.str();
+					if (current.MMRChange >= 0)
+					{
+						canvas.SetColor(30, 224, 24, 255);
+						canvas.DrawString("MMRChange : +" + mmrchange, RS_scale, RS_scale);
+					}
+					else
+					{
+						canvas.SetColor(224, 24, 24, 255);
+						canvas.DrawString("MMRChange : " + mmrchange, RS_scale, RS_scale);
+					}
+				}
+				else if (it == "RS_disp_wins")
+				{
+					canvas.SetColor(30, 224, 24, 255);
+					canvas.DrawString("Win : " + std::to_string(current.win), RS_scale, RS_scale);
+				}
+				else if (it == "RS_disp_losses")
+				{
+					canvas.SetColor(224, 24, 24, 255);
+					canvas.DrawString("Losses : " + std::to_string(current.losses), RS_scale, RS_scale);
+				}
+				else if (it == "RS_disp_streak")
+				{
+					if (current.streak >= 0)
+					{
+						canvas.SetColor(30, 224, 24, 255);
+						canvas.DrawString("Streak : +" + std::to_string(current.streak), RS_scale, RS_scale);
+					}
+					else
+					{
+						canvas.SetColor(224, 24, 24, 255);
+						canvas.DrawString("Streak : " + std::to_string(current.streak), RS_scale, RS_scale);
+					}
+				}
+				// Increase Y position;
+				textPos.Y += (20 * RS_scale);
+			}
+		}
+	}
 }
 
 void RocketStats::writeMMR()
