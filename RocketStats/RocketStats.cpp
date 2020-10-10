@@ -220,13 +220,7 @@ void RocketStats::Start(std::string eventName)
 
 		//Session or Gamemode
 
-		float save = mmrw.GetPlayerMMR(mySteamID, currentPlaylist);
-		if (stats[currentPlaylist].isInit == false) {
-			stats[currentPlaylist].myMMR = save;
-			stats[currentPlaylist].isInit = true;
-		}
-		stats[currentPlaylist].MMRChange = stats[currentPlaylist].MMRChange + (save - stats[currentPlaylist].myMMR);
-		stats[currentPlaylist].myMMR = save;
+		ComputeMMR(0);
 
 		writeMMRChange();
 		writeWin();
@@ -349,6 +343,11 @@ void RocketStats::ComputeMMR(int intervalTime) {
 		}
 
 		currentTier = playerRank.Tier;
+		
+		if (stats[currentPlaylist].isInit == false) {
+			stats[currentPlaylist].myMMR = save;
+			stats[currentPlaylist].isInit = true;
+		}
 		stats[currentPlaylist].MMRChange = stats[currentPlaylist].MMRChange + (save - stats[currentPlaylist].myMMR);
 		stats[currentPlaylist].myMMR = save;
 		majRank(currentPlaylist, stats[currentPlaylist].myMMR, playerRank);
