@@ -2,6 +2,7 @@ RocketStats Plugin
 9|Check/Uncheck what you want to display
 1|Display session information instead of game mode|RS_session
 1|Display information in game|RS_disp_ig
+1|Hide overlay while in-game|RS_hide_overlay_ig
 1|Use Overlay v1|RS_Use_v1
 10|RS_disp_active
 1|Display Game Mode|RS_disp_gamemode
