@@ -129,6 +129,7 @@ void RocketStats::onLoad()
 	// Load Settings
 	cvarManager->registerCvar("RS_Use_v1", "0", "Use the v1 overlay", true, true, 0, true, 1);
 	cvarManager->registerCvar("RS_disp_ig", "1", "Display information panel", true, true, 0, true, 1);
+	cvarManager->registerCvar("RS_hide_overlay_ig", "0", "Hide overlay while in-game", true, true, 0, true, 1);
 	cvarManager->registerCvar("RS_disp_mmr", "1", "Display the current MMR", true, true, 0, true, 1);
 	cvarManager->registerCvar("RS_disp_wins", "1", "Display the wins on the current game mode", true, true, 0, true, 1);
 	cvarManager->registerCvar("RS_disp_losses", "1", "Display the losses on the current game mode", true, true, 0, true, 1);
@@ -618,6 +619,10 @@ void RocketStats::Render(CanvasWrapper canvas)
 	cvarManager->getCvar("RS_disp_active").setValue(RS_disp_ig);
 
 	if (!RS_disp_ig) {
+		return;
+	}
+	
+	if (isGameStarted && !isGameEnded && RS_hide_overlay_ig) {
 		return;
 	}
 
