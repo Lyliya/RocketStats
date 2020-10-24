@@ -2,7 +2,9 @@ RocketStats Plugin
 9|Check/Uncheck what you want to display
 1|Display session information instead of game mode|RS_session
 1|Display information in game|RS_disp_ig
+1|Use Overlay v1|RS_Use_v1
 10|RS_disp_active
+1|Display Game Mode|RS_disp_gamemode
 1|Display MMR|RS_disp_mmr
 1|Display Wins|RS_disp_wins
 1|Display Losses|RS_disp_losses
@@ -12,6 +14,7 @@ RocketStats Plugin
 9|Place your overlay (Only if display information in game is check)
 4|X position|RS_x_position|0|1.0
 4|Y position|RS_y_position|0|1.0
+4|Scale|RS_scale|0|10
 11|
 1|Enable Boost|RocketStats_stop_boost
 8|
@@ -19,8 +22,8 @@ RocketStats Plugin
 0|Load|RocketStats_load
 0|Unload|RocketStats_unload
 8|
-9|Version 2.0, Developped by @Lyliiya & @NuSa_yt for @Maylie_tv
-9|Updated in 1.5 by Th3Ant#9411
+9|Version 2.2, Developped by @Lyliiya & @NuSa_yt for @Maylie_tv
+9|Update in 2.2 by Lyliya#4276, Larsluph#7713 (scale and v1 toggle, MMR and session Fix)
+9|Update in 2.1 by Lyliya#4276, Th3Ant#9411, Larsluph#7713 (resolution fix, placement match)
 9|Update in 2.0 by Lyliya#4276, Larsluph#7713, Th3Ant#9411 & NuSa#0666 (New overlay, new ranks, bugfix)
-9|Update in 2.1 by Lyliya#4276, Th3Ant#9411, Larsluph#7713 (resolution fix, placement match) 
 9|Donate : https://www.paypal.me/rocketstats
