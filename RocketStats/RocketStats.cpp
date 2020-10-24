@@ -613,6 +613,7 @@ void RocketStats::Render(CanvasWrapper canvas)
 {
 	bool RS_Use_v1 = cvarManager->getCvar("RS_Use_v1").getBoolValue();
 	bool RS_disp_ig = cvarManager->getCvar("RS_disp_ig").getBoolValue();
+	bool RS_hide_overlay_ig = cvarManager->getCvar("RS_hide_overlay_ig").getBoolValue();
 	float RS_x_position = cvarManager->getCvar("RS_x_position").getFloatValue();
 	float RS_y_position = cvarManager->getCvar("RS_y_position").getFloatValue();
 	float RS_scale = cvarManager->getCvar("RS_scale").getFloatValue();
