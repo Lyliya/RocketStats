@@ -45,7 +45,7 @@ public:
 	void writeLosses();
 
 	int currentPlaylist;
-	bool isGameEnded;
+	bool isGameEnded = false;
 	bool isGameStarted = false;
 	bool isBoosting = false;
 
