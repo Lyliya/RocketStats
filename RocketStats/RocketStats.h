@@ -64,7 +64,6 @@ public:
 	std::map<int, Stats> stats;
 	Stats session;
 
-	//Var
 	int myTeamNum = -1;
 	SteamID mySteamID = {0};
 	
@@ -120,15 +119,38 @@ public:
 		{2, "Doubles"},
 		{3, "Standard"},
 		{4, "Chaos"},
+
+		{6, "Private Match"},
+		{7, "Offline Season"},
+		{8, "Offline Splitscreen"},
+		{9, "Training"},
+
 		{10, "Ranked Duel"},
 		{11, "Ranked Doubles"},
 		{12, "Ranked Solo Standard"},
 		{13, "Ranked Standard"},
+
 		{14, "Mutator Mashup"},
+		{15, "SnowdayPromotion"}, // not sure
 		{16, "Rocket Labs"},
+		{17, "Casual Basketball"},
+		{18, "Casual Rumble"},
+		{23, "Casual Dropshot"}, // not sure
+
+		{19, "Workshop Map"},
+		{22, "Tournament Match"},
+		{24, "Local Match"},
+
 		{27, "Hoops"},
 		{28, "Rumble"},
 		{29, "Dropshot"},
 		{30, "Snowday"},
+
+		{31, "Haunted Ball"},
+		{32, "Beachball"},
+		{33, "Rugby"},
+		{37, "RumShot"}, // not sure
+		{38, "Heatseeker"}, // not sure
+		{41, "Boomer Ball"}
 	};
 };
