@@ -3,80 +3,74 @@
 #include "bakkesmod/plugin/bakkesmodplugin.h"
 #include "bakkesmod/plugin/pluginwindow.h"
 
-typedef struct Stats {
-	float myMMR = 0;
-	float MMRChange = 0;
+struct Stats {
+	float myMMR = 100.0f;
+	float MMRChange = 0.0f;
 	int win = 0;
 	int losses = 0;
 	int streak = 0;
 	bool isInit = 0;
-} Stats;
-
-typedef struct RGB {
-	unsigned char r;
-	unsigned char g;
-	unsigned char b;
-} RGB;
+};
 
 class RocketStats : public BakkesMod::Plugin::BakkesModPlugin
 {
-private : 
+private: 
 	std::shared_ptr<bool> enabled;
 
 public:
-	//Function
 	virtual void onLoad();
 	virtual void onUnload();
-	void Start(std::string eventName);
-	void GameEnd(std::string eventName);
-	void OnBoost(std::string eventName);
-	void OnBoostEnd(std::string eventName);
-	void WriteInFile(std::string _fileName, std::string _value);
-	void GameDestroyed(std::string eventName);
-	void Render(CanvasWrapper canvas);
-	void ComputeMMR(int intervalTime);
-	void SessionStats();
+	void togglePlugin(bool state);
 
-	// Write info in file
+	std::string GetRank(int tierID);
+	std::string GetPlaylistName(int playlistID);
+
+	void GameStart(std::string eventName);
+	void GameEnd(std::string eventName);
+	void GameDestroyed(std::string eventName);
+
+	void UpdateMMR(float intervalTime);
+	void SessionStats();
+	void ResetStats();
+
+	void OnBoostStart(std::string eventName);
+	void OnBoostEnd(std::string eventName);
+	void StopBoost();
+
+
+	void InitRank();
+	void MajRank(int _gameMode, float _currentMMR, SkillRank playerRank);
+
+	void DisplayRank(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, float scale);
+	void DisplayMMR(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale);
+	void DisplayWins(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale);
+	void DisplayLoose(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale);
+	void DisplayStreak(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale);
+	void Render(CanvasWrapper canvas);
+
+	void WriteInFile(std::string _fileName, std::string _value);
 	void writeMMR();
 	void writeMMRChange();
 	void writeStreak();
 	void writeWin();
 	void writeLosses();
 
-	int currentPlaylist;
+	int currentPlaylist = 0;
 	bool isGameEnded = false;
 	bool isGameStarted = false;
 	bool isBoosting = false;
 
-	std::string GetRank(int tierID);
 
 	std::map<int, Stats> stats;
 	Stats session;
 
-	//Ranked function
-	void initRank();
-	void majRank(int _gameMode, float _currentMMR, SkillRank playerRank);
-	
-	void ResetStats();
-	void StopBoost();
-	void togglePlugin(bool state);
-	
-	void DisplayRank(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, float scale);
-	void DisplayMMR(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale);
-	void DisplayWins(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale);
-	void DisplayLoose(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale);
-	void DisplayStreak(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale);
-
-
-	//Var
 	int myTeamNum = -1;
-	SteamID mySteamID;
+	SteamID mySteamID = {0};
 	
-	int lastGameMode;
-	int currentGameMode;
-	float currentMMR;
-	int currentTier;
+	int lastGameMode = 0;
+	int currentGameMode = 0;
+	float currentMMR = 100.0f;
+	int currentTier = 0;
 	std::string currentDivision;
 	std::string currentRank;
 	std::string lastRank;
@@ -125,16 +119,38 @@ public:
 		{2, "Doubles"},
 		{3, "Standard"},
 		{4, "Chaos"},
+
+		{6, "Private Match"},
+		{7, "Offline Season"},
+		{8, "Offline Splitscreen"},
+		{9, "Training"},
+
 		{10, "Ranked Duel"},
 		{11, "Ranked Doubles"},
 		{12, "Ranked Solo Standard"},
 		{13, "Ranked Standard"},
+
 		{14, "Mutator Mashup"},
+		{15, "SnowdayPromotion"}, // not sure
 		{16, "Rocket Labs"},
+		{17, "Casual Basketball"},
+		{18, "Casual Rumble"},
+		{23, "Casual Dropshot"}, // not sure
+
+		{19, "Workshop Map"},
+		{22, "Tournament Match"},
+		{24, "Local Match"},
+
 		{27, "Hoops"},
 		{28, "Rumble"},
 		{29, "Dropshot"},
 		{30, "Snowday"},
+
+		{31, "Haunted Ball"},
+		{32, "Beachball"},
+		{33, "Rugby"},
+		{37, "RumShot"}, // not sure
+		{38, "Heatseeker"}, // not sure
+		{41, "Boomer Ball"}
 	};
-	std::string getPlaylistName(int playlistID);
 };
