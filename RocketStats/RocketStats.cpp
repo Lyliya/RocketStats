@@ -12,7 +12,7 @@
 #include <fstream>
 #include <thread>
 
-BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "2.2", PERMISSION_ALL)
+BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "2.3", PERMISSION_ALL)
 
 std::string RocketStats::GetRank(int tierID)
 {
@@ -481,6 +481,7 @@ void RocketStats::DisplayRank(CanvasWrapper canvas, Vector2 imagePos, Vector2 te
 	}
 	auto image = rank[currentTier].image;
 	replace(tmpRank, "_", " ");
+	replace(tmpRank, "_", " ");
 
 	canvas.SetColor(LinearColor{ 255, 255, 255, 255 });
 	canvas.SetPosition(imagePos);
@@ -654,6 +655,7 @@ void RocketStats::Render(CanvasWrapper canvas)
 				else if (it == "RS_disp_rank")
 				{
 					std::string tmpRank = currentRank + currentDivision;
+					replace(tmpRank, "_", " ");
 					replace(tmpRank, "_", " ");
 					canvas.SetColor(LinearColor{ 180, 180, 180, 255 });
 					canvas.DrawString(tmpRank, RS_scale, RS_scale);
