@@ -4,6 +4,7 @@
 
 #include "RocketStats.h"
 #include "utils/parser.h"
+#include "bakkesmod/wrappers/includes.h"
 
 #include <iostream>
 #include <stdio.h>
@@ -12,7 +13,7 @@
 #include <fstream>
 #include <thread>
 
-BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "2.3", PERMISSION_ALL)
+BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "2.4", PERMISSION_ALL)
 
 std::string RocketStats::GetRank(int tierID)
 {
@@ -72,14 +73,16 @@ void RocketStats::onLoad()
 	gameWrapper->HookEvent("Function CarComponent_Boost_TA.Active.EndState", bind(&RocketStats::OnBoostEnd, this, std::placeholders::_1));
 	gameWrapper->HookEvent("Function TAGame.GameEvent_Soccar_TA.Destroyed", bind(&RocketStats::GameDestroyed, this, std::placeholders::_1));
 
-	WriteInFile("RocketStats_Win.txt", std::to_string(0));
-	WriteInFile("RocketStats_Streak.txt", std::to_string(0));
-	WriteInFile("RocketStats_Loose.txt", std::to_string(0));
-	WriteInFile("RocketStats_MMRChange.txt", std::to_string(0));
-	WriteInFile("RocketStats_MMR.txt", std::to_string(0));
-	WriteInFile("RocketStats_Rank.txt", "");
-	WriteInFile("RocketStats_GameMode.txt", "");
-	WriteInFile("RocketStats_images/BoostState.txt", std::to_string(-1));
+	mmrNotifierToken = gameWrapper->GetMMRWrapper().RegisterMMRNotifier(std::bind(&RocketStats::UpdateMMR, this, std::placeholders::_1));
+
+	WriteInFile(L"RocketStats_Win.txt", std::to_string(0));
+	WriteInFile(L"RocketStats_Streak.txt", std::to_string(0));
+	WriteInFile(L"RocketStats_Loose.txt", std::to_string(0));
+	WriteInFile(L"RocketStats_MMRChange.txt", std::to_string(0));
+	WriteInFile(L"RocketStats_MMR.txt", std::to_string(0));
+	WriteInFile(L"RocketStats_Rank.txt", "");
+	WriteInFile(L"RocketStats_GameMode.txt", "");
+	WriteInFile(L"RocketStats_images/BoostState.txt", std::to_string(-1));
 
 	InitRank();
 
@@ -144,14 +147,14 @@ void RocketStats::togglePlugin(bool state)
 			gameWrapper->HookEvent("Function TAGame.GameEvent_Soccar_TA.Destroyed", bind(&RocketStats::GameDestroyed, this, std::placeholders::_1));
 			gameWrapper->RegisterDrawable(std::bind(&RocketStats::Render, this, std::placeholders::_1));
 
-			WriteInFile("RocketStats_Win.txt", std::to_string(0));
-			WriteInFile("RocketStats_Streak.txt", std::to_string(0));
-			WriteInFile("RocketStats_Loose.txt", std::to_string(0));
-			WriteInFile("RocketStats_MMRChange.txt", std::to_string(0));
-			WriteInFile("RocketStats_MMR.txt", std::to_string(0));
-			WriteInFile("RocketStats_Rank.txt", "");
-			WriteInFile("RocketStats_GameMode.txt", "");
-			WriteInFile("RocketStats_images/BoostState.txt", std::to_string(-1));
+			WriteInFile(L"RocketStats_Win.txt", std::to_string(0));
+			WriteInFile(L"RocketStats_Streak.txt", std::to_string(0));
+			WriteInFile(L"RocketStats_Loose.txt", std::to_string(0));
+			WriteInFile(L"RocketStats_MMRChange.txt", std::to_string(0));
+			WriteInFile(L"RocketStats_MMR.txt", std::to_string(0));
+			WriteInFile(L"RocketStats_Rank.txt", "");
+			WriteInFile(L"RocketStats_GameMode.txt", "");
+			WriteInFile(L"RocketStats_images/BoostState.txt", std::to_string(-1));
 
 			InitRank();
 
@@ -175,19 +178,19 @@ void RocketStats::GameStart(std::string eventName)
 		TeamInfoWrapper myTeam = mePRI.GetTeam();
 		if (myTeam.IsNull()) return;
 
-		// Get and Display SteamID
-		mySteamID = mePRI.GetUniqueId();
+		// Get and Display player UniqueID
+		myUniqueID = mePRI.GetUniqueIdWrapper();
 
 		// Get and Update MMR
 		MMRWrapper mmrw = gameWrapper->GetMMRWrapper();
 		currentPlaylist = mmrw.GetCurrentPlaylist();
-		SkillRank playerRank = mmrw.GetPlayerRank(mySteamID, currentPlaylist);
+		SkillRank playerRank = mmrw.GetPlayerRank(myUniqueID, currentPlaylist);
 		currentTier = playerRank.Tier;
-		WriteInFile("RocketStats_GameMode.txt", GetPlaylistName(currentPlaylist));
+		WriteInFile(L"RocketStats_GameMode.txt", GetPlaylistName(currentPlaylist));
 
 		//Session or Gamemode
 
-		UpdateMMR(0);
+		//UpdateMMR(0); not needed since notifier added
 
 		writeMMRChange();
 		writeWin();
@@ -203,7 +206,7 @@ void RocketStats::GameStart(std::string eventName)
 		isGameEnded = false;
 
 		MajRank(currentPlaylist, stats[currentPlaylist].myMMR, playerRank);
-		WriteInFile("RocketStats_images/BoostState.txt", std::to_string(0));
+		WriteInFile(L"RocketStats_images/BoostState.txt", std::to_string(0));
 	}
 }
 
@@ -260,13 +263,13 @@ void RocketStats::GameEnd(std::string eventName)
 			writeLosses();
 		}
 
-		UpdateMMR(3);
+		//UpdateMMR(3); not needed since Notifier added
 		writeStreak();
 
 		// Reset myTeamNum security
 		myTeamNum = -1;
 
-		WriteInFile("RocketStats_images/BoostState.txt", std::to_string(-1));
+		WriteInFile(L"RocketStats_images/BoostState.txt", std::to_string(-1));
 	}
 }
 
@@ -291,44 +294,36 @@ void RocketStats::GameDestroyed(std::string eventName)
 		writeStreak();
 		writeLosses();
 
-		UpdateMMR(10);
+		//UpdateMMR(10); not needed since Notifier added
 	}
 	isGameEnded = true;
 	isGameStarted = false;
-	WriteInFile("RocketStats_images/BoostState.txt", std::to_string(-1));
+	WriteInFile(L"RocketStats_images/BoostState.txt", std::to_string(-1));
 }
 #pragma endregion
 
 #pragma region StatsMgmt
-void RocketStats::UpdateMMR(float intervalTime)
+void RocketStats::UpdateMMR(UniqueIDWrapper id)
 {
-	gameWrapper->SetTimeout([&](GameWrapper* gameWrapper)
-	{
-		MMRWrapper mmrw = gameWrapper->GetMMRWrapper();
+	MMRWrapper mmrw = gameWrapper->GetMMRWrapper();
 
-		float save = mmrw.GetPlayerMMR(mySteamID, currentPlaylist);
-		SkillRank playerRank = mmrw.GetPlayerRank(mySteamID, currentPlaylist);
+	float save = mmrw.GetPlayerMMR(myUniqueID, currentPlaylist);
+	SkillRank playerRank = mmrw.GetPlayerRank(myUniqueID, currentPlaylist);
 
-		if (save <= 0)
-		{
-			return UpdateMMR(1);
-		}
-
-		currentTier = playerRank.Tier;
+	currentTier = playerRank.Tier;
 		
-		if (stats[currentPlaylist].isInit == false)
-		{
-			stats[currentPlaylist].myMMR = save;
-			stats[currentPlaylist].isInit = true;
-		}
-		stats[currentPlaylist].MMRChange = stats[currentPlaylist].MMRChange + (save - stats[currentPlaylist].myMMR);
+	if (stats[currentPlaylist].isInit == false)
+	{
 		stats[currentPlaylist].myMMR = save;
-		MajRank(currentPlaylist, stats[currentPlaylist].myMMR, playerRank);
+		stats[currentPlaylist].isInit = true;
+	}
+	stats[currentPlaylist].MMRChange = stats[currentPlaylist].MMRChange + (save - stats[currentPlaylist].myMMR);
+	stats[currentPlaylist].myMMR = save;
+	MajRank(currentPlaylist, stats[currentPlaylist].myMMR, playerRank);
 
-		SessionStats();
-		writeMMR();
-		writeMMRChange();
-	}, intervalTime);
+	SessionStats();
+	writeMMR();
+	writeMMRChange();
 }
 
 void RocketStats::SessionStats()
@@ -356,13 +351,13 @@ void RocketStats::ResetStats()
 		kv.second = Stats();
 	}
 	session = Stats();
-	WriteInFile("RocketStats_Win.txt", std::to_string(0));
-	WriteInFile("RocketStats_Streak.txt", std::to_string(0));
-	WriteInFile("RocketStats_Loose.txt", std::to_string(0));
-	WriteInFile("RocketStats_MMRChange.txt", std::to_string(0));
-	WriteInFile("RocketStats_MMR.txt", std::to_string(0));
-	WriteInFile("RocketStats_Rank.txt", "");
-	WriteInFile("RocketStats_GameMode.txt", "");
+	WriteInFile(L"RocketStats_Win.txt", std::to_string(0));
+	WriteInFile(L"RocketStats_Streak.txt", std::to_string(0));
+	WriteInFile(L"RocketStats_Loose.txt", std::to_string(0));
+	WriteInFile(L"RocketStats_MMRChange.txt", std::to_string(0));
+	WriteInFile(L"RocketStats_MMR.txt", std::to_string(0));
+	WriteInFile(L"RocketStats_Rank.txt", "");
+	WriteInFile(L"RocketStats_GameMode.txt", "");
 
 	InitRank();
 }
@@ -384,7 +379,7 @@ void RocketStats::OnBoostStart(std::string eventName)
 		if (!bWrap.IsNull() && bWrap.GetbActive() == 1 && !isBoosting)
 		{
 			isBoosting = true;
-			WriteInFile("RocketStats_images/BoostState.txt", std::to_string(1));
+			WriteInFile(L"RocketStats_images/BoostState.txt", std::to_string(1));
 		}
 	}
 
@@ -406,7 +401,7 @@ void RocketStats::OnBoostEnd(std::string eventName)
 		if (!bWrap.IsNull() && bWrap.GetbActive() == 0 && isBoosting)
 		{
 			isBoosting = false;
-			WriteInFile("RocketStats_images/BoostState.txt", std::to_string(0));
+			WriteInFile(L"RocketStats_images/BoostState.txt", std::to_string(0));
 		}
 	}
 	return;
@@ -428,7 +423,7 @@ void RocketStats::InitRank()
 
 	std::string _value = "<meta http-equiv = \"refresh\" content = \"5\" /><img src = \"current.png\" width = \"100\" height = \"100\" />";
 
-	WriteInFile("RocketStats_images/rank.html", _value);
+	WriteInFile(L"RocketStats_images/rank.html", _value);
 }
 
 void RocketStats::MajRank(int _gameMode, float _currentMMR, SkillRank playerRank)
@@ -454,8 +449,8 @@ void RocketStats::MajRank(int _gameMode, float _currentMMR, SkillRank playerRank
 		{
 			std::string _value = "<meta http-equiv = \"refresh\" content = \"5\" /><img src = \"" + currentRank + ".png" + "\" width = \"100\" height = \"100\" />";
 
-			WriteInFile("RocketStats_images/rank.html", _value);
-			WriteInFile("RocketStats_Rank.txt", currentRank);
+			WriteInFile(L"RocketStats_images/rank.html", _value);
+			WriteInFile(L"RocketStats_Rank.txt", currentRank);
 		}
 	}
 	else
@@ -465,8 +460,8 @@ void RocketStats::MajRank(int _gameMode, float _currentMMR, SkillRank playerRank
 
 		std::string _value = "<meta http-equiv = \"refresh\" content = \"5\" /><img src = \"current.png\" width = \"100\" height = \"100\" />";
 
-		WriteInFile("RocketStats_images/rank.html", _value);
-		WriteInFile("RocketStats_Rank.txt", currentRank);
+		WriteInFile(L"RocketStats_images/rank.html", _value);
+		WriteInFile(L"RocketStats_Rank.txt", currentRank);
 	}
 }
 #pragma endregion
@@ -713,11 +708,11 @@ void RocketStats::Render(CanvasWrapper canvas)
 #pragma endregion
 
 #pragma region File I/O
-void RocketStats::WriteInFile(std::string _fileName, std::string _value)
+void RocketStats::WriteInFile(const wchar_t* _fileName, std::string _value)
 {
 	std::ofstream myFile;
-
-	myFile.open("./bakkesmod/RocketStats/" + _fileName, std::ios::out | std::ios::trunc);
+	
+	myFile.open(gameWrapper->GetBakkesModPathW() + L"RocketStats/" + _fileName, std::ios::out | std::ios::trunc);
 
 	if (myFile.is_open())
 	{
@@ -730,7 +725,7 @@ void RocketStats::WriteInFile(std::string _fileName, std::string _value)
 void RocketStats::writeMMR()
 {
 	bool RS_session = cvarManager->getCvar("RS_session").getBoolValue();
-	WriteInFile("RocketStats_MMR.txt", std::to_string(int(stats[currentPlaylist].myMMR)));
+	WriteInFile(L"RocketStats_MMR.txt", std::to_string(int(stats[currentPlaylist].myMMR)));
 }
 void RocketStats::writeMMRChange()
 {
@@ -738,8 +733,8 @@ void RocketStats::writeMMRChange()
 	Stats current = (RS_session == true) ? session : stats[currentPlaylist];
 	int tmp = int(((current.MMRChange < 0) ? -1 : 1) * std::round(fabs(current.MMRChange)));
 
-	if (tmp >= 0) WriteInFile("RocketStats_MMRChange.txt", "+" + std::to_string(tmp));
-	else WriteInFile("RocketStats_MMRChange.txt", std::to_string(tmp));
+	if (tmp >= 0) WriteInFile(L"RocketStats_MMRChange.txt", "+" + std::to_string(tmp));
+	else WriteInFile(L"RocketStats_MMRChange.txt", std::to_string(tmp));
 }
 
 void RocketStats::writeStreak()
@@ -747,21 +742,21 @@ void RocketStats::writeStreak()
 	bool RS_session = cvarManager->getCvar("RS_session").getBoolValue();
 	Stats current = (RS_session == true) ? session : stats[currentPlaylist];
 
-	if (current.streak > 0) WriteInFile("RocketStats_Streak.txt", "+" + std::to_string(current.streak));
-	else WriteInFile("RocketStats_Streak.txt", std::to_string(current.streak));
+	if (current.streak > 0) WriteInFile(L"RocketStats_Streak.txt", "+" + std::to_string(current.streak));
+	else WriteInFile(L"RocketStats_Streak.txt", std::to_string(current.streak));
 }
 
 void RocketStats::writeWin()
 {
 	bool RS_session = cvarManager->getCvar("RS_session").getBoolValue();
 	Stats current = (RS_session == true) ? session : stats[currentPlaylist];
-	WriteInFile("RocketStats_Win.txt", std::to_string(current.win));
+	WriteInFile(L"RocketStats_Win.txt", std::to_string(current.win));
 }
 
 void RocketStats::writeLosses()
 {
 	bool RS_session = cvarManager->getCvar("RS_session").getBoolValue();
 	Stats current = (RS_session == true) ? session : stats[currentPlaylist];
-	WriteInFile("RocketStats_Loose.txt", std::to_string(current.losses));
+	WriteInFile(L"RocketStats_Loose.txt", std::to_string(current.losses));
 }
 #pragma endregion

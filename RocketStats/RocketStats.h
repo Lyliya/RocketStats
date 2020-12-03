@@ -29,7 +29,7 @@ public:
 	void GameEnd(std::string eventName);
 	void GameDestroyed(std::string eventName);
 
-	void UpdateMMR(float intervalTime);
+	void UpdateMMR(UniqueIDWrapper id);
 	void SessionStats();
 	void ResetStats();
 
@@ -48,7 +48,7 @@ public:
 	void DisplayStreak(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale);
 	void Render(CanvasWrapper canvas);
 
-	void WriteInFile(std::string _fileName, std::string _value);
+	void WriteInFile(const wchar_t* _fileName, std::string _value);
 	void writeMMR();
 	void writeMMRChange();
 	void writeStreak();
@@ -65,7 +65,8 @@ public:
 	Stats session;
 
 	int myTeamNum = -1;
-	SteamID mySteamID = {0};
+	UniqueIDWrapper myUniqueID = {0};
+	std::unique_ptr<MMRNotifierToken> mmrNotifierToken;
 	
 	int lastGameMode = 0;
 	int currentGameMode = 0;
@@ -81,13 +82,12 @@ public:
 
 	bool isLoad = true;
 
-	int rank_nb = 23;
-
 	typedef struct s_ranks {
 		std::string name;
 		std::shared_ptr<ImageWrapper> image;
 	} t_ranks;
 
+	int rank_nb = 23;
 	t_ranks rank[23] = {
 		{"Unranked", nullptr},
 		{"Bronze_I", nullptr},
