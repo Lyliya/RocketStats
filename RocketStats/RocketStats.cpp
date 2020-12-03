@@ -6,7 +6,7 @@
 #include <fstream>
 #include <utils/parser.h>
 
-BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "3.", PERMISSION_ALL)
+BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "3.0", PERMISSION_ALL)
 
 std::string RocketStats::GetRank(int tierID)
 {
