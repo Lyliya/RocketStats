@@ -3,16 +3,10 @@
  * ================================== */
 
 #include "RocketStats.h"
-#include "utils/parser.h"
-
-#include <iostream>
-#include <stdio.h>
-#include <chrono>
-#include <cmath>
 #include <fstream>
-#include <thread>
+#include <utils/parser.h>
 
-BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "2.3", PERMISSION_ALL)
+BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "3.0", PERMISSION_ALL)
 
 std::string RocketStats::GetRank(int tierID)
 {
@@ -29,13 +23,15 @@ std::string RocketStats::GetPlaylistName(int playlistID)
 #pragma region PluginLoadRoutines
 void RocketStats::onLoad()
 {
-	crown = std::make_shared<ImageWrapper>("./bakkesmod/RocketStats/RocketStats_images/crown.png", true);
-	win = std::make_shared<ImageWrapper>("./bakkesmod/RocketStats/RocketStats_images/win.png", true);
-	loose = std::make_shared<ImageWrapper>("./bakkesmod/RocketStats/RocketStats_images/loose.png", true);
+	//notifierToken = gameWrapper->GetMMRWrapper().RegisterMMRNotifier(std::bind(&RocketStats::UpdateMMR, this, std::placeholders::_1));
+
+	crown = std::make_shared<ImageWrapper>(gameWrapper->FixRelativePath("./bakkesmod/RocketStats/RocketStats_images/crown.png").string(), true);
+	win = std::make_shared<ImageWrapper>(gameWrapper->FixRelativePath("./bakkesmod/RocketStats/RocketStats_images/win.png").string(), true);
+	loose = std::make_shared<ImageWrapper>(gameWrapper->FixRelativePath("./bakkesmod/RocketStats/RocketStats_images/loose.png").string(), true);
 
 	for (int i = 0; i < rank_nb; i++)
 	{
-		rank[i].image = std::make_shared<ImageWrapper>("./bakkesmod/RocketStats/RocketStats_images/" + rank[i].name + ".png", true);
+		rank[i].image = std::make_shared<ImageWrapper>(gameWrapper->FixRelativePath("./bakkesmod/RocketStats/RocketStats_images/" + rank[i].name + ".png").string(), true);
 		if (rank[i].image->LoadForCanvas()) cvarManager->log(rank[i].name + ": image load");
 	}
 
@@ -164,6 +160,7 @@ void RocketStats::togglePlugin(bool state)
 #pragma region GameMgmt
 void RocketStats::GameStart(std::string eventName)
 {
+	cvarManager->log("GameStart");
 	if (gameWrapper->IsInOnlineGame())
 	{
 		CarWrapper me = gameWrapper->GetLocalCar();
@@ -171,21 +168,15 @@ void RocketStats::GameStart(std::string eventName)
 
 		PriWrapper mePRI = me.GetPRI();
 		if (mePRI.IsNull()) return;
-		
+
 		TeamInfoWrapper myTeam = mePRI.GetTeam();
 		if (myTeam.IsNull()) return;
 
-		// Get and Display SteamID
-		mySteamID = mePRI.GetUniqueId();
-
-		// Get and Update MMR
 		MMRWrapper mmrw = gameWrapper->GetMMRWrapper();
 		currentPlaylist = mmrw.GetCurrentPlaylist();
 		SkillRank playerRank = mmrw.GetPlayerRank(mySteamID, currentPlaylist);
 		currentTier = playerRank.Tier;
 		WriteInFile("RocketStats_GameMode.txt", GetPlaylistName(currentPlaylist));
-
-		//Session or Gamemode
 
 		UpdateMMR(0);
 
@@ -209,6 +200,7 @@ void RocketStats::GameStart(std::string eventName)
 
 void RocketStats::GameEnd(std::string eventName)
 {
+	cvarManager->log("GameEnd");
 	if (gameWrapper->IsInOnlineGame() && myTeamNum != -1)
 	{
 		ServerWrapper server = gameWrapper->GetOnlineGame();
@@ -272,6 +264,7 @@ void RocketStats::GameEnd(std::string eventName)
 
 void RocketStats::GameDestroyed(std::string eventName)
 {
+	cvarManager->log("GameDestroyed");
 	//Check if Game Ended, if not, RAGE QUIT or disconnect
 	if (isGameStarted == true && isGameEnded == false)
 	{
@@ -300,35 +293,26 @@ void RocketStats::GameDestroyed(std::string eventName)
 #pragma endregion
 
 #pragma region StatsMgmt
-void RocketStats::UpdateMMR(float intervalTime)
+void RocketStats::UpdateMMR(int intervalTime)
 {
-	gameWrapper->SetTimeout([&](GameWrapper* gameWrapper)
-	{
-		MMRWrapper mmrw = gameWrapper->GetMMRWrapper();
+	gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
+		auto id = gameWrapper->GetUniqueID();
+		float mmr = gameWrapper->GetMMRWrapper().GetPlayerMMR(id, currentPlaylist);
+		SkillRank playerRank = gameWrapper->GetMMRWrapper().GetPlayerRank(id, currentPlaylist);
 
-		float save = mmrw.GetPlayerMMR(mySteamID, currentPlaylist);
-		SkillRank playerRank = mmrw.GetPlayerRank(mySteamID, currentPlaylist);
-
-		if (save <= 0)
-		{
-			return UpdateMMR(1);
-		}
-
-		currentTier = playerRank.Tier;
-		
-		if (stats[currentPlaylist].isInit == false)
-		{
-			stats[currentPlaylist].myMMR = save;
+		if (stats[currentPlaylist].isInit == false) {
+			stats[currentPlaylist].myMMR = mmr;
 			stats[currentPlaylist].isInit = true;
 		}
-		stats[currentPlaylist].MMRChange = stats[currentPlaylist].MMRChange + (save - stats[currentPlaylist].myMMR);
-		stats[currentPlaylist].myMMR = save;
+		stats[currentPlaylist].MMRChange = stats[currentPlaylist].MMRChange + (mmr - stats[currentPlaylist].myMMR);
+		stats[currentPlaylist].myMMR = mmr;
+
 		MajRank(currentPlaylist, stats[currentPlaylist].myMMR, playerRank);
 
 		SessionStats();
 		writeMMR();
 		writeMMRChange();
-	}, intervalTime);
+		}, intervalTime);
 }
 
 void RocketStats::SessionStats()
@@ -413,7 +397,7 @@ void RocketStats::OnBoostEnd(std::string eventName)
 }
 
 // Act as toggle
-void RocketStats::StopBoost() {}
+//void RocketStats::StopBoost() {}
 #pragma endregion
 
 #pragma region Rank/Div
@@ -499,7 +483,7 @@ void RocketStats::DisplayMMR(CanvasWrapper canvas, Vector2 imagePos, Vector2 tex
 	canvas.SetColor(LinearColor{ 255, 255, 255, 255 });
 	canvas.SetPosition(imagePos);
 	if (crown->IsLoadedForCanvas()) canvas.DrawTexture(crown.get(), 0.5f * scale);
-	
+
 	canvas.SetColor(LinearColor{ 255, 255, 255, 255 });
 	canvas.SetPosition(textPos_tmp);
 	if (current.MMRChange > 0) change = "+" + change;
@@ -520,7 +504,7 @@ void RocketStats::DisplayLoose(CanvasWrapper canvas, Vector2 imagePos, Vector2 t
 	canvas.SetColor(LinearColor{ 255, 255, 255, 255 });
 	canvas.SetPosition(imagePos);
 	if (loose->IsLoadedForCanvas()) canvas.DrawTexture(loose.get(), 0.5f * scale);
-	
+
 	canvas.SetColor(LinearColor{ 255, 0, 0, 255 });
 	canvas.SetPosition(textPos_tmp);
 	canvas.DrawString(std::to_string(current.losses), 2.0f * scale, 2.0f * scale);
@@ -529,7 +513,7 @@ void RocketStats::DisplayStreak(CanvasWrapper canvas, Vector2 imagePos, Vector2 
 {
 	canvas.SetColor(LinearColor{ 255, 255, 255, 255 });
 	canvas.SetPosition(textPos_tmp);
-	
+
 	if (current.streak < 0) canvas.SetColor(LinearColor{ 255, 0, 0, 255 });
 	else canvas.SetColor(LinearColor{ 0, 255, 0, 255 });
 
@@ -550,7 +534,7 @@ void RocketStats::Render(CanvasWrapper canvas)
 	cvarManager->getCvar("RS_disp_active").setValue(RS_disp_ig);
 
 	if (!RS_disp_ig || isGameStarted && !isGameEnded && RS_hide_overlay_ig) return;
-	
+
 	bool RS_session = cvarManager->getCvar("RS_session").getBoolValue();
 	Stats current = (RS_session == true) ? session : stats[currentPlaylist];
 
@@ -649,7 +633,7 @@ void RocketStats::Render(CanvasWrapper canvas)
 				//Set Color and Text for the value
 				if (it == "RS_disp_gamemode")
 				{
-					canvas.SetColor(LinearColor{ 180, 180, 180, 255});
+					canvas.SetColor(LinearColor{ 180, 180, 180, 255 });
 					canvas.DrawString(GetPlaylistName(currentPlaylist), RS_scale, RS_scale);
 				}
 				else if (it == "RS_disp_rank")
@@ -712,20 +696,33 @@ void RocketStats::Render(CanvasWrapper canvas)
 }
 #pragma endregion
 
-#pragma region File I/O
-void RocketStats::WriteInFile(std::string _fileName, std::string _value)
+
+void RocketStats::WriteInFile(std::string _filename, std::string _value)
 {
-	std::ofstream myFile;
+	std::ofstream stream(gameWrapper->FixRelativePath("./bakkesmod/RocketStats/" + _filename), std::ios::out | std::ios::trunc);
 
-	myFile.open("./bakkesmod/RocketStats/" + _fileName, std::ios::out | std::ios::trunc);
-
-	if (myFile.is_open())
-	{
-		myFile << _value;
-
-		myFile.close();
+	if (stream.is_open()) {
+		stream << _value;
+		stream.close();
 	}
 }
+
+#pragma region File I/O
+/* void RocketStats::WriteInFile(std::string _fileName, std::string _value)
+{
+	std::ofstream stream;
+	std::ofstream stream();
+		
+	stream.open(gameWrapper->FixRelativePath(_fileName), std::ios::out | std::ios::trunc);
+
+
+	if (stream.is_open())
+	{
+		stream << _value;
+
+		stream.close();
+	}
+} */
 
 void RocketStats::writeMMR()
 {

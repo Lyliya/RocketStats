@@ -14,7 +14,7 @@ struct Stats {
 
 class RocketStats : public BakkesMod::Plugin::BakkesModPlugin
 {
-private: 
+private:
 	std::shared_ptr<bool> enabled;
 
 public:
@@ -29,7 +29,7 @@ public:
 	void GameEnd(std::string eventName);
 	void GameDestroyed(std::string eventName);
 
-	void UpdateMMR(float intervalTime);
+	void UpdateMMR(int intervalTime);
 	void SessionStats();
 	void ResetStats();
 
@@ -65,8 +65,8 @@ public:
 	Stats session;
 
 	int myTeamNum = -1;
-	SteamID mySteamID = {0};
-	
+	SteamID mySteamID = { 0 };
+
 	int lastGameMode = 0;
 	int currentGameMode = 0;
 	float currentMMR = 100.0f;
@@ -153,4 +153,6 @@ public:
 		{38, "Heatseeker"}, // not sure
 		{41, "Boomer Ball"}
 	};
+
+	std::unique_ptr<MMRNotifierToken> notifierToken;
 };
