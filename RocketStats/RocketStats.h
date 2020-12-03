@@ -65,7 +65,6 @@ public:
 	Stats session;
 
 	int myTeamNum = -1;
-	SteamID mySteamID = { 0 };
 
 	int lastGameMode = 0;
 	int currentGameMode = 0;

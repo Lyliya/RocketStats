@@ -6,7 +6,7 @@
 #include <fstream>
 #include <utils/parser.h>
 
-BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "3.0", PERMISSION_ALL)
+BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "3.", PERMISSION_ALL)
 
 std::string RocketStats::GetRank(int tierID)
 {
@@ -172,10 +172,7 @@ void RocketStats::GameStart(std::string eventName)
 		TeamInfoWrapper myTeam = mePRI.GetTeam();
 		if (myTeam.IsNull()) return;
 
-		MMRWrapper mmrw = gameWrapper->GetMMRWrapper();
-		currentPlaylist = mmrw.GetCurrentPlaylist();
-		SkillRank playerRank = mmrw.GetPlayerRank(mySteamID, currentPlaylist);
-		currentTier = playerRank.Tier;
+		cvarManager->log("Tier:" + std::to_string(currentTier));
 		WriteInFile("RocketStats_GameMode.txt", GetPlaylistName(currentPlaylist));
 
 		UpdateMMR(0);
@@ -185,6 +182,10 @@ void RocketStats::GameStart(std::string eventName)
 		writeStreak();
 		writeLosses();
 		writeMMR();
+
+		MMRWrapper mmrw = gameWrapper->GetMMRWrapper();
+		currentPlaylist = mmrw.GetCurrentPlaylist();
+		SkillRank playerRank = mmrw.GetPlayerRank(gameWrapper->GetUniqueID(), currentPlaylist);
 
 		// Get TeamNum
 		myTeamNum = myTeam.GetTeamNum();
@@ -312,7 +313,7 @@ void RocketStats::UpdateMMR(int intervalTime)
 		SessionStats();
 		writeMMR();
 		writeMMRChange();
-		}, intervalTime);
+	}, intervalTime);
 }
 
 void RocketStats::SessionStats()
@@ -419,7 +420,7 @@ void RocketStats::MajRank(int _gameMode, float _currentMMR, SkillRank playerRank
 {
 	currentGameMode = _gameMode;
 	currentMMR = _currentMMR;
-	//lastRank == currentRank;
+	currentTier = playerRank.Tier;
 
 	if (currentGameMode >= 10 && currentGameMode <= 13 || currentGameMode >= 27 && currentGameMode <= 30)
 	{
