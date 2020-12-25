@@ -713,16 +713,15 @@ void RocketStats::WriteInFile(std::string _filename, std::string _value)
 
 void RocketStats::writeMMR()
 {
-	WriteInFile("RocketStats_MMR.txt", std::to_string(int(stats[currentPlaylist].myMMR)));
+	WriteInFile("RocketStats_MMR.txt", to_string_with_precision(stats[currentPlaylist].myMMR, 2));
 }
 void RocketStats::writeMMRChange()
 {
 	bool RS_session = cvarManager->getCvar("RS_session").getBoolValue();
 	Stats current = (RS_session == true) ? session : stats[currentPlaylist];
-	int tmp = int(((current.MMRChange < 0) ? -1 : 1) * std::round(fabs(current.MMRChange)));
 
-	if (tmp >= 0) WriteInFile("RocketStats_MMRChange.txt", "+" + std::to_string(tmp));
-	else WriteInFile("RocketStats_MMRChange.txt", std::to_string(tmp));
+	if (current.MMRChange > 0) WriteInFile("RocketStats_MMRChange.txt", "+" + to_string_with_precision(current.MMRChange, 2));
+	else WriteInFile("RocketStats_MMRChange.txt", to_string_with_precision(current.MMRChange, 2));
 }
 
 void RocketStats::writeStreak()
