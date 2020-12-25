@@ -68,14 +68,14 @@ void RocketStats::onLoad()
 	gameWrapper->HookEvent("Function CarComponent_Boost_TA.Active.EndState", bind(&RocketStats::OnBoostEnd, this, std::placeholders::_1));
 	gameWrapper->HookEvent("Function TAGame.GameEvent_Soccar_TA.Destroyed", bind(&RocketStats::GameDestroyed, this, std::placeholders::_1));
 
-	WriteInFile("RocketStats_Win.txt", std::to_string(0));
-	WriteInFile("RocketStats_Streak.txt", std::to_string(0));
-	WriteInFile("RocketStats_Loose.txt", std::to_string(0));
-	WriteInFile("RocketStats_MMRChange.txt", std::to_string(0));
-	WriteInFile("RocketStats_MMR.txt", std::to_string(0));
+	WriteInFile("RocketStats_Win.txt", "0");
+	WriteInFile("RocketStats_Streak.txt", "0");
+	WriteInFile("RocketStats_Loose.txt", "0");
+	WriteInFile("RocketStats_MMRChange.txt", "0");
+	WriteInFile("RocketStats_MMR.txt", "0");
 	WriteInFile("RocketStats_Rank.txt", "");
 	WriteInFile("RocketStats_GameMode.txt", "");
-	WriteInFile("RocketStats_images/BoostState.txt", std::to_string(-1));
+	WriteInFile("RocketStats_images/BoostState.txt", "-1");
 
 	InitRank();
 
@@ -92,10 +92,9 @@ void RocketStats::onLoad()
 	cvarManager->registerCvar("RS_x_position", "0.700", "Overlay X position", true, true, 0, true, 1.0f);
 	cvarManager->registerCvar("RS_y_position", "0.575", "Overlay Y position", true, true, 0, true, 1.0f);
 	cvarManager->registerCvar("RS_scale", "1", "Overlay scale", true, true, 0, true, 10);
-	cvarManager->registerCvar("RS_disp_active", "0", "", true, true, 0, true, 1);
+	//cvarManager->registerCvar("RS_disp_active", "0", "", true, true, 0, true, 1);
 	cvarManager->registerCvar("RocketStats_stop_boost", "1", "Stop Boost animation", true, true, 0, true, 1);
-	cvarManager->registerCvar("RS_session", "0", "Display session stats", true, true, 0, true, 1, true);
-
+	cvarManager->registerCvar("RS_session", "0", "Display session information instead of game mode", true, true, 0, true, 1, true);
 }
 
 void RocketStats::onUnload()
@@ -140,14 +139,14 @@ void RocketStats::togglePlugin(bool state)
 			gameWrapper->HookEvent("Function TAGame.GameEvent_Soccar_TA.Destroyed", bind(&RocketStats::GameDestroyed, this, std::placeholders::_1));
 			gameWrapper->RegisterDrawable(std::bind(&RocketStats::Render, this, std::placeholders::_1));
 
-			WriteInFile("RocketStats_Win.txt", std::to_string(0));
-			WriteInFile("RocketStats_Streak.txt", std::to_string(0));
-			WriteInFile("RocketStats_Loose.txt", std::to_string(0));
-			WriteInFile("RocketStats_MMRChange.txt", std::to_string(0));
-			WriteInFile("RocketStats_MMR.txt", std::to_string(0));
+			WriteInFile("RocketStats_Win.txt", "0");
+			WriteInFile("RocketStats_Streak.txt", "0");
+			WriteInFile("RocketStats_Loose.txt", "0");
+			WriteInFile("RocketStats_MMRChange.txt", "0");
+			WriteInFile("RocketStats_MMR.txt", "0");
 			WriteInFile("RocketStats_Rank.txt", "");
 			WriteInFile("RocketStats_GameMode.txt", "");
-			WriteInFile("RocketStats_images/BoostState.txt", std::to_string(-1));
+			WriteInFile("RocketStats_images/BoostState.txt", "-1");
 
 			InitRank();
 
@@ -236,7 +235,7 @@ void RocketStats::GameEnd(std::string eventName)
 		}
 		else
 		{
-			// On Loose, Increase Win Number and decrease streak
+			// On Loose, Increase loose Number and decrease streak
 			stats[currentPlaylist].losses++;
 			session.losses++;
 			if (stats[currentPlaylist].streak > 0)
@@ -313,7 +312,7 @@ void RocketStats::UpdateMMR(int intervalTime)
 		SessionStats();
 		writeMMR();
 		writeMMRChange();
-	}, intervalTime);
+		}, (float)intervalTime);
 }
 
 void RocketStats::SessionStats()
@@ -532,7 +531,7 @@ void RocketStats::Render(CanvasWrapper canvas)
 	float RS_x_position = cvarManager->getCvar("RS_x_position").getFloatValue();
 	float RS_y_position = cvarManager->getCvar("RS_y_position").getFloatValue();
 	float RS_scale = cvarManager->getCvar("RS_scale").getFloatValue();
-	cvarManager->getCvar("RS_disp_active").setValue(RS_disp_ig);
+	//cvarManager->getCvar("RS_disp_active").setValue(RS_disp_ig);
 
 	if (!RS_disp_ig || isGameStarted && !isGameEnded && RS_hide_overlay_ig) return;
 
@@ -697,7 +696,7 @@ void RocketStats::Render(CanvasWrapper canvas)
 }
 #pragma endregion
 
-
+#pragma region File I/O
 void RocketStats::WriteInFile(std::string _filename, std::string _value)
 {
 	std::ofstream stream(gameWrapper->FixRelativePath("./bakkesmod/RocketStats/" + _filename), std::ios::out | std::ios::trunc);
@@ -706,28 +705,14 @@ void RocketStats::WriteInFile(std::string _filename, std::string _value)
 		stream << _value;
 		stream.close();
 	}
-}
-
-#pragma region File I/O
-/* void RocketStats::WriteInFile(std::string _fileName, std::string _value)
-{
-	std::ofstream stream;
-	std::ofstream stream();
-		
-	stream.open(gameWrapper->FixRelativePath(_fileName), std::ios::out | std::ios::trunc);
-
-
-	if (stream.is_open())
-	{
-		stream << _value;
-
-		stream.close();
+	else {
+		cvarManager->log("Can't write to file: " + _filename);
+		cvarManager->log("Value to write was: " + _value);
 	}
-} */
+}
 
 void RocketStats::writeMMR()
 {
-	bool RS_session = cvarManager->getCvar("RS_session").getBoolValue();
 	WriteInFile("RocketStats_MMR.txt", std::to_string(int(stats[currentPlaylist].myMMR)));
 }
 void RocketStats::writeMMRChange()
