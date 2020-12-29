@@ -35,11 +35,11 @@ public:
 
 	void OnBoostStart(std::string eventName);
 	void OnBoostEnd(std::string eventName);
-	void StopBoost();
+	//void StopBoost();
 
 
 	void InitRank();
-	void MajRank(int _gameMode, float _currentMMR, SkillRank playerRank);
+	void MajRank(int _gameMode, bool isRanked, float _currentMMR, SkillRank playerRank);
 
 	void DisplayRank(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, float scale);
 	void DisplayMMR(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale);
@@ -49,6 +49,7 @@ public:
 	void Render(CanvasWrapper canvas);
 
 	void WriteInFile(std::string _fileName, std::string _value);
+	void writeGameMode();
 	void writeMMR();
 	void writeMMRChange();
 	void writeStreak();
@@ -120,7 +121,7 @@ public:
 		{4, "Chaos"},
 
 		{6, "Private Match"},
-		{7, "Offline Season"},
+		{7, "Season"},
 		{8, "Offline Splitscreen"},
 		{9, "Training"},
 
@@ -129,28 +130,33 @@ public:
 		{12, "Ranked Solo Standard"},
 		{13, "Ranked Standard"},
 
-		{14, "Mutator Mashup"},
-		{15, "SnowdayPromotion"}, // not sure
+		{15, "Casual SnowDay"},
 		{16, "Rocket Labs"},
-		{17, "Casual Basketball"},
+		{17, "Casual Hoops"},
 		{18, "Casual Rumble"},
-		{23, "Casual Dropshot"}, // not sure
 
-		{19, "Workshop Map"},
-		{22, "Tournament Match"},
-		{24, "Local Match"},
+		{19, "Workshop"},
+		{20, "UGCTrainingEditor"},
+		{21, "UGCTraining"},
+		{22, "Custom Tournament"},
+		{23, "Casual Dropshot"},
+		{24, "Local"},
+		{26, "FaceIt"},
 
-		{27, "Hoops"},
-		{28, "Rumble"},
-		{29, "Dropshot"},
-		{30, "Snowday"},
+		{27, "Ranked Hoops"},
+		{28, "Ranked Rumble"},
+		{29, "Ranked Dropshot"},
+		{30, "Ranked SnowDay"},
 
-		{31, "Haunted Ball"},
+		{31, "Ghost Hunt"},
 		{32, "Beachball"},
-		{33, "Rugby"},
-		{37, "RumShot"}, // not sure
-		{38, "Heatseeker"}, // not sure
-		{41, "Boomer Ball"}
+		{33, "Spike Rush"},
+		{34, "Season Tournament"},
+		{37, "Dropshot Rumble"},
+		{38, "Heatseeker"},
+		{41, "BoomerBall"},
+		{43, "Heatseeker Doubles"},
+		{44, "Winter Breakaway"}
 	};
 
 	std::unique_ptr<MMRNotifierToken> notifierToken;
