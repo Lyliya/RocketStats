@@ -20,7 +20,6 @@ private:
 public:
 	virtual void onLoad();
 	virtual void onUnload();
-	void togglePlugin(bool state);
 
 	std::string GetRank(int tierID);
 	std::string GetPlaylistName(int playlistID);
@@ -61,7 +60,6 @@ public:
 	bool isGameStarted = false;
 	bool isBoosting = false;
 
-
 	std::map<int, Stats> stats;
 	Stats session;
 
@@ -78,8 +76,6 @@ public:
 	std::shared_ptr<ImageWrapper> crown;
 	std::shared_ptr<ImageWrapper> win;
 	std::shared_ptr<ImageWrapper> loose;
-
-	bool isLoad = true;
 
 	int rank_nb = 23;
 

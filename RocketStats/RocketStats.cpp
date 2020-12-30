@@ -42,22 +42,6 @@ void RocketStats::onLoad()
 		PERMISSION_ALL
 	);
 
-	// Unload
-	cvarManager->registerNotifier(
-		"RocketStats_unload",
-		[this](std::vector<std::string> params) { togglePlugin(false); },
-		"Unload Plugin",
-		PERMISSION_ALL
-	);
-
-	//Load
-	cvarManager->registerNotifier(
-		"RocketStats_load",
-		[this](std::vector<std::string> params) { togglePlugin(true); },
-		"Load Plugin",
-		PERMISSION_ALL
-	);
-
 	// Register drawable
 	gameWrapper->RegisterDrawable(std::bind(&RocketStats::Render, this, std::placeholders::_1));
 
@@ -97,63 +81,7 @@ void RocketStats::onLoad()
 	cvarManager->registerCvar("RS_session", "0", "Display session information instead of game mode", true, true, 0, true, 1, true);
 }
 
-void RocketStats::onUnload()
-{
-	/* Bakkesmod does it automatically
-
-	gameWrapper->UnhookEvent("Function GameEvent_TA.Countdown.BeginState");
-	gameWrapper->UnhookEvent("Function TAGame.GameEvent_Soccar_TA.EventMatchEnded");
-	gameWrapper->UnhookEvent("Function CarComponent_Boost_TA.Active.BeginState");
-	gameWrapper->UnhookEvent("Function CarComponent_Boost_TA.Active.EndState");
-	gameWrapper->UnhookEvent("Function TAGame.GameEvent_Soccar_TA.Destroyed");
-	gameWrapper->UnregisterDrawables();
-	*/
-}
-
-void RocketStats::togglePlugin(bool state)
-{
-	if (state == isLoad)
-	{
-		return;
-	}
-	else
-	{
-		if (!state)
-		{
-			// Unload Plugin
-			gameWrapper->UnhookEvent("Function GameEvent_TA.Countdown.BeginState");
-			gameWrapper->UnhookEvent("Function TAGame.GameEvent_Soccar_TA.EventMatchEnded");
-			gameWrapper->UnhookEvent("Function CarComponent_Boost_TA.Active.BeginState");
-			gameWrapper->UnhookEvent("Function CarComponent_Boost_TA.Active.EndState");
-			gameWrapper->UnhookEvent("Function TAGame.GameEvent_Soccar_TA.Destroyed");
-			gameWrapper->UnregisterDrawables();
-			isLoad = state;
-		}
-		else
-		{
-			// Load Plugin
-			gameWrapper->HookEvent("Function GameEvent_TA.Countdown.BeginState", bind(&RocketStats::GameStart, this, std::placeholders::_1));
-			gameWrapper->HookEvent("Function TAGame.GameEvent_Soccar_TA.EventMatchEnded", bind(&RocketStats::GameEnd, this, std::placeholders::_1));
-			gameWrapper->HookEvent("Function CarComponent_Boost_TA.Active.BeginState", bind(&RocketStats::OnBoostStart, this, std::placeholders::_1));
-			gameWrapper->HookEvent("Function CarComponent_Boost_TA.Active.EndState", bind(&RocketStats::OnBoostEnd, this, std::placeholders::_1));
-			gameWrapper->HookEvent("Function TAGame.GameEvent_Soccar_TA.Destroyed", bind(&RocketStats::GameDestroyed, this, std::placeholders::_1));
-			gameWrapper->RegisterDrawable(std::bind(&RocketStats::Render, this, std::placeholders::_1));
-
-			WriteInFile("RocketStats_Win.txt", "0");
-			WriteInFile("RocketStats_Streak.txt", "0");
-			WriteInFile("RocketStats_Loose.txt", "0");
-			WriteInFile("RocketStats_MMRChange.txt", "0");
-			WriteInFile("RocketStats_MMR.txt", "0");
-			WriteInFile("RocketStats_Rank.txt", "");
-			WriteInFile("RocketStats_GameMode.txt", "");
-			WriteInFile("RocketStats_images/BoostState.txt", "-1");
-
-			InitRank();
-
-			isLoad = state;
-		}
-	}
-}
+void RocketStats::onUnload() {}
 #pragma endregion
 
 #pragma region GameMgmt
@@ -444,7 +372,7 @@ void RocketStats::MajRank(int _gameMode, bool isRanked, float _currentMMR, Skill
 	}
 	else
 	{
-		currentRank = GetRank(0);
+		currentRank = GetPlaylistName(currentGameMode);
 		currentDivision = "";
 
 		std::string _value = "<meta http-equiv = \"refresh\" content = \"5\" /><img src = \"current.png\" width = \"100\" height = \"100\" />";

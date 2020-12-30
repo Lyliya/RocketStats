@@ -145,6 +145,9 @@ copy "$(SolutionDir)settings\$(ProjectName).set" "$(BAKKESPLUGINS)\settings\$(Pr
   <ItemGroup>
     <ClCompile Include="RocketStats.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\settings\rocketstats.set" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

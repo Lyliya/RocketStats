@@ -24,4 +24,7 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\settings\rocketstats.set" />
+  </ItemGroup>
 </Project>
