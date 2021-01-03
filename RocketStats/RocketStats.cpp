@@ -8,6 +8,10 @@
 
 BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "3.1", PERMISSION_ALL)
 
+void RocketStats::LogImageLoadStatus(bool status, std::string imageName) {
+	if (status) cvarManager->log(imageName + ": image load");
+	else cvarManager->log(imageName + ": failed to load");
+}
 std::string RocketStats::GetRank(int tierID)
 {
 	cvarManager->log("tier: " + std::to_string(tierID));
@@ -25,14 +29,19 @@ void RocketStats::onLoad()
 {
 	//notifierToken = gameWrapper->GetMMRWrapper().RegisterMMRNotifier(std::bind(&RocketStats::UpdateMMR, this, std::placeholders::_1));
 
-	crown = std::make_shared<ImageWrapper>(gameWrapper->FixRelativePath("./bakkesmod/RocketStats/RocketStats_images/crown.png").string(), true);
-	win = std::make_shared<ImageWrapper>(gameWrapper->FixRelativePath("./bakkesmod/RocketStats/RocketStats_images/win.png").string(), true);
-	loose = std::make_shared<ImageWrapper>(gameWrapper->FixRelativePath("./bakkesmod/RocketStats/RocketStats_images/loose.png").string(), true);
+	crown = std::make_shared<ImageWrapper>(gameWrapper->GetBakkesModPath().string() + "\\RocketStats\\RocketStats_images\\crown.png", true);
+	LogImageLoadStatus(crown->LoadForCanvas(), "crown");
+	
+	win = std::make_shared<ImageWrapper>(gameWrapper->GetBakkesModPath().string() + "\\RocketStats\\RocketStats_images\\win.png", true);
+	LogImageLoadStatus(win->LoadForCanvas(), "win");
+	
+	loose = std::make_shared<ImageWrapper>(gameWrapper->GetBakkesModPath().string() + "\\RocketStats\\RocketStats_images\\loose.png", true);
+	LogImageLoadStatus(loose->LoadForCanvas(), "loose");
 
 	for (int i = 0; i < rank_nb; i++)
 	{
-		rank[i].image = std::make_shared<ImageWrapper>(gameWrapper->FixRelativePath("./bakkesmod/RocketStats/RocketStats_images/" + rank[i].name + ".png").string(), true);
-		if (rank[i].image->LoadForCanvas()) cvarManager->log(rank[i].name + ": image load");
+		rank[i].image = std::make_shared<ImageWrapper>(gameWrapper->GetBakkesModPath().string() + "\\RocketStats\\RocketStats_images\\" + rank[i].name + ".png", true);
+		LogImageLoadStatus(rank[i].image->LoadForCanvas(), rank[i].name);
 	}
 
 	cvarManager->registerNotifier(
@@ -628,7 +637,7 @@ void RocketStats::Render(CanvasWrapper canvas)
 #pragma region File I/O
 void RocketStats::WriteInFile(std::string _filename, std::string _value)
 {
-	std::ofstream stream(gameWrapper->FixRelativePath("./bakkesmod/RocketStats/" + _filename), std::ios::out | std::ios::trunc);
+	std::ofstream stream(gameWrapper->GetBakkesModPath().string() + "\\RocketStats\\" + _filename, std::ios::out | std::ios::trunc);
 
 	if (stream.is_open()) {
 		stream << _value;

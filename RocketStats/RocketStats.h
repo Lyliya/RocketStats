@@ -21,6 +21,7 @@ public:
 	virtual void onLoad();
 	virtual void onUnload();
 
+	void LogImageLoadStatus(bool status, std::string imageName);
 	std::string GetRank(int tierID);
 	std::string GetPlaylistName(int playlistID);
 
