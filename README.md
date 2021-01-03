@@ -16,7 +16,7 @@ RocketStats is provided with 2 types of overlay, one in-game, and one designed f
 ### In Game Overlay
 ![In Game Overlay](https://media.discordapp.net/attachments/681760010392436836/764021965488521246/unknown.png)
 
-This is the In-Game overlay, rank image is dynamic, giving Rank, Division, MMR, MMR Changed, Win, Losses, and Current Streak. You can edit the images that are displayed in the in-game Overlay by changing them in **rocketleague\Binaries\Win64\bakkesmod\RocketStats\RocketStats_images**.
+This is the In-Game overlay, rank image is dynamic, giving Rank, Division, MMR, MMR Changed, Win, Losses, and Current Streak. You can edit the images that are displayed in the in-game Overlay by changing them in **%appdata%\bakkesmod\bakkesmod\RocketStats\RocketStats_images**.
 
 File used are:
 - loose.png (for the red cross)
@@ -40,7 +40,7 @@ Keep in mind that the provided overlay is an example of what you can do, let you
 
 To display data such as win, loose, streak and MMRChange, make a "Text" source and select "Read from a file".
 
-All the available data are gathered in text files which are located in the folder **rocketleague\Binaries\Win64\bakkesmod\RocketStats**.
+All the available data are gathered in text files which are located in the folder **%appdata%\bakkesmod\bakkesmod\RocketStats**.
 
 ![RocketStats_folder](https://cdn.discordapp.com/attachments/681760010392436836/764024258510454794/JIbl4j.png)
 
@@ -48,7 +48,7 @@ To display the image of your rank you need to make a "Browser" source and config
 
 ![Rank](https://cdn.discordapp.com/attachments/681760010392436836/764024258443477002/wzE_RR.png)
 
-The file is in **bakkesmod\RocketStats\RocketStats\RocketStats_images** and its name is "rank.html"
+The file is in **bakkesmod\RocketStats\RocketStats_images** and its name is "rank.html"
 
 You can also animate your stream while boosting !
 
@@ -58,7 +58,7 @@ Make a Browser source:
 
 ![Boost](https://cdn.discordapp.com/attachments/681760010392436836/764024263471923210/FkrpCU.png)
 
-The file is in **bakkesmod\RocketStats\RocketStats\RocketStats_images** and its name is "boost.html"
+The file is in **bakkesmod\RocketStats\RocketStats_images** and its name is "boost.html"
 
 You can change the logo displayed to put yours, you need two videos in the format ".webm" one named "boost.webm" and the other "noboost.webm".
 
