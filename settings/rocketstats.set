@@ -20,6 +20,7 @@ RocketStats Plugin
 1|Enable Boost|RocketStats_stop_boost
 8|
 0|Reset|RocketStats_reset_stats
+0|Reload Pictures|RocketStats_reload_images
 8|
 9|Version 3.0, Developped by @Lyliiya & @NuSa_yt for @Maylie_tv
 9|Update in 3.0 by Lyliya#4276, Larsluph#7713 (EpicGames integration)
