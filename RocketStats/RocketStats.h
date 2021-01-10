@@ -30,7 +30,7 @@ public:
 	void GameEnd(std::string eventName);
 	void GameDestroyed(std::string eventName);
 
-	void UpdateMMR(int intervalTime);
+	void UpdateMMR(UniqueIDWrapper id);
 	void SessionStats();
 	void ResetStats();
 

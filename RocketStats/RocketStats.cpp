@@ -53,7 +53,7 @@ void RocketStats::LogImageLoadStatus(bool status, std::string imageName) {
 #pragma region PluginLoadRoutines
 void RocketStats::onLoad()
 {
-	//notifierToken = gameWrapper->GetMMRWrapper().RegisterMMRNotifier(std::bind(&RocketStats::UpdateMMR, this, std::placeholders::_1));
+	notifierToken = gameWrapper->GetMMRWrapper().RegisterMMRNotifier(std::bind(&RocketStats::UpdateMMR, this, std::placeholders::_1));
 
 	LoadImgs();
 
@@ -116,42 +116,39 @@ void RocketStats::onUnload() {}
 #pragma region GameMgmt
 void RocketStats::GameStart(std::string eventName)
 {
-	if (gameWrapper->IsInOnlineGame() && !isGameStarted)
-	{
-		cvarManager->log("===== GameStart =====");
-		CarWrapper me = gameWrapper->GetLocalCar();
-		if (me.IsNull()) return;
+	if (!gameWrapper->IsInOnlineGame() || isGameStarted) return;
 
-		PriWrapper mePRI = me.GetPRI();
-		if (mePRI.IsNull()) return;
+	cvarManager->log("===== GameStart =====");
+	CarWrapper me = gameWrapper->GetLocalCar();
+	if (me.IsNull()) return;
 
-		TeamInfoWrapper myTeam = mePRI.GetTeam();
-		if (myTeam.IsNull()) return;
+	PriWrapper mePRI = me.GetPRI();
+	if (mePRI.IsNull()) return;
 
-		MMRWrapper mmrw = gameWrapper->GetMMRWrapper();
-		currentPlaylist = mmrw.GetCurrentPlaylist();
-		SkillRank playerRank = mmrw.GetPlayerRank(gameWrapper->GetUniqueID(), currentPlaylist);
-		cvarManager->log(std::to_string(currentPlaylist) + " -> " + GetPlaylistName(currentPlaylist));
+	TeamInfoWrapper myTeam = mePRI.GetTeam();
+	if (myTeam.IsNull()) return;
 
-		UpdateMMR(0);
+	MMRWrapper mmrw = gameWrapper->GetMMRWrapper();
+	currentPlaylist = mmrw.GetCurrentPlaylist();
+	SkillRank playerRank = mmrw.GetPlayerRank(gameWrapper->GetUniqueID(), currentPlaylist);
+	cvarManager->log(std::to_string(currentPlaylist) + " -> " + GetPlaylistName(currentPlaylist));
 
-		writeGameMode();
-		writeMMRChange();
-		writeWin();
-		writeStreak();
-		writeLosses();
-		writeMMR();
+	writeGameMode();
+	writeMMRChange();
+	writeWin();
+	writeStreak();
+	writeLosses();
+	writeMMR();
 
-		// Get TeamNum
-		myTeamNum = myTeam.GetTeamNum();
+	// Get TeamNum
+	myTeamNum = myTeam.GetTeamNum();
 
-		// Set Game Started
-		isGameStarted = true;
-		isGameEnded = false;
+	// Set Game Started
+	isGameStarted = true;
+	isGameEnded = false;
 
-		MajRank(currentPlaylist, mmrw.IsRanked(currentPlaylist), stats[currentPlaylist].myMMR, playerRank);
-		WriteInFile("RocketStats_images/BoostState.txt", std::to_string(0));
-	}
+	UpdateMMR(gameWrapper->GetUniqueID());
+	WriteInFile("RocketStats_images/BoostState.txt", std::to_string(0));
 }
 
 void RocketStats::GameEnd(std::string eventName)
@@ -208,7 +205,6 @@ void RocketStats::GameEnd(std::string eventName)
 			writeLosses();
 		}
 
-		UpdateMMR(3);
 		writeStreak();
 
 		// Reset myTeamNum security
@@ -239,8 +235,6 @@ void RocketStats::GameDestroyed(std::string eventName)
 
 		writeStreak();
 		writeLosses();
-
-		UpdateMMR(30);
 	}
 	isGameEnded = true;
 	isGameStarted = false;
@@ -249,35 +243,42 @@ void RocketStats::GameDestroyed(std::string eventName)
 #pragma endregion
 
 #pragma region StatsMgmt
-void RocketStats::UpdateMMR(int intervalTime)
+void RocketStats::UpdateMMR(UniqueIDWrapper id)
 {
-	gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
-		UniqueIDWrapper id = gameWrapper->GetUniqueID();
-		MMRWrapper mmrw = gameWrapper->GetMMRWrapper();
-		float mmr = mmrw.GetPlayerMMR(id, currentPlaylist);
-		SkillRank playerRank = mmrw.GetPlayerRank(id, currentPlaylist);
+	cvarManager->log("===== updateMMR =====");
+	if (id.GetIdString() != gameWrapper->GetUniqueID().GetIdString()) {
+		cvarManager->log("not the user");
+		return;
+	}
+	cvarManager->log("user match");
 
-		if (stats[currentPlaylist].isInit == false) {
-			stats[currentPlaylist].myMMR = mmr;
-			stats[currentPlaylist].isInit = true;
-		}
-		stats[currentPlaylist].MMRChange = stats[currentPlaylist].MMRChange + (mmr - stats[currentPlaylist].myMMR);
+	if (currentPlaylist == 0) {
+		cvarManager->log("Invalid playlist id. Have you just opened the game ?");
+		return;
+	}
+
+	MMRWrapper mmrw = gameWrapper->GetMMRWrapper();
+	float mmr = mmrw.GetPlayerMMR(id, currentPlaylist);
+	SkillRank playerRank = mmrw.GetPlayerRank(id, currentPlaylist);
+
+	if (stats[currentPlaylist].isInit == false) {
 		stats[currentPlaylist].myMMR = mmr;
+		stats[currentPlaylist].isInit = true;
+	}
+	stats[currentPlaylist].MMRChange = stats[currentPlaylist].MMRChange + (mmr - stats[currentPlaylist].myMMR);
+	stats[currentPlaylist].myMMR = mmr;
 
-		MajRank(currentPlaylist, mmrw.IsRanked(currentPlaylist), stats[currentPlaylist].myMMR, playerRank);
-
-		SessionStats();
-		writeMMR();
-		writeMMRChange();
-		}, (float)intervalTime);
+	MajRank(currentPlaylist, mmrw.IsRanked(currentPlaylist), stats[currentPlaylist].myMMR, playerRank);
+	SessionStats();
+	writeMMR();
+	writeMMRChange();
 }
 
 void RocketStats::SessionStats()
 {
 	Stats tmp;
-	auto it = playlistName.begin();
 
-	for (; it != playlistName.end(); it++)
+	for (auto it = playlistName.begin(); it != playlistName.end(); it++)
 	{
 		tmp.MMRChange += stats[it->first].MMRChange;
 		tmp.win += stats[it->first].win;
