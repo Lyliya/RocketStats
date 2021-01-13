@@ -24,6 +24,7 @@ public:
 	void LogImageLoadStatus(bool status, std::string imageName);
 	std::string GetRank(int tierID);
 	std::string GetPlaylistName(int playlistID);
+	void replaceAll(std::string& str, const std::string& from, const std::string& to);
 	void LoadImgs();
 
 	void GameStart(std::string eventName);

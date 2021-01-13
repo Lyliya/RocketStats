@@ -8,6 +8,7 @@
 
 BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "3.1", PERMISSION_ALL)
 
+#pragma region utils
 std::string RocketStats::GetRank(int tierID)
 {
 	cvarManager->log("tier: " + std::to_string(tierID));
@@ -19,6 +20,10 @@ std::string RocketStats::GetPlaylistName(int playlistID)
 {
 	if (playlistName.find(playlistID) != playlistName.end()) return playlistName.at(playlistID);
 	else return "Unknown Game Mode";
+}
+
+void RocketStats::replaceAll(std::string& str, const std::string& from, const std::string& to) {
+	while (replace(str, from, to)) {}
 }
 
 void RocketStats::LoadImgs()
@@ -49,6 +54,7 @@ void RocketStats::LogImageLoadStatus(bool status, std::string imageName) {
 	if (status) cvarManager->log(imageName + ": image load");
 	else cvarManager->log(imageName + ": failed to load");
 }
+#pragma endregion
 
 #pragma region PluginLoadRoutines
 void RocketStats::onLoad()
@@ -422,8 +428,7 @@ void RocketStats::DisplayRank(CanvasWrapper canvas, Vector2 imagePos, Vector2 te
 		currentTier = 0;
 	}
 	auto image = rank[currentTier].image;
-	replace(tmpRank, "_", " ");
-	replace(tmpRank, "_", " ");
+	replaceAll(tmpRank, "_", " ");
 
 	canvas.SetColor(LinearColor{ 255, 255, 255, 255 });
 	canvas.SetPosition(imagePos);
@@ -597,11 +602,12 @@ void RocketStats::Render(CanvasWrapper canvas)
 				}
 				else if (it == "RS_disp_rank")
 				{
-					std::string tmpRank = currentRank + currentDivision;
-					replace(tmpRank, "_", " ");
-					replace(tmpRank, "_", " ");
+					std::string tmpRank = currentRank;
+					if (currentTier >= rank_nb) currentTier = 0;
+					replaceAll(tmpRank, "_", " ");
 					canvas.SetColor(LinearColor{ 180, 180, 180, 255 });
-					canvas.DrawString(tmpRank, RS_scale, RS_scale);
+					if (currentDivision == "") canvas.DrawString(tmpRank, RS_scale, RS_scale);
+					else canvas.DrawString(tmpRank + " " + currentDivision, RS_scale, RS_scale);
 				}
 				else if (it == "RS_disp_mmr")
 				{
