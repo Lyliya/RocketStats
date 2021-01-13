@@ -20,10 +20,10 @@ RocketStats Plugin
 1|Enable Boost|RocketStats_stop_boost
 8|
 0|Reset|RocketStats_reset_stats
-0|Load|RocketStats_load
-0|Unload|RocketStats_unload
+0|Reload Pictures|RocketStats_reload_images
 8|
-9|Version 2.2, Developped by @Lyliiya & @NuSa_yt for @Maylie_tv
+9|Version 3.0, Developped by @Lyliiya & @NuSa_yt for @Maylie_tv
+9|Update in 3.0 by Lyliya#4276, Larsluph#7713 (EpicGames integration)
 9|Update in 2.2 by Lyliya#4276, Larsluph#7713 (scale and v1 toggle, MMR and session Fix)
 9|Update in 2.1 by Lyliya#4276, Th3Ant#9411, Larsluph#7713 (resolution fix, placement match)
 9|Update in 2.0 by Lyliya#4276, Larsluph#7713, Th3Ant#9411 & NuSa#0666 (New overlay, new ranks, bugfix)

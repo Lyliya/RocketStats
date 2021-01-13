@@ -1,6 +1,6 @@
 # RocketStats
 
-RocketStats is a Plugin working with bakkesmod, allowing to display informations (MMR / Win and losses, streak) in game and/or OBS
+RocketStats is a Plugin working with bakkesmod, allowing you to display session information (MMR / Win and losses, streak) in game and/or in OBS.
 
 ## Installation
 
@@ -11,56 +11,56 @@ First, you'll need to install [Bakkesmod](https://www.bakkesmod.com/)
 In game, **press F2**, open the **plugins tab**, open the **plugin manager**, fill the box on the right with **30** and press **"Install By Id"**
 
 ## Overlay
-RocketStats is provided with 2 types of overlay, one in-game, and one designed for streamers in OBS
+RocketStats is provided with 2 types of overlay, one in-game, and one designed for streamers in OBS.
 
 ### In Game Overlay
 ![In Game Overlay](https://media.discordapp.net/attachments/681760010392436836/764021965488521246/unknown.png)
 
-This is the In-Game overlay, rank image is dynamic, giving Rank, Division, MMR, MMR Changed, Win, Losses, and Win Streak. You can change images that are display, but changing them in **\rocketleague\Binaries\Win64\bakkesmod\RocketStats\RocketStats_images**.
+This is the In-Game overlay, rank image is dynamic, giving Rank, Division, MMR, MMR Changed, Win, Losses, and Current Streak. You can edit the images that are displayed in the in-game Overlay by changing them in **%appdata%\bakkesmod\bakkesmod\RocketStats\RocketStats_images**.
 
 File used are:
 - loose.png (for the red cross)
 - win.png (for the trophy)
 - crown.png (for the medal, used to be a crown)
-- All the rank image, but keep their name as is, it will break the plugin otherwise
+- All the rank image, but keep their name as is or it will break the plugin
 
 ### OBS Overlay
 ![OBS Overlay](https://media.discordapp.net/attachments/593431328209371170/593803857448927232/tweet1.png)
 
-This is an example of the OBS Overlay, you can display same information on your stream, and style it your way, using custom video and font
+This is an example of the OBS Overlay, you can display information on your stream and style it your way using custom video and font.
 
 #### Installation
 You can find the example background video by [Rimey](https://twitter.com/Rimey_) here : [Download link](https://drive.google.com/file/d/15ye_Iq-1lK_dkQKQvk_Ia5EwbTNEiViG/view?usp=sharing)
 
-The font use for this overlay is [Azonix Regular](https://www.dafont.com/azonix.font)
+The font used for this overlay is [Azonix Regular](https://www.dafont.com/azonix.font)
 
-Make a "media source" check "Local file" and point to where you stored the video "RL_overlay.mov" or your own overlay.
+Make a "media source" check "Local file" and point to where you stored the overlay video.
 
-Keep in mind that "RL_overlay.mov" is an example of what you can do, let your imagination create the overlay you love ! ;)
+Keep in mind that the provided overlay is an example of what you can do, let your imagination create the overlay you love ! ;)
 
-To display data such as win, loose, streak and MMRChange, make a "Text" source check "Read from a file"
+To display data such as win, loose, streak and MMRChange, make a "Text" source and select "Read from a file".
 
-To do this, the text files are located in your folder "bakkesmod/RocketStats"
+All the available data are gathered in text files which are located in the folder **%appdata%\bakkesmod\bakkesmod\RocketStats**.
 
 ![RocketStats_folder](https://cdn.discordapp.com/attachments/681760010392436836/764024258510454794/JIbl4j.png)
 
-To display the image of your rank you need to make a "Browser" source to configure like this:
+To display the image of your rank you need to make a "Browser" source and configure it like this:
 
 ![Rank](https://cdn.discordapp.com/attachments/681760010392436836/764024258443477002/wzE_RR.png)
 
-The file is in your "bakkesmod\RocketStats\RocketStats\RocketStats_images" folder and is names is "rank.html"
+The file is in **bakkesmod\RocketStats\RocketStats_images** and its name is "rank.html"
 
-You can animate your stream while boosting !
+You can also animate your stream while boosting !
 
 ![BoostGif](https://cdn.discordapp.com/attachments/593431328209371170/600786830341832854/M1q6g5.gif)
 
-Use a Browser source
+Make a Browser source:
 
 ![Boost](https://cdn.discordapp.com/attachments/681760010392436836/764024263471923210/FkrpCU.png)
 
-The file is in your "bakkesmod\RocketStats\RocketStats\RocketStats_images" folder and is names is "boost.html"
+The file is in **bakkesmod\RocketStats\RocketStats_images** and its name is "boost.html"
 
-Of course it is possible to change the logo displayed to put yours, you need two videos in the format ".webm" one named "boost.webm" and one "noboost.webm".
+You can change the logo displayed to put yours, you need two videos in the format ".webm" one named "boost.webm" and the other "noboost.webm".
 
 ## Community & Thanks :)
 
