@@ -6,7 +6,7 @@
 #include <fstream>
 #include <utils/parser.h>
 
-BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "3.1", PERMISSION_ALL)
+BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "3.2", PERMISSION_ALL)
 
 #pragma region utils
 std::string RocketStats::GetRank(int tierID)
@@ -30,21 +30,21 @@ void RocketStats::LoadImgs()
 {
 	int load_check = 0;
 	crown = std::make_shared<ImageWrapper>(gameWrapper->GetBakkesModPath().string() + "\\RocketStats\\RocketStats_images\\crown.png", true);
-	load_check += (int) crown->LoadForCanvas();
+	load_check += (int)crown->LoadForCanvas();
 	LogImageLoadStatus(crown->LoadForCanvas(), "crown");
 
 	win = std::make_shared<ImageWrapper>(gameWrapper->GetBakkesModPath().string() + "\\RocketStats\\RocketStats_images\\win.png", true);
-	load_check += (int) win->LoadForCanvas();
+	load_check += (int)win->LoadForCanvas();
 	LogImageLoadStatus(win->LoadForCanvas(), "win");
 
 	loose = std::make_shared<ImageWrapper>(gameWrapper->GetBakkesModPath().string() + "\\RocketStats\\RocketStats_images\\loose.png", true);
-	load_check += (int) loose->LoadForCanvas();
+	load_check += (int)loose->LoadForCanvas();
 	LogImageLoadStatus(loose->LoadForCanvas(), "loose");
 
 	for (int i = 0; i < rank_nb; i++)
 	{
 		rank[i].image = std::make_shared<ImageWrapper>(gameWrapper->GetBakkesModPath().string() + "\\RocketStats\\RocketStats_images\\" + rank[i].name + ".png", true);
-		load_check += (int) rank[i].image->LoadForCanvas();
+		load_check += (int)rank[i].image->LoadForCanvas();
 		LogImageLoadStatus(rank[i].image->LoadForCanvas(), rank[i].name);
 	}
 	cvarManager->log(std::to_string(load_check) + "/26 images were loaded successfully");
@@ -108,10 +108,10 @@ void RocketStats::onLoad()
 	cvarManager->registerCvar("RS_disp_streak", "1", "Display the streak on the current game mode", true, true, 0, true, 1);
 	cvarManager->registerCvar("RS_disp_rank", "1", "Display the rank on the current game mode", true, true, 0, true, 1);
 	cvarManager->registerCvar("RS_disp_gamemode", "1", "Display the current game mode", true, true, 0, true, 1);
+	cvarManager->registerCvar("RS_enable_float", "0", "Enable floating point for MMR (OBS only)", true, true, 0, true, 1);
 	cvarManager->registerCvar("RS_x_position", "0.700", "Overlay X position", true, true, 0, true, 1.0f);
 	cvarManager->registerCvar("RS_y_position", "0.575", "Overlay Y position", true, true, 0, true, 1.0f);
 	cvarManager->registerCvar("RS_scale", "1", "Overlay scale", true, true, 0, true, 10);
-	//cvarManager->registerCvar("RS_disp_active", "0", "", true, true, 0, true, 1);
 	cvarManager->registerCvar("RocketStats_stop_boost", "1", "Stop Boost animation", true, true, 0, true, 1);
 	cvarManager->registerCvar("RS_session", "0", "Display session information instead of game mode", true, true, 0, true, 1, true);
 }
@@ -495,7 +495,6 @@ void RocketStats::Render(CanvasWrapper canvas)
 	float RS_x_position = cvarManager->getCvar("RS_x_position").getFloatValue();
 	float RS_y_position = cvarManager->getCvar("RS_y_position").getFloatValue();
 	float RS_scale = cvarManager->getCvar("RS_scale").getFloatValue();
-	//cvarManager->getCvar("RS_disp_active").setValue(RS_disp_ig);
 
 	if (!RS_disp_ig || isGameStarted && !isGameEnded && RS_hide_overlay_ig) return;
 
@@ -683,15 +682,26 @@ void RocketStats::writeGameMode()
 
 void RocketStats::writeMMR()
 {
-	WriteInFile("RocketStats_MMR.txt", to_string_with_precision(stats[currentPlaylist].myMMR, 2));
+	std::string tmp;
+	if (cvarManager->getCvar("RS_enable_float").getBoolValue())
+		tmp = to_string_with_precision(stats[currentPlaylist].myMMR, 2);
+	else
+		tmp = std::to_string(int(stats[currentPlaylist].myMMR));
+	WriteInFile("RocketStats_MMR.txt", tmp);
 }
 void RocketStats::writeMMRChange()
 {
 	bool RS_session = cvarManager->getCvar("RS_session").getBoolValue();
 	Stats current = (RS_session == true) ? session : stats[currentPlaylist];
 
-	if (current.MMRChange > 0) WriteInFile("RocketStats_MMRChange.txt", "+" + to_string_with_precision(current.MMRChange, 2));
-	else WriteInFile("RocketStats_MMRChange.txt", to_string_with_precision(current.MMRChange, 2));
+	std::string tmp;
+	if (cvarManager->getCvar("RS_enable_float").getBoolValue())
+		tmp = to_string_with_precision(current.MMRChange, 2);
+	else
+		tmp = std::to_string(int(current.MMRChange));
+
+	if (current.MMRChange > 0) WriteInFile("RocketStats_MMRChange.txt", "+" + tmp);
+	else WriteInFile("RocketStats_MMRChange.txt", tmp);
 }
 
 void RocketStats::writeStreak()
