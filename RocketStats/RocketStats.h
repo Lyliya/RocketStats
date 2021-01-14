@@ -130,7 +130,7 @@ public:
 		{13, "Ranked Standard"},
 
 		{15, "Casual SnowDay"},
-		{16, "Rocket Labs"},
+		{16, "Experimental"},
 		{17, "Casual Hoops"},
 		{18, "Casual Rumble"},
 
@@ -151,9 +151,10 @@ public:
 		{32, "Beachball"},
 		{33, "Spike Rush"},
 		{34, "Season Tournament"},
+		{35, "Rocket Labs"},
 		{37, "Dropshot Rumble"},
 		{38, "Heatseeker"},
-		{41, "BoomerBall"},
+		{41, "Boomer Ball"},
 		{43, "Heatseeker Doubles"},
 		{44, "Winter Breakaway"}
 	};
