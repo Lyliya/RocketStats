@@ -156,7 +156,9 @@ public:
 		{38, "Heatseeker"},
 		{41, "Boomer Ball"},
 		{43, "Heatseeker Doubles"},
-		{44, "Winter Breakaway"}
+		{44, "Winter Breakaway"},
+		{46, "Gridiron"},
+		{47, "Super Cube"}
 	};
 
 	std::unique_ptr<MMRNotifierToken> notifierToken;
