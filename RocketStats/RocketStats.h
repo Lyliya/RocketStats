@@ -66,6 +66,8 @@ public:
 	std::map<int, Stats> stats;
 	Stats session;
 
+	//std::unique_ptr<MMRNotifierToken> notifierToken;
+
 	int myTeamNum = -1;
 
 	int lastGameMode = 0;
@@ -160,6 +162,4 @@ public:
 		{46, "Gridiron"},
 		{47, "Super Cube"}
 	};
-
-	std::unique_ptr<MMRNotifierToken> notifierToken;
 };

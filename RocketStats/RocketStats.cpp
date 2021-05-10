@@ -59,7 +59,7 @@ void RocketStats::LogImageLoadStatus(bool status, std::string imageName) {
 #pragma region PluginLoadRoutines
 void RocketStats::onLoad()
 {
-	notifierToken = gameWrapper->GetMMRWrapper().RegisterMMRNotifier(std::bind(&RocketStats::UpdateMMR, this, std::placeholders::_1));
+	//notifierToken = gameWrapper->GetMMRWrapper().RegisterMMRNotifier(std::bind(&RocketStats::UpdateMMR, this, std::placeholders::_1));
 
 	LoadImgs();
 
@@ -175,6 +175,7 @@ void RocketStats::GameEnd(std::string eventName)
 
 		if (myTeamNum == winningTeam.GetTeamNum())
 		{
+			cvarManager->log("===== Game Won =====");
 			// On Win, Increase streak and Win Number
 			stats[currentPlaylist].win++;
 			session.win++;
@@ -194,6 +195,7 @@ void RocketStats::GameEnd(std::string eventName)
 		}
 		else
 		{
+			cvarManager->log("===== Game Lost =====");
 			// On Loose, Increase loose Number and decrease streak
 			stats[currentPlaylist].losses++;
 			session.losses++;
@@ -217,6 +219,10 @@ void RocketStats::GameEnd(std::string eventName)
 		myTeamNum = -1;
 
 		WriteInFile("RocketStats_images/BoostState.txt", std::to_string(-1));
+
+		gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
+			UpdateMMR(gameWrapper->GetUniqueID());
+		}, 3.0F);
 	}
 }
 
@@ -252,11 +258,13 @@ void RocketStats::GameDestroyed(std::string eventName)
 void RocketStats::UpdateMMR(UniqueIDWrapper id)
 {
 	cvarManager->log("===== updateMMR =====");
+	/*
 	if (id.GetIdString() != gameWrapper->GetUniqueID().GetIdString()) {
 		cvarManager->log("not the user");
 		return;
 	}
 	cvarManager->log("user match");
+	*/
 
 	if (currentPlaylist == 0) {
 		cvarManager->log("Invalid playlist id. Have you just opened the game ?");
