@@ -160,6 +160,7 @@ public:
 		{43, "Heatseeker Doubles"},
 		{44, "Winter Breakaway"},
 		{46, "Gridiron"},
-		{47, "Super Cube"}
+		{47, "Super Cube"},
+		{48, "Tactical Rumble"}
 	};
 };
