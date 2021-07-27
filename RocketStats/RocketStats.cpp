@@ -6,7 +6,7 @@
 #include <fstream>
 #include <utils/parser.h>
 
-BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "3.2", PERMISSION_ALL)
+BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "3.4", PERMISSION_ALL)
 
 #pragma region utils
 std::string RocketStats::GetRank(int tierID)
@@ -382,9 +382,9 @@ void RocketStats::InitRank()
 	currentDivision = "nodiv";
 	lastRank = "norank";
 
-	std::string _value = "<meta http-equiv = \"refresh\" content = \"5\" /><img src = \"current.png\" width = \"100\" height = \"100\" />";
+	// std::string _value = "<meta http-equiv = \"refresh\" content = \"5\" /><img src = \"current.png\" width = \"100\" height = \"100\" />";
 
-	WriteInFile("RocketStats_images/rank.html", _value);
+	// WriteInFile("RocketStats_images/rank.html", _value);
 }
 
 void RocketStats::MajRank(int _gameMode, bool isRanked, float _currentMMR, SkillRank playerRank)
@@ -408,9 +408,9 @@ void RocketStats::MajRank(int _gameMode, bool isRanked, float _currentMMR, Skill
 
 		if (currentRank != lastRank)
 		{
-			std::string _value = "<meta http-equiv = \"refresh\" content = \"5\" /><img src = \"" + currentRank + ".png" + "\" width = \"100\" height = \"100\" />";
+			// std::string _value = "<meta http-equiv = \"refresh\" content = \"5\" /><img src = \"" + currentRank + ".png" + "\" width = \"100\" height = \"100\" />";
 
-			WriteInFile("RocketStats_images/rank.html", _value);
+			// WriteInFile("RocketStats_images/rank.html", _value);
 			WriteInFile("RocketStats_Rank.txt", currentRank);
 		}
 	}
@@ -419,9 +419,9 @@ void RocketStats::MajRank(int _gameMode, bool isRanked, float _currentMMR, Skill
 		currentRank = GetPlaylistName(currentGameMode);
 		currentDivision = "";
 
-		std::string _value = "<meta http-equiv = \"refresh\" content = \"5\" /><img src = \"current.png\" width = \"100\" height = \"100\" />";
+		// std::string _value = "<meta http-equiv = \"refresh\" content = \"5\" /><img src = \"current.png\" width = \"100\" height = \"100\" />";
 
-		WriteInFile("RocketStats_images/rank.html", _value);
+		// WriteInFile("RocketStats_images/rank.html", _value);
 		WriteInFile("RocketStats_Rank.txt", currentRank);
 	}
 }
