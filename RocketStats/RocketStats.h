@@ -161,6 +161,7 @@ public:
 		{44, "Winter Breakaway"},
 		{46, "Gridiron"},
 		{47, "Super Cube"},
-		{48, "Tactical Rumble"}
+		{48, "Tactical Rumble"},
+		{49, "Spring Loaded"}
 	};
 };

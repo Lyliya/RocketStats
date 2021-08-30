@@ -435,7 +435,7 @@ void RocketStats::DisplayRank(CanvasWrapper canvas, Vector2 imagePos, Vector2 te
 	{
 		currentTier = 0;
 	}
-	auto image = rank[currentTier].image;
+	std::shared_ptr<ImageWrapper> image = rank[currentTier].image;
 	replaceAll(tmpRank, "_", " ");
 
 	canvas.SetColor(LinearColor{ 255, 255, 255, 255 });
