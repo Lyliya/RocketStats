@@ -109,6 +109,7 @@ void RocketStats::onLoad()
 
 	// Register Cvars
 	cvarManager->registerCvar("RS_Use_v1", "0", "Use the v1 overlay", true, true, 0, true, 1);
+	cvarManager->registerCvar("RS_Use_v2", "0", "Use the v2 overlay", true, true, 0, true, 1);
 	cvarManager->registerCvar("RS_disp_ig", "1", "Display information panel", true, true, 0, true, 1);
 	cvarManager->registerCvar("RS_hide_overlay_ig", "0", "Hide overlay while in-game", true, true, 0, true, 1);
 	cvarManager->registerCvar("RS_disp_mmr", "1", "Display the current MMR", true, true, 0, true, 1);
@@ -437,7 +438,7 @@ void RocketStats::MajRank(int _gameMode, bool isRanked, float _currentMMR, Skill
 #pragma endregion
 
 #pragma region OverlayMgmt
-void RocketStats::DisplayRank(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, float scale, bool showRankText)
+void RocketStats::DisplayRank(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, float scale, bool showText)
 {
 	std::string tmpRank = currentRank;
 	if (currentTier >= rank_nb)
@@ -451,7 +452,7 @@ void RocketStats::DisplayRank(CanvasWrapper canvas, Vector2 imagePos, Vector2 te
 	canvas.SetPosition(imagePos);
 	if (image->IsLoadedForCanvas()) canvas.DrawTexture(image.get(), 0.5f * scale);
 
-	if (showRankText)
+	if (showText)
 	{
 		canvas.SetPosition(textPos_tmp);
 		if (currentDivision == "") canvas.DrawString(tmpRank, 2.0f * scale, 2.0f * scale);
@@ -459,12 +460,12 @@ void RocketStats::DisplayRank(CanvasWrapper canvas, Vector2 imagePos, Vector2 te
 	}
 }
 
-void RocketStats::DisplayMMR(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale, bool showMMRImage)
+void RocketStats::DisplayMMR(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale, bool showImage)
 {
 	std::string mmr = to_string_with_precision(current.myMMR, 2);
 	std::string change = to_string_with_precision(current.MMRChange, 2);
 
-	if (showMMRImage)
+	if (showImage)
 	{
 		canvas.SetColor(LinearColor{ 255, 255, 255, 255 });
 		canvas.SetPosition(imagePos);
@@ -496,11 +497,14 @@ void RocketStats::DisplayLoose(CanvasWrapper canvas, Vector2 imagePos, Vector2 t
 	canvas.SetPosition(textPos_tmp);
 	canvas.DrawString(std::to_string(current.losses), 2.0f * scale, 2.0f * scale);
 }
-void RocketStats::DisplayStreak(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale)
+void RocketStats::DisplayStreak(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale, bool showImage)
 {
-	canvas.SetColor(LinearColor{ 255, 255, 255, 255 });
-	canvas.SetPosition(imagePos);
-	if (streak->IsLoadedForCanvas()) canvas.DrawTexture(streak.get(), 0.5f * scale);
+	if (showImage)
+	{
+		canvas.SetColor(LinearColor{ 255, 255, 255, 255 });
+		canvas.SetPosition(imagePos);
+		if (streak->IsLoadedForCanvas()) canvas.DrawTexture(streak.get(), 0.5f * scale);
+	}
 
 	canvas.SetColor(LinearColor{ 255, 255, 255, 255 });
 	canvas.SetPosition(textPos_tmp);
@@ -522,13 +526,15 @@ void RocketStats::Render(CanvasWrapper canvas)
 	if (!RS_disp_ig || isGameStarted && !isGameEnded && RS_hide_overlay_ig) return;
 
 	bool RS_Use_v1 = cvarManager->getCvar("RS_Use_v1").getBoolValue();
+	bool RS_Use_v2 = cvarManager->getCvar("RS_Use_v2").getBoolValue();
 	bool RS_session = cvarManager->getCvar("RS_session").getBoolValue();
 	float RS_x_position = cvarManager->getCvar("RS_x_position").getFloatValue();
 	float RS_y_position = cvarManager->getCvar("RS_y_position").getFloatValue();
 	float RS_scale = cvarManager->getCvar("RS_scale").getFloatValue();
 	Stats current = (RS_session == true) ? session : stats[currentPlaylist];
 
-	if (!RS_Use_v1)
+	// v3
+	if (!RS_Use_v1 && !RS_Use_v2)
 	{
 		auto canSize = canvas.GetSize();
 		Vector2 imagePos = { int(RS_x_position * canSize.X), int(RS_y_position * canSize.Y) };
@@ -577,9 +583,58 @@ void RocketStats::Render(CanvasWrapper canvas)
 		// Display Streak
 		if (cvarManager->getCvar("RS_disp_streak").getBoolValue())
 		{
-			DisplayStreak(canvas, imagePos, textPos_tmp, current, RS_scale);
+			DisplayStreak(canvas, imagePos, textPos_tmp, current, RS_scale, true);
 		}
 	}
+	// v2
+	else if (!RS_Use_v1)
+	{
+		auto canSize = canvas.GetSize();
+		Vector2 imagePos = { int(RS_x_position * canSize.X), int(RS_y_position * canSize.Y) };
+		Vector2 textPos_tmp = imagePos;
+
+		textPos_tmp.X += int(50 * RS_scale);
+		textPos_tmp.Y += int(10 * RS_scale);
+
+		// Display Rank
+		if (cvarManager->getCvar("RS_disp_rank").getBoolValue())
+		{
+			DisplayRank(canvas, imagePos, textPos_tmp, RS_scale, true);
+			imagePos.Y += int(50 * RS_scale);
+			textPos_tmp.Y += int(50 * RS_scale);
+		}
+
+		// Display MMR
+		if (cvarManager->getCvar("RS_disp_mmr").getBoolValue())
+		{
+			DisplayMMR(canvas, imagePos, textPos_tmp, current, RS_scale, true);
+			imagePos.Y += int(50 * RS_scale);
+			textPos_tmp.Y += int(50 * RS_scale);
+		}
+
+		// Display Win
+		if (cvarManager->getCvar("RS_disp_wins").getBoolValue())
+		{
+			DisplayWins(canvas, imagePos, textPos_tmp, current, RS_scale);
+			imagePos.Y += int(50 * RS_scale);
+			textPos_tmp.Y += int(50 * RS_scale);
+		}
+
+		// Display Loose
+		if (cvarManager->getCvar("RS_disp_losses").getBoolValue())
+		{
+			DisplayLoose(canvas, imagePos, textPos_tmp, current, RS_scale);
+		}
+
+		// Display Streak
+		if (cvarManager->getCvar("RS_disp_streak").getBoolValue())
+		{
+			textPos_tmp.X += int(75 * RS_scale);
+			textPos_tmp.Y -= int(25 * RS_scale);
+			DisplayStreak(canvas, imagePos, textPos_tmp, current, RS_scale, false);
+		}
+	}
+	// v1
 	else
 	{
 		std::vector<std::string> RS_values = {
