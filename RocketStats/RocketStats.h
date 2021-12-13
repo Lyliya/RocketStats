@@ -82,6 +82,7 @@ public:
 	std::shared_ptr<ImageWrapper> crown;
 	std::shared_ptr<ImageWrapper> win;
 	std::shared_ptr<ImageWrapper> loose;
+	std::shared_ptr<ImageWrapper> streak;
 
 	int rank_nb = 23;
 

@@ -46,6 +46,10 @@ void RocketStats::LoadImgs()
 	load_check += (int)loose->LoadForCanvas();
 	LogImageLoadStatus(loose->LoadForCanvas(), "loose");
 
+	streak = std::make_shared<ImageWrapper>(gameWrapper->GetBakkesModPath().string() + "\\RocketStats\\RocketStats_images\\streak.png", true);
+	load_check += (int)streak->LoadForCanvas();
+	LogImageLoadStatus(streak->LoadForCanvas(), "streak");
+
 	for (int i = 0; i < rank_nb; i++)
 	{
 		rank[i].image = std::make_shared<ImageWrapper>(gameWrapper->GetBakkesModPath().string() + "\\RocketStats\\RocketStats_images\\" + rank[i].name + ".png", true);
@@ -495,6 +499,10 @@ void RocketStats::DisplayLoose(CanvasWrapper canvas, Vector2 imagePos, Vector2 t
 void RocketStats::DisplayStreak(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale)
 {
 	canvas.SetColor(LinearColor{ 255, 255, 255, 255 });
+	canvas.SetPosition(imagePos);
+	if (streak->IsLoadedForCanvas()) canvas.DrawTexture(streak.get(), 0.5f * scale);
+
+	canvas.SetColor(LinearColor{ 255, 255, 255, 255 });
 	canvas.SetPosition(textPos_tmp);
 
 	if (current.streak < 0) canvas.SetColor(LinearColor{ 255, 0, 0, 255 });
@@ -528,7 +536,7 @@ void RocketStats::Render(CanvasWrapper canvas)
 		// Add Background
 		canvas.SetColor(LinearColor{ 255, 255, 255, 255 });
 		canvas.SetPosition(imagePos);
-		if (background->IsLoadedForCanvas()) canvas.DrawTexture(background.get(), RS_scale * 1.2);
+		if (background->IsLoadedForCanvas()) canvas.DrawTexture(background.get(), RS_scale * 1.3);
 		imagePos.X += int(45 * RS_scale);
 
 		Vector2 textPos_tmp = imagePos;
@@ -554,20 +562,21 @@ void RocketStats::Render(CanvasWrapper canvas)
 		if (cvarManager->getCvar("RS_disp_wins").getBoolValue())
 		{
 			DisplayWins(canvas, imagePos, textPos_tmp, current, RS_scale);
-			imagePos.X += int(120 * RS_scale);
-			textPos_tmp.X += int(120 * RS_scale);
+			imagePos.X += int(110 * RS_scale);
+			textPos_tmp.X += int(110 * RS_scale);
 		}
 
 		// Display Loose
 		if (cvarManager->getCvar("RS_disp_losses").getBoolValue())
 		{
 			DisplayLoose(canvas, imagePos, textPos_tmp, current, RS_scale);
+			imagePos.X += int(110 * RS_scale);
+			textPos_tmp.X += int(110 * RS_scale);
 		}
 
 		// Display Streak
 		if (cvarManager->getCvar("RS_disp_streak").getBoolValue())
 		{
-			textPos_tmp.X += int(75 * RS_scale);
 			DisplayStreak(canvas, imagePos, textPos_tmp, current, RS_scale);
 		}
 	}
