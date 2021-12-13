@@ -33,6 +33,7 @@ File used are:
 - loose.png (for the red cross)
 - win.png (for the trophy)
 - crown.png (for the medal, used to be a crown)
+- streak.png (for the flame)
 - All the rank image, but keep their name as is or it will break the plugin
 
 ### OBS Overlay
