@@ -29,6 +29,11 @@ void RocketStats::replaceAll(std::string& str, const std::string& from, const st
 void RocketStats::LoadImgs()
 {
 	int load_check = 0;
+
+	background = std::make_shared<ImageWrapper>(gameWrapper->GetBakkesModPath().string() + "\\RocketStats\\RocketStats_images\\background.png", true);
+	load_check += (int)background->LoadForCanvas();
+	LogImageLoadStatus(background->LoadForCanvas(), "background");
+
 	crown = std::make_shared<ImageWrapper>(gameWrapper->GetBakkesModPath().string() + "\\RocketStats\\RocketStats_images\\crown.png", true);
 	load_check += (int)crown->LoadForCanvas();
 	LogImageLoadStatus(crown->LoadForCanvas(), "crown");
@@ -517,6 +522,11 @@ void RocketStats::Render(CanvasWrapper canvas)
 
 		textPos_tmp.X += int(50 * RS_scale);
 		textPos_tmp.Y += int(10 * RS_scale);
+
+		// Add Background
+		canvas.SetColor(LinearColor{ 255, 255, 255, 255 });
+		canvas.SetPosition(imagePos);
+		if (background->IsLoadedForCanvas()) canvas.DrawTexture(background.get(), RS_scale);
 
 		// Display Rank
 		if (cvarManager->getCvar("RS_disp_rank").getBoolValue())
