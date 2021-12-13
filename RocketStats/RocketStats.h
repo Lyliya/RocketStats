@@ -43,11 +43,11 @@ public:
 	void InitRank();
 	void MajRank(int _gameMode, bool isRanked, float _currentMMR, SkillRank playerRank);
 
-	void DisplayRank(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, float scale);
-	void DisplayMMR(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale);
+	void DisplayRank(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, float scale, bool showText);
+	void DisplayMMR(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale, bool showImage);
 	void DisplayWins(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale);
 	void DisplayLoose(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale);
-	void DisplayStreak(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale);
+	void DisplayStreak(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale, bool showImage);
 	void Render(CanvasWrapper canvas);
 
 	void WriteInFile(std::string _fileName, std::string _value);
@@ -78,9 +78,11 @@ public:
 	std::string currentRank;
 	std::string lastRank;
 
+	std::shared_ptr<ImageWrapper> background;
 	std::shared_ptr<ImageWrapper> crown;
 	std::shared_ptr<ImageWrapper> win;
 	std::shared_ptr<ImageWrapper> loose;
+	std::shared_ptr<ImageWrapper> streak;
 
 	int rank_nb = 23;
 
