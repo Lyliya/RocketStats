@@ -23,7 +23,7 @@ RocketStats is provided with 2 types of overlay, one in-game, and one designed f
 
 ![Version 2](/ReadMe_images/v2.png)
 
-#### Version 3
+#### Version 3 (based from [Arubinu42 Theme](https://github.com/Arubinu/Overlay4RocketStats/tree/master/themes/Arubinu42))
 
 ![Version 3](/ReadMe_images/v3.png)
 
