@@ -78,7 +78,6 @@ public:
 	std::string currentRank;
 	std::string lastRank;
 
-	std::shared_ptr<ImageWrapper> background;
 	std::shared_ptr<ImageWrapper> crown;
 	std::shared_ptr<ImageWrapper> win;
 	std::shared_ptr<ImageWrapper> loose;
