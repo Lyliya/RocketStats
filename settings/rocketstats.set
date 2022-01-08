@@ -4,6 +4,7 @@ RocketStats Plugin
 1|Display information in game|RS_disp_ig
 1|Hide overlay while in-game|RS_hide_overlay_ig
 1|Use Overlay v1|RS_Use_v1
+1|Use Overlay v2|RS_Use_v2
 10|RS_disp_ig
 1|Display Game Mode|RS_disp_gamemode
 1|Display MMR|RS_disp_mmr

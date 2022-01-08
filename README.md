@@ -14,7 +14,18 @@ In game, **press F2**, open the **plugins tab**, open the **plugin manager**, fi
 RocketStats is provided with 2 types of overlay, one in-game, and one designed for streamers in OBS.
 
 ### In Game Overlay
-![In Game Overlay](https://media.discordapp.net/attachments/681760010392436836/764021965488521246/unknown.png)
+
+#### Version 1
+
+![Version 1](/ReadMe_images/v1.png)
+
+#### Version 2
+
+![Version 2](/ReadMe_images/v2.png)
+
+#### Version 3 (based from [Arubinu42 Theme](https://github.com/Arubinu/Overlay4RocketStats/tree/master/themes/Arubinu42))
+
+![Version 3](/ReadMe_images/v3.png)
 
 This is the In-Game overlay, rank image is dynamic, giving Rank, Division, MMR, MMR Changed, Win, Losses, and Current Streak. You can edit the images that are displayed in the in-game Overlay by changing them in **%appdata%\bakkesmod\bakkesmod\RocketStats\RocketStats_images**.
 
@@ -22,6 +33,7 @@ File used are:
 - loose.png (for the red cross)
 - win.png (for the trophy)
 - crown.png (for the medal, used to be a crown)
+- streak.png (for the flame)
 - All the rank image, but keep their name as is or it will break the plugin
 
 ### OBS Overlay
