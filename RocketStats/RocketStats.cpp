@@ -52,7 +52,7 @@ void RocketStats::LoadImgs()
 		load_check += (int)rank[i].image->LoadForCanvas();
 		LogImageLoadStatus(rank[i].image->LoadForCanvas(), rank[i].name);
 	}
-	cvarManager->log(std::to_string(load_check) + "/26 images were loaded successfully");
+	cvarManager->log(std::to_string(load_check) + "/27 images were loaded successfully");
 }
 
 void RocketStats::LogImageLoadStatus(bool status, std::string imageName) {
