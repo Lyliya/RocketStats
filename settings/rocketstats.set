@@ -24,7 +24,8 @@ RocketStats Plugin
 0|Reset|RocketStats_reset_stats
 0|Reload Pictures|RocketStats_reload_images
 8|
-9|Version 3.4, Developped by @Lyliiya & @NuSa_yt for @Maylie_tv
+9|Version 3.5, Developped by @Lyliiya & @NuSa_yt for @Maylie_tv
+9|Update in 3.5 by marioesho, Arubinu#9947 (Arubinu42 theme in game)
 9|Update in 3.4 by Larsluph#7713, Arubinu#9947 (Rank display in OBS)
 9|Update in 3.2 by Larsluph#7713
 9|Update in 3.0 by Lyliya#4276, Larsluph#7713 (EpicGames integration)
