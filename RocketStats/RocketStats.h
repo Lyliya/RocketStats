@@ -3,6 +3,14 @@
 #include "bakkesmod/plugin/bakkesmodplugin.h"
 #include "bakkesmod/plugin/pluginwindow.h"
 
+struct Font {
+	std::string name = "Unknown";
+	std::map<std::string, int> common;
+	std::vector<std::shared_ptr<ImageWrapper>> pages;
+	std::vector<std::map<std::string, int>> chars;
+	std::vector<std::map<std::string, int>> kernings;
+};
+
 struct Stats {
 	float myMMR = 100.0f;
 	float MMRChange = 0.0f;
@@ -12,37 +20,57 @@ struct Stats {
 	bool isInit = 0;
 };
 
+struct Theme {
+	std::string name = "Unknown";
+	std::vector<Font> fonts;
+};
+
+
 class RocketStats : public BakkesMod::Plugin::BakkesModPlugin
 {
 private:
 	std::shared_ptr<bool> enabled;
+	std::vector<Theme> themes;
+	std::string theme_selected = "Default";
 
 public:
-	virtual void onLoad();
-	virtual void onUnload();
-
+	// Utils
+	void replaceAll(std::string& str, const std::string& from, const std::string& to);
+	std::vector<std::string> split(const std::string& str, char delim);
+	std::map<std::string, int> SplitKeyInt(const std::string str, size_t offset = 0);
+	size_t FindKeyInt(std::vector<std::map<std::string, int>> vector, std::string key, int value);
 	void LogImageLoadStatus(bool status, std::string imageName);
 	std::string GetRank(int tierID);
 	std::string GetPlaylistName(int playlistID);
-	void replaceAll(std::string& str, const std::string& from, const std::string& to);
+	std::shared_ptr<ImageWrapper> LoadImg(const std::string& path, bool canvasLoad = true);
 	void LoadImgs();
 
+	// PluginLoadRoutines
+	virtual void onLoad();
+	virtual void onUnload();
+
+	// GameMgmt
 	void GameStart(std::string eventName);
 	void GameEnd(std::string eventName);
 	void GameDestroyed(std::string eventName);
 
+	// StatsMgmt
 	void UpdateMMR(UniqueIDWrapper id);
 	void SessionStats();
 	void ResetStats();
 
+	// BoostMgmt
 	void OnBoostStart(std::string eventName);
 	void OnBoostEnd(std::string eventName);
 	//void StopBoost();
 
-
+	// Rank / Div
 	void InitRank();
 	void MajRank(int _gameMode, bool isRanked, float _currentMMR, SkillRank playerRank);
 
+	// OverlayMgmt
+	void LoadThemes();
+	void ChangeTheme(std::string name);
 	void DisplayRank(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, float scale, bool showText);
 	void DisplayMMR(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale, bool showImage);
 	void DisplayWins(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale);
@@ -50,13 +78,16 @@ public:
 	void DisplayStreak(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale, bool showImage);
 	void Render(CanvasWrapper canvas);
 
-	void WriteInFile(std::string _fileName, std::string _value);
-	void writeGameMode();
-	void writeMMR();
-	void writeMMRChange();
-	void writeStreak();
-	void writeWin();
-	void writeLosses();
+	// File I / O
+	std::string ReadFile(std::string _filename, bool root = false);
+	void WriteInFile(std::string _fileName, std::string _value, bool root = false);
+	void WriteSettings();
+	void WriteGameMode();
+	void WriteMMR();
+	void WriteMMRChange();
+	void WriteStreak();
+	void WriteWin();
+	void WriteLosses();
 
 	int currentPlaylist = 0;
 	bool isGameEnded = false;

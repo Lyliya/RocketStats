@@ -6,9 +6,60 @@
 #include <fstream>
 #include <utils/parser.h>
 
+namespace fs = std::filesystem;
+
 BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "3.5", PERMISSION_ALL)
 
-#pragma region utils
+#pragma region Utils
+void RocketStats::replaceAll(std::string& str, const std::string& from, const std::string& to)
+{
+    while (replace(str, from, to));
+}
+
+std::vector<std::string> RocketStats::split(const std::string& str, char delim)
+{
+    std::vector<std::string> result;
+    std::stringstream ss(str);
+    std::string item;
+
+    while (std::getline(ss, item, delim))
+        result.push_back(item);
+
+    return result;
+}
+
+std::map<std::string, int> RocketStats::SplitKeyInt(const std::string str, size_t offset)
+{
+    std::map<std::string, int> result;
+    std::vector<std::string> values = split(str.substr(offset), ' ');
+
+    for (const auto& value : values)
+    {
+        size_t value_assign = value.find('=');
+        if (value_assign != std::string::npos)
+        {
+            std::string key = value.substr(0, value_assign);
+            result.insert(std::make_pair(value.substr(0, value_assign), std::stoi(value.substr(value_assign + 1))));
+        }
+    }
+
+    return result;
+}
+
+size_t RocketStats::FindKeyInt(std::vector<std::map<std::string, int>> vector, std::string key, int value)
+{
+    size_t index = 0;
+    for (auto& map : vector)
+    {
+        if (map[key] == value)
+            return index;
+
+        ++index;
+    }
+
+    return std::string::npos;
+}
+
 std::string RocketStats::GetRank(int tierID)
 {
     cvarManager->log("tier: " + std::to_string(tierID));
@@ -26,36 +77,34 @@ std::string RocketStats::GetPlaylistName(int playlistID)
         return "Unknown Game Mode";
 }
 
-void RocketStats::replaceAll(std::string &str, const std::string &from, const std::string &to)
+std::shared_ptr<ImageWrapper> RocketStats::LoadImg(const std::string& path, bool canvasLoad)
 {
-    while (replace(str, from, to))
-    {
-    }
+    return std::make_shared<ImageWrapper>(gameWrapper->GetBakkesModPath().string() + "/RocketStats/" + path, canvasLoad);
 }
 
 void RocketStats::LoadImgs()
 {
     int load_check = 0;
 
-    crown = std::make_shared<ImageWrapper>(gameWrapper->GetBakkesModPath().string() + "\\RocketStats\\RocketStats_images\\crown.png", true);
+    crown = LoadImg("RocketStats_images/crown.png");
     load_check += (int)crown->LoadForCanvas();
     LogImageLoadStatus(crown->LoadForCanvas(), "crown");
 
-    win = std::make_shared<ImageWrapper>(gameWrapper->GetBakkesModPath().string() + "\\RocketStats\\RocketStats_images\\win.png", true);
+    win = LoadImg("RocketStats_images/win.png");
     load_check += (int)win->LoadForCanvas();
     LogImageLoadStatus(win->LoadForCanvas(), "win");
 
-    loose = std::make_shared<ImageWrapper>(gameWrapper->GetBakkesModPath().string() + "\\RocketStats\\RocketStats_images\\loose.png", true);
+    loose = LoadImg("RocketStats_images/loose.png");
     load_check += (int)loose->LoadForCanvas();
     LogImageLoadStatus(loose->LoadForCanvas(), "loose");
 
-    streak = std::make_shared<ImageWrapper>(gameWrapper->GetBakkesModPath().string() + "\\RocketStats\\RocketStats_images\\streak.png", true);
+    streak = LoadImg("RocketStats_images/streak.png");
     load_check += (int)streak->LoadForCanvas();
     LogImageLoadStatus(streak->LoadForCanvas(), "streak");
 
     for (int i = 0; i < rank_nb; i++)
     {
-        rank[i].image = std::make_shared<ImageWrapper>(gameWrapper->GetBakkesModPath().string() + "\\RocketStats\\RocketStats_images\\" + rank[i].name + ".png", true);
+        rank[i].image = LoadImg("RocketStats_images/" + rank[i].name + ".png");
         load_check += (int)rank[i].image->LoadForCanvas();
         LogImageLoadStatus(rank[i].image->LoadForCanvas(), rank[i].name);
     }
@@ -115,8 +164,6 @@ void RocketStats::onLoad()
     InitRank();
 
     // Register Cvars
-    cvarManager->registerCvar("RS_Use_v1", "0", "Use the v1 overlay", true, true, 0, true, 1);
-    cvarManager->registerCvar("RS_Use_v2", "0", "Use the v2 overlay", true, true, 0, true, 1);
     cvarManager->registerCvar("RS_disp_ig", "1", "Display information panel", true, true, 0, true, 1);
     cvarManager->registerCvar("RS_hide_overlay_ig", "0", "Hide overlay while in-game", true, true, 0, true, 1);
     cvarManager->registerCvar("RS_disp_mmr", "1", "Display the current MMR", true, true, 0, true, 1);
@@ -131,6 +178,12 @@ void RocketStats::onLoad()
     cvarManager->registerCvar("RS_scale", "1", "Overlay scale", true, true, 0, true, 10);
     cvarManager->registerCvar("RocketStats_stop_boost", "1", "Stop Boost animation", true, true, 0, true, 1);
     cvarManager->registerCvar("RS_session", "0", "Display session information instead of game mode", true, true, 0, true, 1, true);
+    cvarManager->registerCvar("RS_theme", "Default", "Theme", true).addOnValueChanged([this](std::string old, CVarWrapper now) {
+        ChangeTheme(now.getStringValue());
+    });
+
+    LoadThemes();
+    WriteSettings();
 }
 
 void RocketStats::onUnload() {}
@@ -143,6 +196,7 @@ void RocketStats::GameStart(std::string eventName)
         return;
 
     cvarManager->log("===== GameStart =====");
+
     CarWrapper me = gameWrapper->GetLocalCar();
     if (me.IsNull())
         return;
@@ -160,12 +214,12 @@ void RocketStats::GameStart(std::string eventName)
     SkillRank playerRank = mmrw.GetPlayerRank(gameWrapper->GetUniqueID(), currentPlaylist);
     cvarManager->log(std::to_string(currentPlaylist) + " -> " + GetPlaylistName(currentPlaylist));
 
-    writeGameMode();
-    writeMMRChange();
-    writeWin();
-    writeStreak();
-    writeLosses();
-    writeMMR();
+    WriteGameMode();
+    WriteMMRChange();
+    WriteWin();
+    WriteStreak();
+    WriteLosses();
+    WriteMMR();
 
     // Get TeamNum
     myTeamNum = myTeam.GetTeamNum();
@@ -176,6 +230,8 @@ void RocketStats::GameStart(std::string eventName)
 
     UpdateMMR(gameWrapper->GetUniqueID());
     WriteInFile("RocketStats_images/BoostState.txt", std::to_string(0));
+
+    cvarManager->log("===== !GameStart =====");
 }
 
 void RocketStats::GameEnd(std::string eventName)
@@ -213,7 +269,7 @@ void RocketStats::GameEnd(std::string eventName)
                 stats[currentPlaylist].streak++;
             }
 
-            writeWin();
+            WriteWin();
         }
         else
         {
@@ -232,10 +288,10 @@ void RocketStats::GameEnd(std::string eventName)
                 stats[currentPlaylist].streak--;
             }
 
-            writeLosses();
+            WriteLosses();
         }
 
-        writeStreak();
+        WriteStreak();
 
         // Reset myTeamNum security
         myTeamNum = -1;
@@ -245,12 +301,15 @@ void RocketStats::GameEnd(std::string eventName)
         gameWrapper->SetTimeout([&](GameWrapper *gameWrapper)
                                 { UpdateMMR(gameWrapper->GetUniqueID()); },
                                 3.0F);
+
+        cvarManager->log("===== !GameEnd =====");
     }
 }
 
 void RocketStats::GameDestroyed(std::string eventName)
 {
     cvarManager->log("===== GameDestroyed =====");
+
     // Check if Game Ended, if not, RAGE QUIT or disconnect
     if (isGameStarted == true && isGameEnded == false)
     {
@@ -267,19 +326,21 @@ void RocketStats::GameDestroyed(std::string eventName)
             stats[currentPlaylist].streak--;
         }
 
-        writeStreak();
-        writeLosses();
+        WriteStreak();
+        WriteLosses();
     }
     isGameEnded = true;
     isGameStarted = false;
     WriteInFile("RocketStats_images/BoostState.txt", std::to_string(-1));
+
+    cvarManager->log("===== !GameDestroyed =====");
 }
 #pragma endregion
 
 #pragma region StatsMgmt
 void RocketStats::UpdateMMR(UniqueIDWrapper id)
 {
-    cvarManager->log("===== updateMMR =====");
+    cvarManager->log("===== UpdateMMR =====");
     /*
     if (id.GetIdString() != gameWrapper->GetUniqueID().GetIdString()) {
         cvarManager->log("not the user");
@@ -308,8 +369,10 @@ void RocketStats::UpdateMMR(UniqueIDWrapper id)
 
     MajRank(currentPlaylist, mmrw.IsRanked(currentPlaylist), stats[currentPlaylist].myMMR, playerRank);
     SessionStats();
-    writeMMR();
-    writeMMRChange();
+    WriteMMR();
+    WriteMMRChange();
+
+    cvarManager->log("===== !UpdateMMR =====");
 }
 
 void RocketStats::SessionStats()
@@ -456,6 +519,94 @@ void RocketStats::MajRank(int _gameMode, bool isRanked, float _currentMMR, Skill
 #pragma endregion
 
 #pragma region OverlayMgmt
+void RocketStats::LoadThemes()
+{
+    cvarManager->log("===== LoadThemes =====");
+
+    std::string base = gameWrapper->GetBakkesModPath().string() + "/RocketStats";
+    std::string theme_base = base + "/RocketStats_themes";
+
+    if (fs::exists(theme_base))
+    {
+        for (const auto& entry : fs::directory_iterator(theme_base))
+        {
+            std::string theme_path = entry.path().u8string();
+            if (entry.is_directory() && fs::exists(theme_path + "/config.json"))
+            {
+                struct Theme theme;
+                theme.name = theme_path.substr(theme_path.find_last_of("/\\") + 1);
+                cvarManager->log("Theme: " + theme.name);
+
+                std::string fonts_path = theme_base + "/" + theme.name + "/fonts";
+                if (fs::exists(fonts_path))
+                {
+                    for (const auto& fentry : fs::directory_iterator(fonts_path))
+                    {
+                        std::string font_path = fentry.path().u8string();
+                        std::string font_filename = font_path.substr(font_path.find_last_of("/\\") + 1);
+
+                        font_path = fonts_path + "/" + font_filename;
+                        if (fentry.is_regular_file() && font_filename.substr(font_filename.find_last_of(".")) == ".fnt")
+                        {
+                            struct Font font;
+                            font.name = font_filename.substr(0, font_filename.find_last_of("."));
+                            cvarManager->log("Font: " + font.name);
+
+                            std::string font_content = ReadFile(font_path.substr(base.length() + 1));
+                            std::vector<std::string> lines = split(font_content, '\n');
+
+                            std::vector<std::string> pages_filename;
+                            for (auto& line : lines)
+                            {
+                                line.erase(line.find('\r'));
+                                if (line.find("page ") == 0)
+                                {
+                                    size_t page_start = line.find("file=\"");
+                                    if (page_start != std::string::npos)
+                                    {
+                                        page_start += 6;
+                                        size_t page_end = line.find('"', page_start);
+                                        if (page_end != std::string::npos)
+                                            pages_filename.push_back(line.substr(page_start, (page_end - page_start)));
+                                    }
+                                }
+                                else if (line.find("char ") == 0)
+                                    font.chars.push_back(SplitKeyInt(line, 5));
+                                else if (line.find("kerning ") == 0)
+                                    font.kernings.push_back(SplitKeyInt(line, 8));
+                                else if (line.find("common ") == 0)
+                                    font.common = SplitKeyInt(line, 7);
+                            }
+
+                            cvarManager->log(" > common base=" + std::to_string(font.common["base"]));
+                            cvarManager->log(" > char_index=" + std::to_string(FindKeyInt(font.chars, "id", 49)));
+
+                            std::vector<std::shared_ptr<ImageWrapper>> pages_images;
+                            for (const auto& page_filename : pages_filename)
+                            {
+                                cvarManager->log(" > " + fonts_path + "/" + page_filename);
+                                pages_images.push_back(std::make_shared<ImageWrapper>(fonts_path + "/" + page_filename, true));
+                            }
+
+                            theme.fonts.push_back(font);
+                        }
+                    }
+                }
+
+                themes.push_back(theme);
+            }
+        }
+    }
+
+    cvarManager->log("===== !LoadThemes =====");
+}
+
+void RocketStats::ChangeTheme(std::string name)
+{
+    cvarManager->log("Theme selected: " + name + " (old: " + theme_selected + ")");
+    theme_selected = name;
+}
+
 void RocketStats::DisplayRank(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, float scale, bool showText)
 {
     if (currentTier >= rank_nb)
@@ -554,8 +705,8 @@ void RocketStats::Render(CanvasWrapper canvas)
     if (!RS_disp_ig || isGameStarted && !isGameEnded && RS_hide_overlay_ig)
         return;
 
-    bool RS_Use_v1 = cvarManager->getCvar("RS_Use_v1").getBoolValue();
-    bool RS_Use_v2 = cvarManager->getCvar("RS_Use_v2").getBoolValue();
+    bool RS_Use_v1 = false;
+    bool RS_Use_v2 = false;
     bool RS_session = cvarManager->getCvar("RS_session").getBoolValue();
     float RS_x_position = cvarManager->getCvar("RS_x_position").getFloatValue();
     float RS_y_position = cvarManager->getCvar("RS_y_position").getFloatValue();
@@ -805,9 +956,46 @@ void RocketStats::Render(CanvasWrapper canvas)
 #pragma endregion
 
 #pragma region File I / O
-void RocketStats::WriteInFile(std::string _filename, std::string _value)
+std::string RocketStats::ReadFile(std::string _filename, bool root)
 {
-    std::ofstream stream(gameWrapper->GetBakkesModPath().string() + "\\RocketStats\\" + _filename, std::ios::out | std::ios::trunc);
+    std::string _value = "";
+    std::string _path = gameWrapper->GetBakkesModPath().string() + "\\";
+
+    if (root)
+        _path += _filename;
+    else
+        _path += "RocketStats\\" + _filename;
+
+    if (std::filesystem::is_regular_file(_path))
+    {
+        std::ifstream stream(_path, std::ios::in | std::ios::binary);
+
+        if (stream.is_open())
+        {
+            std::ostringstream os;
+            os << stream.rdbuf();
+            _value = os.str();
+            stream.close();
+        }
+        else
+            cvarManager->log("Can't read this file: " + _filename);
+    }
+    else
+        cvarManager->log("Bad path: " + _filename);
+
+    return _value;
+}
+
+void RocketStats::WriteInFile(std::string _filename, std::string _value, bool root)
+{
+    std::string _path = gameWrapper->GetBakkesModPath().string() + "\\";
+
+    if (root)
+        _path += _filename;
+    else
+        _path += "RocketStats\\" + _filename;
+
+    std::ofstream stream(_path, std::ios::out | std::ios::trunc);
 
     if (stream.is_open())
     {
@@ -821,12 +1009,36 @@ void RocketStats::WriteInFile(std::string _filename, std::string _value)
     }
 }
 
-void RocketStats::writeGameMode()
+void RocketStats::WriteSettings()
+{
+    cvarManager->log("===== WriteSettings =====");
+
+    std::string file = "plugins/settings/rocketstats.set";
+    std::string settings = ReadFile(file, true);
+
+    size_t start = settings.find("|RS_theme|") + 10;
+    size_t end = std::min(settings.find("\r", start), settings.find("\n", start));
+
+    std::string themes_names = "Default@Default&Redesigned@Redesigned";
+    for (auto& theme : themes)
+    {
+        cvarManager->log(" > " + theme.name);
+        themes_names += "&" + theme.name + "@" + theme.name;
+    }
+
+    WriteInFile(file, (settings.substr(0, start) + themes_names + settings.substr(end)), true);
+    cvarManager->executeCommand("cl_settings_refreshplugins");
+    cvarManager->executeCommand("writeconfig");
+
+    cvarManager->log("===== !WriteSettings =====");
+}
+
+void RocketStats::WriteGameMode()
 {
     WriteInFile("RocketStats_GameMode.txt", GetPlaylistName(currentPlaylist));
 }
 
-void RocketStats::writeMMR()
+void RocketStats::WriteMMR()
 {
     std::string tmp;
     if (cvarManager->getCvar("RS_enable_float").getBoolValue())
@@ -835,7 +1047,7 @@ void RocketStats::writeMMR()
         tmp = std::to_string(int(stats[currentPlaylist].myMMR));
     WriteInFile("RocketStats_MMR.txt", tmp);
 }
-void RocketStats::writeMMRChange()
+void RocketStats::WriteMMRChange()
 {
     bool RS_session = cvarManager->getCvar("RS_session").getBoolValue();
     Stats current = (RS_session == true) ? session : stats[currentPlaylist];
@@ -852,7 +1064,7 @@ void RocketStats::writeMMRChange()
         WriteInFile("RocketStats_MMRChange.txt", tmp);
 }
 
-void RocketStats::writeStreak()
+void RocketStats::WriteStreak()
 {
     bool RS_session = cvarManager->getCvar("RS_session").getBoolValue();
     Stats current = (RS_session == true) ? session : stats[currentPlaylist];
@@ -863,14 +1075,14 @@ void RocketStats::writeStreak()
         WriteInFile("RocketStats_Streak.txt", std::to_string(current.streak));
 }
 
-void RocketStats::writeWin()
+void RocketStats::WriteWin()
 {
     bool RS_session = cvarManager->getCvar("RS_session").getBoolValue();
     Stats current = (RS_session == true) ? session : stats[currentPlaylist];
     WriteInFile("RocketStats_Win.txt", std::to_string(current.win));
 }
 
-void RocketStats::writeLosses()
+void RocketStats::WriteLosses()
 {
     bool RS_session = cvarManager->getCvar("RS_session").getBoolValue();
     Stats current = (RS_session == true) ? session : stats[currentPlaylist];
