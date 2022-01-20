@@ -125,6 +125,9 @@ void RocketStats::onLoad()
 {
     // notifierToken = gameWrapper->GetMMRWrapper().RegisterMMRNotifier(std::bind(&RocketStats::UpdateMMR, this, std::placeholders::_1));
 
+    LoadThemes();
+    WriteSettings();
+
     LoadImgs();
 
     cvarManager->registerNotifier(
@@ -181,9 +184,6 @@ void RocketStats::onLoad()
     cvarManager->registerCvar("RS_theme", "Default", "Theme", true).addOnValueChanged([this](std::string old, CVarWrapper now) {
         ChangeTheme(now.getStringValue());
     });
-
-    LoadThemes();
-    WriteSettings();
 }
 
 void RocketStats::onUnload() {}
@@ -956,6 +956,39 @@ void RocketStats::Render(CanvasWrapper canvas)
 #pragma endregion
 
 #pragma region File I / O
+bool RocketStats::ExistsFile(std::string _filename, bool root)
+{
+    std::string _path = gameWrapper->GetBakkesModPath().string() + "\\";
+
+    if (root)
+        _path += _filename;
+    else
+        _path += "RocketStats\\" + _filename;
+
+    return fs::exists(_path);
+}
+
+bool RocketStats::RemoveFile(std::string _filename, bool root)
+{
+    if (!ExistsFile(_filename, root))
+        return true;
+
+    std::string _path = gameWrapper->GetBakkesModPath().string() + "\\";
+
+    if (root)
+        _path += _filename;
+    else
+        _path += "RocketStats\\" + _filename;
+
+    try
+    {
+        return fs::remove(_path);
+    }
+    catch (const std::exception&) {}
+
+    return false;
+}
+
 std::string RocketStats::ReadFile(std::string _filename, bool root)
 {
     std::string _value = "";
@@ -966,7 +999,7 @@ std::string RocketStats::ReadFile(std::string _filename, bool root)
     else
         _path += "RocketStats\\" + _filename;
 
-    if (std::filesystem::is_regular_file(_path))
+    if (fs::is_regular_file(_path))
     {
         std::ifstream stream(_path, std::ios::in | std::ios::binary);
 
@@ -1014,21 +1047,73 @@ void RocketStats::WriteSettings()
     cvarManager->log("===== WriteSettings =====");
 
     std::string file = "plugins/settings/rocketstats.set";
-    std::string settings = ReadFile(file, true);
 
-    size_t start = settings.find("|RS_theme|") + 10;
-    size_t end = std::min(settings.find("\r", start), settings.find("\n", start));
-
-    std::string themes_names = "Default@Default&Redesigned@Redesigned";
-    for (auto& theme : themes)
+    if (!ExistsFile(file, true))
     {
-        cvarManager->log(" > " + theme.name);
-        themes_names += "&" + theme.name + "@" + theme.name;
+        const std::string settings = R"(RocketStats Plugin
+9|Check/Uncheck what you want to display
+1|Display session information instead of game mode|RS_session
+7|
+1|Enable Boost|RocketStats_stop_boost
+1|Display information in game|RS_disp_ig
+7|
+10|RS_disp_ig
+7|
+1|Hide overlay while in-game|RS_hide_overlay_ig
+7|
+1|Enable floating point for MMR (OBS only)|RS_enable_float
+6|Theme|RS_theme|Default@Default&Redesigned@Redesigned
+1|Display Game Mode|RS_disp_gamemode
+7|
+1|Display Rank|RS_disp_rank
+7|
+1|Display MMR|RS_disp_mmr
+7|
+1|Display Wins|RS_disp_wins
+7|
+1|Display Losses|RS_disp_losses
+7|
+1|Display Streak|RS_disp_streak
+9|
+9|Place your overlay (Only if display information in game is check)
+4|X position|RS_x_position|0|1.0
+4|Y position|RS_y_position|0|1.0
+4|Scale|RS_scale|0|10
+11|
+9|
+0|Reload Pictures|RocketStats_reload_images
+7|
+0|Reset|RocketStats_reset_stats
+8|
+9|Version 3.5, Developped by @Lyliiya & @NuSa_yt for @Maylie_tv
+9|Update in 3.5 by marioesho, Arubinu#9947 (Arubinu42 theme in game)
+9|Update in 3.4 by Larsluph#7713, Arubinu#9947 (Rank display in OBS)
+9|Update in 3.2 by Larsluph#7713
+9|Update in 3.0 by Lyliya#4276, Larsluph#7713 (EpicGames integration)
+9|Update in 2.2 by Lyliya#4276, Larsluph#7713 (scale and v1 toggle, MMR and session Fix)
+9|Update in 2.1 by Lyliya#4276, Th3Ant#9411, Larsluph#7713 (resolution fix, placement match)
+9|Update in 2.0 by Lyliya#4276, Larsluph#7713, Th3Ant#9411 & NuSa#0666 (New overlay, new ranks, bugfix)
+9|Donate : https://www.paypal.me/rocketstats
+)";
+    
+        const size_t start = (settings.find("|RS_theme|") + 10);
+        const size_t end = std::min(settings.find("\r", start), settings.find("\n", start));
+
+        std::string themes_names = "Default@Default&Redesigned@Redesigned";
+        for (auto& theme : themes)
+        {
+            cvarManager->log(" > " + theme.name);
+            themes_names += "&" + theme.name + "@" + theme.name;
+        }
+
+        cvarManager->log("=====> WriteSettings: Exists");
+        WriteInFile(file, (settings.substr(0, start) + themes_names + settings.substr(end)), true);
+        cvarManager->executeCommand("cl_settings_refreshplugins");
     }
 
-    WriteInFile(file, (settings.substr(0, start) + themes_names + settings.substr(end)), true);
-    cvarManager->executeCommand("cl_settings_refreshplugins");
-    cvarManager->executeCommand("writeconfig");
+    gameWrapper->SetTimeout([this, file](GameWrapper* gameWrapper) {
+        RemoveFile(file, true);
+    }, 3.000f);
 
     cvarManager->log("===== !WriteSettings =====");
 }

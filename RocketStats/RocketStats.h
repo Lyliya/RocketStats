@@ -79,6 +79,8 @@ public:
 	void Render(CanvasWrapper canvas);
 
 	// File I / O
+	bool ExistsFile(std::string _filename, bool root = false);
+	bool RemoveFile(std::string _filename, bool root = false);
 	std::string ReadFile(std::string _filename, bool root = false);
 	void WriteInFile(std::string _fileName, std::string _value, bool root = false);
 	void WriteSettings();
