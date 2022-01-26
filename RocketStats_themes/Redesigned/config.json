@@ -104,7 +104,7 @@
 		{
 			"name":		"streak",
 			"type":		"text",
-			"variable":	"streak",
+			"variable":	"Streak",
 			"value":	"0",
 			"x":		125,
 			"y":		143,

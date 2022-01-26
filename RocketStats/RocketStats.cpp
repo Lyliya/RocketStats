@@ -809,16 +809,49 @@ struct Element RocketStats::CalculateElement(CanvasWrapper& canvas, json& elemen
 
                 if (element.contains("variable") && current.isInit)
                 {
+                    int value = 0;
+                    bool check = true;
                     if (element["variable"] == "MMR")
+                    {
+                        value = int(current.myMMR);
                         calculated.value = to_string_with_precision(current.myMMR, (floating_point ? 2 : 0));
+                    }
                     else if (element["variable"] == "MMRChange")
+                    {
+                        value = int(current.MMRChange);
                         calculated.value = to_string_with_precision(current.MMRChange, (floating_point ? 2 : 0));
+                    }
                     else if (element["variable"] == "Win")
-                        calculated.value = std::to_string(current.win);
+                    {
+                        value = current.win;
+                        calculated.value = std::to_string(value);
+                    }
                     else if (element["variable"] == "Loose")
-                        calculated.value = std::to_string(current.losses);
+                    {
+                        value = current.losses;
+                        calculated.value = std::to_string(value);
+                    }
                     else if (element["variable"] == "Streak")
-                        calculated.value = std::to_string(current.streak);
+                    {
+                        value = current.streak;
+                        calculated.value = std::to_string(value);
+                    }
+                    else
+                        check = false;
+
+                    if (check)
+                    {
+                        cvarManager->log("Check " + std::string(element["variable"]) + "=\"" + calculated.value + "\"; (" + std::to_string(value) + ")");
+                        if (value >= 0 && element.contains("sign") && element["sign"])
+                            calculated.value = ("+" + calculated.value);
+
+                        if (element.contains("chameleon") && element["chameleon"])
+                        {
+                            calculated.color.r = char((value >= 0) ? 0 : 255);
+                            calculated.color.g = char((value >= 0) ? 255 : 0);
+                            calculated.color.b = 0;
+                        }
+                    }
                 }
                 else
                     calculated.value = element["value"];
@@ -829,23 +862,22 @@ struct Element RocketStats::CalculateElement(CanvasWrapper& canvas, json& elemen
                 if (element.contains("suffix"))
                     calculated.value += std::string(element["suffix"]);
 
-                const Vector2F string_size = canvas.GetStringSize(calculated.value, element["scale"], element["scale"]);
-                element_pos.Y -= int(std::round(float(string_size.Y) * scale / 2)); // fix Y position
+                const Vector2F string_size = canvas.GetStringSize(calculated.value, calculated.scale, calculated.scale);
 
                 if (element.contains("align") && element["align"].type() == json::value_t::string)
                 {
                     if (element["align"] == "right")
-                        element_pos.X -= int(float(string_size.X) * scale);
+                        element_pos.X -= int(string_size.X);
                     else if (element["align"] == "center")
-                        element_pos.X -= int(std::round(float(string_size.X) * scale / 2));
+                        element_pos.X -= int(std::round(float(string_size.X) / 2.0f));
                 }
 
                 if (element.contains("valign") && element["valign"].type() == json::value_t::string)
                 {
                     if (element["valign"] == "bottom")
-                        element_pos.Y -= int(float(string_size.Y) * scale);
+                        element_pos.Y -= int(string_size.Y);
                     else if (element["valign"] == "middle")
-                        element_pos.Y -= int(std::round(float(string_size.Y) * scale / 2));
+                        element_pos.Y -= int(std::round(float(string_size.Y) / 2.0f));
                 }
             }
             else if (element["type"] == "line")
@@ -879,17 +911,17 @@ struct Element RocketStats::CalculateElement(CanvasWrapper& canvas, json& elemen
                     if (element.contains("align") && element["align"].type() == json::value_t::string)
                     {
                         if (element["align"] == "right")
-                            element_pos.X -= int((float(image_size.X) * 0.5f ) * scale);
+                            element_pos.X -= int((float(image_size.X) * 0.5f) * scale);
                         else if (element["align"] == "center")
-                            element_pos.X -= int(std::round(((float(image_size.X) * 0.5f) * scale) / 2));
+                            element_pos.X -= int(std::round(((float(image_size.X) * 0.5f) * scale) / 2.0f));
                     }
 
                     if (element.contains("valign") && element["valign"].type() == json::value_t::string)
                     {
                         if (element["valign"] == "bottom")
-                            element_pos.Y -= int((float(image_size.Y) * 0.5f ) * scale);
+                            element_pos.Y -= int((float(image_size.Y) * 0.5f) * scale);
                         else if (element["valign"] == "middle")
-                            element_pos.Y -= int(std::round(((float(image_size.Y) * 0.5f) * scale) / 2));
+                            element_pos.Y -= int(std::round(((float(image_size.Y) * 0.5f) * scale) / 2.0f));
                     }
                 }
             }
@@ -1062,7 +1094,7 @@ void RocketStats::WriteSettings()
 7|
 1|Hide overlay while in-game|RS_hide_overlay_ig
 7|
-1|Enable floating point for MMR (OBS only)|RS_enable_float
+1|Enable floating point for MMR|RS_enable_float
 6|Theme|RS_theme|Default@Default&Redesigned@Redesigned
 1|Display Game Mode|RS_disp_gamemode
 7|
