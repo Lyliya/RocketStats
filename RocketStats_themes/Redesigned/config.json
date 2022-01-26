@@ -1,0 +1,122 @@
+{
+	"width":	175,
+	"height":	160,
+	"opacity":	1,
+	"elements": [
+		{
+			"name":		"rank_image",
+			"type":		"image",
+			"file":		"Rank",
+			"x":		50,
+			"y":		0,
+			"align":	"right",
+			"valign":	"top",
+			"scale":	1
+		},
+		{
+			"name":		"rank_div",
+			"type":		"text",
+			"variable":	"Rank+Div",
+			"value":	"norank nodiv",
+			"x":		50,
+			"y":		18,
+			"align":	"left",
+			"valign":	"top",
+			"color":	[ 255, 255, 255 ],
+			"scale":	1
+		},
+		{
+			"name":		"mmr_image",
+			"type":		"image",
+			"file":		"crown.png",
+			"x":		50,
+			"y":		50,
+			"align":	"right",
+			"valign":	"top",
+			"scale":	1
+		},
+		{
+			"name":		"mmr",
+			"type":		"text",
+			"variable":	"MMR",
+			"value":	"100.00 (0.0000)",
+			"x":		50,
+			"y":		68,
+			"align":	"left",
+			"valign":	"top",
+			"color":	[ 255, 255, 255 ],
+			"scale":	1
+		},
+		{
+			"name":		"win_image",
+			"type":		"image",
+			"file":		"win.png",
+			"x":		50,
+			"y":		100,
+			"align":	"right",
+			"valign":	"top",
+			"scale":	1
+		},
+		{
+			"name":		"win",
+			"type":		"text",
+			"variable":	"Win",
+			"value":	"0",
+			"x":		50,
+			"y":		118,
+			"align":	"left",
+			"valign":	"top",
+			"color":	[ 0, 255, 0 ],
+			"scale":	1
+		},
+		{
+			"name":		"loose_image",
+			"type":		"image",
+			"file":		"loose.png",
+			"x":		50,
+			"y":		150,
+			"align":	"right",
+			"valign":	"top",
+			"scale":	1
+		},
+		{
+			"name":		"loose",
+			"type":		"text",
+			"variable":	"Loose",
+			"value":	"0",
+			"x":		50,
+			"y":		168,
+			"align":	"left",
+			"valign":	"top",
+			"color":	[ 255, 0, 0 ],
+			"scale":	1
+		},
+		{
+			"name":		"streak_image",
+			"type":		"image",
+			"file":		"streak.png",
+			"x":		50,
+			"y":		100,
+			"align":	"right",
+			"valign":	"top",
+			"scale":	1
+		},
+		{
+			"name":		"streak",
+			"type":		"text",
+			"variable":	"streak",
+			"value":	"0",
+			"x":		125,
+			"y":		143,
+			"align":	"left",
+			"valign":	"top",
+			"color":	[ 0, 255, 0 ],
+			"scale":	1
+		}
+	],
+	"options": {
+		"bottom_background":		true,
+		"display_rocketleague":		false,
+		"mmr_with_floatingpoint":	true
+	}
+}

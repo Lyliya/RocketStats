@@ -873,6 +873,24 @@ struct Element RocketStats::CalculateElement(CanvasWrapper& canvas, json& elemen
                 {
                     theme_images[calculated.value] = LoadImg("RocketStats_themes/" + theme_selected + "/images/" + calculated.value);
                     LogImageLoadStatus(theme_images[calculated.value]->LoadForCanvas(), (theme_selected + "->" + calculated.value));
+
+                    Vector2 image_size = theme_images[calculated.value]->GetSize();
+
+                    if (element.contains("align") && element["align"].type() == json::value_t::string)
+                    {
+                        if (element["align"] == "right")
+                            element_pos.X -= int((float(image_size.X) * 0.5f ) * scale);
+                        else if (element["align"] == "center")
+                            element_pos.X -= int(std::round(((float(image_size.X) * 0.5f) * scale) / 2));
+                    }
+
+                    if (element.contains("valign") && element["valign"].type() == json::value_t::string)
+                    {
+                        if (element["valign"] == "bottom")
+                            element_pos.Y -= int((float(image_size.Y) * 0.5f ) * scale);
+                        else if (element["valign"] == "middle")
+                            element_pos.Y -= int(std::round(((float(image_size.Y) * 0.5f) * scale) / 2));
+                    }
                 }
             }
 

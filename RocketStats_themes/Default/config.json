@@ -1,0 +1,112 @@
+{
+	"width":	175,
+	"height":	160,
+	"opacity":	1,
+	"elements": [
+		{
+			"name":		"box",
+			"type":		"rectangle",
+			"x":		0,
+			"y":		0,
+			"width":	175,
+			"height":	160,
+			"fill":		[ 0, 0, 0, 0.82 ],
+			"stroke":	false
+		},
+		{
+			"name":		"mode",
+			"type":		"text",
+			"variable":	"Mode",
+			"value":	"Unknown Game Mode",
+			"x":		10,
+			"y":		14,
+			"align":	"left",
+			"valign":	"top",
+			"color":	[ 255, 255, 255 ],
+			"scale":	0.5
+		},
+		{
+			"name":		"rank_div",
+			"type":		"text",
+			"variable":	"Rank+Div",
+			"value":	"norank nodiv",
+			"x":		10,
+			"y":		34,
+			"align":	"left",
+			"valign":	"top",
+			"color":	[ 255, 255, 255 ],
+			"scale":	0.5
+		},
+		{
+			"name":		"mmr",
+			"type":		"text",
+			"variable":	"MMR",
+			"value":	"100.00",
+			"prefix":	"MMR : ",
+			"x":		10,
+			"y":		54,
+			"align":	"left",
+			"valign":	"top",
+			"color":	[ 255, 255, 255 ],
+			"scale":	0.5
+		},
+		{
+			"name":		"mmrchange",
+			"type":		"text",
+			"variable":	"MMRChange",
+			"sign":		true,
+			"value":	"+0.0000",
+			"prefix":	"MMRChange : ",
+			"x":		10,
+			"y":		74,
+			"align":	"left",
+			"valign":	"top",
+			"color":	[ 0, 255, 0 ],
+			"scale":	0.5
+		},
+		{
+			"name":		"win",
+			"type":		"text",
+			"variable":	"Win",
+			"value":	"0",
+			"prefix":	"Win : ",
+			"x":		10,
+			"y":		94,
+			"align":	"left",
+			"valign":	"top",
+			"color":	[ 0, 255, 0 ],
+			"scale":	0.5
+		},
+		{
+			"name":		"loose",
+			"type":		"text",
+			"variable":	"Loose",
+			"value":	"0",
+			"prefix":	"Losses : ",
+			"x":		10,
+			"y":		114,
+			"align":	"left",
+			"valign":	"top",
+			"color":	[ 255, 0, 0 ],
+			"scale":	0.5
+		},
+		{
+			"name":		"streak",
+			"type":		"text",
+			"variable":	"streak",
+			"value":	"+0",
+			"prefix":	"Streak : ",
+			"x":		10,
+			"y":		134,
+			"align":	"left",
+			"valign":	"top",
+			"color":	[ 0, 255, 0 ],
+			"scale":	0.5
+		}
+	],
+	"options": {
+		"bottom_background":		true,
+		"display_rocketleague":		false,
+		"mmr_with_floatingpoint":	true
+	}
+}

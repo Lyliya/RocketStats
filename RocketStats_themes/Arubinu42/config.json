@@ -42,8 +42,8 @@
 			"type":		"image",
 			"variable":	"rank",
 			"file":		"logo.png",
-			"x":		15,
-			"y":		4,
+			"x":		30,
+			"y":		20,
 			"align":	"center",
 			"valign":	"middle",
 			"scale":	1
@@ -63,9 +63,9 @@
 		{
 			"name":		"win_separator",
 			"type":		"line",
-			"x1":		185,
+			"x1":		187,
 			"y1":		8,
-			"x2":		185,
+			"x2":		187,
 			"y2":		32,
 			"color":	[ 255, 255, 255, 0.1 ],
 			"width":	1
@@ -74,8 +74,8 @@
 			"name":		"win_image",
 			"type":		"image",
 			"file":		"win.png",
-			"x":		195,
-			"y":		1,
+			"x":		217,
+			"y":		25,
 			"align":	"center",
 			"valign":	"middle",
 			"scale":	0.75
@@ -95,9 +95,9 @@
 		{
 			"name":		"loose_separator",
 			"type":		"line",
-			"x1":		315,
+			"x1":		317,
 			"y1":		8,
-			"x2":		315,
+			"x2":		317,
 			"y2":		32,
 			"color":	[ 255, 255, 255, 0.1 ],
 			"width":	1
@@ -106,8 +106,8 @@
 			"name":		"loose_image",
 			"type":		"image",
 			"file":		"loose.png",
-			"x":		325,
-			"y":		1,
+			"x":		347,
+			"y":		25,
 			"align":	"center",
 			"valign":	"middle",
 			"scale":	0.75
@@ -127,9 +127,9 @@
 		{
 			"name":		"streak_separator",
 			"type":		"line",
-			"x1":		445,
+			"x1":		447,
 			"y1":		8,
-			"x2":		445,
+			"x2":		447,
 			"y2":		32,
 			"color":	[ 255, 255, 255, 0.1 ],
 			"width":	1
@@ -138,8 +138,8 @@
 			"name":		"streak_image",
 			"type":		"image",
 			"file":		"streak.png",
-			"x":		455,
-			"y":		1,
+			"x":		477,
+			"y":		25,
 			"align":	"center",
 			"valign":	"middle",
 			"scale":	0.75
