@@ -712,8 +712,9 @@ void RocketStats::Render(CanvasWrapper canvas)
     {
         if (theme_refresh || theme_render.name == "" || theme_render.name != theme_selected)
         {
-            std::vector<struct Element> elements;
             const Vector2 can_size = canvas.GetSize();
+
+            std::vector<struct Element> elements;
             std::map<std::string, std::any> options = {
                 { "pos_x", int(can_size.X * cvarManager->getCvar("RS_x_position").getFloatValue()) },
                 { "pos_y", int(can_size.Y * cvarManager->getCvar("RS_y_position").getFloatValue()) },
@@ -822,9 +823,17 @@ struct Element RocketStats::CalculateElement(CanvasWrapper& canvas, json& elemen
                 else
                     calculated.value = element["value"];
 
+                if (element.contains("prefix"))
+                    calculated.value = (std::string(element["prefix"]) + calculated.value);
+
+                if (element.contains("suffix"))
+                    calculated.value += std::string(element["suffix"]);
+
+                const Vector2F string_size = canvas.GetStringSize(calculated.value, element["scale"], element["scale"]);
+                element_pos.Y -= int(std::round(float(string_size.Y) * scale / 2)); // fix Y position
+
                 if (element.contains("align") && element["align"].type() == json::value_t::string)
                 {
-                    const Vector2F string_size = canvas.GetStringSize(calculated.value, element["scale"], element["scale"]);
                     if (element["align"] == "right")
                         element_pos.X -= int(float(string_size.X) * scale);
                     else if (element["align"] == "center")
@@ -833,7 +842,6 @@ struct Element RocketStats::CalculateElement(CanvasWrapper& canvas, json& elemen
 
                 if (element.contains("valign") && element["valign"].type() == json::value_t::string)
                 {
-                    const Vector2F string_size = canvas.GetStringSize(calculated.value, element["scale"], element["scale"]);
                     if (element["valign"] == "bottom")
                         element_pos.Y -= int(float(string_size.Y) * scale);
                     else if (element["valign"] == "middle")
