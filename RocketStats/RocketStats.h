@@ -117,11 +117,6 @@ public:
 	void LoadThemes();
 	bool ChangeTheme(std::string name);
 	void RefreshTheme(std::string old, CVarWrapper now);
-	void DisplayRank(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, float scale, bool showText);
-	void DisplayMMR(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale, bool showImage);
-	void DisplayWins(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale);
-	void DisplayLoose(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale);
-	void DisplayStreak(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale, bool showImage);
 	void Render(CanvasWrapper canvas);
 	struct Element CalculateElement(CanvasWrapper& canvas, json& element, std::map<std::string, std::any>& options, bool& check);
 	void RenderElement(CanvasWrapper& canvas, Element& element);

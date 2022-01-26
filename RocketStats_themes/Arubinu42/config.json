@@ -75,7 +75,7 @@
 			"type":			"image",
 			"file":			"win.png",
 			"x":			215,
-			"y":			25,
+			"y":			26,
 			"align":		"center",
 			"valign":		"middle",
 			"scale":		0.75
@@ -107,7 +107,7 @@
 			"type":			"image",
 			"file":			"loose.png",
 			"x":			345,
-			"y":			25,
+			"y":			26,
 			"align":		"center",
 			"valign":		"middle",
 			"scale":		0.75
@@ -139,7 +139,7 @@
 			"type":			"image",
 			"file":			"streak.png",
 			"x":			475,
-			"y":			25,
+			"y":			26,
 			"align":		"center",
 			"valign":		"middle",
 			"scale":		0.75
