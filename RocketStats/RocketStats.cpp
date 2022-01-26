@@ -921,8 +921,14 @@ struct Element RocketStats::CalculateElement(CanvasWrapper& canvas, json& elemen
                 calculated.value = element["file"];
                 if (!theme_images[calculated.value])
                 {
-                    theme_images[calculated.value] = LoadImg("RocketStats_themes/" + theme_selected + "/images/" + calculated.value);
-                    LogImageLoadStatus(theme_images[calculated.value]->LoadForCanvas(), (theme_selected + "->" + calculated.value));
+                    std::string image_path;
+                    if (calculated.value != "Rank")
+                    {
+                        theme_images[calculated.value] = LoadImg("RocketStats_themes/" + theme_selected + "/images/" + calculated.value);
+                        LogImageLoadStatus(theme_images[calculated.value]->LoadForCanvas(), (theme_selected + "->" + calculated.value));
+                    }
+                    else
+                        theme_images[calculated.value] = rank[(currentTier >= rank_nb) ? 0 : currentTier].image;
 
                     Vector2 image_size = theme_images[calculated.value]->GetSize();
 

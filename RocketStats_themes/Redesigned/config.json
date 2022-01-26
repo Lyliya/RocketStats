@@ -8,7 +8,7 @@
 			"type":		"image",
 			"file":		"Rank",
 			"x":		50,
-			"y":		0,
+			"y":		10,
 			"align":	"right",
 			"valign":	"top",
 			"scale":	1
@@ -30,7 +30,7 @@
 			"type":		"image",
 			"file":		"crown.png",
 			"x":		50,
-			"y":		50,
+			"y":		60,
 			"align":	"right",
 			"valign":	"top",
 			"scale":	1
@@ -52,7 +52,7 @@
 			"type":		"image",
 			"file":		"win.png",
 			"x":		50,
-			"y":		100,
+			"y":		110,
 			"align":	"right",
 			"valign":	"top",
 			"scale":	1
@@ -74,7 +74,7 @@
 			"type":		"image",
 			"file":		"loose.png",
 			"x":		50,
-			"y":		150,
+			"y":		160,
 			"align":	"right",
 			"valign":	"top",
 			"scale":	1
@@ -96,7 +96,7 @@
 			"type":		"image",
 			"file":		"streak.png",
 			"x":		50,
-			"y":		100,
+			"y":		110,
 			"align":	"right",
 			"valign":	"top",
 			"scale":	1
