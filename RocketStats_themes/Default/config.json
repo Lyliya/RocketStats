@@ -16,7 +16,7 @@
 		{
 			"name":			"mode",
 			"type":			"text",
-			"variable":		"Mode",
+			"variable":		"GameMode",
 			"value":		"Unknown Game Mode",
 			"x":			10,
 			"y":			14,
