@@ -837,19 +837,37 @@ struct Element RocketStats::CalculateElement(CanvasWrapper& canvas, json& elemen
                         calculated.value = std::to_string(value);
                     }
                     else
+                    {
                         check = false;
+                        if (element["variable"] == "Rank+Div")
+                        {
+                            std::string rank = currentRank;
+                            Utils::ReplaceAll(rank, "_", " ");
+
+                            calculated.value = rank;
+                            if (currentDivision != "")
+                                calculated.value += (" " + currentDivision);
+
+                            calculated.color.r = calculated.color.g = calculated.color.b = char(180);
+                        }
+                        else if (element["variable"] == "GameMode")
+                            calculated.value = GetPlaylistName(currentPlaylist);
+                        else if (element["variable"] == "Rank")
+                            calculated.value = currentRank;
+                        else if (element["variable"] == "Div")
+                            calculated.value = currentDivision;
+                    }
 
                     if (check)
                     {
-                        cvarManager->log("Check " + std::string(element["variable"]) + "=\"" + calculated.value + "\"; (" + std::to_string(value) + ")");
                         if (value >= 0 && element.contains("sign") && element["sign"])
                             calculated.value = ("+" + calculated.value);
 
                         if (element.contains("chameleon") && element["chameleon"])
                         {
-                            calculated.color.r = char((value >= 0) ? 0 : 255);
-                            calculated.color.g = char((value >= 0) ? 255 : 0);
-                            calculated.color.b = 0;
+                            calculated.color.r = char((value >= 0) ? 30 : 224);
+                            calculated.color.g = char((value >= 0) ? 224 : 24);
+                            calculated.color.b = char((value >= 0) ? 24 : 24);
                         }
                     }
                 }
@@ -1138,8 +1156,8 @@ void RocketStats::WriteSettings()
         std::string themes_names = "Default@Default&Redesigned@Redesigned";
         for (auto& theme : themes)
         {
-            cvarManager->log(" > " + theme.name);
-            themes_names += "&" + theme.name + "@" + theme.name;
+            if (theme.name != "Default" && theme.name != "Redesigned")
+                themes_names += "&" + theme.name + "@" + theme.name;
         }
 
         cvarManager->log("=====> WriteSettings: Exists");
