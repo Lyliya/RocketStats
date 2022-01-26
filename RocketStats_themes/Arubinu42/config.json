@@ -1,0 +1,165 @@
+{
+	"width":	576,
+	"height":	40,
+	"opacity":	1,
+	"elements": [
+		{
+			"name":		"ltriangle",
+			"type":		"triangle",
+			"x1":		0,
+			"y1":		0,
+			"x2":		-40,
+			"y2":		0,
+			"x3":		0,
+			"y3":		40,
+			"fill":		[ 0, 0, 0, 0.82 ],
+			"stroke":	false
+		},
+		{
+			"name":		"box",
+			"type":		"rectangle",
+			"x":		0,
+			"y":		0,
+			"width":	576,
+			"height":	40,
+			"fill":		[ 0, 0, 0, 0.82 ],
+			"stroke":	false
+		},
+		{
+			"name":		"rtriangle",
+			"type":		"triangle",
+			"x1":		576,
+			"y1":		0,
+			"x2":		616,
+			"y2":		0,
+			"x3":		576,
+			"y3":		40,
+			"fill":		[ 0, 0, 0, 0.82 ],
+			"stroke":	false
+		},
+		{
+			"name":		"logo",
+			"type":		"image",
+			"variable":	"rank",
+			"file":		"logo.png",
+			"x":		15,
+			"y":		4,
+			"align":	"center",
+			"valign":	"middle",
+			"scale":	1
+		},
+		{
+			"name":		"mmr",
+			"type":		"text",
+			"variable":	"MMR",
+			"value":	"0",
+			"x":		170,
+			"y":		21,
+			"align":	"right",
+			"valign":	"middle",
+			"color":	[ 255, 255, 255 ],
+			"scale":	1
+		},
+		{
+			"name":		"win_separator",
+			"type":		"line",
+			"x1":		185,
+			"y1":		8,
+			"x2":		185,
+			"y2":		32,
+			"color":	[ 255, 255, 255, 0.1 ],
+			"width":	1
+		},
+		{
+			"name":		"win_image",
+			"type":		"image",
+			"file":		"win.png",
+			"x":		195,
+			"y":		1,
+			"align":	"center",
+			"valign":	"middle",
+			"scale":	0.75
+		},
+		{
+			"name":		"win",
+			"type":		"text",
+			"variable":	"Win",
+			"value":	"0",
+			"x":		300,
+			"y":		21,
+			"align":	"right",
+			"valign":	"middle",
+			"color":	[ 255, 255, 255 ],
+			"scale":	1
+		},
+		{
+			"name":		"loose_separator",
+			"type":		"line",
+			"x1":		315,
+			"y1":		8,
+			"x2":		315,
+			"y2":		32,
+			"color":	[ 255, 255, 255, 0.1 ],
+			"width":	1
+		},
+		{
+			"name":		"loose_image",
+			"type":		"image",
+			"file":		"loose.png",
+			"x":		325,
+			"y":		1,
+			"align":	"center",
+			"valign":	"middle",
+			"scale":	0.75
+		},
+		{
+			"name":		"loose",
+			"type":		"text",
+			"variable":	"Loose",
+			"value":	"0",
+			"x":		430,
+			"y":		21,
+			"align":	"right",
+			"valign":	"middle",
+			"color":	[ 255, 255, 255 ],
+			"scale":	1
+		},
+		{
+			"name":		"streak_separator",
+			"type":		"line",
+			"x1":		445,
+			"y1":		8,
+			"x2":		445,
+			"y2":		32,
+			"color":	[ 255, 255, 255, 0.1 ],
+			"width":	1
+		},
+		{
+			"name":		"streak_image",
+			"type":		"image",
+			"file":		"streak.png",
+			"x":		455,
+			"y":		1,
+			"align":	"center",
+			"valign":	"middle",
+			"scale":	0.75
+		},
+		{
+			"name":		"streak",
+			"type":		"text",
+			"variable":	"streak",
+			"value":	"0",
+			"x":		560,
+			"y":		21,
+			"align":	"right",
+			"valign":	"middle",
+			"color":	[ 255, 255, 255 ],
+			"scale":	1
+		}
+	],
+	"options": {
+		"bottom_background":		true,
+		"display_rocketleague":		false,
+		"mmr_with_floatingpoint":	true
+	}
+}

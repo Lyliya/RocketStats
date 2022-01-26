@@ -1,7 +1,45 @@
 #pragma once
-#pragma comment( lib, "pluginsdk.lib" )
+#pragma comment(lib, "pluginsdk.lib")
 #include "bakkesmod/plugin/bakkesmodplugin.h"
 #include "bakkesmod/plugin/pluginwindow.h"
+
+#include <any>
+#include <map>
+#include <fstream>
+#include <functional>
+#include <utils/parser.h>
+
+#include "Utils.h"
+
+#include "json.hpp"
+
+using json = nlohmann::json;
+
+namespace fs = std::filesystem;
+//using namespace std::placeholders;
+
+struct Color {
+	bool enable = false;
+	char r = char(255);
+	char g = char(255);
+	char b = char(255);
+	char alpha = char(255);
+};
+
+struct Element {
+	std::string name = "Unknown";
+	std::string type;
+	std::string value;
+	std::vector<Vector2> positions;
+	Vector2 size;
+	float scale = 1;
+	float width = 1;
+	Color color;
+	Color fill;
+	Color stroke;
+	bool wrap = false;
+	bool shadow = false;
+};
 
 struct Font {
 	std::string name = "Unknown";
@@ -23,6 +61,7 @@ struct Stats {
 struct Theme {
 	std::string name = "Unknown";
 	std::vector<Font> fonts;
+	std::vector<Element> elements;
 };
 
 
@@ -30,19 +69,25 @@ class RocketStats : public BakkesMod::Plugin::BakkesModPlugin
 {
 private:
 	std::shared_ptr<bool> enabled;
-	std::vector<Theme> themes;
+	std::string rs_path = "RocketStats";
+
+	bool theme_refresh = true;
+	unsigned char theme_style = 0;
 	std::string theme_selected = "Default";
+
+	json theme_config;
+	Theme theme_render;
+	std::vector<Theme> themes;
+	std::map<std::string, std::shared_ptr<ImageWrapper>> theme_images;
 
 public:
 	// Utils
-	void replaceAll(std::string& str, const std::string& from, const std::string& to);
-	std::vector<std::string> split(const std::string& str, char delim);
-	std::map<std::string, int> SplitKeyInt(const std::string str, size_t offset = 0);
-	size_t FindKeyInt(std::vector<std::map<std::string, int>> vector, std::string key, int value);
-	void LogImageLoadStatus(bool status, std::string imageName);
 	std::string GetRank(int tierID);
 	std::string GetPlaylistName(int playlistID);
-	std::shared_ptr<ImageWrapper> LoadImg(const std::string& path, bool canvasLoad = true);
+	int OpacityColor(float opacity);
+	char* GetColorAlpha(std::vector<float> color, float opacity);
+	void LogImageLoadStatus(bool status, std::string imageName);
+	std::shared_ptr<ImageWrapper> LoadImg(const std::string& _filename, bool canvasLoad = true);
 	void LoadImgs();
 
 	// PluginLoadRoutines
@@ -70,16 +115,19 @@ public:
 
 	// OverlayMgmt
 	void LoadThemes();
-	void ChangeTheme(std::string name);
+	bool ChangeTheme(std::string name);
+	void RefreshTheme(std::string old, CVarWrapper now);
 	void DisplayRank(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, float scale, bool showText);
 	void DisplayMMR(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale, bool showImage);
 	void DisplayWins(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale);
 	void DisplayLoose(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale);
 	void DisplayStreak(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale, bool showImage);
 	void Render(CanvasWrapper canvas);
+	struct Element CalculateElement(CanvasWrapper& canvas, json& element, std::map<std::string, std::any>& options, bool& check);
+	void RenderElement(CanvasWrapper& canvas, Element& element);
 
 	// File I / O
-	bool ExistsFile(std::string _filename, bool root = false);
+	bool ExistsPath(std::string _filename, bool root = false);
 	bool RemoveFile(std::string _filename, bool root = false);
 	std::string ReadFile(std::string _filename, bool root = false);
 	void WriteInFile(std::string _fileName, std::string _value, bool root = false);
