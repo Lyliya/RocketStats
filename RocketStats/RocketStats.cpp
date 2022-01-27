@@ -24,21 +24,6 @@ std::string RocketStats::GetPlaylistName(int playlistID)
         return "Unknown Game Mode";
 }
 
-int RocketStats::OpacityColor(float opacity)
-{
-    return (int)std::max(0, std::min(255, (int)std::round(opacity * 255)));
-}
-
-char* RocketStats::GetColorAlpha(std::vector<float> color, float opacity)
-{
-    char result[] = {char(color[0]), char(color[1]), char(color[2]), char(255)};
-
-    if (color.size() == 4)
-        result[3] = OpacityColor(float(color[3]) * float(opacity));
-
-    return result;
-}
-
 void RocketStats::LogImageLoadStatus(bool status, std::string imageName)
 {
     if (status)
@@ -632,7 +617,6 @@ void RocketStats::Render(CanvasWrapper canvas)
                 { "pos_y", int(can_size.Y * cvarManager->getCvar("RS_y_position").getFloatValue()) },
                 { "scale", float(cvarManager->getCvar("RS_scale").getFloatValue()) },
                 { "session", cvarManager->getCvar("RS_session").getBoolValue() },
-                { "floating_point", cvarManager->getCvar("RS_enable_float").getBoolValue() },
 
                 { "width", int(theme_config["width"]) },
                 { "height", int(theme_config["height"]) },
@@ -640,6 +624,33 @@ void RocketStats::Render(CanvasWrapper canvas)
 
                 { "stats", current }
             };
+
+            if (current.isInit)
+            {
+                const bool floating_point = cvarManager->getCvar("RS_enable_float").getBoolValue();
+
+                theme_vars["GameMode"] = GetPlaylistName(currentPlaylist);
+                theme_vars["Rank"] = currentRank;
+                theme_vars["Div"] = currentDivision;
+                theme_vars["MMR"] = to_string_with_precision(current.myMMR, (floating_point ? 2 : 0));
+                theme_vars["MMRChange"] = to_string_with_precision(current.MMRChange, (floating_point ? 2 : 0));
+                theme_vars["Win"] = std::to_string(current.win);
+                theme_vars["Loose"] = std::to_string(current.losses);
+                theme_vars["Streak"] = std::to_string(current.streak);
+
+                Utils::ReplaceAll(theme_vars["Rank"], "_", " ");
+            }
+            else
+            {
+                theme_vars["GameMode"] = "Unknown Game Mode";
+                theme_vars["Rank"] = "norank";
+                theme_vars["Div"] = "nodiv";
+                theme_vars["MMR"] = "100.00";
+                theme_vars["MMRChange"] = "0.0000";
+                theme_vars["Win"] = "0";
+                theme_vars["Loose"] = "0";
+                theme_vars["Streak"] = "0";
+            }
 
             theme_images.clear();
             for (auto& element : theme_config["elements"])
@@ -676,7 +687,6 @@ struct Element RocketStats::CalculateElement(CanvasWrapper& canvas, json& elemen
         int pos_y = std::any_cast<int>(options["pos_y"]);
         float scale = std::any_cast<float>(options["scale"]);
         bool session = std::any_cast<bool>(options["session"]);
-        bool floating_point = std::any_cast<bool>(options["floating_point"]);
 
         int width = std::any_cast<int>(options["width"]);
         int height = std::any_cast<int>(options["height"]);
@@ -684,7 +694,7 @@ struct Element RocketStats::CalculateElement(CanvasWrapper& canvas, json& elemen
 
         Stats current = std::any_cast<Stats>(options["stats"]);
 
-        //try
+        try
         {
             std::vector<Vector2> positions;
 
@@ -697,100 +707,45 @@ struct Element RocketStats::CalculateElement(CanvasWrapper& canvas, json& elemen
             calculated.color.enable = true;
             if (element.contains("color"))
             {
-                char* color = GetColorAlpha(element["color"], opacity);
+                char* color = Utils::GetColorAlpha(element["color"], opacity);
                 calculated.color = { true, color[0], color[1], color[2], color[3] };
             }
 
             if (element.contains("fill") && element["fill"].type() == json::value_t::array)
             {
-                char* color = GetColorAlpha(element["fill"], opacity);
+                char* color = Utils::GetColorAlpha(element["fill"], opacity);
                 calculated.fill = { true, color[0], color[1], color[2], color[3] };
             }
 
             if (element.contains("stroke") && element["stroke"].type() == json::value_t::array)
             {
-                char* color = GetColorAlpha(element["stroke"], opacity);
+                char* color = Utils::GetColorAlpha(element["stroke"], opacity);
                 calculated.stroke = { true, color[0], color[1], color[2], color[3] };
             }
 
             if (element["type"] == "text")
             {
                 calculated.scale *= 2.0f;
+                calculated.value = element["value"];
                 calculated.wrap = (element.contains("wrap") ? bool(element["wrap"]) : false);
                 calculated.shadow = (element.contains("shadow") ? bool(element["shadow"]) : false);
 
-                if (element.contains("variable") && current.isInit)
-                {
-                    int value = 0;
-                    bool check = true;
-                    if (element["variable"] == "MMR")
+                Utils::ReplaceVars(calculated.value, theme_vars, [this, &element, &calculated](const std::string &key, std::string &value) {
+                    if (element.contains("sign") && element["sign"] == key)
                     {
-                        value = int(current.myMMR);
-                        calculated.value = to_string_with_precision(current.myMMR, (floating_point ? 2 : 0));
-                    }
-                    else if (element["variable"] == "MMRChange")
-                    {
-                        value = int(current.MMRChange);
-                        calculated.value = to_string_with_precision(current.MMRChange, (floating_point ? 2 : 0));
-                    }
-                    else if (element["variable"] == "Win")
-                    {
-                        value = current.win;
-                        calculated.value = std::to_string(value);
-                    }
-                    else if (element["variable"] == "Loose")
-                    {
-                        value = current.losses;
-                        calculated.value = std::to_string(value);
-                    }
-                    else if (element["variable"] == "Streak")
-                    {
-                        value = current.streak;
-                        calculated.value = std::to_string(value);
-                    }
-                    else
-                    {
-                        check = false;
-                        if (element["variable"] == "Rank+Div")
-                        {
-                            std::string rank = currentRank;
-                            Utils::ReplaceAll(rank, "_", " ");
-
-                            calculated.value = rank;
-                            if (currentDivision != "")
-                                calculated.value += (" " + currentDivision);
-
-                            calculated.color.r = calculated.color.g = calculated.color.b = char(180);
-                        }
-                        else if (element["variable"] == "GameMode")
-                            calculated.value = GetPlaylistName(currentPlaylist);
-                        else if (element["variable"] == "Rank")
-                            calculated.value = currentRank;
-                        else if (element["variable"] == "Div")
-                            calculated.value = currentDivision;
+                        bool positive = (value.at(0) != '-');
+                        if (positive)
+                            value = ("+" + value);
                     }
 
-                    if (check)
+                    if (element.contains("chameleon") && element["chameleon"] == key)
                     {
-                        if (value >= 0 && element.contains("sign") && element["sign"])
-                            calculated.value = ("+" + calculated.value);
-
-                        if (element.contains("chameleon") && element["chameleon"])
-                        {
-                            calculated.color.r = char((value >= 0) ? 30 : 224);
-                            calculated.color.g = char((value >= 0) ? 224 : 24);
-                            calculated.color.b = char((value >= 0) ? 24 : 24);
-                        }
+                        bool positive = (value.at(0) != '-');
+                        calculated.color.r = char(positive ? 30 : 224);
+                        calculated.color.g = char(positive ? 224 : 24);
+                        calculated.color.b = char(positive ? 24 : 24);
                     }
-                }
-                else
-                    calculated.value = element["value"];
-
-                if (element.contains("prefix"))
-                    calculated.value = (std::string(element["prefix"]) + calculated.value);
-
-                if (element.contains("suffix"))
-                    calculated.value += std::string(element["suffix"]);
+                });
 
                 const Vector2F string_size = canvas.GetStringSize(calculated.value, calculated.scale, calculated.scale);
 
@@ -834,7 +789,7 @@ struct Element RocketStats::CalculateElement(CanvasWrapper& canvas, json& elemen
                 if (!theme_images[calculated.value])
                 {
                     std::string image_path;
-                    if (calculated.value != "Rank")
+                    if (calculated.value != "{{Rank}}")
                     {
                         theme_images[calculated.value] = LoadImg("RocketStats_themes/" + theme_selected + "/images/" + calculated.value);
                         LogImageLoadStatus(theme_images[calculated.value]->LoadForCanvas(), (theme_selected + "->" + calculated.value));
@@ -870,7 +825,7 @@ struct Element RocketStats::CalculateElement(CanvasWrapper& canvas, json& elemen
 
             check = true;
         }
-        //catch (const std::exception&) {}
+        catch (const std::exception&) {}
     }
 
     return calculated;
@@ -1044,7 +999,7 @@ void RocketStats::WriteSettings()
 7|
 1|Display Streak|RS_disp_streak
 9|
-9|Place your overlay (Only if display information in game is check)
+9|Place your overlay
 4|X position|RS_x_position|0|1.0
 4|Y position|RS_y_position|0|1.0
 4|Scale|RS_scale|0|10

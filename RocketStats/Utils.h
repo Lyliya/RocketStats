@@ -2,9 +2,9 @@
 
 #include <map>
 #include <string>
-#include <sstream>
 #include <vector>
-//#include <utils/parser.h>
+#include <sstream>
+#include <functional>
 
 using namespace std;
 
@@ -13,9 +13,14 @@ class Utils
 {
 public:
 	static void ReplaceAll(std::string& str, const std::string& from, const std::string& to);
+	static void ReplaceVars(std::string& str, std::map<std::string, std::string>& vars, std::function<void(const std::string&, std::string&)> passe = nullptr);
 	static std::vector<std::string> Split(const std::string& str, char delim);
 	static std::map<std::string, int> SplitKeyInt(const std::string str, size_t offset = 0);
 	static size_t FindKeyInt(std::vector<std::map<std::string, int>> vector, std::string key, int value);
+
+	// Colors
+	static int OpacityColor(float opacity);
+	static char* GetColorAlpha(std::vector<float> color, float opacity);
 
 	// Operations
 	static std::string ExpressionSanitize(std::string str, int percent2pixels);

@@ -38,21 +38,19 @@
 			"stroke":		false
 		},
 		{
-			"name":			"logo",
+			"name":			"rank",
 			"type":			"image",
-			"variable":		"rank",
-			"file":			"logo.png",
+			"file":			"{{Rank}}",
 			"x":			30,
-			"y":			20,
+			"y":			23,
 			"align":		"center",
 			"valign":		"middle",
-			"scale":		1
+			"scale":		0.85
 		},
 		{
 			"name":			"mmr",
 			"type":			"text",
-			"variable":		"MMR",
-			"value":		"0",
+			"value":		"{{MMR}}",
 			"x":			170,
 			"y":			21,
 			"align":		"right",
@@ -83,8 +81,7 @@
 		{
 			"name":			"win",
 			"type":			"text",
-			"variable":		"Win",
-			"value":		"0",
+			"value":		"{{Win}}",
 			"x":			300,
 			"y":			21,
 			"align":		"right",
@@ -115,8 +112,7 @@
 		{
 			"name":			"loose",
 			"type":			"text",
-			"variable":		"Loose",
-			"value":		"0",
+			"value":		"{{Loose}}",
 			"x":			430,
 			"y":			21,
 			"align":		"right",
@@ -147,9 +143,8 @@
 		{
 			"name":			"streak",
 			"type":			"text",
-			"variable":		"Streak",
-			"sign":			true,
-			"value":		"+0",
+			"value":		"{{Streak}}",
+			"sign":			"Streak",
 			"x":			560,
 			"y":			21,
 			"align":		"right",

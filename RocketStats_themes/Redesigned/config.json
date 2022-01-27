@@ -6,7 +6,7 @@
 		{
 			"name":		"rank_image",
 			"type":		"image",
-			"file":		"Rank",
+			"file":		"{{Rank}}",
 			"x":		50,
 			"y":		10,
 			"align":	"right",
@@ -16,8 +16,7 @@
 		{
 			"name":		"rank_div",
 			"type":		"text",
-			"variable":	"Rank+Div",
-			"value":	"norank nodiv",
+			"value":	"{{Rank}} {{Div}}",
 			"x":		50,
 			"y":		18,
 			"align":	"left",
@@ -38,8 +37,7 @@
 		{
 			"name":		"mmr",
 			"type":		"text",
-			"variable":	"MMR",
-			"value":	"100.00 (0.0000)",
+			"value":	"{{MMR}} ({{MMRChange}})",
 			"x":		50,
 			"y":		68,
 			"align":	"left",
@@ -60,8 +58,7 @@
 		{
 			"name":		"win",
 			"type":		"text",
-			"variable":	"Win",
-			"value":	"0",
+			"value":	"{{Win}}",
 			"x":		50,
 			"y":		118,
 			"align":	"left",
@@ -82,8 +79,7 @@
 		{
 			"name":		"loose",
 			"type":		"text",
-			"variable":	"Loose",
-			"value":	"0",
+			"value":	"{{Loose}}",
 			"x":		50,
 			"y":		168,
 			"align":	"left",
@@ -104,8 +100,7 @@
 		{
 			"name":		"streak",
 			"type":		"text",
-			"variable":	"Streak",
-			"value":	"0",
+			"value":	"{{Streak}}",
 			"x":		125,
 			"y":		143,
 			"align":	"left",

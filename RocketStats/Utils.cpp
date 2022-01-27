@@ -16,6 +16,30 @@ void Utils::ReplaceAll(std::string& str, const std::string& from, const std::str
     }
 }
 
+void Utils::ReplaceVars(std::string& str, std::map<std::string, std::string>& vars, std::function<void(const std::string&, std::string&)> passe)
+{
+    int i;
+    int len = (int)str.length();
+    int end = -1;
+
+    for (i = (len - 1); i >= 0; --i)
+    {
+        if (end >= 0 && i > 0 && str[i] == '{' && str[i - 1] == '{')
+        {
+            const std::string key = str.substr((i + 1), ((end - 1) - (i + 1)));
+            std::string value = ((vars.find(key) != vars.end()) ? vars[key] : "");
+
+            if (passe != nullptr)
+                passe(key, value);
+
+            str.replace((i - 1), ((end + 1) - (i - 1)), value);
+            end = -1;
+        }
+        else if (str[i] == '}' && i < (len - 1) && str[i + 1] == '}')
+            end = (i + 1);
+    }
+}
+
 std::vector<std::string> Utils::Split(const std::string& str, char delim)
 {
     std::vector<std::string> result;
@@ -59,6 +83,23 @@ size_t Utils::FindKeyInt(std::vector<std::map<std::string, int>> vector, std::st
 
     return std::string::npos;
 }
+
+#pragma region Colors
+int Utils::OpacityColor(float opacity)
+{
+    return (int)std::max(0, std::min(255, (int)std::round(opacity * 255)));
+}
+
+char* Utils::GetColorAlpha(std::vector<float> color, float opacity)
+{
+    char result[] = { char(color[0]), char(color[1]), char(color[2]), char(255) };
+
+    if (color.size() == 4)
+        result[3] = OpacityColor(float(color[3]) * float(opacity));
+
+    return result;
+}
+#pragma endregion
 
 #pragma region Operations
 std::string Utils::ExpressionSanitize(std::string str, int percent2pixels)

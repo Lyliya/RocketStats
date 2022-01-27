@@ -78,14 +78,13 @@ private:
 	json theme_config;
 	Theme theme_render;
 	std::vector<Theme> themes;
+	std::map<std::string, std::string> theme_vars;
 	std::map<std::string, std::shared_ptr<ImageWrapper>> theme_images;
 
 public:
 	// Utils
 	std::string GetRank(int tierID);
 	std::string GetPlaylistName(int playlistID);
-	int OpacityColor(float opacity);
-	char* GetColorAlpha(std::vector<float> color, float opacity);
 	void LogImageLoadStatus(bool status, std::string imageName);
 	std::shared_ptr<ImageWrapper> LoadImg(const std::string& _filename, bool canvasLoad = true);
 	void LoadImgs();
