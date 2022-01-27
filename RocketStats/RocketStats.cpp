@@ -138,7 +138,7 @@ void RocketStats::onLoad()
     cvarManager->registerCvar("RS_y_position", "0.575", "Overlay Y position", true, true, 0, true, 1.0f).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_scale", "1", "Overlay scale", true, true, 0, true, 10).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RocketStats_stop_boost", "1", "Stop Boost animation", true, true, 0, true, 1).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("RS_session", "0", "Display session information instead of game mode", true, true, 0, true, 1, true);
+    cvarManager->registerCvar("RS_session", "0", "Display session information instead of game mode", true, true, 0, true, 1, true).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_theme", "Default", "Theme", true).addOnValueChanged([this](std::string old, CVarWrapper now) {
         if (!ChangeTheme(now.getStringValue()))
             now.setValue(old);
@@ -229,7 +229,7 @@ void RocketStats::GameEnd(std::string eventName)
             }
             else
             {
-                session.streak += 1;
+                session.streak++;
                 stats[currentPlaylist].streak++;
             }
 
@@ -242,6 +242,7 @@ void RocketStats::GameEnd(std::string eventName)
             // On Loose, Increase loose Number and decrease streak
             stats[currentPlaylist].losses++;
             session.losses++;
+
             if (stats[currentPlaylist].streak > 0)
             {
                 session.streak = -1;
@@ -1051,11 +1052,9 @@ void RocketStats::WriteGameMode()
 
 void RocketStats::WriteMMR()
 {
-    std::string tmp;
-    if (cvarManager->getCvar("RS_enable_float").getBoolValue())
-        tmp = to_string_with_precision(stats[currentPlaylist].myMMR, 2);
-    else
-        tmp = std::to_string(int(stats[currentPlaylist].myMMR));
+    const bool floating_point = cvarManager->getCvar("RS_enable_float").getBoolValue();
+    std::string tmp = Utils::FloatFixer(stats[currentPlaylist].myMMR, (floating_point ? 2 : 0));
+
     WriteInFile("RocketStats_MMR.txt", tmp);
 }
 void RocketStats::WriteMMRChange()
@@ -1063,11 +1062,8 @@ void RocketStats::WriteMMRChange()
     bool RS_session = cvarManager->getCvar("RS_session").getBoolValue();
     Stats current = (RS_session == true) ? session : stats[currentPlaylist];
 
-    std::string tmp;
-    if (cvarManager->getCvar("RS_enable_float").getBoolValue())
-        tmp = to_string_with_precision(current.MMRChange, 2);
-    else
-        tmp = std::to_string(int(current.MMRChange));
+    const bool floating_point = cvarManager->getCvar("RS_enable_float").getBoolValue();
+    std::string tmp = Utils::FloatFixer(current.MMRChange, (floating_point ? 2 : 0));
 
     if (current.MMRChange > 0)
         WriteInFile("RocketStats_MMRChange.txt", "+" + tmp);
