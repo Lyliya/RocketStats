@@ -625,15 +625,14 @@ void RocketStats::Render(CanvasWrapper canvas)
                 { "stats", current }
             };
 
+            const bool floating_point = cvarManager->getCvar("RS_enable_float").getBoolValue();
             if (current.isInit)
             {
-                const bool floating_point = cvarManager->getCvar("RS_enable_float").getBoolValue();
-
                 theme_vars["GameMode"] = GetPlaylistName(currentPlaylist);
                 theme_vars["Rank"] = currentRank;
                 theme_vars["Div"] = currentDivision;
-                theme_vars["MMR"] = to_string_with_precision(current.myMMR, (floating_point ? 2 : 0));
-                theme_vars["MMRChange"] = to_string_with_precision(current.MMRChange, (floating_point ? 2 : 0));
+                theme_vars["MMR"] = Utils::FloatFixer(current.myMMR, (floating_point ? 2 : 0));
+                theme_vars["MMRChange"] = Utils::FloatFixer(current.MMRChange, (floating_point ? 2 : 0));
                 theme_vars["Win"] = std::to_string(current.win);
                 theme_vars["Loose"] = std::to_string(current.losses);
                 theme_vars["Streak"] = std::to_string(current.streak);
@@ -645,8 +644,8 @@ void RocketStats::Render(CanvasWrapper canvas)
                 theme_vars["GameMode"] = "Unknown Game Mode";
                 theme_vars["Rank"] = "norank";
                 theme_vars["Div"] = "nodiv";
-                theme_vars["MMR"] = "100.00";
-                theme_vars["MMRChange"] = "0.0000";
+                theme_vars["MMR"] = Utils::FloatFixer(100.0f, (floating_point ? 2 : 0));
+                theme_vars["MMRChange"] = Utils::FloatFixer(0.0f, (floating_point ? 4 : 0));
                 theme_vars["Win"] = "0";
                 theme_vars["Loose"] = "0";
                 theme_vars["Streak"] = "0";

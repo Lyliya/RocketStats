@@ -14,6 +14,7 @@ class Utils
 public:
 	static void ReplaceAll(std::string& str, const std::string& from, const std::string& to);
 	static void ReplaceVars(std::string& str, std::map<std::string, std::string>& vars, std::function<void(const std::string&, std::string&)> passe = nullptr);
+	static std::string FloatFixer(float a_value, size_t n);
 	static std::vector<std::string> Split(const std::string& str, char delim);
 	static std::map<std::string, int> SplitKeyInt(const std::string str, size_t offset = 0);
 	static size_t FindKeyInt(std::vector<std::map<std::string, int>> vector, std::string key, int value);

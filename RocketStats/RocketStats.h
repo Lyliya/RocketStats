@@ -16,7 +16,6 @@
 using json = nlohmann::json;
 
 namespace fs = std::filesystem;
-//using namespace std::placeholders;
 
 struct Color {
 	bool enable = false;

@@ -1,7 +1,5 @@
 #include "Utils.h"
 
-//Utils::Utils() {};
-
 void Utils::ReplaceAll(std::string& str, const std::string& from, const std::string& to)
 {
     //while (replace(str, from, to));
@@ -38,6 +36,22 @@ void Utils::ReplaceVars(std::string& str, std::map<std::string, std::string>& va
         else if (str[i] == '}' && i < (len - 1) && str[i + 1] == '}')
             end = (i + 1);
     }
+}
+
+std::string Utils::FloatFixer(float a_value, size_t n)
+{
+    std::string str = std::to_string(a_value);
+
+    size_t pos = str.find('.');
+    if (pos != std::string::npos)
+    {
+        if (n)
+            ++pos;
+
+        str = str.substr(0, (pos + n));
+    }
+
+    return str;
 }
 
 std::vector<std::string> Utils::Split(const std::string& str, char delim)
