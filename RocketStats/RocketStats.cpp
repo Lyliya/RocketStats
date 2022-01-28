@@ -7,6 +7,21 @@
 BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "4.0", PERMISSION_ALL)
 
 #pragma region Utils
+Stats RocketStats::GetStats()
+{
+    Stats result;
+    int RS_stats = char(std::stoi(cvarManager->getCvar("RS_stats").getStringValue()));
+
+    switch (RS_stats)
+    {
+        case 1: result = session; break;
+        case 2: result = stats[currentPlaylist]; break;
+        case 3: result = always; break;
+    }
+
+    return result;
+}
+
 std::string RocketStats::GetRank(int tierID)
 {
     cvarManager->log("tier: " + std::to_string(tierID));
@@ -76,10 +91,11 @@ void RocketStats::onLoad()
         rs_path = "data/" + rs_path;
     cvarManager->log("RS_path: " + gameWrapper->GetBakkesModPath().string() + "/" + rs_path);
 
-    LoadThemes();
-    WriteSettings();
-
     LoadImgs();
+    LoadThemes();
+
+    WriteSettings();
+    ReadConfig();
 
     cvarManager->registerNotifier(
         "RocketStats_reload_theme",
@@ -138,7 +154,7 @@ void RocketStats::onLoad()
     cvarManager->registerCvar("RS_y_position", "0.575", "Overlay Y position", true, true, 0, true, 1.0f).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_scale", "1", "Overlay scale", true, true, 0, true, 10).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RocketStats_stop_boost", "1", "Stop Boost animation", true, true, 0, true, 1).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("RS_session", "0", "Display session information instead of game mode", true, true, 0, true, 1, true).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_stats", "1", "Display information in game", true, true, 0, true, 1, true).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_theme", "Default", "Theme", true).addOnValueChanged([this](std::string old, CVarWrapper now) {
         if (!ChangeTheme(now.getStringValue()))
             now.setValue(old);
@@ -194,6 +210,7 @@ void RocketStats::GameStart(std::string eventName)
 
     UpdateMMR(gameWrapper->GetUniqueID());
     WriteInFile("RocketStats_images/BoostState.txt", std::to_string(0));
+    WriteConfig();
 
     cvarManager->log("===== !GameStart =====");
 }
@@ -219,16 +236,19 @@ void RocketStats::GameEnd(std::string eventName)
         {
             cvarManager->log("===== Game Won =====");
             // On Win, Increase streak and Win Number
-            stats[currentPlaylist].win++;
+            always.win++;
             session.win++;
+            stats[currentPlaylist].win++;
 
             if (stats[currentPlaylist].streak < 0)
             {
+                always.streak = 1;
                 session.streak = 1;
                 stats[currentPlaylist].streak = 1;
             }
             else
             {
+                always.streak++;
                 session.streak++;
                 stats[currentPlaylist].streak++;
             }
@@ -240,16 +260,19 @@ void RocketStats::GameEnd(std::string eventName)
         {
             cvarManager->log("===== Game Lost =====");
             // On Loose, Increase loose Number and decrease streak
-            stats[currentPlaylist].losses++;
+            always.losses++;
             session.losses++;
+            stats[currentPlaylist].losses++;
 
             if (stats[currentPlaylist].streak > 0)
             {
+                always.streak = -1;
                 session.streak = -1;
                 stats[currentPlaylist].streak = -1;
             }
             else
             {
+                always.streak--;
                 session.streak--;
                 stats[currentPlaylist].streak--;
             }
@@ -259,6 +282,7 @@ void RocketStats::GameEnd(std::string eventName)
         }
 
         WriteStreak();
+        WriteConfig();
 
         // Reset myTeamNum security
         myTeamNum = -1;
@@ -280,22 +304,28 @@ void RocketStats::GameDestroyed(std::string eventName)
     // Check if Game Ended, if not, RAGE QUIT or disconnect
     if (isGameStarted == true && isGameEnded == false)
     {
+        always.losses++;
         session.losses++;
         stats[currentPlaylist].losses++;
+
         if (stats[currentPlaylist].streak > 0)
         {
+            always.streak = 0;
             session.streak = 0;
             stats[currentPlaylist].streak = -1;
         }
         else
         {
+            always.streak--;
             session.streak--;
             stats[currentPlaylist].streak--;
         }
 
         WriteStreak();
         WriteLosses();
+        WriteConfig();
     }
+
     isGameEnded = true;
     isGameStarted = false;
     WriteInFile("RocketStats_images/BoostState.txt", std::to_string(-1));
@@ -355,6 +385,8 @@ void RocketStats::SessionStats()
         tmp.losses += stats[it->first].losses;
     }
 
+    always.myMMR = stats[currentPlaylist].myMMR;
+
     session.myMMR = stats[currentPlaylist].myMMR;
     session.MMRChange = tmp.MMRChange;
     session.win = tmp.win;
@@ -365,10 +397,12 @@ void RocketStats::SessionStats()
 
 void RocketStats::ResetStats()
 {
+    always = Stats();
+    session = Stats();
     for (auto &kv : stats)
         kv.second = Stats();
-    session = Stats();
 
+    WriteConfig();
     WriteInFile("RocketStats_Win.txt", std::to_string(0));
     WriteInFile("RocketStats_Streak.txt", std::to_string(0));
     WriteInFile("RocketStats_Loose.txt", std::to_string(0));
@@ -588,7 +622,7 @@ bool RocketStats::ChangeTheme(std::string name)
     }
     catch (json::parse_error& e)
     {
-        cvarManager->log("Theme config: " + name + " bad JSON -> " + e.what());
+        cvarManager->log("Theme config: " + name + " bad JSON -> " + std::string(e.what()));
     }
 
     cvarManager->log("===== !ChangeTheme =====");
@@ -597,19 +631,17 @@ bool RocketStats::ChangeTheme(std::string name)
 
 void RocketStats::Render(CanvasWrapper canvas)
 {
-    bool RS_disp_ig = cvarManager->getCvar("RS_disp_ig").getBoolValue();
+    bool RS_disp_ig = (cvarManager->getCvar("RS_stats").getStringValue() != "0");
     bool RS_hide_overlay_ig = cvarManager->getCvar("RS_hide_overlay_ig").getBoolValue();
 
-    if (!RS_disp_ig || isGameStarted && !isGameEnded && RS_hide_overlay_ig)
+    if (!RS_disp_ig || (isGameStarted && !isGameEnded && RS_hide_overlay_ig))
         return;
-
-    bool RS_session = cvarManager->getCvar("RS_session").getBoolValue();
-    Stats current = (RS_session == true) ? session : stats[currentPlaylist];
 
     try
     {
         if (theme_refresh || theme_render.name == "" || theme_render.name != theme_selected)
         {
+            Stats current = GetStats();
             const Vector2 can_size = canvas.GetSize();
 
             std::vector<struct Element> elements;
@@ -617,7 +649,6 @@ void RocketStats::Render(CanvasWrapper canvas)
                 { "pos_x", int(can_size.X * cvarManager->getCvar("RS_x_position").getFloatValue()) },
                 { "pos_y", int(can_size.Y * cvarManager->getCvar("RS_y_position").getFloatValue()) },
                 { "scale", float(cvarManager->getCvar("RS_scale").getFloatValue()) },
-                { "session", cvarManager->getCvar("RS_session").getBoolValue() },
 
                 { "width", int(theme_config["width"]) },
                 { "height", int(theme_config["height"]) },
@@ -686,7 +717,6 @@ struct Element RocketStats::CalculateElement(CanvasWrapper& canvas, json& elemen
         int pos_x = std::any_cast<int>(options["pos_x"]);
         int pos_y = std::any_cast<int>(options["pos_y"]);
         float scale = std::any_cast<float>(options["scale"]);
-        bool session = std::any_cast<bool>(options["session"]);
 
         int width = std::any_cast<int>(options["width"]);
         int height = std::any_cast<int>(options["height"]);
@@ -975,17 +1005,14 @@ void RocketStats::WriteSettings()
     if (!ExistsPath(file, true))
     {
         const std::string settings = R"(RocketStats Plugin
-9|Check/Uncheck what you want to display
-1|Display session information instead of game mode|RS_session
-7|
+9|Display information in game
+6|Stats|RS_stats|None@0&Session@1&GameMode@2&Always@3
 1|Enable Boost|RocketStats_stop_boost
-1|Display information in game|RS_disp_ig
-7|
-10|RS_disp_ig
-7|
-1|Hide overlay while in-game|RS_hide_overlay_ig
 7|
 1|Enable floating point for MMR|RS_enable_float
+10|RS_stats
+7|
+1|Hide overlay while in-game|RS_hide_overlay_ig
 6|Theme|RS_theme|Default@Default&Redesigned@Redesigned
 1|Display Game Mode|RS_disp_gamemode
 7|
@@ -1033,7 +1060,7 @@ void RocketStats::WriteSettings()
                 themes_names += "&" + theme.name + "@" + theme.name;
         }
 
-        cvarManager->log("=====> WriteSettings: Exists");
+        cvarManager->log("WriteSettings: Exists");
         WriteInFile(file, (settings.substr(0, start) + themes_names + settings.substr(end)), true);
         cvarManager->executeCommand("cl_settings_refreshplugins");
     }
@@ -1043,6 +1070,65 @@ void RocketStats::WriteSettings()
     }, 3.000f);
 
     cvarManager->log("===== !WriteSettings =====");
+}
+
+void RocketStats::ReadConfig()
+{
+    cvarManager->log("===== ReadConfig =====");
+
+    std::string file = "data/rocketstats.json";
+    if (ExistsPath(file, true))
+    {
+        try
+        {
+            json config = json::parse(ReadFile(file, true));
+            cvarManager->log(nlohmann::to_string(config));
+
+            if (config.type() == json::value_t::object)
+            {
+                if (config["always"].type() == json::value_t::object)
+                {
+                    if (config["always"]["Win"].type() == json::value_t::number_unsigned)
+                        always.win = config["always"]["Win"];
+
+                    if (config["always"]["Loose"].type() == json::value_t::number_unsigned)
+                        always.losses = config["always"]["Loose"];
+
+                    if (config["always"]["Streak"].type() == json::value_t::number_unsigned || config["always"]["Streak"].type() == json::value_t::number_integer)
+                        always.streak = config["always"]["Streak"];
+
+                    cvarManager->log("Config: stats loaded");
+                    always.isInit = true;
+                }
+
+                theme_refresh = true;
+            }
+            else
+                cvarManager->log("Config: bad JSON");
+        }
+        catch (json::parse_error& e)
+        {
+            cvarManager->log("Config: bad JSON -> " + std::string(e.what()));
+        }
+    }
+
+    cvarManager->log("===== !ReadConfig =====");
+}
+
+void RocketStats::WriteConfig()
+{
+    cvarManager->log("===== WriteConfig =====");
+
+    json tmp = {};
+
+    tmp["always"] = {};
+    tmp["always"]["Win"] = always.win;
+    tmp["always"]["Loose"] = always.losses;
+    tmp["always"]["Streak"] = always.streak;
+
+    WriteInFile("data/rocketstats.json", nlohmann::to_string(tmp), true);
+
+    cvarManager->log("===== !WriteConfig =====");
 }
 
 void RocketStats::WriteGameMode()
@@ -1059,9 +1145,7 @@ void RocketStats::WriteMMR()
 }
 void RocketStats::WriteMMRChange()
 {
-    bool RS_session = cvarManager->getCvar("RS_session").getBoolValue();
-    Stats current = (RS_session == true) ? session : stats[currentPlaylist];
-
+    Stats current = GetStats();
     const bool floating_point = cvarManager->getCvar("RS_enable_float").getBoolValue();
     std::string tmp = Utils::FloatFixer(current.MMRChange, (floating_point ? 2 : 0));
 
@@ -1073,8 +1157,7 @@ void RocketStats::WriteMMRChange()
 
 void RocketStats::WriteStreak()
 {
-    bool RS_session = cvarManager->getCvar("RS_session").getBoolValue();
-    Stats current = (RS_session == true) ? session : stats[currentPlaylist];
+    Stats current = GetStats();
 
     if (current.streak > 0)
         WriteInFile("RocketStats_Streak.txt", "+" + std::to_string(current.streak));
@@ -1084,15 +1167,11 @@ void RocketStats::WriteStreak()
 
 void RocketStats::WriteWin()
 {
-    bool RS_session = cvarManager->getCvar("RS_session").getBoolValue();
-    Stats current = (RS_session == true) ? session : stats[currentPlaylist];
-    WriteInFile("RocketStats_Win.txt", std::to_string(current.win));
+    WriteInFile("RocketStats_Win.txt", std::to_string(GetStats().win));
 }
 
 void RocketStats::WriteLosses()
 {
-    bool RS_session = cvarManager->getCvar("RS_session").getBoolValue();
-    Stats current = (RS_session == true) ? session : stats[currentPlaylist];
-    WriteInFile("RocketStats_Loose.txt", std::to_string(current.losses));
+    WriteInFile("RocketStats_Loose.txt", std::to_string(GetStats().losses));
 }
 #pragma endregion

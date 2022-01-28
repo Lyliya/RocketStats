@@ -82,6 +82,7 @@ private:
 
 public:
 	// Utils
+	Stats GetStats();
 	std::string GetRank(int tierID);
 	std::string GetPlaylistName(int playlistID);
 	void LogImageLoadStatus(bool status, std::string imageName);
@@ -125,6 +126,8 @@ public:
 	std::string ReadFile(std::string _filename, bool root = false);
 	void WriteInFile(std::string _fileName, std::string _value, bool root = false);
 	void WriteSettings();
+	void ReadConfig();
+	void WriteConfig();
 	void WriteGameMode();
 	void WriteMMR();
 	void WriteMMRChange();
@@ -137,8 +140,9 @@ public:
 	bool isGameStarted = false;
 	bool isBoosting = false;
 
-	std::map<int, Stats> stats;
+	Stats always;
 	Stats session;
+	std::map<int, Stats> stats;
 
 	//std::unique_ptr<MMRNotifierToken> notifierToken;
 
