@@ -488,7 +488,7 @@ void RocketStats::MajRank(int _gameMode, bool isRanked, float _currentMMR, Skill
 
     if (isRanked)
     {
-        if (playerRank.MatchesPlayed < 10)
+        if (currentGameMode != 34 && playerRank.MatchesPlayed < 10)
         {
             currentRank = "Placement: " + std::to_string(playerRank.MatchesPlayed) + "/10";
             currentDivision = "";
