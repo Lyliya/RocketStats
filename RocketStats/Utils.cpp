@@ -99,19 +99,14 @@ size_t Utils::FindKeyInt(std::vector<std::map<std::string, int>> vector, std::st
 }
 
 #pragma region Colors
-int Utils::OpacityColor(float opacity)
+unsigned char Utils::OpacityColor(float opacity)
 {
-    return (int)std::max(0, std::min(255, (int)std::round(opacity * 255)));
+    return (unsigned char)(std::max(0, std::min(255, int(std::round(opacity * 255.0f)))));
 }
 
-char* Utils::GetColorAlpha(std::vector<float> color, float opacity)
+unsigned char Utils::GetAlpha(std::vector<float> color, float opacity)
 {
-    char result[] = { char(color[0]), char(color[1]), char(color[2]), char(255) };
-
-    if (color.size() == 4)
-        result[3] = OpacityColor(float(color[3]) * float(opacity));
-
-    return result;
+    return OpacityColor(((color.size() == 4) ? color[3] : 1) * opacity);
 }
 #pragma endregion
 
@@ -182,7 +177,7 @@ int Utils::EvaluateExpression(std::string exp)
     return result; // Result remains on values stacks
 }
 
-void Utils::ProcessClosingParenthesis(std::vector<int> vStack, std::vector<char> opStack)
+void Utils::ProcessClosingParenthesis(std::vector<int>& vStack, std::vector<char>& opStack)
 {
     while (opStack.back() != '(')
         ExecuteOperation(vStack, opStack);
@@ -190,7 +185,7 @@ void Utils::ProcessClosingParenthesis(std::vector<int> vStack, std::vector<char>
     opStack.pop_back(); // Remove the opening parenthesis
 }
 
-int Utils::ProcessInputNumber(std::string exp, int pos, std::vector<int> vStack)
+int Utils::ProcessInputNumber(std::string& exp, int pos, std::vector<int>& vStack)
 {
     int value = 0;
     while (pos < exp.length() && exp[pos] >= '0' && exp[pos] <= '9')
@@ -201,7 +196,7 @@ int Utils::ProcessInputNumber(std::string exp, int pos, std::vector<int> vStack)
     return pos;
 }
 
-void Utils::ProcessInputOperator(char op, std::vector<int> vStack, std::vector<char> opStack)
+void Utils::ProcessInputOperator(char op, std::vector<int>& vStack, std::vector<char>& opStack)
 {
     while (opStack.size() > 0 && OperatorCausesEvaluation(op, opStack.back()))
         ExecuteOperation(vStack, opStack);
@@ -231,7 +226,7 @@ bool Utils::OperatorCausesEvaluation(char op, char prevOp)
     return evaluate;
 }
 
-void Utils::ExecuteOperation(std::vector<int> vStack, std::vector<char> opStack)
+void Utils::ExecuteOperation(std::vector<int>& vStack, std::vector<char>& opStack)
 {
     int rightOperand = vStack.back(); vStack.pop_back();
     int leftOperand = vStack.back(); vStack.pop_back();

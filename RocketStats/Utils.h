@@ -20,15 +20,15 @@ public:
 	static size_t FindKeyInt(std::vector<std::map<std::string, int>> vector, std::string key, int value);
 
 	// Colors
-	static int OpacityColor(float opacity);
-	static char* GetColorAlpha(std::vector<float> color, float opacity);
+	static unsigned char OpacityColor(float opacity);
+	static unsigned char GetAlpha(std::vector<float> color, float opacity);
 
 	// Operations
 	static std::string ExpressionSanitize(std::string str, int percent2pixels);
 	static int EvaluateExpression(std::string exp);
-	static void ProcessClosingParenthesis(std::vector<int> vStack, std::vector<char> opStack);
-	static int ProcessInputNumber(std::string exp, int pos, std::vector<int> vStack);
-	static void ProcessInputOperator(char op, std::vector<int> vStack, std::vector<char> opStack);
+	static void ProcessClosingParenthesis(std::vector<int>& vStack, std::vector<char>& opStack);
+	static int ProcessInputNumber(std::string& exp, int pos, std::vector<int>& vStack);
+	static void ProcessInputOperator(char op, std::vector<int>& vStack, std::vector<char>& opStack);
 	static bool OperatorCausesEvaluation(char op, char prevOp);
-	static void ExecuteOperation(std::vector<int> vStack, std::vector<char> opStack);
+	static void ExecuteOperation(std::vector<int>& vStack, std::vector<char>& opStack);
 };

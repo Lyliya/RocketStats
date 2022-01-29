@@ -20,7 +20,7 @@
 			"type":			"rectangle",
 			"x":			0,
 			"y":			0,
-			"width":		576,
+			"width":		"100%",
 			"height":		40,
 			"fill":			[ 0, 0, 0, 0.82 ],
 			"stroke":		false
@@ -28,11 +28,11 @@
 		{
 			"name":			"rtriangle",
 			"type":			"triangle",
-			"x1":			576,
+			"x1":			"100%",
 			"y1":			0,
 			"x2":			616,
 			"y2":			0,
-			"x3":			576,
+			"x3":			"100%",
 			"y3":			40,
 			"fill":			[ 0, 0, 0, 0.82 ],
 			"stroke":		false
@@ -152,10 +152,5 @@
 			"color":		[ 255, 255, 255 ],
 			"scale":		1
 		}
-	],
-	"options": {
-		"bottom_background":		true,
-		"display_rocketleague":		false,
-		"mmr_with_floatingpoint":	true
-	}
+	]
 }

@@ -118,6 +118,13 @@ void RocketStats::onLoad()
         "Reset Stats",
         PERMISSION_ALL);
 
+    cvarManager->registerNotifier(
+        "RocketStats_open_folder",
+        [this](std::vector<std::string> params)
+        { system(("powershell -WindowStyle Hidden \"start \"\"" + gameWrapper->GetBakkesModPath().string() + "/" + rs_path + "\"\"\"").c_str()); },
+        "Reset Stats",
+        PERMISSION_ALL);
+
     // Register drawable
     gameWrapper->RegisterDrawable(std::bind(&RocketStats::Render, this, std::placeholders::_1));
 
@@ -163,11 +170,6 @@ void RocketStats::onLoad()
 
 void RocketStats::onUnload() {}
 #pragma endregion
-
-void RocketStats::RefreshTheme(std::string old, CVarWrapper now)
-{
-    theme_refresh = true;
-}
 
 #pragma region GameMgmt
 void RocketStats::GameStart(std::string eventName)
@@ -611,7 +613,7 @@ bool RocketStats::ChangeTheme(std::string name)
         theme_config = json::parse(ReadFile("RocketStats_themes/" + name + "/config.json"));
         cvarManager->log(nlohmann::to_string(theme_config));
 
-        if (theme_config.type() == json::value_t::object)
+        if (theme_config.is_object())
         {
             cvarManager->log("Theme changed: " + name + " (old: " + theme_selected + ")");
             theme_selected = name;
@@ -627,6 +629,11 @@ bool RocketStats::ChangeTheme(std::string name)
 
     cvarManager->log("===== !ChangeTheme =====");
     return (theme_selected == name);
+}
+
+void RocketStats::RefreshTheme(std::string old, CVarWrapper now)
+{
+    theme_refresh = true;
 }
 
 void RocketStats::Render(CanvasWrapper canvas)
@@ -714,44 +721,49 @@ struct Element RocketStats::CalculateElement(CanvasWrapper& canvas, json& elemen
     {
         const auto can_size = canvas.GetSize();
 
-        int pos_x = std::any_cast<int>(options["pos_x"]);
-        int pos_y = std::any_cast<int>(options["pos_y"]);
+        Vector2D base_2d = {
+            std::any_cast<int>(options["pos_x"]),
+            std::any_cast<int>(options["pos_y"]),
+            std::any_cast<int>(options["width"]),
+            std::any_cast<int>(options["height"])
+        };
+
         float scale = std::any_cast<float>(options["scale"]);
-
-        int width = std::any_cast<int>(options["width"]);
-        int height = std::any_cast<int>(options["height"]);
         float opacity = std::any_cast<float>(options["opacity"]);
-
         Stats current = std::any_cast<Stats>(options["stats"]);
 
         try
         {
+            Vector2D element_2d;
             std::vector<Vector2> positions;
 
-            Vector2 element_pos = { (pos_x + (element.contains("x") ? int(float(element["x"]) * scale) : 0)), (pos_y + (element.contains("y") ? int(float(element["y"]) * scale) : 0)) };
-            const Vector2 element_size = { ((element.contains("width") ? int(float(element["width"]) * scale) : 0)), ((element.contains("height") ? int(float(element["height"]) * scale) : 0)) };
+            if (element.contains("x"))
+                element_2d.x = int(float(element["x"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["x"], base_2d.width)) : int(element["x"])) * scale);
+
+            if (element.contains("y"))
+                element_2d.y = int(float(element["y"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["y"], base_2d.height)) : int(element["y"])) * scale);
+
+            if (element.contains("width"))
+                element_2d.width = int(float(element["width"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["width"], base_2d.width)) : int(element["width"])) * scale);
+
+            if (element.contains("height"))
+                element_2d.height = int(float(element["height"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["height"], base_2d.height)) : int(element["height"])) * scale);
+
+            Vector2 element_pos = { (base_2d.x + element_2d.x), (base_2d.y + element_2d.y) };
+            const Vector2 element_size = { element_2d.width, element_2d.height };
             const float element_scale = (element.contains("scale") ? float(element["scale"]) : 1.0f);
 
             calculated.scale = (element_scale * scale);
 
             calculated.color.enable = true;
-            if (element.contains("color"))
-            {
-                char* color = Utils::GetColorAlpha(element["color"], opacity);
-                calculated.color = { true, color[0], color[1], color[2], color[3] };
-            }
+            if (element.contains("color") && element["color"].is_array())
+                calculated.color = { true, element["color"][0], element["color"][1], element["color"][2], Utils::GetAlpha(element["color"], opacity) };
 
-            if (element.contains("fill") && element["fill"].type() == json::value_t::array)
-            {
-                char* color = Utils::GetColorAlpha(element["fill"], opacity);
-                calculated.fill = { true, color[0], color[1], color[2], color[3] };
-            }
+            if (element.contains("fill") && element["fill"].is_array())
+                calculated.fill = { true, element["fill"][0], element["fill"][1], element["fill"][2], Utils::GetAlpha(element["fill"], opacity) };
 
-            if (element.contains("stroke") && element["stroke"].type() == json::value_t::array)
-            {
-                char* color = Utils::GetColorAlpha(element["stroke"], opacity);
-                calculated.stroke = { true, color[0], color[1], color[2], color[3] };
-            }
+            if (element.contains("stroke") && element["stroke"].is_array())
+                calculated.stroke = { true, element["stroke"][0], element["stroke"][1], element["stroke"][2], Utils::GetAlpha(element["stroke"], opacity) };
 
             if (element["type"] == "text")
             {
@@ -779,7 +791,7 @@ struct Element RocketStats::CalculateElement(CanvasWrapper& canvas, json& elemen
 
                 const Vector2F string_size = canvas.GetStringSize(calculated.value, calculated.scale, calculated.scale);
 
-                if (element.contains("align") && element["align"].type() == json::value_t::string)
+                if (element.contains("align") && element["align"].is_string())
                 {
                     if (element["align"] == "right")
                         element_pos.X -= int(string_size.X);
@@ -787,7 +799,7 @@ struct Element RocketStats::CalculateElement(CanvasWrapper& canvas, json& elemen
                         element_pos.X -= int(std::round(float(string_size.X) / 2.0f));
                 }
 
-                if (element.contains("valign") && element["valign"].type() == json::value_t::string)
+                if (element.contains("valign") && element["valign"].is_string())
                 {
                     if (element["valign"] == "bottom")
                         element_pos.Y -= int(string_size.Y);
@@ -797,20 +809,31 @@ struct Element RocketStats::CalculateElement(CanvasWrapper& canvas, json& elemen
             }
             else if (element["type"] == "line")
             {
-                element_pos = { (pos_x + int(float(element["x1"]) * scale)), (pos_y + int(float(element["y1"]) * scale)) };
+                element_pos.X = base_2d.x + int(float(element["x1"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["x1"], base_2d.width)) : int(element["x1"])) * scale);
+                element_pos.Y = base_2d.y + int(float(element["y1"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["y1"], base_2d.height)) : int(element["y1"])) * scale);
                 const float element_width = (element.contains("width") ? (float)element["width"] : 1);
 
                 calculated.width = element_width;
                 calculated.scale = (element_width * scale);
 
-                positions.push_back(Vector2{ (pos_x + int(float(element["x2"]) * scale)), (pos_y + int(float(element["y2"]) * scale)) });
+                positions.push_back(Vector2{
+                    base_2d.x + int(float(element["x2"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["x2"], base_2d.width)) : int(element["x2"])) * scale),
+                    base_2d.y + int(float(element["y2"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["y2"], base_2d.height)) : int(element["y2"])) * scale)
+                });
             }
             else if (element["type"] == "triangle")
             {
-                element_pos = { (pos_x + int(float(element["x1"]) * scale)), (pos_y + int(float(element["y1"]) * scale)) };
+                element_pos.X = base_2d.x + int(float(element["x1"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["x1"], base_2d.width)) : int(element["x1"])) * scale);
+                element_pos.Y = base_2d.y + int(float(element["y1"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["y1"], base_2d.height)) : int(element["y1"])) * scale);
 
-                positions.push_back(Vector2{ (pos_x + int(float(element["x2"]) * scale)), (pos_y + int(float(element["y2"]) * scale)) });
-                positions.push_back(Vector2{ (pos_x + int(float(element["x3"]) * scale)), (pos_y + int(float(element["y3"]) * scale)) });
+                positions.push_back(Vector2{
+                    base_2d.x + int(float(element["x2"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["x2"], base_2d.width)) : int(element["x2"])) * scale),
+                    base_2d.y + int(float(element["y2"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["y2"], base_2d.height)) : int(element["y2"])) * scale)
+                });
+                positions.push_back(Vector2{
+                    base_2d.x + int(float(element["x3"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["x3"], base_2d.width)) : int(element["x3"])) * scale),
+                    base_2d.y + int(float(element["y3"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["y3"], base_2d.height)) : int(element["y3"])) * scale)
+                });
             }
             else if (element["type"] == "image")
             {
@@ -829,7 +852,7 @@ struct Element RocketStats::CalculateElement(CanvasWrapper& canvas, json& elemen
 
                     Vector2 image_size = theme_images[calculated.value]->GetSize();
 
-                    if (element.contains("align") && element["align"].type() == json::value_t::string)
+                    if (element.contains("align") && element["align"].is_string())
                     {
                         if (element["align"] == "right")
                             element_pos.X -= int((float(image_size.X) * 0.5f) * scale);
@@ -837,7 +860,7 @@ struct Element RocketStats::CalculateElement(CanvasWrapper& canvas, json& elemen
                             element_pos.X -= int(std::round(((float(image_size.X) * 0.5f) * scale) / 2.0f));
                     }
 
-                    if (element.contains("valign") && element["valign"].type() == json::value_t::string)
+                    if (element.contains("valign") && element["valign"].is_string())
                     {
                         if (element["valign"] == "bottom")
                             element_pos.Y -= int((float(image_size.Y) * 0.5f) * scale);
@@ -855,7 +878,10 @@ struct Element RocketStats::CalculateElement(CanvasWrapper& canvas, json& elemen
 
             check = true;
         }
-        catch (const std::exception&) {}
+        catch (const std::exception& e)
+        {
+            cvarManager->log("CalculateElement error: " + std::string(e.what()));
+        }
     }
 
     return calculated;
@@ -871,7 +897,7 @@ void RocketStats::RenderElement(CanvasWrapper& canvas, Element& element)
 
             canvas.SetPosition(element.positions.at(0));
             if (element.type == "triangle")
-                canvas.FillTriangle(element.positions.at(0), element.positions.at(1), element.positions.at(2), canvas.GetColor());
+                canvas.FillTriangle(element.positions.at(0), element.positions.at(1), element.positions.at(2));
             else if (element.type == "rectangle")
                 canvas.FillBox(element.size);
         }
@@ -1012,17 +1038,29 @@ void RocketStats::WriteSettings()
 1|Enable floating point for MMR|RS_enable_float
 10|RS_stats
 7|
+9|                                                                                                           
+7|
 1|Hide overlay while in-game|RS_hide_overlay_ig
 6|Theme|RS_theme|Default@Default&Redesigned@Redesigned
 1|Display Game Mode|RS_disp_gamemode
 7|
+9|         
+7|
 1|Display Rank|RS_disp_rank
+7|
+9|         
 7|
 1|Display MMR|RS_disp_mmr
 7|
+9|         
+7|
 1|Display Wins|RS_disp_wins
 7|
+9|         
+7|
 1|Display Losses|RS_disp_losses
+7|
+9|        
 7|
 1|Display Streak|RS_disp_streak
 9|
@@ -1036,7 +1074,11 @@ void RocketStats::WriteSettings()
 7|
 0|Reload Pictures|RocketStats_reload_images
 7|
-0|Reset|RocketStats_reset_stats
+0|Reset Stats|RocketStats_reset_stats
+7|
+9|                                                                                                                                              
+7|
+0|Open folder|RocketStats_open_folder
 8|
 9|Version 4.0, Developped by @Lyliiya & @NuSa_yt for @Maylie_tv
 9|Update in 4.0 by Arubinu#9947 (Arubinu42 complex themes in game)
@@ -1049,7 +1091,7 @@ void RocketStats::WriteSettings()
 9|Update in 2.0 by Lyliya#4276, Larsluph#7713, Th3Ant#9411 & NuSa#0666 (New overlay, new ranks, bugfix)
 9|Donate : https://www.paypal.me/rocketstats
 )";
-    
+
         const size_t start = (settings.find("|RS_theme|") + 10);
         const size_t end = std::min(settings.find("\r", start), settings.find("\n", start));
 
@@ -1084,17 +1126,17 @@ void RocketStats::ReadConfig()
             json config = json::parse(ReadFile(file, true));
             cvarManager->log(nlohmann::to_string(config));
 
-            if (config.type() == json::value_t::object)
+            if (config.is_object())
             {
-                if (config["always"].type() == json::value_t::object)
+                if (config["always"].is_object())
                 {
-                    if (config["always"]["Win"].type() == json::value_t::number_unsigned)
+                    if (config["always"]["Win"].is_number_unsigned())
                         always.win = config["always"]["Win"];
 
-                    if (config["always"]["Loose"].type() == json::value_t::number_unsigned)
+                    if (config["always"]["Loose"].is_number_unsigned())
                         always.losses = config["always"]["Loose"];
 
-                    if (config["always"]["Streak"].type() == json::value_t::number_unsigned || config["always"]["Streak"].type() == json::value_t::number_integer)
+                    if (config["always"]["Streak"].is_number_unsigned() || config["always"]["Streak"].is_number_integer())
                         always.streak = config["always"]["Streak"];
 
                     cvarManager->log("Config: stats loaded");

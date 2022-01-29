@@ -19,10 +19,10 @@ namespace fs = std::filesystem;
 
 struct Color {
 	bool enable = false;
-	char r = char(255);
-	char g = char(255);
-	char b = char(255);
-	char alpha = char(255);
+	unsigned char r = 255;
+	unsigned char g = 255;
+	unsigned char b = 255;
+	unsigned char alpha = 255;
 };
 
 struct Element {
@@ -61,6 +61,13 @@ struct Theme {
 	std::string name = "Unknown";
 	std::vector<Font> fonts;
 	std::vector<Element> elements;
+};
+
+struct Vector2D {
+	int x = 0;
+	int y = 0;
+	int width = 0;
+	int height = 0;
 };
 
 
