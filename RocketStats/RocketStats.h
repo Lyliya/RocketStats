@@ -51,8 +51,9 @@ struct Font {
 struct Stats {
 	float myMMR = 100.0f;
 	float MMRChange = 0.0f;
+	float MMRCumulChange = 0.0f;
 	int win = 0;
-	int losses = 0;
+	int loss = 0;
 	int streak = 0;
 	bool isInit = 0;
 };
@@ -77,7 +78,7 @@ private:
 	std::shared_ptr<bool> enabled;
 	std::string rs_path = "RocketStats";
 
-	bool theme_refresh = true;
+	char theme_refresh = 2;
 	unsigned char theme_style = 0;
 	std::string theme_selected = "Default";
 
@@ -138,9 +139,10 @@ public:
 	void WriteGameMode();
 	void WriteMMR();
 	void WriteMMRChange();
-	void WriteStreak();
+	void WriteMMRCumulChange();
 	void WriteWin();
-	void WriteLosses();
+	void WriteLoss();
+	void WriteStreak();
 
 	int currentPlaylist = 0;
 	bool isGameEnded = false;
@@ -165,7 +167,7 @@ public:
 
 	std::shared_ptr<ImageWrapper> crown;
 	std::shared_ptr<ImageWrapper> win;
-	std::shared_ptr<ImageWrapper> loose;
+	std::shared_ptr<ImageWrapper> loss;
 	std::shared_ptr<ImageWrapper> streak;
 
 	int rank_nb = 23;

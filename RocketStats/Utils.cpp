@@ -54,6 +54,42 @@ std::string Utils::FloatFixer(float a_value, size_t n)
     return str;
 }
 
+std::string Utils::FloatFixer(std::string str, size_t n)
+{
+    size_t pos = str.find('.');
+    if (pos != std::string::npos)
+    {
+        if (n)
+            ++pos;
+
+        str = str.substr(0, (pos + n));
+    }
+
+    return str;
+}
+
+std::string Utils::PointFixer(float a_value, size_t n, size_t md)
+{
+    std::string str = std::to_string(a_value);
+    size_t pos = (str.find('.') + 1);
+    size_t len = str.length();
+
+    if (len < n)
+    {
+        str.insert((len - 1), (n - len), '0');
+
+        len = str.length();
+        if ((len - pos) < md)
+            str.insert((len - 1), (md - (len - pos)), '0');
+    }
+    else if (!n)
+        str = FloatFixer(str, 0);
+    else if (len > n)
+        str = FloatFixer(str, std::max((int(n) - int(pos)), int(md)));
+
+    return str;
+}
+
 std::vector<std::string> Utils::Split(const std::string& str, char delim)
 {
     std::vector<std::string> result;
@@ -118,6 +154,7 @@ std::string Utils::ExpressionSanitize(std::string str, int percent2pixels)
     size_t pos;
     size_t lpos;
 
+    ReplaceAll(str, " ", "");
     for (pos = 0, lpos = std::string::npos; pos < str.length(); ++pos)
     {
         c = str[pos];
@@ -199,7 +236,21 @@ int Utils::ProcessInputNumber(std::string& exp, int pos, std::vector<int>& vStac
 void Utils::ProcessInputOperator(char op, std::vector<int>& vStack, std::vector<char>& opStack)
 {
     while (opStack.size() > 0 && OperatorCausesEvaluation(op, opStack.back()))
+    {
+        if ((op == '+' || op == '-') && (opStack.back() == '+' || opStack.back() == '-'))
+        {
+            bool positive = (op == opStack.back());
+            bool negative = (op != opStack.back());
+            if (positive || negative)
+            {
+                opStack.pop_back();
+                opStack.push_back(positive ? '+' : '-');
+                return;
+            }
+        }
+
         ExecuteOperation(vStack, opStack);
+    }
 
     opStack.push_back(op);
 }
@@ -228,9 +279,14 @@ bool Utils::OperatorCausesEvaluation(char op, char prevOp)
 
 void Utils::ExecuteOperation(std::vector<int>& vStack, std::vector<char>& opStack)
 {
-    int rightOperand = vStack.back(); vStack.pop_back();
-    int leftOperand = vStack.back(); vStack.pop_back();
     char op = opStack.back(); opStack.pop_back();
+    int rightOperand = vStack.back(); vStack.pop_back();
+    int leftOperand = 0;
+    if (vStack.size())
+    {
+        leftOperand = vStack.back();
+        vStack.pop_back();
+    }
 
     int result = 0;
     switch (op)
