@@ -67,9 +67,9 @@
 			"scale":	1
 		},
 		{
-			"name":		"loose_image",
+			"name":		"loss_image",
 			"type":		"image",
-			"file":		"loose.png",
+			"file":		"loss.png",
 			"x":		50,
 			"y":		160,
 			"align":	"right",
@@ -77,9 +77,9 @@
 			"scale":	1
 		},
 		{
-			"name":		"loose",
+			"name":		"loss",
 			"type":		"text",
-			"value":	"{{Loose}}",
+			"value":	"{{Loss}}",
 			"x":		50,
 			"y":		168,
 			"align":	"left",
@@ -108,10 +108,5 @@
 			"color":	[ 0, 255, 0 ],
 			"scale":	1
 		}
-	],
-	"options": {
-		"bottom_background":		true,
-		"display_rocketleague":		false,
-		"mmr_with_floatingpoint":	true
-	}
+	]
 }
