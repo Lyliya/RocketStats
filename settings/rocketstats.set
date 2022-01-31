@@ -12,7 +12,6 @@ RocketStats Plugin
 1|Display Losses|RS_disp_losses
 1|Display Streak|RS_disp_streak
 1|Display Rank|RS_disp_rank
-1|Enable floating point for MMR (OBS only)|RS_enable_float
 8|
 9|Place your overlay (Only if display information in game is check)
 4|X position|RS_x_position|0|1.0
@@ -20,6 +19,7 @@ RocketStats Plugin
 4|Scale|RS_scale|0|10
 11|
 1|Enable Boost|RocketStats_stop_boost
+1|Enable floating point for MMR (OBS only)|RS_enable_float
 8|
 0|Reset|RocketStats_reset_stats
 0|Reload Pictures|RocketStats_reload_images
