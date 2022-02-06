@@ -14,9 +14,9 @@ Stats RocketStats::GetStats()
 
     switch (RS_stats)
     {
-        case 1: result = session; break;
-        case 2: result = stats[currentPlaylist]; break;
-        case 3: result = always; break;
+        case 1: result = stats[currentPlaylist]; break;
+        case 2: result = always; break;
+        default: result = session;
     }
 
     return result;
@@ -25,7 +25,7 @@ Stats RocketStats::GetStats()
 std::string RocketStats::GetRank(int tierID)
 {
     cvarManager->log("tier: " + std::to_string(tierID));
-    if (tierID <= rank_nb)
+    if (tierID < rank_nb)
         return rank[tierID].name;
     else
         return "Unranked";
@@ -56,29 +56,13 @@ void RocketStats::LoadImgs()
 {
     int load_check = 0;
 
-    crown = LoadImg("RocketStats_images/crown.png");
-    load_check += (int)crown->LoadForCanvas();
-    LogImageLoadStatus(crown->LoadForCanvas(), "crown");
-
-    win = LoadImg("RocketStats_images/win.png");
-    load_check += (int)win->LoadForCanvas();
-    LogImageLoadStatus(win->LoadForCanvas(), "win");
-
-    loss = LoadImg("RocketStats_images/loss.png");
-    load_check += (int)loss->LoadForCanvas();
-    LogImageLoadStatus(loss->LoadForCanvas(), "loss");
-
-    streak = LoadImg("RocketStats_images/streak.png");
-    load_check += (int)streak->LoadForCanvas();
-    LogImageLoadStatus(streak->LoadForCanvas(), "streak");
-
     for (int i = 0; i < rank_nb; i++)
     {
         rank[i].image = LoadImg("RocketStats_images/" + rank[i].name + ".png");
         load_check += (int)rank[i].image->LoadForCanvas();
         LogImageLoadStatus(rank[i].image->LoadForCanvas(), rank[i].name);
     }
-    cvarManager->log(std::to_string(load_check) + "/27 images were loaded successfully");
+    cvarManager->log(std::to_string(load_check) + "/" + std::to_string(rank_nb) + " images were loaded successfully");
 }
 #pragma endregion
 
@@ -152,7 +136,7 @@ void RocketStats::onLoad()
     InitRank();
 
     // Register Cvars
-    cvarManager->registerCvar("RS_disp_ig", "1", "Display information panel", true, true, 0, true, 1).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_disp_overlay", "1", "Display overlay", true, true, 0, true, 1);
     cvarManager->registerCvar("RS_hide_overlay_ig", "0", "Hide overlay while in-game", true, true, 0, true, 1);
     cvarManager->registerCvar("RS_enable_float", "0", "Enable floating point for MMR (OBS only)", true, true, 0, true, 1).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_stop_boost", "1", "Stop Boost animation", true, true, 0, true, 1).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
@@ -515,24 +499,21 @@ void RocketStats::MajRank(int _gameMode, bool isRanked, float _currentMMR, Skill
             currentRank = GetRank(playerRank.Tier);
             currentDivision = "Div. " + std::to_string(playerRank.Division + 1);
 
-            theme_refresh = 1;
             WriteInFile("RocketStats_Div.txt", currentDivision);
         }
 
         if (currentRank != lastRank)
-        {
-            theme_refresh = 1;
             WriteInFile("RocketStats_Rank.txt", currentRank);
-        }
     }
     else
     {
         currentRank = GetPlaylistName(currentGameMode);
         currentDivision = "";
 
-        theme_refresh = 1;
         WriteInFile("RocketStats_Rank.txt", currentRank);
     }
+
+    theme_refresh = 1;
 }
 #pragma endregion
 
@@ -653,10 +634,10 @@ void RocketStats::RefreshTheme(std::string old, CVarWrapper now)
 
 void RocketStats::Render(CanvasWrapper canvas)
 {
-    bool RS_disp_ig = (cvarManager->getCvar("RS_stats").getStringValue() != "0");
+    bool RS_disp_overlay = cvarManager->getCvar("RS_disp_overlay").getBoolValue();
     bool RS_hide_overlay_ig = cvarManager->getCvar("RS_hide_overlay_ig").getBoolValue();
 
-    if (!RS_disp_ig || (isGameStarted && !isGameEnded && RS_hide_overlay_ig))
+    if (!RS_disp_overlay || (isGameStarted && !isGameEnded && RS_hide_overlay_ig))
         return;
 
     try
@@ -857,7 +838,12 @@ struct Element RocketStats::CalculateElement(CanvasWrapper& canvas, json& elemen
             {
                 calculated.scale *= 0.5f;
                 calculated.value = element["file"];
-                if (!theme_images[calculated.value])
+
+                if (calculated.value == "{{Rank}}")
+                {
+                    theme_images[calculated.value] = rank[(currentTier < rank_nb) ? currentTier : 0].image;
+                }
+                else if (!theme_images[calculated.value])
                 {
                     std::string image_path;
                     if (calculated.value != "{{Rank}}")
@@ -865,8 +851,6 @@ struct Element RocketStats::CalculateElement(CanvasWrapper& canvas, json& elemen
                         theme_images[calculated.value] = LoadImg("RocketStats_themes/" + theme_selected + "/images/" + calculated.value);
                         LogImageLoadStatus(theme_images[calculated.value]->LoadForCanvas(), (theme_selected + "->" + calculated.value));
                     }
-                    else
-                        theme_images[calculated.value] = rank[(currentTier >= rank_nb) ? 0 : currentTier].image;
                 }
 
                 Vector2 image_size = theme_images[calculated.value]->GetSize();
@@ -1049,14 +1033,16 @@ void RocketStats::WriteSettings()
     if (!ExistsPath(file, true))
     {
         const std::string settings = R"(RocketStats Plugin
-9|Display information in game
-6|Stats|RS_stats|None@0&Session@1&GameMode@2&Always@3
+9|Display information
+6|Stats|RS_stats|Session@0&GameMode@1&Always@2
+1|Display overlay|RS_disp_overlay
+7|
 1|Enable Boost|RS_stop_boost
 7|
 1|Enable floating point for MMR|RS_enable_float
-10|RS_stats
+10|RS_disp_overlay
 7|
-9|                                                                                                           
+9|                                                                          
 7|
 1|Hide overlay while in-game|RS_hide_overlay_ig
 6|Theme|RS_theme|Default@Default&Redesigned@Redesigned

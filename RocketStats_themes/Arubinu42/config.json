@@ -100,7 +100,7 @@
 			"width":		1
 		},
 		{
-			"name":			"loose_image",
+			"name":			"loss_image",
 			"type":			"image",
 			"file":			"loss.png",
 			"x":			"300px + 45px",
@@ -110,7 +110,7 @@
 			"scale":		0.75
 		},
 		{
-			"name":			"loose",
+			"name":			"loss",
 			"type":			"text",
 			"value":		"{{Loss}}",
 			"x":			430,
