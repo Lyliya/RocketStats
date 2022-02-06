@@ -10,7 +10,7 @@ First, you'll need to install [Bakkesmod](https://www.bakkesmod.com/)
 ### Installing
 In game, **press F2**, open the **plugins tab**, open the **plugin manager**, fill the box on the right with **30** and press **"Install By Id"**
 
-## Overlay
+## Overlay (Rework In Progress)
 RocketStats is provided with 2 types of overlay, one in-game, and one designed for streamers in OBS.
 
 ### In Game Overlay
