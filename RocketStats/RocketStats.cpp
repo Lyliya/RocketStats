@@ -12,7 +12,7 @@ BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "3.5", PERMISSION_ALL)
 std::string RocketStats::GetRank(int tierID)
 {
     cvarManager->log("tier: " + std::to_string(tierID));
-    if (tierID <= rank_nb)
+    if (tierID < rank_nb)
         return rank[tierID].name;
     else
         return "Unranked";
@@ -280,13 +280,11 @@ void RocketStats::GameDestroyed(std::string eventName)
 void RocketStats::UpdateMMR(UniqueIDWrapper id)
 {
     cvarManager->log("===== updateMMR =====");
-    /*
+    
     if (id.GetIdString() != gameWrapper->GetUniqueID().GetIdString()) {
         cvarManager->log("not the user");
         return;
     }
-    cvarManager->log("user match");
-    */
 
     if (currentPlaylist == 0)
     {
