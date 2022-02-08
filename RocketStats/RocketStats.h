@@ -11,6 +11,8 @@
 
 #include "Utils.h"
 
+#include "imgui/pch.h"
+
 #include "json.hpp"
 
 using json = nlohmann::json;
@@ -19,18 +21,15 @@ namespace fs = std::filesystem;
 
 struct Color {
 	bool enable = false;
-	unsigned char r = 255;
-	unsigned char g = 255;
-	unsigned char b = 255;
-	unsigned char alpha = 255;
+	ImColor color = { 255, 255, 255, 255 };
 };
 
 struct Element {
 	std::string name = "Unknown";
 	std::string type;
 	std::string value;
-	std::vector<Vector2> positions;
-	Vector2 size;
+	std::vector<ImVec2> positions;
+	ImVec2 size;
 	float scale = 1;
 	float width = 1;
 	Color color;
@@ -72,7 +71,7 @@ struct Vector2D {
 };
 
 
-class RocketStats : public BakkesMod::Plugin::BakkesModPlugin
+class RocketStats : public BakkesMod::Plugin::BakkesModPlugin, public BakkesMod::Plugin::PluginWindow
 {
 private:
 	std::shared_ptr<bool> enabled;
@@ -80,7 +79,6 @@ private:
 
 	char theme_refresh = 2;
 	unsigned char theme_style = 0;
-	std::string theme_selected = "Default";
 
 	json theme_config;
 	Theme theme_render;
@@ -88,13 +86,43 @@ private:
 	std::map<std::string, std::string> theme_vars;
 	std::map<std::string, std::shared_ptr<ImageWrapper>> theme_images;
 
+	// PluginWindow
+	bool isSettingsOpen_ = false;
+	std::string menuName_ = "rocketstats";
+	std::string menuTitle_ = "RocketStats Plugin";
+
+	void RenderSettings();
+	void RenderOverlay();
+
+	virtual void Render() override;
+	virtual std::string GetMenuName() override;
+	virtual std::string GetMenuTitle() override;
+	virtual void SetImGuiContext(uintptr_t ctx) override;
+	virtual bool ShouldBlockInput() override;
+	virtual bool IsActiveOverlay() override;
+	virtual void OnOpen() override;
+	virtual void OnClose() override;
+
 public:
+	int RS_mode = 0;
+	int RS_theme = 0;
+
+	bool RS_disp_overlay = true;
+	bool RS_enable_boost = true;
+	bool RS_enable_float = false;
+	bool RS_hide_overlay_ig = false;
+
+	float RS_scale = 1.f;
+	float RS_x_position = 0.7f;
+	float RS_y_position = 0.575f;
+
 	// Utils
 	Stats GetStats();
 	std::string GetRank(int tierID);
 	std::string GetPlaylistName(int playlistID);
 	void LogImageLoadStatus(bool status, std::string imageName);
-	std::shared_ptr<ImageWrapper> LoadImg(const std::string& _filename, bool canvasLoad = true);
+	std::shared_ptr<ImageWrapper> LoadImg(const std::string& _filename);
+	std::shared_ptr<ImageWrapper> LoadImg(fs::path& _path);
 	void LoadImgs();
 
 	// PluginLoadRoutines
@@ -102,6 +130,7 @@ public:
 	virtual void onUnload();
 
 	// GameMgmt
+	void ShowPlugin(std::string eventName);
 	void GameStart(std::string eventName);
 	void GameEnd(std::string eventName);
 	void GameDestroyed(std::string eventName);
@@ -122,18 +151,17 @@ public:
 
 	// OverlayMgmt
 	void LoadThemes();
-	bool ChangeTheme(std::string name);
+	bool ChangeTheme(int idx);
 	void RefreshTheme(std::string old, CVarWrapper now);
-	void Render(CanvasWrapper canvas);
-	struct Element CalculateElement(CanvasWrapper& canvas, json& element, std::map<std::string, std::any>& options, bool& check);
-	void RenderElement(CanvasWrapper& canvas, Element& element);
+	//void Render(CanvasWrapper canvas);
+	struct Element CalculateElement(json& element, std::map<std::string, std::any>& options, bool& check);
+	void RenderElement(Element& element);
 
 	// File I / O
 	bool ExistsPath(std::string _filename, bool root = false);
 	bool RemoveFile(std::string _filename, bool root = false);
 	std::string ReadFile(std::string _filename, bool root = false);
 	void WriteInFile(std::string _fileName, std::string _value, bool root = false);
-	void WriteSettings();
 	void ReadConfig();
 	void WriteConfig();
 	void WriteGameMode();

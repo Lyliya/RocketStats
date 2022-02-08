@@ -54,10 +54,35 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="imgui\imconfig.h" />
+    <ClInclude Include="imgui\imgui.h" />
+    <ClInclude Include="imgui\imguivariouscontrols.h" />
+    <ClInclude Include="imgui\imgui_additions.h" />
+    <ClInclude Include="imgui\imgui_impl_dx11.h" />
+    <ClInclude Include="imgui\imgui_impl_win32.h" />
+    <ClInclude Include="imgui\imgui_internal.h" />
+    <ClInclude Include="imgui\imgui_rangeslider.h" />
+    <ClInclude Include="imgui\imgui_searchablecombo.h" />
+    <ClInclude Include="imgui\imgui_timeline.h" />
+    <ClInclude Include="imgui\imstb_rectpack.h" />
+    <ClInclude Include="imgui\imstb_textedit.h" />
+    <ClInclude Include="imgui\imstb_truetype.h" />
+    <ClInclude Include="imgui\pch.h" />
     <ClInclude Include="RocketStats.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="imgui\imgui.cpp" />
+    <ClCompile Include="imgui\imguivariouscontrols.cpp" />
+    <ClCompile Include="imgui\imgui_additions.cpp" />
+    <ClCompile Include="imgui\imgui_draw.cpp" />
+    <ClCompile Include="imgui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="imgui\imgui_rangeslider.cpp" />
+    <ClCompile Include="imgui\imgui_searchablecombo.cpp" />
+    <ClCompile Include="imgui\imgui_timeline.cpp" />
+    <ClCompile Include="imgui\imgui_widgets.cpp" />
+    <ClCompile Include="imgui\pch.cpp" />
     <ClCompile Include="RocketStats.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
