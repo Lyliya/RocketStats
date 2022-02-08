@@ -22,7 +22,7 @@
 			"align":		"left",
 			"valign":		"top",
 			"color":		[ 255, 255, 255 ],
-			"scale":		0.5
+			"scale":		0.6
 		},
 		{
 			"name":			"rank_div",
@@ -33,7 +33,7 @@
 			"align":		"left",
 			"valign":		"top",
 			"color":		[ 180, 180, 180 ],
-			"scale":		0.5
+			"scale":		0.6
 		},
 		{
 			"name":			"mmr",
@@ -44,7 +44,7 @@
 			"align":		"left",
 			"valign":		"top",
 			"color":		[ 255, 255, 255 ],
-			"scale":		0.5
+			"scale":		0.6
 		},
 		{
 			"name":			"mmrchange",
@@ -56,7 +56,7 @@
 			"align":		"left",
 			"valign":		"top",
 			"color":		[ 0, 255, 0 ],
-			"scale":		0.5
+			"scale":		0.6
 		},
 		{
 			"name":			"win",
@@ -67,7 +67,7 @@
 			"align":		"left",
 			"valign":		"top",
 			"color":		[ 0, 255, 0 ],
-			"scale":		0.5
+			"scale":		0.6
 		},
 		{
 			"name":			"loss",
@@ -78,7 +78,7 @@
 			"align":		"left",
 			"valign":		"top",
 			"color":		[ 255, 0, 0 ],
-			"scale":		0.5
+			"scale":		0.6
 		},
 		{
 			"name":			"streak",
@@ -91,7 +91,7 @@
 			"align":		"left",
 			"valign":		"top",
 			"color":		[ 0, 255, 0 ],
-			"scale":		0.5
+			"scale":		0.6
 		}
 	]
 }

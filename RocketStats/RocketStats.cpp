@@ -801,6 +801,9 @@ struct Element RocketStats::CalculateElement(json& element, std::map<std::string
                         else if (element["valign"] == "middle")
                             element_pos.y -= (element_size.y / 2.0f);
                     }
+
+                    element_size.x += element_pos.x;
+                    element_size.y += element_pos.y;
                 }
             }
 
@@ -823,10 +826,8 @@ struct Element RocketStats::CalculateElement(json& element, std::map<std::string
 
 void RocketStats::RenderElement(Element& element)
 {
-    //try
+    try
     {
-        ImGui::SetCursorPos(element.positions.at(0));
-
         if (element.fill.enable)
         {
             if (element.type == "triangle")
@@ -849,7 +850,7 @@ void RocketStats::RenderElement(Element& element)
             if (image->IsLoadedForImGui())
             {
                 if (element.size.x && element.size.y)
-                    ImGui::Image(image->GetImGuiTex(), element.size);
+                    ImGui::GetOverlayDrawList()->AddImage(image->GetImGuiTex(), element.positions.at(0), element.size);
                 else
                     theme_refresh = 1;
             }
@@ -862,7 +863,7 @@ void RocketStats::RenderElement(Element& element)
         else if (element.type == "line")
             ImGui::GetOverlayDrawList()->AddLine(element.positions.at(0), element.positions.at(1), element.color.color, element.width);
     }
-    //catch (const std::exception&) {}
+    catch (const std::exception&) {}
 }
 #pragma endregion
 

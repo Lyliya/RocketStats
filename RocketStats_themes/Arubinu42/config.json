@@ -41,8 +41,8 @@
 			"name":			"rank",
 			"type":			"image",
 			"file":			"{{Rank}}",
-			"x":			30,
-			"y":			23,
+			"x":			27,
+			"y":			20,
 			"align":		"center",
 			"valign":		"middle",
 			"scale":		0.85
@@ -52,11 +52,11 @@
 			"type":			"text",
 			"value":		"{{MMR}}",
 			"x":			170,
-			"y":			21,
+			"y":			20,
 			"align":		"right",
 			"valign":		"middle",
 			"color":		[ 255, 255, 255 ],
-			"scale":		1
+			"scale":		1.2
 		},
 		{
 			"name":			"win_separator",
@@ -72,8 +72,8 @@
 			"name":			"win_image",
 			"type":			"image",
 			"file":			"win.png",
-			"x":			"170px + 45px",
-			"y":			26,
+			"x":			"170px + 40px",
+			"y":			21,
 			"align":		"center",
 			"valign":		"middle",
 			"scale":		0.75
@@ -83,11 +83,11 @@
 			"type":			"text",
 			"value":		"{{Win}}",
 			"x":			300,
-			"y":			21,
+			"y":			20,
 			"align":		"right",
 			"valign":		"middle",
 			"color":		[ 255, 255, 255 ],
-			"scale":		1
+			"scale":		1.2
 		},
 		{
 			"name":			"loss_separator",
@@ -103,8 +103,8 @@
 			"name":			"loss_image",
 			"type":			"image",
 			"file":			"loss.png",
-			"x":			"300px + 45px",
-			"y":			26,
+			"x":			"300px + 40px",
+			"y":			21,
 			"align":		"center",
 			"valign":		"middle",
 			"scale":		0.75
@@ -114,11 +114,11 @@
 			"type":			"text",
 			"value":		"{{Loss}}",
 			"x":			430,
-			"y":			21,
+			"y":			20,
 			"align":		"right",
 			"valign":		"middle",
 			"color":		[ 255, 255, 255 ],
-			"scale":		1
+			"scale":		1.2
 		},
 		{
 			"name":			"streak_separator",
@@ -134,8 +134,8 @@
 			"name":			"streak_image",
 			"type":			"image",
 			"file":			"streak.png",
-			"x":			"430px + 45px",
-			"y":			26,
+			"x":			"430px + 40px",
+			"y":			21,
 			"align":		"center",
 			"valign":		"middle",
 			"scale":		0.75
@@ -146,11 +146,11 @@
 			"value":		"{{Streak}}",
 			"sign":			"Streak",
 			"x":			560,
-			"y":			21,
+			"y":			20,
 			"align":		"right",
 			"valign":		"middle",
 			"color":		[ 255, 255, 255 ],
-			"scale":		1
+			"scale":		1.2
 		}
 	]
 }

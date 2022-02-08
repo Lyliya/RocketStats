@@ -91,8 +91,8 @@
 			"name":			"streak_image",
 			"type":			"image",
 			"file":			"streak.png",
-			"x":			50,
-			"y":			110,
+			"x":			190,
+			"y":			133,
 			"align":		"right",
 			"valign":		"top",
 			"scale":		1
@@ -102,9 +102,9 @@
 			"type":			"text",
 			"value":		"{{Streak}}",
 			"chameleon":	"Streak",
-			"x":			125,
+			"x":			140,
 			"y":			143,
-			"align":		"left",
+			"align":		"right",
 			"valign":		"top",
 			"color":		[ 0, 255, 0 ],
 			"scale":		1
