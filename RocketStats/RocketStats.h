@@ -21,7 +21,7 @@ namespace fs = std::filesystem;
 
 struct Color {
 	bool enable = false;
-	ImColor color = { 255, 255, 255, 255 };
+	ImColor color = ImGui::GetColorU32({ 255, 255, 255, 1 });
 };
 
 struct Element {

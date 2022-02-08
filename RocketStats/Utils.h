@@ -6,6 +6,8 @@
 #include <sstream>
 #include <functional>
 
+#include "imgui/pch.h"
+
 using namespace std;
 
 
@@ -23,7 +25,8 @@ public:
 
 	// Colors
 	static unsigned char OpacityColor(float opacity);
-	static unsigned char GetAlpha(std::vector<float> color, float opacity);
+	static float GetAlpha(std::vector<float> color, float opacity = 1.f);
+	static ImColor GetImColor(std::vector<float> color, float opacity = 1.f);
 
 	// Operations
 	static std::string ExpressionSanitize(std::string str, int percent2pixels);

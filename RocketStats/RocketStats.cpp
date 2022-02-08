@@ -131,6 +131,9 @@ void RocketStats::onLoad()
     cvarManager->registerCvar("RS_scale", std::to_string(RS_scale), "Scale", true, true, 0, true, 10.f, true).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_x_position", std::to_string(RS_x_position), "X position", true, true, 0, true, 1.f, true).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_y_position", std::to_string(RS_y_position), "Y position", true, true, 0, true, 1.f, true).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+
+    if (gameWrapper->IsInGame())
+        ShowPlugin("IsInGame");
 }
 
 void RocketStats::onUnload()
@@ -670,13 +673,13 @@ struct Element RocketStats::CalculateElement(json& element, std::map<std::string
 
             calculated.color.enable = true;
             if (element.contains("color") && element["color"].is_array())
-                calculated.color = { true, { element["color"][0], element["color"][1], element["color"][2], Utils::GetAlpha(element["color"], opacity) } };
+                calculated.color = { true, Utils::GetImColor(element["color"], opacity) };
 
             if (element.contains("fill") && element["fill"].is_array())
-                calculated.fill = { true, { element["fill"][0], element["fill"][1], element["fill"][2], Utils::GetAlpha(element["fill"], opacity) } };
+                calculated.fill = { true, Utils::GetImColor(element["fill"], opacity) };
 
             if (element.contains("stroke") && element["stroke"].is_array())
-                calculated.stroke = { true, { element["stroke"][0], element["stroke"][1], element["stroke"][2], Utils::GetAlpha(element["stroke"], opacity) } };
+                calculated.stroke = { true, Utils::GetImColor(element["stroke"], opacity) };
 
             if (element["type"] == "text")
             {
@@ -685,7 +688,7 @@ struct Element RocketStats::CalculateElement(json& element, std::map<std::string
                 calculated.wrap = (element.contains("wrap") ? bool(element["wrap"]) : false);
                 calculated.shadow = (element.contains("shadow") ? bool(element["shadow"]) : false);
 
-                Utils::ReplaceVars(calculated.value, theme_vars, [this, &element, &calculated](const std::string &key, std::string &value) {
+                Utils::ReplaceVars(calculated.value, theme_vars, [this, &element, &calculated, &opacity](const std::string &key, std::string &value) {
                     if (element.contains("sign") && element["sign"] == key)
                     {
                         bool positive = (value.at(0) != '-');
@@ -696,11 +699,8 @@ struct Element RocketStats::CalculateElement(json& element, std::map<std::string
                     if (element.contains("chameleon") && element["chameleon"] == key)
                     {
                         bool positive = (value.at(0) != '-');
-                        calculated.color.color = {
-                            char(positive ? 30 : 224),
-                            char(positive ? 224 : 24),
-                            char(positive ? 24 : 24)
-                        };
+                        cvarManager->log("chameleon: " + calculated.name + " > " + (positive ? "positive" : "negative"));
+                        calculated.color.color = Utils::GetImColor({ float(positive ? 30 : 224), float(positive ? 224 : 24), float(positive ? 24 : 24) }, opacity);
                     }
                 });
 

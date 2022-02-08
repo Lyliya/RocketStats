@@ -40,8 +40,7 @@ void Utils::ReplaceVars(std::string& str, std::map<std::string, std::string>& va
 
 std::string Utils::FloatFixer(float a_value, size_t n)
 {
-    std::string str = std::to_string(a_value);
-    return Utils::FloatFixer(str, n);
+    return Utils::FloatFixer(std::to_string(a_value), n);
 }
 
 std::string Utils::FloatFixer(std::string str, size_t n)
@@ -130,9 +129,15 @@ unsigned char Utils::OpacityColor(float opacity)
     return (unsigned char)(std::max(0, std::min(255, int(std::round(opacity * 255.0f)))));
 }
 
-unsigned char Utils::GetAlpha(std::vector<float> color, float opacity)
+float Utils::GetAlpha(std::vector<float> color, float opacity)
 {
-    return OpacityColor(((color.size() == 4) ? color[3] : 1) * opacity);
+    return (((color.size() == 4) ? color[3] : 1) * opacity);
+}
+
+ImColor Utils::GetImColor(std::vector<float> color, float opacity)
+{
+    return ImGui::GetColorU32({ (float(color[0]) / 255.f), (float(color[1]) / 255.f), (float(color[2]) / 255.f), GetAlpha(color, opacity) });
+    //return ();
 }
 #pragma endregion
 
