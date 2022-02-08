@@ -41,17 +41,7 @@ void Utils::ReplaceVars(std::string& str, std::map<std::string, std::string>& va
 std::string Utils::FloatFixer(float a_value, size_t n)
 {
     std::string str = std::to_string(a_value);
-
-    size_t pos = str.find('.');
-    if (pos != std::string::npos)
-    {
-        if (n)
-            ++pos;
-
-        str = str.substr(0, (pos + n));
-    }
-
-    return str;
+    return Utils::FloatFixer(str, n);
 }
 
 std::string Utils::FloatFixer(std::string str, size_t n)
