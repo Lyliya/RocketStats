@@ -1,0 +1,62 @@
+{
+	"width":	175,
+	"height":	155,
+	"opacity":	1,
+	"elements": [
+		{
+			"name":			"background",
+			"type":			"image",
+			"file":			"background.png",
+			"x":			0,
+			"y":			0,
+			"scale":		1.5
+		},
+		{
+			"name":			"mmrchange",
+			"type":			"text",
+			"value":		"{{MMRChange}}",
+			"sign":			"MMRChange",
+			"x":			245,
+			"y":			70,
+			"align":		"right",
+			"valign":		"middle",
+			"color":		[ 255, 255, 255 ],
+			"scale":		1.4
+		},
+		{
+			"name":			"streak",
+			"type":			"text",
+			"value":		"{{Streak}}",
+			"chameleon":	"Streak",
+			"sign":			"Streak",
+			"x":			245,
+			"y":			108,
+			"align":		"right",
+			"valign":		"middle",
+			"color":		[ 0, 255, 0 ],
+			"scale":		1.2
+		},
+		{
+			"name":			"win",
+			"type":			"text",
+			"value":		"{{Win}}",
+			"x":			245,
+			"y":			138,
+			"align":		"right",
+			"valign":		"middle",
+			"color":		[ 0, 255, 0 ],
+			"scale":		1
+		},
+		{
+			"name":			"loss",
+			"type":			"text",
+			"value":		"{{Loss}}",
+			"x":			245,
+			"y":			165,
+			"align":		"right",
+			"valign":		"middle",
+			"color":		[ 255, 0, 0 ],
+			"scale":		1
+		}
+	]
+}

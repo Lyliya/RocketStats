@@ -87,8 +87,10 @@ void RocketStats::onLoad()
 
     cvarManager->registerNotifier(
         "RS_toggle_menu",
-        [this](std::vector<std::string> params)
-        { isSettingsOpen_ = !isSettingsOpen_; },
+        [this](std::vector<std::string> params) {
+            isSettingsOpen_ = !isSettingsOpen_;
+            ShowPlugin("ToggleMenu");
+        },
         "Toggle menu",
         PERMISSION_ALL);
 
@@ -138,16 +140,22 @@ void RocketStats::onLoad()
 
 void RocketStats::onUnload()
 {
-    if (isSettingsOpen_)
+    if (isPluginOpen_)
+    {
+        isPluginOpen_ = false;
         cvarManager->executeCommand("togglemenu " + GetMenuName());
+    }
 }
 #pragma endregion
 
 #pragma region GameMgmt
 void RocketStats::ShowPlugin(std::string eventName)
 {
-    if (!isSettingsOpen_)
+    if (!isPluginOpen_)
+    {
+        isPluginOpen_ = true;
         cvarManager->executeCommand("togglemenu " + GetMenuName());
+    }
 }
 
 void RocketStats::GameStart(std::string eventName)
@@ -510,7 +518,8 @@ void RocketStats::LoadThemes()
     cvarManager->log("===== LoadThemes =====");
 
     std::string base = gameWrapper->GetBakkesModPath().string() + "/" + rs_path;
-    std::string theme_base = base + "/RocketStats_themes";
+    std::string theme_dir = "RocketStats_themes";
+    std::string theme_base = base + "/" + theme_dir;
 
     if (fs::exists(theme_base))
     {
@@ -522,6 +531,9 @@ void RocketStats::LoadThemes()
                 struct Theme theme;
                 theme.name = theme_path.substr(theme_path.find_last_of("/\\") + 1);
                 cvarManager->log("Theme: " + theme.name);
+
+                //if (fs::exists(theme_base + "/" + theme.name + "/screenshot.png"))
+                //    theme.image = LoadImg(theme_dir + "/" + theme.name + "/screenshot.png");
 
                 std::string fonts_path = theme_base + "/" + theme.name + "/fonts";
                 if (fs::exists(fonts_path))
@@ -685,8 +697,6 @@ struct Element RocketStats::CalculateElement(json& element, std::map<std::string
             {
                 calculated.scale *= 2.0f;
                 calculated.value = element["value"];
-                calculated.wrap = (element.contains("wrap") ? bool(element["wrap"]) : false);
-                calculated.shadow = (element.contains("shadow") ? bool(element["shadow"]) : false);
 
                 Utils::ReplaceVars(calculated.value, theme_vars, [this, &element, &calculated, &opacity](const std::string &key, std::string &value) {
                     if (element.contains("sign") && element["sign"] == key)
@@ -699,7 +709,6 @@ struct Element RocketStats::CalculateElement(json& element, std::map<std::string
                     if (element.contains("chameleon") && element["chameleon"] == key)
                     {
                         bool positive = (value.at(0) != '-');
-                        cvarManager->log("chameleon: " + calculated.name + " > " + (positive ? "positive" : "negative"));
                         calculated.color.color = Utils::GetImColor({ float(positive ? 30 : 224), float(positive ? 224 : 24), float(positive ? 24 : 24) }, opacity);
                     }
                 });
@@ -729,7 +738,7 @@ struct Element RocketStats::CalculateElement(json& element, std::map<std::string
                 element_pos.y = float(base_2d.y) + (float(element["y1"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["y1"], base_2d.height)) : int(element["y1"])) * scale);
                 const float element_width = (element.contains("width") ? (float)element["width"] : 1);
 
-                calculated.width = element_width;
+                element_size.x = element_width;
                 calculated.scale = (element_width * scale);
 
                 positions.push_back(ImVec2{
@@ -739,6 +748,8 @@ struct Element RocketStats::CalculateElement(json& element, std::map<std::string
             }
             else if (element["type"] == "rectangle")
             {
+                element_size.x = (element.contains("rounding") ? float(element["rounding"]) : 0.f);
+
                 positions.push_back(ImVec2{
                     element_pos.x + element_2d.width,
                     element_pos.y + element_2d.height
@@ -757,6 +768,11 @@ struct Element RocketStats::CalculateElement(json& element, std::map<std::string
                     float(base_2d.x) + (float(element["x3"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["x3"], base_2d.width)) : int(element["x3"])) * scale),
                     float(base_2d.y) + (float(element["y3"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["y3"], base_2d.height)) : int(element["y3"])) * scale)
                     });
+            }
+            else if (element["type"] == "circle")
+            {
+                element_size.x = (float(element["radius"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["radius"], base_2d.width)) : int(element["radius"])) * scale);
+                element_size.y = float(element.contains("segments") ? int(element["segments"]) : 0);
             }
             else if (element["type"] == "image")
             {
@@ -828,20 +844,30 @@ void RocketStats::RenderElement(Element& element)
 {
     try
     {
+        ImDrawList* drawlist;
+        if (RS_disp_obs)
+            drawlist = ImGui::GetBackgroundDrawList();
+        else
+            drawlist = ImGui::GetOverlayDrawList();
+
         if (element.fill.enable)
         {
             if (element.type == "triangle")
-                ImGui::GetOverlayDrawList()->AddTriangleFilled(element.positions.at(0), element.positions.at(1), element.positions.at(2), element.fill.color);
+                drawlist->AddTriangleFilled(element.positions.at(0), element.positions.at(1), element.positions.at(2), element.fill.color);
             else if (element.type == "rectangle")
-                ImGui::GetOverlayDrawList()->AddRectFilled(element.positions.at(0), element.positions.at(1), element.fill.color, 0);
+                drawlist->AddRectFilled(element.positions.at(0), element.positions.at(1), element.fill.color, element.size.x, ImDrawCornerFlags_All);
+            else if (element.type == "circle")
+                drawlist->AddCircleFilled(element.positions.at(0), element.size.x, element.fill.color, int(element.size.y ? element.size.y : 12));
         }
 
         if (element.stroke.enable)
         {
             if (element.type == "triangle")
-                ImGui::GetOverlayDrawList()->AddTriangle(element.positions.at(0), element.positions.at(1), element.positions.at(2), element.stroke.color, 1);
+                drawlist->AddTriangle(element.positions.at(0), element.positions.at(1), element.positions.at(2), element.stroke.color, element.scale);
             else if (element.type == "rectangle")
-                ImGui::GetOverlayDrawList()->AddRect(element.positions.at(0), element.positions.at(1), element.stroke.color, 0);
+                drawlist->AddRect(element.positions.at(0), element.positions.at(1), element.stroke.color, element.size.x, ImDrawCornerFlags_All, element.scale);
+            else if (element.type == "circle")
+                drawlist->AddCircle(element.positions.at(0), element.size.x, element.stroke.color, int(element.size.y ? element.size.y : 12), element.scale);
         }
 
         if (element.type == "image")
@@ -850,7 +876,7 @@ void RocketStats::RenderElement(Element& element)
             if (image->IsLoadedForImGui())
             {
                 if (element.size.x && element.size.y)
-                    ImGui::GetOverlayDrawList()->AddImage(image->GetImGuiTex(), element.positions.at(0), element.size);
+                    drawlist->AddImage(image->GetImGuiTex(), element.positions.at(0), element.size);
                 else
                     theme_refresh = 1;
             }
@@ -858,10 +884,16 @@ void RocketStats::RenderElement(Element& element)
         else if (element.type == "text")
         {
             ImGui::SetWindowFontScale(element.scale);
-            ImGui::GetOverlayDrawList()->AddText(element.positions.at(0), element.color.color, element.value.c_str()); // element.shadow element.wrap
+            //ImGuiIO& io = ImGui::GetIO();
+            //io.Fonts->AddFontDefault();
+            //ImFont* font = io.Fonts->AddFontFromFileTTF("C:\\Users\\pyrof\\AppData\\Roaming\\bakkesmod\\bakkesmod\\data\\RocketStats\\RocketStats_themes\\Arubinu42\\fontscream-DEMO.ttf", 21.f);
+            //io.Fonts->Build();
+            //ImGui::PushFont(font);
+            drawlist->AddText(element.positions.at(0), element.color.color, element.value.c_str()); // element.shadow element.wrap
+            //ImGui::PopFont();
         }
         else if (element.type == "line")
-            ImGui::GetOverlayDrawList()->AddLine(element.positions.at(0), element.positions.at(1), element.color.color, element.width);
+            drawlist->AddLine(element.positions.at(0), element.positions.at(1), element.color.color, element.size.x);
     }
     catch (const std::exception&) {}
 }
@@ -1075,13 +1107,14 @@ void RocketStats::Render()
 
 void RocketStats::RenderSettings()
 {
-    ImGui::SetNextWindowPos(ImVec2(128, 256), ImGuiCond_FirstUseEver);
-    ImGui::SetNextWindowSize(ImVec2(0, 0));
+    ImGui::SetNextWindowPos(ImVec2{ 128, 256 }, ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2{ 0, 0 });
 
     ImGui::Begin(menuTitle_.c_str(), &isSettingsOpen_, ImGuiWindowFlags_None);
 
     /*
     ImVec2 mouse = ImGui::GetIO().MousePos;
+    ImVec2 mouse = ImGui::GetCursorPos()
     ImGui::Text(("Mouse: " + std::to_string(mouse.x) + "x" + std::to_string(mouse.y)).c_str());
     float fps = ImGui::GetIO().Framerate;
     ImGui::Text(("Framerate: " + std::to_string(fps)).c_str());
@@ -1126,7 +1159,7 @@ void RocketStats::RenderSettings()
     if (ImGui::Button("Reload Theme")) // change to "Reload Themes"
         ChangeTheme(RS_theme);
     ImGui::SetNextItemWidth(212);
-    if (ImGui::BeginCombo("##themes_combo", themes.at(RS_theme).name.c_str(), ImGuiComboFlags_NoArrowButton))
+    if (ImGui::BeginCombo("##themes_combo", theme_render.name.c_str(), ImGuiComboFlags_NoArrowButton))
     {
         int TRS_theme = RS_theme;
         for (int i = 0; i < themes.size(); ++i)
@@ -1157,6 +1190,18 @@ void RocketStats::RenderSettings()
     ImGui::SameLine();
     ImGui::SetNextItemWidth(250);
     ImGui::SliderFloat((" " + cvarManager->getCvar("RS_y_position").getDescription()).c_str(), &RS_y_position, 0.f, 1.f, "%.3f");
+    /*if (theme_render.image != nullptr && theme_render.image->IsLoadedForImGui() && ImGui::GetWindowWidth())
+    {
+        Vector2F image_size = theme_render.image->GetSizeF();
+        if (image_size.X > ImGui::GetWindowWidth())
+        {
+            float old_width = image_size.X;
+            image_size.X = ImGui::GetWindowWidth();
+            image_size.Y = ((image_size.X / old_width) * image_size.Y);
+        }
+
+        ImGui::Image(theme_render.image->GetImGuiTex(), { image_size.X, image_size.Y });
+    }*/
     //if (!RS_disp_overlay)
     //    ImGui::EndDisabled();
 
@@ -1265,6 +1310,7 @@ void RocketStats::RenderOverlay()
 
             theme_refresh = 0;
             theme_render.name = themes.at(RS_theme).name;
+            theme_render.image = themes.at(RS_theme).image;
             theme_render.elements = elements;
         }
 
@@ -1308,7 +1354,7 @@ bool RocketStats::IsActiveOverlay()
 
 void RocketStats::OnOpen()
 {
-    //isSettingsOpen_ = true;
+    isSettingsOpen_ = true;
 }
 
 void RocketStats::OnClose()

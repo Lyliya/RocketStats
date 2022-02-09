@@ -24,7 +24,6 @@ public:
 	static size_t FindKeyInt(std::vector<std::map<std::string, int>> vector, std::string key, int value);
 
 	// Colors
-	static unsigned char OpacityColor(float opacity);
 	static float GetAlpha(std::vector<float> color, float opacity = 1.f);
 	static ImColor GetImColor(std::vector<float> color, float opacity = 1.f);
 

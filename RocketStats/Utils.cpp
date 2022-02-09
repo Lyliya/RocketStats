@@ -124,20 +124,14 @@ size_t Utils::FindKeyInt(std::vector<std::map<std::string, int>> vector, std::st
 }
 
 #pragma region Colors
-unsigned char Utils::OpacityColor(float opacity)
-{
-    return (unsigned char)(std::max(0, std::min(255, int(std::round(opacity * 255.0f)))));
-}
-
 float Utils::GetAlpha(std::vector<float> color, float opacity)
 {
-    return (((color.size() == 4) ? color[3] : 1) * opacity);
+    return (((color.size() == 4) ? color[3] : 1.f) * opacity);
 }
 
 ImColor Utils::GetImColor(std::vector<float> color, float opacity)
 {
-    return ImGui::GetColorU32({ (float(color[0]) / 255.f), (float(color[1]) / 255.f), (float(color[2]) / 255.f), GetAlpha(color, opacity) });
-    //return ();
+    return ImGui::ColorConvertFloat4ToU32({ (float(color[0]) / 255.f), (float(color[1]) / 255.f), (float(color[2]) / 255.f), GetAlpha(color, opacity) });
 }
 #pragma endregion
 

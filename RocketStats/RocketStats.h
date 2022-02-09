@@ -31,12 +31,9 @@ struct Element {
 	std::vector<ImVec2> positions;
 	ImVec2 size;
 	float scale = 1;
-	float width = 1;
 	Color color;
 	Color fill;
 	Color stroke;
-	bool wrap = false;
-	bool shadow = false;
 };
 
 struct Font {
@@ -59,6 +56,7 @@ struct Stats {
 
 struct Theme {
 	std::string name = "Unknown";
+	std::shared_ptr<ImageWrapper> image;
 	std::vector<Font> fonts;
 	std::vector<Element> elements;
 };
@@ -87,6 +85,7 @@ private:
 	std::map<std::string, std::shared_ptr<ImageWrapper>> theme_images;
 
 	// PluginWindow
+	bool isPluginOpen_ = false;
 	bool isSettingsOpen_ = false;
 	std::string menuName_ = "rocketstats";
 	std::string menuTitle_ = "RocketStats Plugin";
@@ -107,6 +106,7 @@ public:
 	int RS_mode = 0;
 	int RS_theme = 0;
 
+	bool RS_disp_obs = false;
 	bool RS_disp_overlay = true;
 	bool RS_enable_boost = true;
 	bool RS_enable_float = false;
