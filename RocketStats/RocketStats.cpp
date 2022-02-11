@@ -350,7 +350,6 @@ void RocketStats::ResetStats()
 #pragma region BoostMgmt
 void RocketStats::OnBoostStart(std::string eventName)
 {
-    cvarManager->log("boostStart");
     // Check if boost enabled in options
     bool IsBoostEnabled = cvarManager->getCvar("RocketStats_stop_boost").getBoolValue();
     if (!IsBoostEnabled || gameWrapper->IsInReplay() || isBoosting)
@@ -374,7 +373,6 @@ void RocketStats::OnBoostStart(std::string eventName)
 
 void RocketStats::OnBoostEnd(std::string eventName)
 {
-    cvarManager->log("boostEnd");
     // Check if boost enabled in options
     bool IsBoostEnabled = cvarManager->getCvar("RocketStats_stop_boost").getBoolValue();
     if (!IsBoostEnabled || gameWrapper->IsInReplay() || !isBoosting)
