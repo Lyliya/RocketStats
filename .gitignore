@@ -1,6 +1,6 @@
 .vs/
-Release/
-x64/
+build/
+plugins/
 RocketStatsNusa/*
 !RocketStatsNusa/*.cpp
 !RocketStatsNusa/*.h

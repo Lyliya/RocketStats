@@ -1,22 +1,22 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.30503.244
+VisualStudioVersion = 16.0.32106.194
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RocketStats", "RocketStats\RocketStats.vcxproj", "{99C07F6D-C7AD-499D-B9D8-880EEDF0A2D0}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RocketStats", "RocketStats/RocketStats.vcxproj", "{3A9A96B9-4537-4B8E-8164-181A6B3C8B7F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{99C07F6D-C7AD-499D-B9D8-880EEDF0A2D0}.Release|x64.ActiveCfg = Release|x64
-		{99C07F6D-C7AD-499D-B9D8-880EEDF0A2D0}.Release|x64.Build.0 = Release|x64
+		{3A9A96B9-4537-4B8E-8164-181A6B3C8B7F}.Release|x64.ActiveCfg = Release|x64
+		{3A9A96B9-4537-4B8E-8164-181A6B3C8B7F}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {FFB97C48-88FC-4296-8A11-1B5C324BCB26}
+		SolutionGuid = {38C8FFD4-CAFC-42B7-B30C-4745DE24D9B0}
 	EndGlobalSection
 EndGlobal
