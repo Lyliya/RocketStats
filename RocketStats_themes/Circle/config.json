@@ -2,9 +2,12 @@
 	"author":	"Rimey",
 	"version":	"v1.0.0",
 	"date":		"14/09/2019",
+	"x":		0.7,
+	"y":		0.74,
 	"width":	400,
 	"height":	300,
-	"opacity":	1,
+	"scale":	1.25,
+	"opacity":	1.0,
 	"elements": [
 		{
 			"name":			"background",

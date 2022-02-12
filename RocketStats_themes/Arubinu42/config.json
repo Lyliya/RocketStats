@@ -2,9 +2,12 @@
 	"author":	"Arubinu42",
 	"version":	"v1.0.0",
 	"date":		"07/29/2019",
+	"x":		0.0,
+	"y":		0.0,
 	"width":	576,
 	"height":	40,
-	"opacity":	1,
+	"scale":	1.0,
+	"opacity":	1.0,
 	"elements": [
 		{
 			"name":			"ltriangle",

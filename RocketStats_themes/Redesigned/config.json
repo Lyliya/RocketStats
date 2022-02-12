@@ -2,9 +2,12 @@
 	"author":	"@Lyliiya & @NuSa_yt",
 	"version":	"v2.0.0",
 	"date":		"24/10/2020",
+	"x":		0.7,
+	"y":		0.575,
 	"width":	175,
 	"height":	160,
-	"opacity":	1,
+	"scale":	0.88,
+	"opacity":	1.0,
 	"elements": [
 		{
 			"name":			"rank_image",

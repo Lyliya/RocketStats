@@ -118,9 +118,11 @@ public:
 	bool RS_in_file = true;
 	bool RS_disp_obs = false;
 	bool RS_disp_overlay = true;
+	bool RS_enable_ingame = true;
 	bool RS_enable_boost = true;
 	bool RS_enable_float = false;
-	bool RS_hide_overlay_ig = false;
+	bool RS_onchange_scale = true;
+	bool RS_onchange_position = true;
 
 	float RS_x = 0.7f;
 	float RS_y = 0.575f;

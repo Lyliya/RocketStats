@@ -139,14 +139,18 @@ void RocketStats::onLoad()
             now.setValue(old);
     });
 
-    cvarManager->registerCvar("RS_enable_float", (RS_enable_float ? "1" : "0"), "Enable floating point", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("RS_enable_boost", (RS_enable_boost ? "1" : "0"), "Enable boost", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("RS_disp_overlay", (RS_disp_overlay ? "1" : "0"), "Overlay", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("RS_hide_overlay_ig", (RS_hide_overlay_ig ? "1" : "0"), "Hide while in-game", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-
     cvarManager->registerCvar("RS_x", std::to_string(RS_x), "X", true, true, 0, true, 1.f, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_y", std::to_string(RS_y), "Y", true, true, 0, true, 1.f, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_scale", std::to_string(RS_scale), "Scale", true, true, 0, true, 10.f, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+
+    cvarManager->registerCvar("RS_disp_overlay", (RS_disp_overlay ? "1" : "0"), "Overlay", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_enable_ingame", (RS_enable_ingame ? "1" : "0"), "Show while in-game", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_enable_float", (RS_enable_float ? "1" : "0"), "Enable floating point", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_enable_boost", (RS_enable_boost ? "1" : "0"), "Enable boost", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+
+    cvarManager->registerCvar("RS_onchange_scale", (RS_onchange_scale ? "1" : "0"), "Reset scale on change", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_onchange_position", (RS_onchange_position ? "1" : "0"), "Reset position on change", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+
 
     if (gameWrapper->IsInGame())
         ShowPlugin("IsInGame");
@@ -550,6 +554,8 @@ void RocketStats::MajRank(int _gameMode, bool isRanked, float _currentMMR, Skill
 void RocketStats::LoadThemes()
 {
     cvarManager->log("===== LoadThemes =====");
+
+    themes = {};
 
     std::string base = gameWrapper->GetBakkesModPath().string() + "/" + rs_path;
     std::string theme_dir = "RocketStats_themes";
@@ -1051,18 +1057,6 @@ void RocketStats::ReadConfig()
                         }
                     }
 
-                    if (config["settings"]["float"].is_boolean())
-                        RS_enable_float = config["settings"]["float"];
-
-                    if (config["settings"]["boost"].is_boolean())
-                        RS_enable_boost = config["settings"]["boost"];
-
-                    if (config["settings"]["overlay"].is_boolean())
-                        RS_disp_overlay = config["settings"]["overlay"];
-
-                    if (config["settings"]["ingame"].is_number_unsigned())
-                        RS_hide_overlay_ig = config["settings"]["ingame"];
-
                     if (config["settings"]["scale"].is_number_unsigned() || config["settings"]["scale"].is_number_integer() || config["settings"]["scale"].is_number_float())
                         RS_scale = config["settings"]["scale"];
 
@@ -1074,6 +1068,24 @@ void RocketStats::ReadConfig()
                         if (config["settings"]["position"][1].is_number_unsigned() || config["settings"]["position"][1].is_number_integer() || config["settings"]["position"][1].is_number_float())
                             RS_y = config["settings"]["position"][1];
                     }
+
+                    if (config["settings"]["overlay"].is_boolean())
+                        RS_disp_overlay = config["settings"]["overlay"];
+
+                    if (config["settings"]["ingame"].is_number_unsigned())
+                        RS_enable_ingame = config["settings"]["ingame"];
+
+                    if (config["settings"]["float"].is_boolean())
+                        RS_enable_float = config["settings"]["float"];
+
+                    if (config["settings"]["boost"].is_boolean())
+                        RS_enable_boost = config["settings"]["boost"];
+
+                    if (config["settings"]["onchange_scale"].is_boolean())
+                        RS_onchange_scale = config["settings"]["onchange_scale"];
+
+                    if (config["settings"]["onchange_position"].is_number_unsigned())
+                        RS_onchange_position = config["settings"]["onchange_position"];
 
                     cvarManager->log("Config: stats loaded");
                     always.isInit = true;
@@ -1120,12 +1132,14 @@ void RocketStats::WriteConfig()
     tmp["settings"] = {};
     tmp["settings"]["mode"] = RS_mode;
     tmp["settings"]["theme"] = theme_render.name;
-    tmp["settings"]["float"] = RS_enable_float;
-    tmp["settings"]["boost"] = RS_enable_boost;
-    tmp["settings"]["overlay"] = RS_disp_overlay;
-    tmp["settings"]["ingame"] = RS_hide_overlay_ig;
     tmp["settings"]["scale"] = RS_scale;
     tmp["settings"]["position"] = { RS_x, RS_y };
+    tmp["settings"]["overlay"] = RS_disp_overlay;
+    tmp["settings"]["ingame"] = RS_enable_ingame;
+    tmp["settings"]["float"] = RS_enable_float;
+    tmp["settings"]["boost"] = RS_enable_boost;
+    tmp["settings"]["onchange_scale"] = RS_onchange_scale;
+    tmp["settings"]["onchange_position"] = RS_onchange_position;
 
     tmp["always"] = {};
     tmp["always"]["MMRCumulChange"] = always.MMRCumulChange;
@@ -1306,8 +1320,22 @@ void RocketStats::RenderSettings()
         if (ImGui::Button("Open folder", { 110, 0 }))
             system(("powershell -WindowStyle Hidden \"start \"\"" + gameWrapper->GetBakkesModPath().string() + "/" + rs_path + "\"\"\"").c_str());
         ImGui::SetCursorPos({ (settings_size.x - 120), 193 });
-        if (ImGui::Button("Reload Theme", { 110, 0 })) // add "Reload Themes"
+        if (ImGui::Button("Reload Theme", { 88, 0 }))
             ChangeTheme(RS_theme);
+        ImGui::SetCursorPos({ (settings_size.x - 27), 193 });
+        if (ImGui::Button("A", { 17, 0 }))
+        {
+            std::string name = theme_render.name;
+            LoadThemes();
+
+            for (int i = 0; i < themes.size(); ++i)
+            {
+                if (themes.at(i).name == name)
+                    RS_theme = i;
+            }
+
+            ChangeTheme(RS_theme);
+        }
         ImGui::SetCursorPos({ (settings_size.x - 120), 218 });
         if (ImGui::Button("Reset Stats", { 110, 0 }))
             ResetStats();
@@ -1323,10 +1351,16 @@ void RocketStats::RenderSettings()
         ImGui::TextColored(ImVec4{ 1.f, 1.f, 1.f, 0.8f }, ("Theme by " + theme_render.author).c_str());
 
         ImGui::SetWindowFontScale(1.f);
-        ImGui::SetCursorPos({ 20, 255 });
+        ImGui::SetCursorPos({ 15, 255 });
+        ImGui::Checkbox(cvarManager->getCvar("RS_enable_ingame").getDescription().c_str(), &RS_enable_ingame);
+        ImGui::SameLine();
         ImGui::Checkbox(cvarManager->getCvar("RS_enable_float").getDescription().c_str(), &RS_enable_float);
         ImGui::SameLine();
         ImGui::Checkbox(cvarManager->getCvar("RS_enable_boost").getDescription().c_str(), &RS_enable_boost);
+        ImGui::SameLine();
+        ImGui::Checkbox(cvarManager->getCvar("RS_onchange_scale").getDescription().c_str(), &RS_onchange_scale);
+        ImGui::SameLine();
+        ImGui::Checkbox(cvarManager->getCvar("RS_onchange_position").getDescription().c_str(), &RS_onchange_position);
 
         ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10);
         ImGui::Separator();
@@ -1353,26 +1387,30 @@ void RocketStats::RenderSettings()
     if (RS_theme != cvarManager->getCvar("RS_theme").getIntValue())
         cvarManager->getCvar("RS_theme").setValue(RS_theme);
 
-    if (RS_enable_float != cvarManager->getCvar("RS_enable_float").getBoolValue())
-        cvarManager->getCvar("RS_enable_float").setValue(RS_enable_float);
-    if (RS_enable_boost != cvarManager->getCvar("RS_enable_boost").getBoolValue())
-        cvarManager->getCvar("RS_enable_boost").setValue(RS_enable_boost);
-    if (RS_disp_overlay != cvarManager->getCvar("RS_disp_overlay").getBoolValue())
-        cvarManager->getCvar("RS_disp_overlay").setValue(RS_disp_overlay);
-    if (RS_hide_overlay_ig != cvarManager->getCvar("RS_hide_overlay_ig").getBoolValue())
-        cvarManager->getCvar("RS_hide_overlay_ig").setValue(RS_hide_overlay_ig);
-
     if (RS_scale != cvarManager->getCvar("RS_scale").getFloatValue())
         cvarManager->getCvar("RS_scale").setValue(RS_scale);
     if (RS_x != cvarManager->getCvar("RS_x").getFloatValue())
         cvarManager->getCvar("RS_x").setValue(RS_x);
     if (RS_y != cvarManager->getCvar("RS_y").getFloatValue())
         cvarManager->getCvar("RS_y").setValue(RS_y);
+
+    if (RS_disp_overlay != cvarManager->getCvar("RS_disp_overlay").getBoolValue())
+        cvarManager->getCvar("RS_disp_overlay").setValue(RS_disp_overlay);
+    if (RS_enable_ingame != cvarManager->getCvar("RS_enable_ingame").getBoolValue())
+        cvarManager->getCvar("RS_enable_ingame").setValue(RS_enable_ingame);
+    if (RS_enable_float != cvarManager->getCvar("RS_enable_float").getBoolValue())
+        cvarManager->getCvar("RS_enable_float").setValue(RS_enable_float);
+    if (RS_enable_boost != cvarManager->getCvar("RS_enable_boost").getBoolValue())
+        cvarManager->getCvar("RS_enable_boost").setValue(RS_enable_boost);
+    if (RS_onchange_scale != cvarManager->getCvar("RS_onchange_scale").getBoolValue())
+        cvarManager->getCvar("RS_onchange_scale").setValue(RS_onchange_scale);
+    if (RS_onchange_position != cvarManager->getCvar("RS_onchange_position").getBoolValue())
+        cvarManager->getCvar("RS_onchange_position").setValue(RS_onchange_position);
 }
 
 void RocketStats::RenderOverlay()
 {
-    if (!RS_disp_overlay || (isGameStarted && !isGameEnded && RS_hide_overlay_ig))
+    if (!RS_disp_overlay || (isGameStarted && !isGameEnded && !RS_enable_ingame))
         return;
 
     ImGui::SetNextWindowPos(ImVec2(128, 256), ImGuiCond_FirstUseEver);
@@ -1387,13 +1425,25 @@ void RocketStats::RenderOverlay()
             Stats current = GetStats();
             ImVec2 screen_size = ImGui::GetIO().DisplaySize;
 
+            if (theme_refresh == 2)
+            {
+                if (RS_onchange_scale)
+                    RS_scale = 1.0f;
+
+                if (RS_onchange_position && theme_config.contains("x") && theme_config.contains("y"))
+                {
+                    RS_x = theme_config["x"];
+                    RS_y = theme_config["y"];
+                }
+            }
+
             std::vector<struct Element> elements;
             Options options = {
                 int(RS_x * screen_size.x),
                 int(RS_y * screen_size.y),
                 (theme_config.contains("width") ? int(theme_config["width"]) : 0),
                 (theme_config.contains("height") ? int(theme_config["height"]) : 0),
-                RS_scale,
+                (RS_scale * (theme_config.contains("scale") ? float(theme_config["scale"]) : 1.f)),
                 (theme_config.contains("opacity") ? float(theme_config["opacity"]) : 0.f),
                 ((themes.size() > RS_theme) ? themes.at(RS_theme).fonts : std::vector<std::string>())
             };
@@ -1441,10 +1491,7 @@ void RocketStats::RenderOverlay()
             }
 
             theme_refresh = 0;
-            if (themes.size() > RS_theme)
-                theme_render.elements = elements;
-            else
-                theme_render = Theme();
+            theme_render.elements = elements;
         }
 
         for (auto& element : theme_render.elements)
