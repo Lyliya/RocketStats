@@ -83,6 +83,9 @@ private:
 	std::string rs_path = "RocketStats";
 	std::shared_ptr<ImageWrapper> rs_title;
 
+	tm local_time;
+	time_t current_time;
+
 	char theme_refresh = 2;
 	unsigned char theme_style = 0;
 
