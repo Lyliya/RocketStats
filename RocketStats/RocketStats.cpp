@@ -1417,8 +1417,12 @@ void RocketStats::RenderSettings()
         ImGui::Separator();
 
         ImGui::TextColored(((time_error || local_time.tm_sec % 2) ? ImVec4{ 0.04f, 0.52f, 0.89f, 1.f } : ImVec4{ 1.f, 1.f, 1.f, 0.5f }), "Donate");
-        if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
-            system("powershell -WindowStyle Hidden \"start https://www.paypal.com/paypalme/rocketstats\"");
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+            if (ImGui::IsMouseClicked(0))
+                system("powershell -WindowStyle Hidden \"start https://www.paypal.com/paypalme/rocketstats\"");
+        }
         ImGui::SameLine();
         std::string developers = "Developped by @Lyliiya & @NuSa_yt for @Maylie_tv";
         text_size = ImGui::CalcTextSize(developers.c_str());
