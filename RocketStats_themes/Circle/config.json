@@ -1,6 +1,9 @@
 {
-	"width":	175,
-	"height":	155,
+	"author":	"Rimey",
+	"version":	"v1.0.0",
+	"date":		"14/09/2019",
+	"width":	400,
+	"height":	300,
 	"opacity":	1,
 	"elements": [
 		{
@@ -57,6 +60,16 @@
 			"valign":		"middle",
 			"color":		[ 255, 0, 0 ],
 			"scale":		1
+		},
+		{
+			"name":			"rank",
+			"type":			"image",
+			"file":			"{{Rank}}",
+			"x":			"100% - 70px",
+			"y":			"100% - 40px",
+			"align":		"right",
+			"valign":		"bottom",
+			"scale":		1.3
 		}
 	]
 }

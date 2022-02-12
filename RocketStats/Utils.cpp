@@ -1,8 +1,38 @@
 #include "Utils.h"
 
+#pragma region Colors
+float Utils::GetAlpha(std::vector<float> color, float opacity)
+{
+    return (((color.size() == 4) ? color[3] : 1.f) * opacity);
+}
+
+ImColor Utils::GetImColor(std::vector<float> color, float opacity)
+{
+    return ImGui::ColorConvertFloat4ToU32({ (float(color[0]) / 255.f), (float(color[1]) / 255.f), (float(color[2]) / 255.f), GetAlpha(color, opacity) });
+}
+#pragma endregion
+
+#pragma region Strings
+std::string Utils::ljust(std::string str, size_t n, char c)
+{
+    size_t size = str.size();
+    if (size >= n)
+        return str;
+
+    return str.replace(str.end(), str.end(), (n - size), c);
+}
+
+std::string Utils::toupper(std::string str)
+{
+    std::string upper;
+    for (auto& c : str)
+        upper += std::toupper(c);
+
+    return upper;
+}
+
 void Utils::ReplaceAll(std::string& str, const std::string& from, const std::string& to)
 {
-    //while (replace(str, from, to));
     if (from.empty())
         return;
 
@@ -78,7 +108,9 @@ std::string Utils::PointFixer(float a_value, size_t n, size_t md)
 
     return str;
 }
+#pragma endregion
 
+#pragma region Arrays
 std::vector<std::string> Utils::Split(const std::string& str, char delim)
 {
     std::vector<std::string> result;
@@ -121,17 +153,6 @@ size_t Utils::FindKeyInt(std::vector<std::map<std::string, int>> vector, std::st
     }
 
     return std::string::npos;
-}
-
-#pragma region Colors
-float Utils::GetAlpha(std::vector<float> color, float opacity)
-{
-    return (((color.size() == 4) ? color[3] : 1.f) * opacity);
-}
-
-ImColor Utils::GetImColor(std::vector<float> color, float opacity)
-{
-    return ImGui::ColorConvertFloat4ToU32({ (float(color[0]) / 255.f), (float(color[1]) / 255.f), (float(color[2]) / 255.f), GetAlpha(color, opacity) });
 }
 #pragma endregion
 

@@ -1,4 +1,7 @@
 {
+	"author":	"@Lyliiya & @NuSa_yt",
+	"version":	"v1.0.0",
+	"date":		"25/06/2019",
 	"width":	175,
 	"height":	155,
 	"opacity":	1,
@@ -10,8 +13,10 @@
 			"y":			0,
 			"width":		175,
 			"height":		155,
+			"rounding":		5,
+			"scale":		2,
 			"fill":			[ 0, 0, 0, 0.5 ],
-			"stroke":		false
+			"stroke":		[ 200, 200, 200, 0.5 ]
 		},
 		{
 			"name":			"mode",

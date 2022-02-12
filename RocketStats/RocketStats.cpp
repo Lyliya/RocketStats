@@ -82,8 +82,9 @@ void RocketStats::onLoad()
 
     LoadImgs();
     LoadThemes();
-
     ReadConfig();
+    ChangeTheme(RS_theme);
+    rs_title = LoadImg("RocketStats_images/title.png");
 
     cvarManager->registerNotifier(
         "RS_toggle_menu",
@@ -119,32 +120,62 @@ void RocketStats::onLoad()
     InitRank();
 
     // Register Cvars
-    cvarManager->registerCvar("RS_mode", std::to_string(RS_mode), "Mode", true, true, 0, true, 2, true).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("RS_theme", std::to_string(RS_theme), "Theme", true, true, 0, false, 1, true).addOnValueChanged([this](std::string old, CVarWrapper now) {
+    cvarManager->registerCvar("RS_in_file", std::to_string(RS_in_file), "Informations", true, true, 0, true, 1, true).addOnValueChanged([this](std::string old, CVarWrapper now) {
+        if (!now.getBoolValue())
+            return;
+
+        WriteGameMode();
+        WriteMMR();
+        WriteMMRChange();
+        WriteMMRCumulChange();
+        WriteWin();
+        WriteLoss();
+        WriteStreak();
+        WriteInFile("RocketStats_BoostState.txt", std::to_string(gameWrapper->IsInGame() ? 0 : -1));
+    });
+    cvarManager->registerCvar("RS_mode", std::to_string(RS_mode), "Mode", true, true, 0, true, 2, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_theme", std::to_string(RS_theme), "Theme", true, true, 0, false, 1, false).addOnValueChanged([this](std::string old, CVarWrapper now) {
         if (!ChangeTheme(now.getIntValue()))
             now.setValue(old);
     });
 
-    cvarManager->registerCvar("RS_enable_float", (RS_enable_float ? "1" : "0"), "Enable floating point", true, true, 0, true, 1, true).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("RS_enable_boost", (RS_enable_boost ? "1" : "0"), "Enable boost", true, true, 0, true, 1, true).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("RS_disp_overlay", (RS_disp_overlay ? "1" : "0"), "Overlay display and settings", true, true, 0, true, 1, true).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("RS_hide_overlay_ig", (RS_hide_overlay_ig ? "1" : "0"), "Hide while in-game", true, true, 0, true, 1, true).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_enable_float", (RS_enable_float ? "1" : "0"), "Enable floating point", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_enable_boost", (RS_enable_boost ? "1" : "0"), "Enable boost", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_disp_overlay", (RS_disp_overlay ? "1" : "0"), "Overlay", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_hide_overlay_ig", (RS_hide_overlay_ig ? "1" : "0"), "Hide while in-game", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
 
-    cvarManager->registerCvar("RS_scale", std::to_string(RS_scale), "Scale", true, true, 0, true, 10.f, true).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("RS_x_position", std::to_string(RS_x_position), "X position", true, true, 0, true, 1.f, true).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("RS_y_position", std::to_string(RS_y_position), "Y position", true, true, 0, true, 1.f, true).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_x", std::to_string(RS_x), "X", true, true, 0, true, 1.f, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_y", std::to_string(RS_y), "Y", true, true, 0, true, 1.f, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_scale", std::to_string(RS_scale), "Scale", true, true, 0, true, 10.f, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
 
     if (gameWrapper->IsInGame())
         ShowPlugin("IsInGame");
+
+    //ImGui::CreateContext();
+
+    //ImGuiIO& io = ImGui::GetIO();
+    //font1 = io.Fonts->AddFontDefault();
+    //font2 = io.Fonts->AddFontFromFileTTF("C:/Users/pyrof/AppData/Roaming/bakkesmod/bakkesmod/data/RocketStats/RocketStats_themes/Arubinu42/fonts/cream-DEMO.ttf", 21.0f);
 }
 
 void RocketStats::onUnload()
 {
+    WriteConfig();
+
+    gameWrapper->UnhookEvent("Function TAGame.GFxData_StartMenu_TA.EventTitleScreenClicked");
+    gameWrapper->UnhookEvent("Function GameEvent_TA.Countdown.BeginState");
+    gameWrapper->UnhookEvent("Function TAGame.GameEvent_Soccar_TA.EventMatchEnded");
+    gameWrapper->UnhookEvent("Function CarComponent_Boost_TA.Active.BeginState");
+    gameWrapper->UnhookEvent("Function CarComponent_Boost_TA.Active.EndState");
+    gameWrapper->UnhookEvent("Function TAGame.GameEvent_TA.Destroyed");
+
     if (isPluginOpen_)
     {
         isPluginOpen_ = false;
         cvarManager->executeCommand("togglemenu " + GetMenuName());
     }
+
+    //ImGui::DestroyContext();
 }
 #pragma endregion
 
@@ -198,8 +229,9 @@ void RocketStats::GameStart(std::string eventName)
     isGameEnded = false;
 
     UpdateMMR(gameWrapper->GetUniqueID());
-    WriteInFile("RocketStats_BoostState.txt", std::to_string(0));
     WriteConfig();
+    if (RS_in_file)
+        WriteInFile("RocketStats_BoostState.txt", std::to_string(0));
 
     cvarManager->log("===== !GameStart =====");
 }
@@ -276,11 +308,10 @@ void RocketStats::GameEnd(std::string eventName)
         // Reset myTeamNum security
         myTeamNum = -1;
 
-        WriteInFile("RocketStats_BoostState.txt", std::to_string(-1));
+        if (RS_in_file)
+            WriteInFile("RocketStats_BoostState.txt", std::to_string(-1));
 
-        gameWrapper->SetTimeout([&](GameWrapper *gameWrapper)
-                                { UpdateMMR(gameWrapper->GetUniqueID()); },
-                                3.0F);
+        gameWrapper->SetTimeout([&](GameWrapper *gameWrapper) { UpdateMMR(gameWrapper->GetUniqueID()); }, 3.0F);
 
         cvarManager->log("===== !GameEnd =====");
     }
@@ -317,7 +348,8 @@ void RocketStats::GameDestroyed(std::string eventName)
 
     isGameEnded = true;
     isGameStarted = false;
-    WriteInFile("RocketStats_BoostState.txt", std::to_string(-1));
+    if (RS_in_file)
+        WriteInFile("RocketStats_BoostState.txt", std::to_string(-1));
 
     theme_refresh = 1;
     cvarManager->log("===== !GameDestroyed =====");
@@ -434,7 +466,8 @@ void RocketStats::OnBoostStart(std::string eventName)
         {
             isBoosting = true;
             theme_refresh = 1;
-            WriteInFile("RocketStats_BoostState.txt", std::to_string(1));
+            if (RS_in_file)
+                WriteInFile("RocketStats_BoostState.txt", std::to_string(1));
         }
     }
 }
@@ -456,7 +489,8 @@ void RocketStats::OnBoostEnd(std::string eventName)
         {
             isBoosting = false;
             theme_refresh = 1;
-            WriteInFile("RocketStats_BoostState.txt", std::to_string(0));
+            if (RS_in_file)
+                WriteInFile("RocketStats_BoostState.txt", std::to_string(0));
         }
     }
 }
@@ -532,9 +566,6 @@ void RocketStats::LoadThemes()
                 theme.name = theme_path.substr(theme_path.find_last_of("/\\") + 1);
                 cvarManager->log("Theme: " + theme.name);
 
-                //if (fs::exists(theme_base + "/" + theme.name + "/screenshot.png"))
-                //    theme.image = LoadImg(theme_dir + "/" + theme.name + "/screenshot.png");
-
                 std::string fonts_path = theme_base + "/" + theme.name + "/fonts";
                 if (fs::exists(fonts_path))
                 {
@@ -546,47 +577,13 @@ void RocketStats::LoadThemes()
                         font_path = fonts_path + "/" + font_filename;
                         if (fentry.is_regular_file() && font_filename.substr(font_filename.find_last_of(".")) == ".fnt")
                         {
-                            struct Font font;
-                            font.name = font_filename.substr(0, font_filename.find_last_of("."));
-                            cvarManager->log("Font: " + font.name);
+                            std::string font_name = font_filename.substr(0, font_filename.find_last_of("."));
+                            cvarManager->log("Font: " + font_name);
 
-                            std::string font_content = ReadFile(font_path.substr(base.length() + 1));
-                            std::vector<std::string> lines = Utils::Split(font_content, '\n');
+                            //auto gui = gameWrapper->GetGUIManager();
+                            //gui.LoadFont(font_name, font_path, 32);
 
-                            std::vector<std::string> pages_filename;
-                            for (auto& line : lines)
-                            {
-                                line.erase(line.find('\r'));
-                                if (line.find("page ") == 0)
-                                {
-                                    size_t page_start = line.find("file=\"");
-                                    if (page_start != std::string::npos)
-                                    {
-                                        page_start += 6;
-                                        size_t page_end = line.find('"', page_start);
-                                        if (page_end != std::string::npos)
-                                            pages_filename.push_back(line.substr(page_start, (page_end - page_start)));
-                                    }
-                                }
-                                else if (line.find("char ") == 0)
-                                    font.chars.push_back(Utils::SplitKeyInt(line, 5));
-                                else if (line.find("kerning ") == 0)
-                                    font.kernings.push_back(Utils::SplitKeyInt(line, 8));
-                                else if (line.find("common ") == 0)
-                                    font.common = Utils::SplitKeyInt(line, 7);
-                            }
-
-                            cvarManager->log(" > common base=" + std::to_string(font.common["base"]));
-                            cvarManager->log(" > char_index=" + std::to_string(Utils::FindKeyInt(font.chars, "id", 49)));
-
-                            std::vector<std::shared_ptr<ImageWrapper>> pages_images;
-                            for (const auto& page_filename : pages_filename)
-                            {
-                                cvarManager->log(" > " + fonts_path + "/" + page_filename);
-                                pages_images.push_back(std::make_shared<ImageWrapper>(fonts_path + "/" + page_filename, false, true));
-                            }
-
-                            theme.fonts.push_back(font);
+                            theme.fonts.push_back(font_name);
                         }
                     }
                 }
@@ -609,25 +606,59 @@ bool RocketStats::ChangeTheme(int idx)
 {
     cvarManager->log("===== ChangeTheme =====");
 
+    Theme old = {
+        theme_render.name,
+        theme_render.author,
+        theme_render.version,
+        theme_render.date
+    };
+
     try
     {
-        std::string name = themes.at(idx).name;
+        if (themes.size() <= idx)
+            return true;
 
-        theme_config = json::parse(ReadFile("RocketStats_themes/" + name + "/config.json"));
+        Theme& theme = themes.at(idx);
+
+        theme_config = json::parse(ReadFile("RocketStats_themes/" + theme.name + "/config.json"));
         cvarManager->log(nlohmann::to_string(theme_config));
 
         if (theme_config.is_object())
         {
-            cvarManager->log("Theme changed: " + name + " (old: " + themes.at(RS_theme).name + ")");
+            theme_render.name = theme.name;
+
+            if (theme_config.contains("author") && theme_config["author"].size())
+                theme_render.author = theme_config["author"];
+
+            if (theme_config.contains("version"))
+            {
+                std::string version = theme_config["version"];
+                if (version.size() >= 2 && version[0] == 'v')
+                    theme_render.version = version;
+            }
+
+            if (theme_config.contains("date"))
+            {
+                std::string date = theme_config["date"];
+                if (date.size() == 10 && date[2] == '/' && date[5] == '/')
+                    theme_render.date = date;
+            }
+
+            cvarManager->log("Theme changed: " + theme.name + " (old: " + ((themes.size() > RS_theme) ? themes.at(RS_theme).name : "Unknown") + ")");
             RS_theme = idx;
             theme_refresh = 2;
         }
         else
-            cvarManager->log("Theme config: " + name + " bad JSON");
+            cvarManager->log("Theme config: " + theme.name + " bad JSON");
     }
     catch (json::parse_error& e)
     {
         cvarManager->log("Theme config: " + std::to_string(idx) + " bad JSON -> " + std::string(e.what()));
+
+        theme_render.name = old.name;
+        theme_render.author = old.author;
+        theme_render.version = old.version;
+        theme_render.date = old.date;
     }
 
     cvarManager->log("===== !ChangeTheme =====");
@@ -639,66 +670,55 @@ void RocketStats::RefreshTheme(std::string old, CVarWrapper now)
     theme_refresh = 1;
 }
 
-struct Element RocketStats::CalculateElement(json& element, std::map<std::string, std::any>& options, bool& check)
+struct Element RocketStats::CalculateElement(json& element, Options& options, bool& check)
 {
     check = false;
     struct Element calculated;
 
     if (!element.contains("visible") || element["visible"])
     {
-        Vector2D base_2d = {
-            std::any_cast<int>(options["pos_x"]),
-            std::any_cast<int>(options["pos_y"]),
-            std::any_cast<int>(options["width"]),
-            std::any_cast<int>(options["height"])
-        };
-
-        float scale = std::any_cast<float>(options["scale"]);
-        float opacity = std::any_cast<float>(options["opacity"]);
-        Stats current = std::any_cast<Stats>(options["stats"]);
-
         try
         {
             Vector2D element_2d;
             std::vector<ImVec2> positions;
 
-            if (element.contains("name"))
+            if (element.contains("name") && element["name"].size())
                 calculated.name = element["name"];
 
             if (element.contains("x"))
-                element_2d.x = int(float(element["x"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["x"], base_2d.width)) : int(element["x"])) * scale);
+                element_2d.x = int(float(element["x"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["x"], options.width)) : int(element["x"])) * options.scale);
 
             if (element.contains("y"))
-                element_2d.y = int(float(element["y"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["y"], base_2d.height)) : int(element["y"])) * scale);
+                element_2d.y = int(float(element["y"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["y"], options.height)) : int(element["y"])) * options.scale);
 
             if (element.contains("width"))
-                element_2d.width = int(float(element["width"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["width"], base_2d.width)) : int(element["width"])) * scale);
+                element_2d.width = int(float(element["width"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["width"], options.width)) : int(element["width"])) * options.scale);
 
             if (element.contains("height"))
-                element_2d.height = int(float(element["height"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["height"], base_2d.height)) : int(element["height"])) * scale);
+                element_2d.height = int(float(element["height"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["height"], options.height)) : int(element["height"])) * options.scale);
 
-            ImVec2 element_pos = { float(base_2d.x + element_2d.x), float(base_2d.y + element_2d.y) };
+            ImVec2 element_pos = { float(options.x + element_2d.x), float(options.y + element_2d.y) };
             ImVec2 element_size = { float(element_2d.width), float(element_2d.height) };
             const float element_scale = (element.contains("scale") ? float(element["scale"]) : 1.0f);
 
-            calculated.scale = (element_scale * scale);
+            calculated.scale = (element_scale * options.scale);
 
             calculated.color.enable = true;
             if (element.contains("color") && element["color"].is_array())
-                calculated.color = { true, Utils::GetImColor(element["color"], opacity) };
+                calculated.color = { true, Utils::GetImColor(element["color"], options.opacity) };
 
             if (element.contains("fill") && element["fill"].is_array())
-                calculated.fill = { true, Utils::GetImColor(element["fill"], opacity) };
+                calculated.fill = { true, Utils::GetImColor(element["fill"], options.opacity) };
 
             if (element.contains("stroke") && element["stroke"].is_array())
-                calculated.stroke = { true, Utils::GetImColor(element["stroke"], opacity) };
+                calculated.stroke = { true, Utils::GetImColor(element["stroke"], options.opacity) };
 
-            if (element["type"] == "text")
+            if (element["type"] == "text" && element["value"].size())
             {
                 calculated.scale *= 2.0f;
                 calculated.value = element["value"];
 
-                Utils::ReplaceVars(calculated.value, theme_vars, [this, &element, &calculated, &opacity](const std::string &key, std::string &value) {
+                Utils::ReplaceVars(calculated.value, theme_vars, [this, &element, &options, &calculated](const std::string &key, std::string &value) {
                     if (element.contains("sign") && element["sign"] == key)
                     {
                         bool positive = (value.at(0) != '-');
@@ -709,9 +729,18 @@ struct Element RocketStats::CalculateElement(json& element, std::map<std::string
                     if (element.contains("chameleon") && element["chameleon"] == key)
                     {
                         bool positive = (value.at(0) != '-');
-                        calculated.color.color = Utils::GetImColor({ float(positive ? 30 : 224), float(positive ? 224 : 24), float(positive ? 24 : 24) }, opacity);
+                        calculated.color.color = Utils::GetImColor({ float(positive ? 30 : 224), float(positive ? 224 : 24), float(positive ? 24 : 24) }, options.opacity);
                     }
                 });
+
+                if (!calculated.value.size())
+                    return calculated;
+
+                //if (element.contains("font") && element["font"].is_string() && element["font"].size())
+                //{
+                //    if (std::find(options.fonts.begin(), options.fonts.end(), element["font"]) != options.fonts.end())
+                //        calculated.font = element["font"];
+                //}
 
                 ImGui::SetWindowFontScale(calculated.scale);
                 const ImVec2 string_size = ImGui::CalcTextSize(calculated.value.c_str());
@@ -734,16 +763,16 @@ struct Element RocketStats::CalculateElement(json& element, std::map<std::string
             }
             else if (element["type"] == "line")
             {
-                element_pos.x = float(base_2d.x) + (float(element["x1"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["x1"], base_2d.width)) : int(element["x1"])) * scale);
-                element_pos.y = float(base_2d.y) + (float(element["y1"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["y1"], base_2d.height)) : int(element["y1"])) * scale);
+                element_pos.x = float(options.x) + (float(element["x1"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["x1"], options.width)) : int(element["x1"])) * options.scale);
+                element_pos.y = float(options.y) + (float(element["y1"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["y1"], options.height)) : int(element["y1"])) * options.scale);
                 const float element_width = (element.contains("width") ? (float)element["width"] : 1);
 
                 element_size.x = element_width;
-                calculated.scale = (element_width * scale);
+                calculated.scale = (element_width * options.scale);
 
                 positions.push_back(ImVec2{
-                    float(base_2d.x) + (float(element["x2"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["x2"], base_2d.width)) : int(element["x2"])) * scale),
-                    float(base_2d.y) + (float(element["y2"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["y2"], base_2d.height)) : int(element["y2"])) * scale)
+                    float(options.x) + (float(element["x2"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["x2"], options.width)) : int(element["x2"])) * options.scale),
+                    float(options.y) + (float(element["y2"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["y2"], options.height)) : int(element["y2"])) * options.scale)
                 });
             }
             else if (element["type"] == "rectangle")
@@ -753,25 +782,25 @@ struct Element RocketStats::CalculateElement(json& element, std::map<std::string
                 positions.push_back(ImVec2{
                     element_pos.x + element_2d.width,
                     element_pos.y + element_2d.height
-                    });
+                });
             }
             else if (element["type"] == "triangle")
             {
-                element_pos.x = float(base_2d.x) + (float(element["x1"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["x1"], base_2d.width)) : int(element["x1"])) * scale);
-                element_pos.y = float(base_2d.y) + (float(element["y1"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["y1"], base_2d.height)) : int(element["y1"])) * scale);
+                element_pos.x = float(options.x) + (float(element["x1"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["x1"], options.width)) : int(element["x1"])) * options.scale);
+                element_pos.y = float(options.y) + (float(element["y1"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["y1"], options.height)) : int(element["y1"])) * options.scale);
 
                 positions.push_back(ImVec2{
-                    float(base_2d.x) + (float(element["x2"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["x2"], base_2d.width)) : int(element["x2"])) * scale),
-                    float(base_2d.y) + (float(element["y2"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["y2"], base_2d.height)) : int(element["y2"])) * scale)
-                    });
+                    float(options.x) + (float(element["x2"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["x2"], options.width)) : int(element["x2"])) * options.scale),
+                    float(options.y) + (float(element["y2"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["y2"], options.height)) : int(element["y2"])) * options.scale)
+                });
                 positions.push_back(ImVec2{
-                    float(base_2d.x) + (float(element["x3"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["x3"], base_2d.width)) : int(element["x3"])) * scale),
-                    float(base_2d.y) + (float(element["y3"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["y3"], base_2d.height)) : int(element["y3"])) * scale)
-                    });
+                    float(options.x) + (float(element["x3"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["x3"], options.width)) : int(element["x3"])) * options.scale),
+                    float(options.y) + (float(element["y3"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["y3"], options.height)) : int(element["y3"])) * options.scale)
+                });
             }
             else if (element["type"] == "circle")
             {
-                element_size.x = (float(element["radius"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["radius"], base_2d.width)) : int(element["radius"])) * scale);
+                element_size.x = (float(element["radius"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["radius"], options.width)) : int(element["radius"])) * options.scale);
                 element_size.y = float(element.contains("segments") ? int(element["segments"]) : 0);
             }
             else if (element["type"] == "image")
@@ -883,14 +912,18 @@ void RocketStats::RenderElement(Element& element)
         }
         else if (element.type == "text")
         {
+            //auto gui = gameWrapper->GetGUIManager();
+            //if (element.font.length())
+            //{
+            //    ImFont* font = gui.GetFont(element.font);
+            //    ImGui::PushFont(font);
+            //}
+
             ImGui::SetWindowFontScale(element.scale);
-            //ImGuiIO& io = ImGui::GetIO();
-            //io.Fonts->AddFontDefault();
-            //ImFont* font = io.Fonts->AddFontFromFileTTF("C:\\Users\\pyrof\\AppData\\Roaming\\bakkesmod\\bakkesmod\\data\\RocketStats\\RocketStats_themes\\Arubinu42\\fontscream-DEMO.ttf", 21.f);
-            //io.Fonts->Build();
-            //ImGui::PushFont(font);
             drawlist->AddText(element.positions.at(0), element.color.color, element.value.c_str()); // element.shadow element.wrap
-            //ImGui::PopFont();
+
+            //if (element.font.length())
+            //    ImGui::PopFont();
         }
         else if (element.type == "line")
             drawlist->AddLine(element.positions.at(0), element.positions.at(1), element.color.color, element.size.x);
@@ -943,7 +976,7 @@ std::string RocketStats::ReadFile(std::string _filename, bool root)
     else
         _path += rs_path + "/" + _filename;
 
-    if (fs::is_regular_file(_path))
+    if (fs::exists(_path) && fs::is_regular_file(_path) && (fs::status(_path).permissions() & fs::perms::owner_read) == fs::perms::owner_read)
     {
         std::ifstream stream(_path, std::ios::in | std::ios::binary);
 
@@ -972,17 +1005,20 @@ void RocketStats::WriteInFile(std::string _filename, std::string _value, bool ro
     else
         _path += rs_path + "/" + _filename;
 
-    std::ofstream stream(_path, std::ios::out | std::ios::trunc);
+    if (!fs::exists(_path) || fs::is_regular_file(_path))
+    {
+        std::ofstream stream(_path, std::ios::out | std::ios::trunc);
 
-    if (stream.is_open())
-    {
-        stream << _value;
-        stream.close();
-    }
-    else
-    {
-        cvarManager->log("Can't write to file: " + _filename);
-        cvarManager->log("Value to write was: " + _value);
+        if (stream.is_open())
+        {
+            stream << _value;
+            stream.close();
+        }
+        else
+        {
+            cvarManager->log("Can't write to file: " + _filename);
+            cvarManager->log("Value to write was: " + _value);
+        }
     }
 }
 
@@ -1000,6 +1036,49 @@ void RocketStats::ReadConfig()
 
             if (config.is_object())
             {
+                if (config["settings"].is_object())
+                {
+                    if (config["settings"]["mode"].is_number_unsigned())
+                        RS_mode = config["settings"]["mode"];
+
+                    if (config["settings"]["theme"].is_string())
+                    {
+                        std::string name = config["settings"]["theme"];
+                        for (int i = 0; i < themes.size(); ++i)
+                        {
+                            if (themes.at(i).name == name)
+                                RS_theme = i;
+                        }
+                    }
+
+                    if (config["settings"]["float"].is_boolean())
+                        RS_enable_float = config["settings"]["float"];
+
+                    if (config["settings"]["boost"].is_boolean())
+                        RS_enable_boost = config["settings"]["boost"];
+
+                    if (config["settings"]["overlay"].is_boolean())
+                        RS_disp_overlay = config["settings"]["overlay"];
+
+                    if (config["settings"]["ingame"].is_number_unsigned())
+                        RS_hide_overlay_ig = config["settings"]["ingame"];
+
+                    if (config["settings"]["scale"].is_number_unsigned() || config["settings"]["scale"].is_number_integer() || config["settings"]["scale"].is_number_float())
+                        RS_scale = config["settings"]["scale"];
+
+                    if (config["settings"]["position"].is_array() && config["settings"]["position"].size() == 2)
+                    {
+                        if (config["settings"]["position"][0].is_number_unsigned() || config["settings"]["position"][0].is_number_integer() || config["settings"]["position"][0].is_number_float())
+                            RS_x = config["settings"]["position"][0];
+
+                        if (config["settings"]["position"][1].is_number_unsigned() || config["settings"]["position"][1].is_number_integer() || config["settings"]["position"][1].is_number_float())
+                            RS_y = config["settings"]["position"][1];
+                    }
+
+                    cvarManager->log("Config: stats loaded");
+                    always.isInit = true;
+                }
+
                 if (config["always"].is_object())
                 {
                     if (config["always"]["MMRCumulChange"].is_number_unsigned() || config["always"]["MMRCumulChange"].is_number_integer())
@@ -1038,6 +1117,16 @@ void RocketStats::WriteConfig()
 
     json tmp = {};
 
+    tmp["settings"] = {};
+    tmp["settings"]["mode"] = RS_mode;
+    tmp["settings"]["theme"] = theme_render.name;
+    tmp["settings"]["float"] = RS_enable_float;
+    tmp["settings"]["boost"] = RS_enable_boost;
+    tmp["settings"]["overlay"] = RS_disp_overlay;
+    tmp["settings"]["ingame"] = RS_hide_overlay_ig;
+    tmp["settings"]["scale"] = RS_scale;
+    tmp["settings"]["position"] = { RS_x, RS_y };
+
     tmp["always"] = {};
     tmp["always"]["MMRCumulChange"] = always.MMRCumulChange;
     tmp["always"]["Win"] = always.win;
@@ -1051,11 +1140,15 @@ void RocketStats::WriteConfig()
 
 void RocketStats::WriteGameMode()
 {
-    WriteInFile("RocketStats_GameMode.txt", GetPlaylistName(currentPlaylist));
+    if (RS_in_file)
+        WriteInFile("RocketStats_GameMode.txt", GetPlaylistName(currentPlaylist));
 }
 
 void RocketStats::WriteMMR()
 {
+    if (!RS_in_file)
+        return;
+
     std::string tmp = Utils::FloatFixer(stats[currentPlaylist].myMMR, (RS_enable_float ? 2 : 0));
 
     WriteInFile("RocketStats_MMR.txt", tmp);
@@ -1063,6 +1156,9 @@ void RocketStats::WriteMMR()
 
 void RocketStats::WriteMMRChange()
 {
+    if (!RS_in_file)
+        return;
+
     Stats current = GetStats();
     std::string tmp = Utils::FloatFixer(current.MMRChange, (RS_enable_float ? 2 : 0));
 
@@ -1071,6 +1167,9 @@ void RocketStats::WriteMMRChange()
 
 void RocketStats::WriteMMRCumulChange()
 {
+    if (!RS_in_file)
+        return;
+
     Stats current = GetStats();
     std::string tmp = Utils::FloatFixer(current.MMRCumulChange, (RS_enable_float ? 2 : 0));
 
@@ -1079,16 +1178,21 @@ void RocketStats::WriteMMRCumulChange()
 
 void RocketStats::WriteWin()
 {
-    WriteInFile("RocketStats_Win.txt", std::to_string(GetStats().win));
+    if (RS_in_file)
+        WriteInFile("RocketStats_Win.txt", std::to_string(GetStats().win));
 }
 
 void RocketStats::WriteLoss()
 {
-    WriteInFile("RocketStats_Loss.txt", std::to_string(GetStats().loss));
+    if (RS_in_file)
+        WriteInFile("RocketStats_Loss.txt", std::to_string(GetStats().loss));
 }
 
 void RocketStats::WriteStreak()
 {
+    if (!RS_in_file)
+        return;
+
     Stats current = GetStats();
     std::string tmp = std::to_string(current.streak);
 
@@ -1107,103 +1211,140 @@ void RocketStats::Render()
 
 void RocketStats::RenderSettings()
 {
+    ImVec2 settings_size = { 750, 0 };
+
     ImGui::SetNextWindowPos(ImVec2{ 128, 256 }, ImGuiCond_FirstUseEver);
-    ImGui::SetNextWindowSize(ImVec2{ 0, 0 });
+    ImGui::SetNextWindowSize(settings_size);
 
     ImGui::Begin(menuTitle_.c_str(), &isSettingsOpen_, ImGuiWindowFlags_None);
 
-    /*
-    ImVec2 mouse = ImGui::GetIO().MousePos;
-    ImVec2 mouse = ImGui::GetCursorPos()
-    ImGui::Text(("Mouse: " + std::to_string(mouse.x) + "x" + std::to_string(mouse.y)).c_str());
-    float fps = ImGui::GetIO().Framerate;
-    ImGui::Text(("Framerate: " + std::to_string(fps)).c_str());
-    ImGui::Text("");
-    */
-
-    ImGui::Text("Informations mode");
-    ImGui::SameLine();
-    ImGui::Text("                                                                                                          ");
-    ImGui::SameLine();
-    if (ImGui::Button("Open folder"))
-        system(("powershell -WindowStyle Hidden \"start \"\"" + gameWrapper->GetBakkesModPath().string() + "/" + rs_path + "\"\"\"").c_str());
-    ImGui::SameLine();
-    if (ImGui::Button("Reset Stats"))
-        ResetStats();
-    ImGui::SetNextItemWidth(250);
-    ImGui::Combo((" " + cvarManager->getCvar("RS_mode").getDescription()).c_str(), &RS_mode, "Session\0GameMode\0Always\0");
-    ImGui::SameLine();
-    ImGui::Text("                         ");
-    ImGui::SameLine();
-    ImGui::Text((" " + cvarManager->getCvar("RS_enable_float").getDescription()).c_str());
-    ImGui::SameLine();
-    ImGui::Checkbox("##enable_float", &RS_enable_float);
-    ImGui::SameLine();
-    ImGui::Text((" " + cvarManager->getCvar("RS_enable_boost").getDescription()).c_str());
-    ImGui::SameLine();
-    ImGui::Checkbox("##enable_boost", &RS_enable_boost);
-
-    ImGui::Text("");
-
-    ImGui::Checkbox((" " + cvarManager->getCvar("RS_disp_overlay").getDescription()).c_str(), &RS_disp_overlay);
-    //if (!RS_disp_overlay)
-    //    ImGui::BeginDisabled();
-    ImGui::SameLine();
-    ImGui::Text("                                                            ");
-    ImGui::SameLine();
-    ImGui::Text((" " + cvarManager->getCvar("RS_hide_overlay_ig").getDescription()).c_str());
-    ImGui::SameLine();
-    ImGui::Checkbox("##hide_overlay_ig", &RS_hide_overlay_ig);
-    ImGui::IsItemHovered();
-    ImGui::SameLine();
-    if (ImGui::Button("Reload Theme")) // change to "Reload Themes"
-        ChangeTheme(RS_theme);
-    ImGui::SetNextItemWidth(212);
-    if (ImGui::BeginCombo("##themes_combo", theme_render.name.c_str(), ImGuiComboFlags_NoArrowButton))
+    if (rs_title->IsLoadedForImGui())
     {
-        int TRS_theme = RS_theme;
-        for (int i = 0; i < themes.size(); ++i)
+        ImGui::SetCursorPos({ 0, 27 });
+        Vector2F image_size = rs_title->GetSizeF();
+        ImGui::Image(rs_title->GetImGuiTex(), { image_size.X / 2, image_size.Y / 2 });
+
+        ImGui::SetWindowFontScale(1.7f);
+        ImGui::SetCursorPos({ 23, 52 });
+        ImGui::Checkbox("##in_file", &RS_in_file);
+
+        ImGui::SetCursorPos({ 63, 54 });
+        ImGui::TextColored(ImVec4{ 0.2f, 0.2f, 0.2f, 1.f }, Utils::toupper(cvarManager->getCvar("RS_in_file").getDescription()).c_str());
+
+        ImGui::SetWindowFontScale(1.3f);
+        ImGui::SetCursorPos({ 355, 43 });
+        ImGui::TextColored(ImVec4{ 0.8f, 0.8f, 0.8f, 1.f }, cvarManager->getCvar("RS_mode").getDescription().c_str());
+
+        ImGui::SetWindowFontScale(1.f);
+        ImGui::SetCursorPos({ 295, 68 });
+        ImGui::SetNextItemWidth(180);
+        ImGui::Combo("##mode", &RS_mode, "Session\0GameMode\0Always\0");
+
+        ImGui::SetWindowFontScale(1.3f);
+        ImGui::SetCursorPos({ 585, 43 });
+        ImGui::TextColored(ImVec4{ 0.8f, 0.8f, 0.8f, 1.f }, cvarManager->getCvar("RS_theme").getDescription().c_str());
+
+        ImGui::SetWindowFontScale(1.f);
+        ImGui::SetCursorPos({ 525, 68 });
+        ImGui::SetNextItemWidth(142);
+        if (ImGui::BeginCombo("##themes_combo", theme_render.name.c_str(), ImGuiComboFlags_NoArrowButton))
         {
-            bool is_selected = (TRS_theme == i);
-            if (ImGui::Selectable(themes.at(i).name.c_str(), is_selected))
-                RS_theme = i;
+            int TRS_theme = RS_theme;
+            for (int i = 0; i < themes.size(); ++i)
+            {
+                bool is_selected = (TRS_theme == i);
+                if (ImGui::Selectable(themes.at(i).name.c_str(), is_selected))
+                    RS_theme = i;
 
-            if (is_selected)
-                ImGui::SetItemDefaultFocus();
+                if (is_selected)
+                    ImGui::SetItemDefaultFocus();
+            }
+
+            ImGui::EndCombo();
         }
+        ImGui::SameLine(0, 0);
+        if (ImGui::ArrowButton("##themes_left", ImGuiDir_Left) && RS_theme > 0)
+            --RS_theme;
+        ImGui::SameLine(0, 0);
+        if (ImGui::ArrowButton("##themes_right", ImGuiDir_Right) && themes.size() && RS_theme < (themes.size() - 1))
+            ++RS_theme;
 
-        ImGui::EndCombo();
+        ImGui::SetCursorPos({ 45, 120 });
+        ImGui::Button(cvarManager->getCvar("RS_scale").getDescription().c_str(), { 45, 0 });
+        ImGui::SetCursorPos({ 85, 120 });
+        ImGui::SetNextItemWidth(150);
+        ImGui::SliderFloat("##scale", &RS_scale, 0.f, 10.f, "%.3f");
+
+        ImGui::SetCursorPos({ 280, 120 });
+        ImGui::Button(cvarManager->getCvar("RS_x").getDescription().c_str(), { 45, 0 });
+        ImGui::SetCursorPos({ 320, 120 });
+        ImGui::SetNextItemWidth(150);
+        ImGui::SliderFloat("##x_position", &RS_x, 0.f, 1.f, "%.3f");
+
+        ImGui::SetCursorPos({ 515, 120 });
+        ImGui::Button(cvarManager->getCvar("RS_y").getDescription().c_str(), { 45, 0 });
+        ImGui::SetCursorPos({ 555, 120 });
+        ImGui::SetNextItemWidth(150);
+        ImGui::SliderFloat("##y_position", &RS_y, 0.f, 1.f, "%.3f");
+
+        ImGui::SetCursorPosY(155);
+        ImGui::Separator();
+
+        ImGui::SetCursorPos({ 0, 165 });
+        image_size = rs_title->GetSizeF();
+        ImGui::Image(rs_title->GetImGuiTex(), { image_size.X / 2, image_size.Y / 2 });
+
+        ImGui::SetWindowFontScale(1.7f);
+        ImGui::SetCursorPos({ 23, 190 });
+        ImGui::Checkbox("##overlay", &RS_disp_overlay);
+
+        ImGui::SetCursorPos({ 63, 192 });
+        ImGui::TextColored(ImVec4{ 0.2f, 0.2f, 0.2f, 1.f }, Utils::toupper(cvarManager->getCvar("RS_disp_overlay").getDescription()).c_str());
+
+        ImGui::SetWindowFontScale(1.f);
+        ImGui::SetCursorPos({ (settings_size.x - 120), 168 });
+        if (ImGui::Button("Open folder", { 110, 0 }))
+            system(("powershell -WindowStyle Hidden \"start \"\"" + gameWrapper->GetBakkesModPath().string() + "/" + rs_path + "\"\"\"").c_str());
+        ImGui::SetCursorPos({ (settings_size.x - 120), 193 });
+        if (ImGui::Button("Reload Theme", { 110, 0 })) // add "Reload Themes"
+            ChangeTheme(RS_theme);
+        ImGui::SetCursorPos({ (settings_size.x - 120), 218 });
+        if (ImGui::Button("Reset Stats", { 110, 0 }))
+            ResetStats();
+
+        ImGui::SetWindowFontScale(1.7f);
+        ImGui::SetCursorPos({ 280, 185 });
+        ImVec2 text_size = ImGui::CalcTextSize(theme_render.name.c_str());
+        ImGui::TextColored(ImVec4{ 1.f, 1.f, 1.f, 1.f }, theme_render.name.c_str());
+        ImGui::SetWindowFontScale(1.f);
+        ImGui::SetCursorPos({ (285 + text_size.x), 192 });
+        ImGui::TextColored(ImVec4{ 1.f, 1.f, 1.f, 0.5f }, (theme_render.version + (theme_render.date.size() ? (" - " + theme_render.date) : "")).c_str());
+        ImGui::SetCursorPos({ 290, 209 });
+        ImGui::TextColored(ImVec4{ 1.f, 1.f, 1.f, 0.8f }, ("Theme by " + theme_render.author).c_str());
+
+        ImGui::SetWindowFontScale(1.f);
+        ImGui::SetCursorPos({ 20, 255 });
+        ImGui::Checkbox(cvarManager->getCvar("RS_enable_float").getDescription().c_str(), &RS_enable_float);
+        ImGui::SameLine();
+        ImGui::Checkbox(cvarManager->getCvar("RS_enable_boost").getDescription().c_str(), &RS_enable_boost);
+
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10);
+        ImGui::Separator();
+        std::string developers = "Developped by @Lyliiya & @NuSa_yt for @Maylie_tv";
+        text_size = ImGui::CalcTextSize(developers.c_str());
+        ImGui::SetCursorPosX((settings_size.x - text_size.x) / 2);
+        ImGui::Text(developers.c_str());
+        text_size = ImGui::CalcTextSize(menuVersion_.c_str());
+        ImGui::SameLine();
+        ImGui::SetCursorPosX(settings_size.x - text_size.x - 7);
+        ImGui::Text(menuVersion_.c_str());
     }
-    ImGui::SameLine(0, 0);
-    if (ImGui::ArrowButton("##themes_left", ImGuiDir_Left) && RS_theme > 0)
-        --RS_theme;
-    ImGui::SameLine(0, 0);
-    if (ImGui::ArrowButton("##themes_right", ImGuiDir_Right) && themes.size() && RS_theme < (themes.size() - 1))
-        ++RS_theme;
-    ImGui::SameLine();
-    ImGui::Text((cvarManager->getCvar("RS_theme").getDescription() + "          ").c_str());
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(250);
-    ImGui::SliderFloat((" " + cvarManager->getCvar("RS_scale").getDescription()).c_str(), &RS_scale, 0.f, 10.f, "%.3f");
-    ImGui::SetNextItemWidth(250);
-    ImGui::SliderFloat((" " + cvarManager->getCvar("RS_x_position").getDescription() + "     ").c_str(), &RS_x_position, 0.f, 1.f, "%.3f");
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(250);
-    ImGui::SliderFloat((" " + cvarManager->getCvar("RS_y_position").getDescription()).c_str(), &RS_y_position, 0.f, 1.f, "%.3f");
-    /*if (theme_render.image != nullptr && theme_render.image->IsLoadedForImGui() && ImGui::GetWindowWidth())
+    else
     {
-        Vector2F image_size = theme_render.image->GetSizeF();
-        if (image_size.X > ImGui::GetWindowWidth())
-        {
-            float old_width = image_size.X;
-            image_size.X = ImGui::GetWindowWidth();
-            image_size.Y = ((image_size.X / old_width) * image_size.Y);
-        }
+        ImGui::SetWindowFontScale(1.5f);
+        ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Bad Installation");
+    }
 
-        ImGui::Image(theme_render.image->GetImGuiTex(), { image_size.X, image_size.Y });
-    }*/
-    //if (!RS_disp_overlay)
-    //    ImGui::EndDisabled();
 
     ImGui::End();
 
@@ -1223,10 +1364,10 @@ void RocketStats::RenderSettings()
 
     if (RS_scale != cvarManager->getCvar("RS_scale").getFloatValue())
         cvarManager->getCvar("RS_scale").setValue(RS_scale);
-    if (RS_x_position != cvarManager->getCvar("RS_x_position").getFloatValue())
-        cvarManager->getCvar("RS_x_position").setValue(RS_x_position);
-    if (RS_y_position != cvarManager->getCvar("RS_y_position").getFloatValue())
-        cvarManager->getCvar("RS_y_position").setValue(RS_y_position);
+    if (RS_x != cvarManager->getCvar("RS_x").getFloatValue())
+        cvarManager->getCvar("RS_x").setValue(RS_x);
+    if (RS_y != cvarManager->getCvar("RS_y").getFloatValue())
+        cvarManager->getCvar("RS_y").setValue(RS_y);
 }
 
 void RocketStats::RenderOverlay()
@@ -1239,32 +1380,23 @@ void RocketStats::RenderOverlay()
 
     ImGui::Begin((menuTitle_ + " - Overlay").c_str(), (bool*)1, (ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoMouseInputs));
 
-    //try
+    try
     {
-        if (theme_refresh || theme_render.name == "" || theme_render.name != themes.at(RS_theme).name)
+        if (theme_refresh || theme_render.name == "" || (themes.size() > RS_theme && theme_render.name != themes.at(RS_theme).name))
         {
             Stats current = GetStats();
             ImVec2 screen_size = ImGui::GetIO().DisplaySize;
 
             std::vector<struct Element> elements;
-            std::map<std::string, std::any> options = {
-                { "pos_x", int(RS_x_position * screen_size.x) },
-                { "pos_y", int(RS_y_position * screen_size.y) },
-                { "scale", RS_scale },
-
-                { "width", (theme_config.contains("width") ? int(theme_config["width"]) : 0) },
-                { "height", (theme_config.contains("height") ? int(theme_config["height"]) : 0) },
-                { "opacity", (theme_config.contains("opacity") ? float(theme_config["opacity"]) : 0.f) },
-
-                { "stats", current }
+            Options options = {
+                int(RS_x * screen_size.x),
+                int(RS_y * screen_size.y),
+                (theme_config.contains("width") ? int(theme_config["width"]) : 0),
+                (theme_config.contains("height") ? int(theme_config["height"]) : 0),
+                RS_scale,
+                (theme_config.contains("opacity") ? float(theme_config["opacity"]) : 0.f),
+                ((themes.size() > RS_theme) ? themes.at(RS_theme).fonts : std::vector<std::string>())
             };
-
-            cvarManager->log("pos_x: " + std::to_string(std::any_cast<int>(options["pos_x"])));
-            cvarManager->log("pos_y: " + std::to_string(std::any_cast<int>(options["pos_y"])));
-            cvarManager->log("width: " + std::to_string(std::any_cast<int>(options["width"])));
-            cvarManager->log("height: " + std::to_string(std::any_cast<int>(options["height"])));
-            cvarManager->log("scale: " + std::to_string(std::any_cast<float>(options["scale"])));
-            cvarManager->log("opacity: " + std::to_string(std::any_cast<float>(options["opacity"])));
 
             const size_t floating_length = (RS_enable_float ? 2 : 0);
             if (current.isInit)
@@ -1309,15 +1441,16 @@ void RocketStats::RenderOverlay()
             }
 
             theme_refresh = 0;
-            theme_render.name = themes.at(RS_theme).name;
-            theme_render.image = themes.at(RS_theme).image;
-            theme_render.elements = elements;
+            if (themes.size() > RS_theme)
+                theme_render.elements = elements;
+            else
+                theme_render = Theme();
         }
 
         for (auto& element : theme_render.elements)
             RenderElement(element);
     }
-    //catch (const std::exception&) {}
+    catch (const std::exception&) {}
 
     ImGui::End();
 }
@@ -1354,7 +1487,7 @@ bool RocketStats::IsActiveOverlay()
 
 void RocketStats::OnOpen()
 {
-    isSettingsOpen_ = true;
+    //isSettingsOpen_ = true;
 }
 
 void RocketStats::OnClose()

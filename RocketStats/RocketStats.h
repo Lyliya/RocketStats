@@ -3,7 +3,6 @@
 #include "bakkesmod/plugin/bakkesmodplugin.h"
 #include "bakkesmod/plugin/pluginwindow.h"
 
-#include <any>
 #include <map>
 #include <fstream>
 #include <functional>
@@ -28,20 +27,23 @@ struct Element {
 	std::string name = "Unknown";
 	std::string type;
 	std::string value;
+	std::string font;
 	std::vector<ImVec2> positions;
 	ImVec2 size;
-	float scale = 1;
 	Color color;
 	Color fill;
 	Color stroke;
+	float scale = 1;
 };
 
-struct Font {
-	std::string name = "Unknown";
-	std::map<std::string, int> common;
-	std::vector<std::shared_ptr<ImageWrapper>> pages;
-	std::vector<std::map<std::string, int>> chars;
-	std::vector<std::map<std::string, int>> kernings;
+struct Options {
+	int x;
+	int y;
+	int width;
+	int height;
+	float scale;
+	float opacity;
+	std::vector<std::string> fonts;
 };
 
 struct Stats {
@@ -56,8 +58,10 @@ struct Stats {
 
 struct Theme {
 	std::string name = "Unknown";
-	std::shared_ptr<ImageWrapper> image;
-	std::vector<Font> fonts;
+	std::string author = "Unknown";
+	std::string version = "v1.0.0";
+	std::string date = "";
+	std::vector<std::string> fonts;
 	std::vector<Element> elements;
 };
 
@@ -72,8 +76,12 @@ struct Vector2D {
 class RocketStats : public BakkesMod::Plugin::BakkesModPlugin, public BakkesMod::Plugin::PluginWindow
 {
 private:
+	//ImFont* font1;
+	//ImFont* font2;
+
 	std::shared_ptr<bool> enabled;
 	std::string rs_path = "RocketStats";
+	std::shared_ptr<ImageWrapper> rs_title;
 
 	char theme_refresh = 2;
 	unsigned char theme_style = 0;
@@ -88,7 +96,8 @@ private:
 	bool isPluginOpen_ = false;
 	bool isSettingsOpen_ = false;
 	std::string menuName_ = "rocketstats";
-	std::string menuTitle_ = "RocketStats Plugin";
+	std::string menuTitle_ = "RocketStats";
+	std::string menuVersion_ = "v4.0";
 
 	void RenderSettings();
 	void RenderOverlay();
@@ -106,15 +115,16 @@ public:
 	int RS_mode = 0;
 	int RS_theme = 0;
 
+	bool RS_in_file = true;
 	bool RS_disp_obs = false;
 	bool RS_disp_overlay = true;
 	bool RS_enable_boost = true;
 	bool RS_enable_float = false;
 	bool RS_hide_overlay_ig = false;
 
+	float RS_x = 0.7f;
+	float RS_y = 0.575f;
 	float RS_scale = 1.f;
-	float RS_x_position = 0.7f;
-	float RS_y_position = 0.575f;
 
 	// Utils
 	Stats GetStats();
@@ -154,7 +164,7 @@ public:
 	bool ChangeTheme(int idx);
 	void RefreshTheme(std::string old, CVarWrapper now);
 	//void Render(CanvasWrapper canvas);
-	struct Element CalculateElement(json& element, std::map<std::string, std::any>& options, bool& check);
+	struct Element CalculateElement(json& element, Options& options, bool& check);
 	void RenderElement(Element& element);
 
 	// File I / O
