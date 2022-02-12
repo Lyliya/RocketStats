@@ -128,6 +128,10 @@ public:
 	float RS_y = 0.575f;
 	float RS_scale = 1.f;
 
+	bool RS_x_edit = false;
+	bool RS_y_edit = false;
+	bool RS_scale_edit = false;
+
 	// Utils
 	Stats GetStats();
 	std::string GetRank(int tierID);

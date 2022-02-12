@@ -1284,22 +1284,34 @@ void RocketStats::RenderSettings()
             ++RS_theme;
 
         ImGui::SetCursorPos({ 45, 120 });
-        ImGui::Button(cvarManager->getCvar("RS_scale").getDescription().c_str(), { 45, 0 });
+        if (ImGui::Button(cvarManager->getCvar("RS_scale").getDescription().c_str(), { 45, 0 }))
+            RS_scale_edit = !RS_scale_edit;
         ImGui::SetCursorPos({ 85, 120 });
         ImGui::SetNextItemWidth(150);
-        ImGui::SliderFloat("##scale", &RS_scale, 0.f, 10.f, "%.3f");
+        if (RS_scale_edit)
+            ImGui::InputFloat("##scale", &RS_scale, 0.1f, 1.f, "%.3f");
+        else
+            ImGui::SliderFloat("##scale", &RS_scale, 0.f, 10.f, "%.3f");
 
         ImGui::SetCursorPos({ 280, 120 });
-        ImGui::Button(cvarManager->getCvar("RS_x").getDescription().c_str(), { 45, 0 });
+        if (ImGui::Button(cvarManager->getCvar("RS_x").getDescription().c_str(), { 45, 0 }))
+            RS_x_edit = !RS_x_edit;
         ImGui::SetCursorPos({ 320, 120 });
         ImGui::SetNextItemWidth(150);
-        ImGui::SliderFloat("##x_position", &RS_x, 0.f, 1.f, "%.3f");
+        if (RS_x_edit)
+            ImGui::InputFloat("##x_position", &RS_x, 0.001f, 0.1f, "%.3f");
+        else
+            ImGui::SliderFloat("##x_position", &RS_x, 0.f, 1.f, "%.3f");
 
         ImGui::SetCursorPos({ 515, 120 });
-        ImGui::Button(cvarManager->getCvar("RS_y").getDescription().c_str(), { 45, 0 });
+        if (ImGui::Button(cvarManager->getCvar("RS_y").getDescription().c_str(), { 45, 0 }))
+            RS_y_edit = !RS_y_edit;
         ImGui::SetCursorPos({ 555, 120 });
         ImGui::SetNextItemWidth(150);
-        ImGui::SliderFloat("##y_position", &RS_y, 0.f, 1.f, "%.3f");
+        if (RS_y_edit)
+            ImGui::InputFloat("##y_position", &RS_y, 0.001f, 0.1f, "%.3f");
+        else
+            ImGui::SliderFloat("##y_position", &RS_y, 0.f, 1.f, "%.3f");
 
         ImGui::SetCursorPosY(155);
         ImGui::Separator();
@@ -1379,8 +1391,10 @@ void RocketStats::RenderSettings()
         ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Bad Installation");
     }
 
-
     ImGui::End();
+
+    if (RS_scale < 0)
+        RS_scale = 0;
 
     if (RS_mode != cvarManager->getCvar("RS_mode").getIntValue())
         cvarManager->getCvar("RS_mode").setValue(RS_mode);
