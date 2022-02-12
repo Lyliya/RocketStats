@@ -1,47 +1,54 @@
 # RocketStats
 
-RocketStats is a Plugin working with bakkesmod, allowing you to display session information (MMR / Win and losses, streak) in game and/or in OBS.
+RocketStats is a Plugin working with bakkesmod, allowing you to display session information (MMR, win, loss, streak) in game and/or in OBS.
 
 ## Installation
 
+![RocketStats_menu](screenshot.png)
+
 ### Prerequisites
+
 First, you'll need to install [Bakkesmod](https://www.bakkesmod.com/)
 
 ### Installing
+
 In game, **press F2**, open the **plugins tab**, open the **plugin manager**, fill the box on the right with **30** and press **"Install By Id"**
 
-## Overlay (Rework In Progress)
+### Access the menu
+
+For the moment you have to go through the "Plugins" menu of BakkesMod (**press F2**), you will find in the list "RocketStats Plugin".
+
+On the other hand, it is quite possible to interact with the menu and the overlay via keyboard shortcuts.
+To do this, go to the BakkesMod menu (**press F2**) called "Bindings".
+Then click on **Add**, then on **None** and press the key you want to use to show/hide the overlay or menu.
+To finish, double-click on the first line of the list, type one of the commands below, before clicking twice on **Save**:
+ - All RocketStats (overlay and menu): `togglemenu rocketstats`
+ - Menu only: `RS_toggle_menu`
+
+## Overlay
+
 RocketStats is provided with 2 types of overlay, one in-game, and one designed for streamers in OBS.
 
 ### In Game Overlay
 
-#### Version 1
+We offer a new system that allows you to make your own InGame overlay themes.
+Fortunately for those who are not comfortable with creating themes, we already offer a few.
 
-![Version 1](/ReadMe_images/v1.png)
+To Add/Edit themes, you can go to the directory below, or simply open the folder from the RocketStats menu:
+ - `%appdata%\bakkesmod\bakkesmod\RocketStats\RocketStats_themes`
 
-#### Version 2
-
-![Version 2](/ReadMe_images/v2.png)
-
-#### Version 3 (based from [Arubinu42 Theme](https://github.com/Arubinu/Overlay4RocketStats/tree/master/themes/Arubinu42))
-
-![Version 3](/ReadMe_images/v3.png)
-
-This is the In-Game overlay, rank image is dynamic, giving Rank, Division, MMR, MMR Changed, Win, Losses, and Current Streak. You can edit the images that are displayed in the in-game Overlay by changing them in **%appdata%\bakkesmod\bakkesmod\RocketStats\RocketStats_images**.
-
-File used are:
-- loose.png (for the red cross)
-- win.png (for the trophy)
-- crown.png (for the medal, used to be a crown)
-- streak.png (for the flame)
-- All the rank image, but keep their name as is or it will break the plugin
+Les explications sur ce système sont présentes ici: https://github.com/Arubinu/RocketStats/tree/themes/RocketStats_themes
 
 ### OBS Overlay
+
 ![OBS Overlay](https://media.discordapp.net/attachments/593431328209371170/593803857448927232/tweet1.png)
 
 This is an example of the OBS Overlay, you can display information on your stream and style it your way using custom video and font.
 
+You can still redirect to this project to have overlay themes for OBS already built: https://github.com/Arubinu/Overlay4RocketStats
+
 #### Installation
+
 You can find the example background video by [Rimey](https://twitter.com/Rimey_) here : [Download link](https://drive.google.com/file/d/15ye_Iq-1lK_dkQKQvk_Ia5EwbTNEiViG/view?usp=sharing)
 
 The font used for this overlay is [Azonix Regular](https://www.dafont.com/azonix.font)
@@ -85,8 +92,10 @@ Thanks to all the people who helped us during the developpement
 - [Fuury](https://www.twitch.tv/FuuRy_Off) for tests
 
 ### Development Team & Contributors
+
 - [Lyliya](https://twitter.com/Lyliiya)
 - [Nusa](https://twitter.com/NuSa_yt)
+- [Arubinu42](https://www.twitch.tv/arubinu42)
 - Larsluph#7713
 - Th3Ant#9411
 

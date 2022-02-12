@@ -772,7 +772,7 @@ struct Element RocketStats::CalculateElement(json& element, Options& options, bo
             {
                 element_pos.x = float(options.x) + (float(element["x1"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["x1"], options.width)) : int(element["x1"])) * options.scale);
                 element_pos.y = float(options.y) + (float(element["y1"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["y1"], options.height)) : int(element["y1"])) * options.scale);
-                const float element_width = (element.contains("width") ? (float)element["width"] : 1);
+                const float element_width = (element.contains("scale") ? (float)element["scale"] : 1);
 
                 element_size.x = element_width;
                 calculated.scale = (element_width * options.scale);
