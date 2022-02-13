@@ -1244,14 +1244,26 @@ void RocketStats::RenderSettings()
     if (rs_title->IsLoadedForImGui())
     {
         ImVec2 text_size;
+        ImVec2 image_pos;
+        ImVec2 win_pos = ImGui::GetWindowPos();
+        ImVec2 win_size = ImGui::GetWindowSize();
+        Vector2F image_size = rs_title->GetSizeF();
+        ImDrawList* drawList = ImGui::GetWindowDrawList();
         std::string developers = "Developped by @Lyliiya & @NuSa_yt for @Maylie_tv";
 
+        ImVec2 p0 = win_pos;
+        ImVec2 p1 = { (win_pos.x + win_size.x), (win_pos.y + win_size.y) };
+
+        p0.x += 1;
+        p1.x -= 1;
+        drawList->PushClipRect(p0, p1);
+
         time(&current_time);
-        const auto time_error = localtime_s(&local_time , &current_time);
+        const auto time_error = localtime_s(&local_time, &current_time);
 
         ImGui::SetCursorPos({ 0, 27 });
-        Vector2F image_size = rs_title->GetSizeF();
-        ImGui::Image(rs_title->GetImGuiTex(), { image_size.X / 2, image_size.Y / 2 });
+        image_pos = { p0.x + ImGui::GetCursorPosX(), p0.y + ImGui::GetCursorPosY() };
+        drawList->AddImage(rs_title->GetImGuiTex(), image_pos, { (image_size.X / 2) + image_pos.x, (image_size.Y / 2) + image_pos.y });
 
         ImGui::SetWindowFontScale(1.7f);
         ImGui::SetCursorPos({ 23, 52 });
@@ -1344,8 +1356,8 @@ void RocketStats::RenderSettings()
         ImGui::Separator();
 
         ImGui::SetCursorPos({ 0, 165 });
-        image_size = rs_title->GetSizeF();
-        ImGui::Image(rs_title->GetImGuiTex(), { image_size.X / 2, image_size.Y / 2 });
+        image_pos = { p0.x + ImGui::GetCursorPosX(), p0.y + ImGui::GetCursorPosY() };
+        drawList->AddImage(rs_title->GetImGuiTex(), image_pos, { (image_size.X / 2) + image_pos.x, (image_size.Y / 2) + image_pos.y });
 
         ImGui::SetWindowFontScale(1.7f);
         ImGui::SetCursorPos({ 23, 190 });
@@ -1438,6 +1450,8 @@ void RocketStats::RenderSettings()
         ImGui::SameLine();
         ImGui::SetCursorPosX(settings_size.x - text_size.x - 7);
         ImGui::Text(menuVersion_.c_str());
+
+        drawList->PopClipRect();
     }
     else
     {
