@@ -109,8 +109,9 @@ private:
 	std::string menuTitle_ = "RocketStats";
 	std::string menuVersion_ = "v4.0";
 
-	void RenderSettings();
+	void RenderIcon();
 	void RenderOverlay();
+	void RenderSettings();
 
 	virtual void Render() override;
 	virtual std::string GetMenuName() override;

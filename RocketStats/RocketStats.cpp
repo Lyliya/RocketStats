@@ -86,6 +86,7 @@ void RocketStats::onLoad()
     ChangeTheme(RS_theme);
     rs_title = LoadImg("RocketStats_images/title.png");
 
+    // Can be used from the console or in bindings
     cvarManager->registerNotifier("RS_toggle_menu", [this](std::vector<std::string> params) {
             ToggleSettings("RS_toggle_menu");
     }, "Toggle menu", PERMISSION_ALL);
@@ -1226,10 +1227,128 @@ void RocketStats::WriteStreak()
 #pragma region PluginWindow
 void RocketStats::Render()
 {
+    RenderIcon();
+    RenderOverlay();
+
     if (isSettingsOpen_)
         RenderSettings();
+}
 
-    RenderOverlay();
+void RocketStats::RenderIcon()
+{
+    float margin = 20.f;
+    float icon_size = 42.f;
+    ImVec2 mouse_pos = ImGui::GetIO().MousePos;
+    ImVec2 screen_size = ImGui::GetIO().DisplaySize;
+    ImDrawList* drawlist = ImGui::GetBackgroundDrawList();
+
+    ImVec2 icon_pos = { -10.f, (screen_size.y * 0.459f) };
+
+    bool hover = (mouse_pos.x > (icon_pos.x - icon_size - margin) && mouse_pos.x < (icon_pos.x + icon_size + margin));
+    hover = (hover && (mouse_pos.y > (icon_pos.y - icon_size - margin) && mouse_pos.y < (icon_pos.y + icon_size + margin)));
+    if (hover)
+    {
+        drawlist->AddCircle({ icon_pos.x, icon_pos.y }, icon_size, ImColor{ 0.45f, 0.72f, 1.f, 0.8f }, 25, 4.f);
+        drawlist->AddCircleFilled({ icon_pos.x, icon_pos.y }, icon_size, ImColor{ 0.04f, 0.52f, 0.89f, 0.6f }, 25);
+
+        ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+        if (ImGui::IsMouseClicked(0))
+            ToggleSettings("MouseEvent");
+    }
+}
+
+void RocketStats::RenderOverlay()
+{
+    if (!RS_disp_overlay || (isGameStarted && !isGameEnded && !RS_enable_ingame))
+        return;
+
+    ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(0, 0));
+
+    ImGui::Begin((menuTitle_ + " - Overlay").c_str(), (bool*)1, (ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoMouseInputs));
+
+    try
+    {
+        if (theme_refresh || theme_render.name == "" || (themes.size() > RS_theme && theme_render.name != themes.at(RS_theme).name))
+        {
+            Stats current = GetStats();
+            ImVec2 screen_size = ImGui::GetIO().DisplaySize;
+
+            if (theme_refresh == 2)
+            {
+                if (RS_onchange_scale)
+                    RS_scale = 1.0f;
+
+                if (RS_onchange_position && theme_config.contains("x") && theme_config.contains("y"))
+                {
+                    RS_x = theme_config["x"];
+                    RS_y = theme_config["y"];
+                }
+            }
+
+            std::vector<struct Element> elements;
+            Options options = {
+                int(RS_x * screen_size.x),
+                int(RS_y * screen_size.y),
+                (theme_config.contains("width") ? int(theme_config["width"]) : 0),
+                (theme_config.contains("height") ? int(theme_config["height"]) : 0),
+                (RS_scale * (theme_config.contains("scale") ? float(theme_config["scale"]) : 1.f)),
+                (theme_config.contains("opacity") ? float(theme_config["opacity"]) : 0.f),
+                ((themes.size() > RS_theme) ? themes.at(RS_theme).fonts : std::vector<std::string>())
+            };
+
+            const size_t floating_length = (RS_enable_float ? 2 : 0);
+            if (current.isInit)
+            {
+                theme_vars["GameMode"] = GetPlaylistName(currentPlaylist);
+                theme_vars["Rank"] = currentRank;
+                theme_vars["Div"] = currentDivision;
+                theme_vars["MMR"] = Utils::FloatFixer(current.myMMR, floating_length); // Utils::PointFixer(current.myMMR, 6, floating_length)
+                theme_vars["MMRChange"] = Utils::FloatFixer(current.MMRChange, floating_length); // Utils::PointFixer(current.MMRChange, 6, floating_length)
+                theme_vars["MMRCumulChange"] = Utils::FloatFixer(current.MMRCumulChange, floating_length); // Utils::PointFixer(current.MMRCumulChange, 6, floating_length)
+                theme_vars["Win"] = std::to_string(current.win);
+                theme_vars["Loss"] = std::to_string(current.loss);
+                theme_vars["Streak"] = std::to_string(current.streak);
+
+                Utils::ReplaceAll(theme_vars["Rank"], "_", " ");
+            }
+            else
+            {
+                theme_vars["GameMode"] = "Unknown Game Mode";
+                theme_vars["Rank"] = "norank";
+                theme_vars["Div"] = "nodiv";
+                theme_vars["MMR"] = Utils::FloatFixer(100.0f, floating_length);
+                theme_vars["MMRChange"] = Utils::FloatFixer(0.0f, floating_length);
+                theme_vars["MMRCumulChange"] = Utils::FloatFixer(0.0f, floating_length);
+                theme_vars["Win"] = "0";
+                theme_vars["Loss"] = "0";
+                theme_vars["Streak"] = "0";
+            }
+
+            if (theme_refresh == 2)
+            {
+                theme_images.clear();
+                cvarManager->log("refresh all images");
+            }
+
+            for (auto& element : theme_config["elements"])
+            {
+                bool check = false;
+                struct Element calculated = CalculateElement(element, options, check);
+                if (check)
+                    elements.push_back(calculated);
+            }
+
+            theme_refresh = 0;
+            theme_render.elements = elements;
+        }
+
+        for (auto& element : theme_render.elements)
+            RenderElement(element);
+    }
+    catch (const std::exception&) {}
+
+    ImGui::End();
 }
 
 void RocketStats::RenderSettings()
@@ -1248,7 +1367,7 @@ void RocketStats::RenderSettings()
         ImVec2 win_pos = ImGui::GetWindowPos();
         ImVec2 win_size = ImGui::GetWindowSize();
         Vector2F image_size = rs_title->GetSizeF();
-        ImDrawList* drawList = ImGui::GetWindowDrawList();
+        ImDrawList* drawlist = ImGui::GetWindowDrawList();
         std::string developers = "Developped by @Lyliiya & @NuSa_yt for @Maylie_tv";
 
         ImVec2 p0 = win_pos;
@@ -1256,14 +1375,14 @@ void RocketStats::RenderSettings()
 
         p0.x += 1;
         p1.x -= 1;
-        drawList->PushClipRect(p0, p1);
+        drawlist->PushClipRect(p0, p1);
 
-        time(&current_time);
+        std::time(&current_time);
         const auto time_error = localtime_s(&local_time, &current_time);
 
         ImGui::SetCursorPos({ 0, 27 });
         image_pos = { p0.x + ImGui::GetCursorPosX(), p0.y + ImGui::GetCursorPosY() };
-        drawList->AddImage(rs_title->GetImGuiTex(), image_pos, { (image_size.X / 2) + image_pos.x, (image_size.Y / 2) + image_pos.y });
+        drawlist->AddImage(rs_title->GetImGuiTex(), image_pos, { (image_size.X / 2) + image_pos.x, (image_size.Y / 2) + image_pos.y });
 
         ImGui::SetWindowFontScale(1.7f);
         ImGui::SetCursorPos({ 23, 52 });
@@ -1357,7 +1476,7 @@ void RocketStats::RenderSettings()
 
         ImGui::SetCursorPos({ 0, 165 });
         image_pos = { p0.x + ImGui::GetCursorPosX(), p0.y + ImGui::GetCursorPosY() };
-        drawList->AddImage(rs_title->GetImGuiTex(), image_pos, { (image_size.X / 2) + image_pos.x, (image_size.Y / 2) + image_pos.y });
+        drawlist->AddImage(rs_title->GetImGuiTex(), image_pos, { (image_size.X / 2) + image_pos.x, (image_size.Y / 2) + image_pos.y });
 
         ImGui::SetWindowFontScale(1.7f);
         ImGui::SetCursorPos({ 23, 190 });
@@ -1451,7 +1570,7 @@ void RocketStats::RenderSettings()
         ImGui::SetCursorPosX(settings_size.x - text_size.x - 7);
         ImGui::Text(menuVersion_.c_str());
 
-        drawList->PopClipRect();
+        drawlist->PopClipRect();
     }
     else
     {
@@ -1501,100 +1620,6 @@ void RocketStats::RenderSettings()
         cvarManager->getCvar("RS_onchange_position").setValue(RS_onchange_position);
 }
 
-void RocketStats::RenderOverlay()
-{
-    if (!RS_disp_overlay || (isGameStarted && !isGameEnded && !RS_enable_ingame))
-        return;
-
-    ImGui::SetNextWindowPos(ImVec2(128, 256), ImGuiCond_FirstUseEver);
-    ImGui::SetNextWindowSize(ImVec2(0, 0));
-
-    ImGui::Begin((menuTitle_ + " - Overlay").c_str(), (bool*)1, (ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoMouseInputs));
-
-    try
-    {
-        if (theme_refresh || theme_render.name == "" || (themes.size() > RS_theme && theme_render.name != themes.at(RS_theme).name))
-        {
-            Stats current = GetStats();
-            ImVec2 screen_size = ImGui::GetIO().DisplaySize;
-
-            if (theme_refresh == 2)
-            {
-                if (RS_onchange_scale)
-                    RS_scale = 1.0f;
-
-                if (RS_onchange_position && theme_config.contains("x") && theme_config.contains("y"))
-                {
-                    RS_x = theme_config["x"];
-                    RS_y = theme_config["y"];
-                }
-            }
-
-            std::vector<struct Element> elements;
-            Options options = {
-                int(RS_x * screen_size.x),
-                int(RS_y * screen_size.y),
-                (theme_config.contains("width") ? int(theme_config["width"]) : 0),
-                (theme_config.contains("height") ? int(theme_config["height"]) : 0),
-                (RS_scale * (theme_config.contains("scale") ? float(theme_config["scale"]) : 1.f)),
-                (theme_config.contains("opacity") ? float(theme_config["opacity"]) : 0.f),
-                ((themes.size() > RS_theme) ? themes.at(RS_theme).fonts : std::vector<std::string>())
-            };
-
-            const size_t floating_length = (RS_enable_float ? 2 : 0);
-            if (current.isInit)
-            {
-                theme_vars["GameMode"] = GetPlaylistName(currentPlaylist);
-                theme_vars["Rank"] = currentRank;
-                theme_vars["Div"] = currentDivision;
-                theme_vars["MMR"] = Utils::FloatFixer(current.myMMR, floating_length); // Utils::PointFixer(current.myMMR, 6, floating_length)
-                theme_vars["MMRChange"] = Utils::FloatFixer(current.MMRChange, floating_length); // Utils::PointFixer(current.MMRChange, 6, floating_length)
-                theme_vars["MMRCumulChange"] = Utils::FloatFixer(current.MMRCumulChange, floating_length); // Utils::PointFixer(current.MMRCumulChange, 6, floating_length)
-                theme_vars["Win"] = std::to_string(current.win);
-                theme_vars["Loss"] = std::to_string(current.loss);
-                theme_vars["Streak"] = std::to_string(current.streak);
-
-                Utils::ReplaceAll(theme_vars["Rank"], "_", " ");
-            }
-            else
-            {
-                theme_vars["GameMode"] = "Unknown Game Mode";
-                theme_vars["Rank"] = "norank";
-                theme_vars["Div"] = "nodiv";
-                theme_vars["MMR"] = Utils::FloatFixer(100.0f, floating_length);
-                theme_vars["MMRChange"] = Utils::FloatFixer(0.0f, floating_length);
-                theme_vars["MMRCumulChange"] = Utils::FloatFixer(0.0f, floating_length);
-                theme_vars["Win"] = "0";
-                theme_vars["Loss"] = "0";
-                theme_vars["Streak"] = "0";
-            }
-
-            if (theme_refresh == 2)
-            {
-                theme_images.clear();
-                cvarManager->log("refresh all images");
-            }
-
-            for (auto& element : theme_config["elements"])
-            {
-                bool check = false;
-                struct Element calculated = CalculateElement(element, options, check);
-                if (check)
-                    elements.push_back(calculated);
-            }
-
-            theme_refresh = 0;
-            theme_render.elements = elements;
-        }
-
-        for (auto& element : theme_render.elements)
-            RenderElement(element);
-    }
-    catch (const std::exception&) {}
-
-    ImGui::End();
-}
-
 // Name of the menu that is used to toggle the window.
 std::string RocketStats::GetMenuName()
 {
@@ -1622,7 +1647,7 @@ bool RocketStats::ShouldBlockInput()
 // Return true if window should be interactive
 bool RocketStats::IsActiveOverlay()
 {
-    return isSettingsOpen_;
+    return true;
 }
 
 void RocketStats::OnOpen()
