@@ -86,14 +86,9 @@ void RocketStats::onLoad()
     ChangeTheme(RS_theme);
     rs_title = LoadImg("RocketStats_images/title.png");
 
-    cvarManager->registerNotifier(
-        "RS_toggle_menu",
-        [this](std::vector<std::string> params) {
-            isSettingsOpen_ = !isSettingsOpen_;
-            ShowPlugin("ToggleMenu");
-        },
-        "Toggle menu",
-        PERMISSION_ALL);
+    cvarManager->registerNotifier("RS_toggle_menu", [this](std::vector<std::string> params) {
+            ToggleSettings("RS_toggle_menu");
+    }, "Toggle menu", PERMISSION_ALL);
 
     // Hook on Event
     gameWrapper->HookEvent("Function TAGame.GFxData_StartMenu_TA.EventTitleScreenClicked", bind(&RocketStats::ShowPlugin, this, std::placeholders::_1));
@@ -154,7 +149,7 @@ void RocketStats::onLoad()
 
 
     if (gameWrapper->IsInGame())
-        ShowPlugin("IsInGame");
+        TogglePlugin("IsInGame", ToggleFlags_Show);
 
     //ImGui::CreateContext();
 
@@ -174,11 +169,7 @@ void RocketStats::onUnload()
     gameWrapper->UnhookEvent("Function CarComponent_Boost_TA.Active.EndState");
     gameWrapper->UnhookEvent("Function TAGame.GameEvent_TA.Destroyed");
 
-    if (isPluginOpen_)
-    {
-        isPluginOpen_ = false;
-        cvarManager->executeCommand("togglemenu " + GetMenuName());
-    }
+    TogglePlugin("onUnload", ToggleFlags_Hide);
 
     //ImGui::DestroyContext();
 }
@@ -187,11 +178,22 @@ void RocketStats::onUnload()
 #pragma region GameMgmt
 void RocketStats::ShowPlugin(std::string eventName)
 {
-    if (!isPluginOpen_)
+    TogglePlugin(eventName, ToggleFlags_Show);
+}
+
+void RocketStats::TogglePlugin(std::string eventName, ToggleFlags mode)
+{
+    if (mode == ToggleFlags_Toggle || (mode == ToggleFlags_Show && !isPluginOpen_) || (mode == ToggleFlags_Hide && isPluginOpen_))
     {
-        isPluginOpen_ = true;
+        isPluginOpen_ = !isPluginOpen_;
         cvarManager->executeCommand("togglemenu " + GetMenuName());
     }
+}
+
+void RocketStats::ToggleSettings(std::string eventName, ToggleFlags mode)
+{
+    if (mode == ToggleFlags_Toggle || (mode == ToggleFlags_Show && !isSettingsOpen_) || (mode == ToggleFlags_Hide && isSettingsOpen_))
+        isSettingsOpen_ = !isSettingsOpen_;
 }
 
 void RocketStats::GameStart(std::string eventName)
@@ -426,6 +428,8 @@ void RocketStats::SessionStats()
     session.win = tmp.win;
     session.loss = tmp.loss;
     session.isInit = true;
+
+    always.myMMR = session.myMMR;
 
     theme_refresh = 1;
 }
@@ -1239,6 +1243,9 @@ void RocketStats::RenderSettings()
 
     if (rs_title->IsLoadedForImGui())
     {
+        ImVec2 text_size;
+        std::string developers = "Developped by @Lyliiya & @NuSa_yt for @Maylie_tv";
+
         time(&current_time);
         const auto time_error = localtime_s(&local_time , &current_time);
 
@@ -1384,7 +1391,7 @@ void RocketStats::RenderSettings()
 
         ImGui::SetWindowFontScale(1.7f);
         ImGui::SetCursorPos({ 280, 185 });
-        ImVec2 text_size = ImGui::CalcTextSize(theme_render.name.c_str());
+        text_size = ImGui::CalcTextSize(theme_render.name.c_str());
         ImGui::TextColored(ImVec4{ 1.f, 1.f, 1.f, 1.f }, theme_render.name.c_str());
         ImGui::SetWindowFontScale(1.f);
         ImGui::SetCursorPos({ (285 + text_size.x), 192 });
@@ -1424,7 +1431,6 @@ void RocketStats::RenderSettings()
                 system("powershell -WindowStyle Hidden \"start https://www.paypal.com/paypalme/rocketstats\"");
         }
         ImGui::SameLine();
-        std::string developers = "Developped by @Lyliiya & @NuSa_yt for @Maylie_tv";
         text_size = ImGui::CalcTextSize(developers.c_str());
         ImGui::SetCursorPosX((settings_size.x - text_size.x) / 2);
         ImGui::Text(developers.c_str());
@@ -1436,7 +1442,16 @@ void RocketStats::RenderSettings()
     else
     {
         ImGui::SetWindowFontScale(1.5f);
-        ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Bad Installation");
+        ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Bad Installation - Please move your old files to the folder: data/RocketStats");
+        ImGui::SameLine();
+        ImGui::SetWindowFontScale(1.f);
+        ImGui::SetCursorPosX(settings_size.x - 80 - 7);
+        if (ImGui::Button("Reload All", { 80, 0 }))
+        {
+            LoadThemes();
+            ChangeTheme(RS_theme);
+            rs_title = LoadImg("RocketStats_images/title.png");
+        }
     }
 
     ImGui::End();

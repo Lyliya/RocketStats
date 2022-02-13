@@ -18,6 +18,13 @@ using json = nlohmann::json;
 
 namespace fs = std::filesystem;
 
+enum ToggleFlags_ {
+	ToggleFlags_Toggle,
+	ToggleFlags_Show,
+	ToggleFlags_Hide
+};
+typedef int ToggleFlags;
+
 struct Color {
 	bool enable = false;
 	ImColor color = ImGui::GetColorU32({ 255, 255, 255, 1 });
@@ -150,6 +157,8 @@ public:
 
 	// GameMgmt
 	void ShowPlugin(std::string eventName);
+	void TogglePlugin(std::string eventName, ToggleFlags mode = ToggleFlags_Toggle);
+	void ToggleSettings(std::string eventName, ToggleFlags mode = ToggleFlags_Toggle);
 	void GameStart(std::string eventName);
 	void GameEnd(std::string eventName);
 	void GameDestroyed(std::string eventName);
