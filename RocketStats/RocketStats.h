@@ -34,7 +34,6 @@ struct Element {
 	std::string name = "Unknown";
 	std::string type;
 	std::string value;
-	std::string font;
 	std::vector<ImVec2> positions;
 	ImVec2 size;
 	Color color;
@@ -50,7 +49,6 @@ struct Options {
 	int height;
 	float scale;
 	float opacity;
-	std::vector<std::string> fonts;
 };
 
 struct Stats {
@@ -68,7 +66,7 @@ struct Theme {
 	std::string author = "Unknown";
 	std::string version = "v1.0.0";
 	std::string date = "";
-	std::vector<std::string> fonts;
+	bool font = false;
 	std::vector<Element> elements;
 };
 
@@ -83,8 +81,9 @@ struct Vector2D {
 class RocketStats : public BakkesMod::Plugin::BakkesModPlugin, public BakkesMod::Plugin::PluginWindow
 {
 private:
-	//ImFont* font1;
-	//ImFont* font2;
+	ImFont* font_custom;
+	ImFont* font_default;
+	ImFontAtlas* atlas_custom;
 
 	std::shared_ptr<bool> enabled;
 	std::string rs_path = "RocketStats";
@@ -187,6 +186,7 @@ public:
 	void RenderElement(Element& element);
 
 	// File I / O
+	std::string GetPath(std::string _path = "", bool root = false);
 	bool ExistsPath(std::string _filename, bool root = false);
 	bool RemoveFile(std::string _filename, bool root = false);
 	std::string ReadFile(std::string _filename, bool root = false);

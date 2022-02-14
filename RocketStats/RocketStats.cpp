@@ -48,7 +48,7 @@ void RocketStats::LogImageLoadStatus(bool status, std::string imageName)
 
 std::shared_ptr<ImageWrapper> RocketStats::LoadImg(const std::string& _filename)
 {
-    fs::path _path = (gameWrapper->GetBakkesModPath().string() + "/" + rs_path + "/" + _filename);
+    fs::path _path = GetPath(_filename);
     return LoadImg(_path);
 }
 
@@ -78,7 +78,7 @@ void RocketStats::onLoad()
 
     if (!ExistsPath(rs_path, true))
         rs_path = "data/" + rs_path;
-    cvarManager->log("RS_path: " + gameWrapper->GetBakkesModPath().string() + "/" + rs_path);
+    cvarManager->log("RS_path: " + GetPath());
 
     LoadImgs();
     LoadThemes();
@@ -116,6 +116,10 @@ void RocketStats::onLoad()
     InitRank();
 
     // Register Cvars
+    cvarManager->registerCvar("cl_rocketstats_settings", (isSettingsOpen_ ? "1" : "0"), "Display RocketStats settings", true, true, 0, true, 1, true).addOnValueChanged([this](std::string old, CVarWrapper now) {
+        isSettingsOpen_ = now.getBoolValue();
+    });
+
     cvarManager->registerCvar("RS_in_file", std::to_string(RS_in_file), "Informations", true, true, 0, true, 1, true).addOnValueChanged([this](std::string old, CVarWrapper now) {
         if (!now.getBoolValue())
             return;
@@ -152,11 +156,7 @@ void RocketStats::onLoad()
     if (gameWrapper->IsInGame())
         TogglePlugin("IsInGame", ToggleFlags_Show);
 
-    //ImGui::CreateContext();
-
-    //ImGuiIO& io = ImGui::GetIO();
-    //font1 = io.Fonts->AddFontDefault();
-    //font2 = io.Fonts->AddFontFromFileTTF("C:/Users/pyrof/AppData/Roaming/bakkesmod/bakkesmod/data/RocketStats/RocketStats_themes/Arubinu42/fonts/cream-DEMO.ttf", 21.0f);
+    atlas_custom = IM_NEW(ImFontAtlas)();
 }
 
 void RocketStats::onUnload()
@@ -171,8 +171,6 @@ void RocketStats::onUnload()
     gameWrapper->UnhookEvent("Function TAGame.GameEvent_TA.Destroyed");
 
     TogglePlugin("onUnload", ToggleFlags_Hide);
-
-    //ImGui::DestroyContext();
 }
 #pragma endregion
 
@@ -194,7 +192,10 @@ void RocketStats::TogglePlugin(std::string eventName, ToggleFlags mode)
 void RocketStats::ToggleSettings(std::string eventName, ToggleFlags mode)
 {
     if (mode == ToggleFlags_Toggle || (mode == ToggleFlags_Show && !isSettingsOpen_) || (mode == ToggleFlags_Hide && isSettingsOpen_))
+    {
         isSettingsOpen_ = !isSettingsOpen_;
+        cvarManager->getCvar("cl_rocketstats_settings").setValue(isSettingsOpen_);
+    }
 }
 
 void RocketStats::GameStart(std::string eventName)
@@ -562,11 +563,7 @@ void RocketStats::LoadThemes()
     cvarManager->log("===== LoadThemes =====");
 
     themes = {};
-
-    std::string base = gameWrapper->GetBakkesModPath().string() + "/" + rs_path;
-    std::string theme_dir = "RocketStats_themes";
-    std::string theme_base = base + "/" + theme_dir;
-
+    std::string theme_base = GetPath("RocketStats_themes");
     if (fs::exists(theme_base))
     {
         for (const auto& entry : fs::directory_iterator(theme_base))
@@ -577,28 +574,6 @@ void RocketStats::LoadThemes()
                 struct Theme theme;
                 theme.name = theme_path.substr(theme_path.find_last_of("/\\") + 1);
                 cvarManager->log("Theme: " + theme.name);
-
-                std::string fonts_path = theme_base + "/" + theme.name + "/fonts";
-                if (fs::exists(fonts_path))
-                {
-                    for (const auto& fentry : fs::directory_iterator(fonts_path))
-                    {
-                        std::string font_path = fentry.path().u8string();
-                        std::string font_filename = font_path.substr(font_path.find_last_of("/\\") + 1);
-
-                        font_path = fonts_path + "/" + font_filename;
-                        if (fentry.is_regular_file() && font_filename.substr(font_filename.find_last_of(".")) == ".fnt")
-                        {
-                            std::string font_name = font_filename.substr(0, font_filename.find_last_of("."));
-                            cvarManager->log("Font: " + font_name);
-
-                            //auto gui = gameWrapper->GetGUIManager();
-                            //gui.LoadFont(font_name, font_path, 32);
-
-                            theme.fonts.push_back(font_name);
-                        }
-                    }
-                }
 
                 if (theme.name == "Default" || theme.name == "Redesigned")
                 {
@@ -655,6 +630,22 @@ bool RocketStats::ChangeTheme(int idx)
                 if (date.size() == 10 && date[2] == '/' && date[5] == '/')
                     theme_render.date = date;
             }
+
+            /*
+            if (atlas_custom && !atlas_custom->Locked)
+            {
+                atlas_custom->Clear();
+                font_default = atlas_custom->AddFontDefault();
+                theme_render.font = theme_config.contains("font");
+                font_custom = new ImFont();
+                if (theme_render.font)
+                {
+                    std::string fonts_path = GetPath("RocketStats_themes/" + theme.name + "/fonts/" + std::string(theme_config["font"]));
+                    font_custom = atlas_custom->AddFontFromFileTTF(fonts_path.c_str(), 21.f);
+                }
+                atlas_custom->Build();
+            }
+            */
 
             cvarManager->log("Theme changed: " + theme.name + " (old: " + ((themes.size() > RS_theme) ? themes.at(RS_theme).name : "Unknown") + ")");
             RS_theme = idx;
@@ -924,18 +915,11 @@ void RocketStats::RenderElement(Element& element)
         }
         else if (element.type == "text")
         {
-            //auto gui = gameWrapper->GetGUIManager();
-            //if (element.font.length())
-            //{
-            //    ImFont* font = gui.GetFont(element.font);
-            //    ImGui::PushFont(font);
-            //}
-
             ImGui::SetWindowFontScale(element.scale);
-            drawlist->AddText(element.positions.at(0), element.color.color, element.value.c_str()); // element.shadow element.wrap
-
-            //if (element.font.length())
-            //    ImGui::PopFont();
+            if (theme_render.font && font_custom && font_custom->IsLoaded())
+                drawlist->AddText(font_custom, ImGui::GetFontSize(), element.positions.at(0), element.color.color, element.value.c_str());
+            else
+                drawlist->AddText(element.positions.at(0), element.color.color, element.value.c_str());
         }
         else if (element.type == "line")
             drawlist->AddLine(element.positions.at(0), element.positions.at(1), element.color.color, element.size.x);
@@ -945,16 +929,21 @@ void RocketStats::RenderElement(Element& element)
 #pragma endregion
 
 #pragma region File I / O
-bool RocketStats::ExistsPath(std::string _filename, bool root)
+std::string RocketStats::GetPath(std::string _path, bool root)
 {
-    std::string _path = gameWrapper->GetBakkesModPath().string() + "/";
+    std::string _return = gameWrapper->GetBakkesModPath().string() + "/";
 
     if (root)
-        _path += _filename;
+        _return += _path;
     else
-        _path += "RocketStats\\" + _filename;
+        _return += rs_path + "/" + _path;
 
-    return fs::exists(_path);
+    return _return;
+}
+
+bool RocketStats::ExistsPath(std::string _filename, bool root)
+{
+    return fs::exists(GetPath(_filename, root));
 }
 
 bool RocketStats::RemoveFile(std::string _filename, bool root)
@@ -962,16 +951,9 @@ bool RocketStats::RemoveFile(std::string _filename, bool root)
     if (!ExistsPath(_filename, root))
         return true;
 
-    std::string _path = gameWrapper->GetBakkesModPath().string() + "/";
-
-    if (root)
-        _path += _filename;
-    else
-        _path += "RocketStats\\" + _filename;
-
     try
     {
-        return fs::remove(_path);
+        return fs::remove(GetPath(_filename, root));
     }
     catch (const std::exception&) {}
 
@@ -981,13 +963,7 @@ bool RocketStats::RemoveFile(std::string _filename, bool root)
 std::string RocketStats::ReadFile(std::string _filename, bool root)
 {
     std::string _value = "";
-    std::string _path = gameWrapper->GetBakkesModPath().string() + "/";
-
-    if (root)
-        _path += _filename;
-    else
-        _path += rs_path + "/" + _filename;
-
+    std::string _path = GetPath(_filename, root);
     if (fs::exists(_path) && fs::is_regular_file(_path) && (fs::status(_path).permissions() & fs::perms::owner_read) == fs::perms::owner_read)
     {
         std::ifstream stream(_path, std::ios::in | std::ios::binary);
@@ -1010,13 +986,7 @@ std::string RocketStats::ReadFile(std::string _filename, bool root)
 
 void RocketStats::WriteInFile(std::string _filename, std::string _value, bool root)
 {
-    std::string _path = gameWrapper->GetBakkesModPath().string() + "/";
-
-    if (root)
-        _path += _filename;
-    else
-        _path += rs_path + "/" + _filename;
-
+    std::string _path = GetPath(_filename, root);
     if (!fs::exists(_path) || fs::is_regular_file(_path))
     {
         std::ofstream stream(_path, std::ios::out | std::ios::trunc);
@@ -1237,7 +1207,8 @@ void RocketStats::Render()
 void RocketStats::RenderIcon()
 {
     float margin = 20.f;
-    float icon_size = 42.f;
+    float icon_size = 35.f;
+    bool ingame = (gameWrapper->IsInGame() || gameWrapper->IsInOnlineGame());
     ImVec2 mouse_pos = ImGui::GetIO().MousePos;
     ImVec2 screen_size = ImGui::GetIO().DisplaySize;
     ImDrawList* drawlist = ImGui::GetBackgroundDrawList();
@@ -1246,14 +1217,17 @@ void RocketStats::RenderIcon()
 
     bool hover = (mouse_pos.x > (icon_pos.x - icon_size - margin) && mouse_pos.x < (icon_pos.x + icon_size + margin));
     hover = (hover && (mouse_pos.y > (icon_pos.y - icon_size - margin) && mouse_pos.y < (icon_pos.y + icon_size + margin)));
-    if (hover)
+    if (!ingame || hover)
     {
-        drawlist->AddCircle({ icon_pos.x, icon_pos.y }, icon_size, ImColor{ 0.45f, 0.72f, 1.f, 0.8f }, 25, 4.f);
-        drawlist->AddCircleFilled({ icon_pos.x, icon_pos.y }, icon_size, ImColor{ 0.04f, 0.52f, 0.89f, 0.6f }, 25);
+        drawlist->AddCircle({ icon_pos.x, icon_pos.y }, icon_size, ImColor{ 0.45f, 0.72f, 1.f, (hover ? 0.8f : 0.4f) }, 25, 4.f);
+        drawlist->AddCircleFilled({ icon_pos.x, icon_pos.y }, icon_size, ImColor{ 0.04f, 0.52f, 0.89f, (hover ? 0.6f : 0.3f) }, 25);
 
-        ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
-        if (ImGui::IsMouseClicked(0))
-            ToggleSettings("MouseEvent");
+        if (hover)
+        {
+            ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+            if (ImGui::IsMouseClicked(0))
+                ToggleSettings("MouseEvent");
+        }
     }
 }
 
@@ -1293,8 +1267,7 @@ void RocketStats::RenderOverlay()
                 (theme_config.contains("width") ? int(theme_config["width"]) : 0),
                 (theme_config.contains("height") ? int(theme_config["height"]) : 0),
                 (RS_scale * (theme_config.contains("scale") ? float(theme_config["scale"]) : 1.f)),
-                (theme_config.contains("opacity") ? float(theme_config["opacity"]) : 0.f),
-                ((themes.size() > RS_theme) ? themes.at(RS_theme).fonts : std::vector<std::string>())
+                (theme_config.contains("opacity") ? float(theme_config["opacity"]) : 0.f)
             };
 
             const size_t floating_length = (RS_enable_float ? 2 : 0);
@@ -1490,7 +1463,7 @@ void RocketStats::RenderSettings()
         ImGui::SetWindowFontScale(1.f);
         ImGui::SetCursorPos({ (settings_size.x - 120), 168 });
         if (ImGui::Button("Open folder", { 110, 0 }))
-            system(("powershell -WindowStyle Hidden \"start \"\"" + gameWrapper->GetBakkesModPath().string() + "/" + rs_path + "\"\"\"").c_str());
+            system(("powershell -WindowStyle Hidden \"start \"\"" + GetPath() + "\"\"\"").c_str());
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Access theme folders or files for OBS");
         ImGui::SetCursorPos({ (settings_size.x - 120), 193 });
@@ -1550,6 +1523,14 @@ void RocketStats::RenderSettings()
         ImGui::Checkbox(cvarManager->getCvar("RS_onchange_scale").getDescription().c_str(), &RS_onchange_scale);
         ImGui::Checkbox(cvarManager->getCvar("RS_onchange_position").getDescription().c_str(), &RS_onchange_position);
         ImGui::EndGroup();
+
+        /*
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10);
+        ImGui::Separator();
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10);
+        float fps = ImGui::GetIO().Framerate;
+        ImGui::Text(("Framerate: " + std::to_string(fps)).c_str());
+        */
 
         ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10);
         ImGui::Separator();
@@ -1652,11 +1633,11 @@ bool RocketStats::IsActiveOverlay()
 
 void RocketStats::OnOpen()
 {
-    //isSettingsOpen_ = true;
+    //ToggleSettings("OnOpen", ToggleFlags_Show);
 }
 
 void RocketStats::OnClose()
 {
-    isSettingsOpen_ = false;
+    ToggleSettings("OnClose", ToggleFlags_Hide);
 }
 #pragma endregion

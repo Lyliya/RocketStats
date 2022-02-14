@@ -23,7 +23,7 @@ To do this, go to the BakkesMod menu (**press F2**) called "Bindings".
 Then click on **Add**, then on **None** and press the key you want to use to show/hide the overlay or menu.
 To finish, double-click on the first line of the list, type one of the commands below, before clicking twice on **Save**:
  - All RocketStats (overlay and menu): `togglemenu rocketstats`
- - Menu only: `RS_toggle_menu`
+ - Menu only: `toggle cl_rocketstats_settings 0 1`
 
 ## Overlay
 
