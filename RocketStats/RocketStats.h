@@ -86,6 +86,9 @@ private:
 	std::string rs_path = "RocketStats";
 	std::shared_ptr<ImageWrapper> rs_title;
 
+	bool escape_state = false;
+	std::string hide_value = "##";
+
 	tm local_time;
 	time_t current_time;
 
@@ -125,11 +128,19 @@ public:
 	bool RS_in_file = true;
 	bool RS_disp_obs = false;
 	bool RS_disp_overlay = true;
+	bool RS_enable_inmenu = true;
 	bool RS_enable_ingame = true;
 	bool RS_enable_boost = true;
 	bool RS_enable_float = false;
 	bool RS_onchange_scale = true;
 	bool RS_onchange_position = true;
+	bool RS_replace_mmr = false;
+	bool RS_hide_mmr = false;
+	bool RS_hide_mmrc = false;
+	bool RS_hide_mmrcc = false;
+	bool RS_hide_win = false;
+	bool RS_hide_loss = false;
+	bool RS_hide_streak = false;
 
 	float RS_x = 0.7f;
 	float RS_y = 0.575f;
@@ -199,6 +210,7 @@ public:
 	void WriteStreak();
 
 	int currentPlaylist = 0;
+	bool isInGame = false;
 	bool isGameEnded = false;
 	bool isGameStarted = false;
 	bool isBoosting = false;
