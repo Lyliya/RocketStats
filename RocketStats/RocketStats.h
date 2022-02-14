@@ -3,16 +3,16 @@
 #include "bakkesmod/plugin/bakkesmodplugin.h"
 #include "bakkesmod/plugin/pluginwindow.h"
 
+#include "json.hpp"
+#include "imgui/pch.h"
+#include "bakkesmod/wrappers/GuiManagerWrapper.h"
+
 #include <map>
 #include <fstream>
 #include <functional>
 #include <utils/parser.h>
 
 #include "Utils.h"
-
-#include "imgui/pch.h"
-
-#include "json.hpp"
 
 using json = nlohmann::json;
 
@@ -66,7 +66,8 @@ struct Theme {
 	std::string author = "Unknown";
 	std::string version = "v1.0.0";
 	std::string date = "";
-	bool font = false;
+	int font_size = 0;
+	std::string font_name = "";
 	std::vector<Element> elements;
 };
 
@@ -81,10 +82,6 @@ struct Vector2D {
 class RocketStats : public BakkesMod::Plugin::BakkesModPlugin, public BakkesMod::Plugin::PluginWindow
 {
 private:
-	ImFont* font_custom;
-	ImFont* font_default;
-	ImFontAtlas* atlas_custom;
-
 	std::shared_ptr<bool> enabled;
 	std::string rs_path = "RocketStats";
 	std::shared_ptr<ImageWrapper> rs_title;

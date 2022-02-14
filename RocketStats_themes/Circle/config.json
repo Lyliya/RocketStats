@@ -1,13 +1,14 @@
 {
-	"author":	"Rimey",
-	"version":	"v1.0.0",
-	"date":		"14/09/2019",
-	"x":		0.7,
-	"y":		0.74,
-	"width":	400,
-	"height":	300,
-	"scale":	1.25,
-	"opacity":	1.0,
+	"author":		"Rimey",
+	"version":		"v1.0.0",
+	"date":			"14/09/2019",
+	"x":			0.7,
+	"y":			0.74,
+	"width":		400,
+	"height":		300,
+	"font":			["Azonix.otf", 42],
+	"scale":		1.25,
+	"opacity":		1.0,
 	"elements": [
 		{
 			"name":			"background",
@@ -22,12 +23,12 @@
 			"type":			"text",
 			"value":		"{{MMRChange}}",
 			"sign":			"MMRChange",
-			"x":			245,
-			"y":			70,
+			"x":			243,
+			"y":			73,
 			"align":		"right",
 			"valign":		"middle",
 			"color":		[ 255, 255, 255 ],
-			"scale":		1.4
+			"scale":		0.45
 		},
 		{
 			"name":			"streak",
@@ -35,34 +36,34 @@
 			"value":		"{{Streak}}",
 			"chameleon":	"Streak",
 			"sign":			"Streak",
-			"x":			245,
-			"y":			108,
+			"x":			243,
+			"y":			111,
 			"align":		"right",
 			"valign":		"middle",
 			"color":		[ 0, 255, 0 ],
-			"scale":		1.2
+			"scale":		0.35
 		},
 		{
 			"name":			"win",
 			"type":			"text",
 			"value":		"{{Win}}",
-			"x":			245,
-			"y":			138,
+			"x":			243,
+			"y":			141,
 			"align":		"right",
 			"valign":		"middle",
 			"color":		[ 0, 255, 0 ],
-			"scale":		1
+			"scale":		0.28
 		},
 		{
 			"name":			"loss",
 			"type":			"text",
 			"value":		"{{Loss}}",
-			"x":			245,
-			"y":			165,
+			"x":			243,
+			"y":			167,
 			"align":		"right",
 			"valign":		"middle",
 			"color":		[ 255, 0, 0 ],
-			"scale":		1
+			"scale":		0.28
 		},
 		{
 			"name":			"rank",

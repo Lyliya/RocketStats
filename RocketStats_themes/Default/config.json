@@ -1,13 +1,13 @@
 {
-	"author":	"@Lyliiya & @NuSa_yt",
-	"version":	"v1.0.0",
-	"date":		"25/06/2019",
-	"x":		0.7,
-	"y":		0.575,
-	"width":	175,
-	"height":	155,
-	"scale":	1.0,
-	"opacity":	1.0,
+	"author":		"@Lyliiya & @NuSa_yt",
+	"version":		"v1.0.0",
+	"date":			"25/06/2019",
+	"x":			0.7,
+	"y":			0.575,
+	"width":		175,
+	"height":		155,
+	"scale":		1.0,
+	"opacity":		1.0,
 	"elements": [
 		{
 			"name":			"box",

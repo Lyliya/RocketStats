@@ -1,13 +1,14 @@
 {
-	"author":	"Arubinu42",
-	"version":	"v1.0.0",
-	"date":		"29/07/2019",
-	"x":		0.0,
-	"y":		0.0,
-	"width":	576,
-	"height":	40,
-	"scale":	1.0,
-	"opacity":	1.0,
+	"author":		"Arubinu42",
+	"version":		"v1.0.0",
+	"date":			"29/07/2019",
+	"x":			0.0,
+	"y":			0.0,
+	"width":		576,
+	"height":		40,
+	"font":			["cream.ttf", 42],
+	"scale":		1.0,
+	"opacity":		1.0,
 	"elements": [
 		{
 			"name":			"ltriangle",
@@ -62,7 +63,7 @@
 			"align":		"right",
 			"valign":		"middle",
 			"color":		[ 255, 255, 255 ],
-			"scale":		1.2
+			"scale":		0.5
 		},
 		{
 			"name":			"win_separator",
@@ -72,7 +73,7 @@
 			"x2":			"170px + 13px",
 			"y2":			"100% - 8px",
 			"color":		[ 255, 255, 255, 0.1 ],
-			"width":		1
+			"scale":		1
 		},
 		{
 			"name":			"win_image",
@@ -93,7 +94,7 @@
 			"align":		"right",
 			"valign":		"middle",
 			"color":		[ 255, 255, 255 ],
-			"scale":		1.2
+			"scale":		0.5
 		},
 		{
 			"name":			"loss_separator",
@@ -103,7 +104,7 @@
 			"x2":			"300px + 13px",
 			"y2":			"100% - 8px",
 			"color":		[ 255, 255, 255, 0.1 ],
-			"width":		1
+			"scale":		1
 		},
 		{
 			"name":			"loss_image",
@@ -124,7 +125,7 @@
 			"align":		"right",
 			"valign":		"middle",
 			"color":		[ 255, 255, 255 ],
-			"scale":		1.2
+			"scale":		0.5
 		},
 		{
 			"name":			"streak_separator",
@@ -134,7 +135,7 @@
 			"x2":			"430px + 13px",
 			"y2":			"100% - 8px",
 			"color":		[ 255, 255, 255, 0.1 ],
-			"width":		1
+			"scale":		1
 		},
 		{
 			"name":			"streak_image",
@@ -156,7 +157,7 @@
 			"align":		"right",
 			"valign":		"middle",
 			"color":		[ 255, 255, 255 ],
-			"scale":		1.2
+			"scale":		0.5
 		}
 	]
 }

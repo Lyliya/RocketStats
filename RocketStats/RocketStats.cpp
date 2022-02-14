@@ -155,8 +155,6 @@ void RocketStats::onLoad()
 
     if (gameWrapper->IsInGame())
         TogglePlugin("IsInGame", ToggleFlags_Show);
-
-    atlas_custom = IM_NEW(ImFontAtlas)();
 }
 
 void RocketStats::onUnload()
@@ -597,7 +595,9 @@ bool RocketStats::ChangeTheme(int idx)
         theme_render.name,
         theme_render.author,
         theme_render.version,
-        theme_render.date
+        theme_render.date,
+        theme_render.font_size,
+        theme_render.font_name
     };
 
     try
@@ -631,21 +631,32 @@ bool RocketStats::ChangeTheme(int idx)
                     theme_render.date = date;
             }
 
-            /*
-            if (atlas_custom && !atlas_custom->Locked)
+            theme_render.font_name = "";
+            if (theme_config.contains("font") && theme_config["font"].is_array() && theme_config["font"].size() == 2)
             {
-                atlas_custom->Clear();
-                font_default = atlas_custom->AddFontDefault();
-                theme_render.font = theme_config.contains("font");
-                font_custom = new ImFont();
-                if (theme_render.font)
+                if (theme_config["font"][0].is_string() && theme_config["font"][1].is_number_unsigned())
                 {
-                    std::string fonts_path = GetPath("RocketStats_themes/" + theme.name + "/fonts/" + std::string(theme_config["font"]));
-                    font_custom = atlas_custom->AddFontFromFileTTF(fonts_path.c_str(), 21.f);
+                    int font_size = theme_config["font"][1];
+                    std::string font_file = theme_config["font"][0];
+
+                    std::string font_prefix = "rs_";
+                    std::string font_path = ("RocketStats_themes/" + theme_render.name + "/fonts/" + font_file);
+                    std::string font_dest = ("data/fonts/" + font_prefix + font_file);
+
+                    if (font_file.size() && font_size > 0 && ExistsPath(font_path))
+                    {
+                        if (!ExistsPath(font_dest, true))
+                            fs::copy(GetPath(font_path), GetPath(font_dest, true));
+
+                        theme_render.font_size = font_size;
+                        theme_render.font_name = font_prefix + (font_file.substr(0, font_file.find_last_of('.'))) + "_" + std::to_string(font_size);
+
+                        GuiManagerWrapper gui = gameWrapper->GetGUIManager();
+                        gui.LoadFont(theme_render.font_name, (font_prefix + font_file), font_size);
+                        cvarManager->log("Load font: " + theme_render.font_name);
+                    }
                 }
-                atlas_custom->Build();
             }
-            */
 
             cvarManager->log("Theme changed: " + theme.name + " (old: " + ((themes.size() > RS_theme) ? themes.at(RS_theme).name : "Unknown") + ")");
             RS_theme = idx;
@@ -662,6 +673,8 @@ bool RocketStats::ChangeTheme(int idx)
         theme_render.author = old.author;
         theme_render.version = old.version;
         theme_render.date = old.date;
+        theme_render.font_size = old.font_size;
+        theme_render.font_name = old.font_name;
     }
 
     cvarManager->log("===== !ChangeTheme =====");
@@ -739,14 +752,20 @@ struct Element RocketStats::CalculateElement(json& element, Options& options, bo
                 if (!calculated.value.size())
                     return calculated;
 
-                //if (element.contains("font") && element["font"].is_string() && element["font"].size())
-                //{
-                //    if (std::find(options.fonts.begin(), options.fonts.end(), element["font"]) != options.fonts.end())
-                //        calculated.font = element["font"];
-                //}
+                ImVec2 string_size;
+                ImGui::SetWindowFontScale(1.f);
+                if (theme_render.font_name.size())
+                {
+                    calculated.scale *= theme_render.font_size;
 
-                ImGui::SetWindowFontScale(calculated.scale);
-                const ImVec2 string_size = ImGui::CalcTextSize(calculated.value.c_str());
+                    GuiManagerWrapper gui = gameWrapper->GetGUIManager();
+                    string_size = gui.GetFont(theme_render.font_name)->CalcTextSizeA(calculated.scale, FLT_MAX, 0.f, calculated.value.c_str());
+                }
+                else
+                {
+                    ImGui::SetWindowFontScale(calculated.scale);
+                    string_size = ImGui::CalcTextSize(calculated.value.c_str());
+                }
 
                 if (element.contains("align") && element["align"].is_string())
                 {
@@ -823,8 +842,6 @@ struct Element RocketStats::CalculateElement(json& element, Options& options, bo
                     cvarManager->log("load image: " + image_path);
                     theme_images[calculated.value] = LoadImg(image_path);
                 }
-                //else
-                //    LogImageLoadStatus(theme_images[calculated.value]->IsLoadedForImGui(), (RS_theme + "->" + calculated.value));
 
                 if (theme_images[calculated.value]->IsLoadedForImGui())
                 {
@@ -915,11 +932,20 @@ void RocketStats::RenderElement(Element& element)
         }
         else if (element.type == "text")
         {
-            ImGui::SetWindowFontScale(element.scale);
-            if (theme_render.font && font_custom && font_custom->IsLoaded())
-                drawlist->AddText(font_custom, ImGui::GetFontSize(), element.positions.at(0), element.color.color, element.value.c_str());
+            ImGui::SetWindowFontScale(1);
+            if (theme_render.font_name.size())
+            {
+                GuiManagerWrapper gui = gameWrapper->GetGUIManager();
+                ImFont* font = gui.GetFont(theme_render.font_name);
+
+                if (font && font->IsLoaded())
+                    drawlist->AddText(font, element.scale, element.positions.at(0), element.color.color, element.value.c_str());
+            }
             else
+            {
+                ImGui::SetWindowFontScale(element.scale);
                 drawlist->AddText(element.positions.at(0), element.color.color, element.value.c_str());
+            }
         }
         else if (element.type == "line")
             drawlist->AddLine(element.positions.at(0), element.positions.at(1), element.color.color, element.size.x);
@@ -1333,7 +1359,7 @@ void RocketStats::RenderSettings()
 
     ImGui::Begin(menuTitle_.c_str(), &isSettingsOpen_, ImGuiWindowFlags_None);
 
-    if (rs_title->IsLoadedForImGui())
+    if (rs_title != nullptr && rs_title->IsLoadedForImGui())
     {
         ImVec2 text_size;
         ImVec2 image_pos;
