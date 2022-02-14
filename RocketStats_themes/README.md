@@ -38,6 +38,7 @@ You can see an example of an empty theme file, we will add the different element
 	"y":		0.0,
 	"width":	576,
 	"height":	40,
+	"font":		["myfont.ttf", 42],
 	"scale":	1.0,
 	"opacity":	1.0,
 	"elements": [
@@ -47,10 +48,11 @@ You can see an example of an empty theme file, we will add the different element
 
 You find the name of the author of the theme (you), the version and the date of this one for the basic information.
 Now the basic settings:
- - Position (adjustable from the interface then, these are the only ones to be in percentage from 0.0 to 1.0): **x** et **y**
- - Taille (allows you to use percentages): **width**, **height**
- - Zoom (adjustable from the interface then): **scale**
- - Transparence (more or less visible): **opacity**
+ - `x` et `y`: position (adjustable from the interface then, these are the only ones to be in percentage from 0.0 to 1.0)
+ - `width` and `height`: size (allows you to use percentages)
+ - `font`: if you want to use a specific font (the name of the file in the `fonts` folder followed by the desired base size)
+ - `scale`: zoom (adjustable from the interface then)
+ - `opacity`: transparency (more or less visible)
 
 The last **elements** will include your **texts**, **shapes**, and **images**. Add a new line after this one to separate the opening and closing brackets.
 Now you will be able to add the elements which are presented below (these must be separated by a comma, example at the very bottom).
