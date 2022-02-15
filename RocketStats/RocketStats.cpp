@@ -726,25 +726,26 @@ struct Element RocketStats::CalculateElement(json& element, Options& options, bo
             ImVec2 element_pos = { float(options.x + element_2d.x), float(options.y + element_2d.y) };
             ImVec2 element_size = { float(element_2d.width), float(element_2d.height) };
             const float element_scale = (element.contains("scale") ? float(element["scale"]) : 1.0f);
+            const float element_opacity = (options.opacity * (element.contains("opacity") ? float(element["opacity"]) : 1.0f));
 
             calculated.scale = (element_scale * options.scale);
 
             calculated.color.enable = true;
             if (element.contains("color") && element["color"].is_array())
-                calculated.color = { true, Utils::GetImColor(element["color"], options.opacity) };
+                calculated.color = { true, Utils::GetImColor(element["color"], element_opacity) };
 
             if (element.contains("fill") && element["fill"].is_array())
-                calculated.fill = { true, Utils::GetImColor(element["fill"], options.opacity) };
+                calculated.fill = { true, Utils::GetImColor(element["fill"], element_opacity) };
 
             if (element.contains("stroke") && element["stroke"].is_array())
-                calculated.stroke = { true, Utils::GetImColor(element["stroke"], options.opacity) };
+                calculated.stroke = { true, Utils::GetImColor(element["stroke"], element_opacity) };
 
             if (element["type"] == "text" && element["value"].size())
             {
                 calculated.scale *= 2.0f;
                 calculated.value = element["value"];
 
-                Utils::ReplaceVars(calculated.value, theme_vars, [this, &element, &options, &calculated](const std::string &key, std::string &value) {
+                Utils::ReplaceVars(calculated.value, theme_vars, [this, &element, &options, &calculated, &element_opacity](const std::string &key, std::string &value) {
                     if (element.contains("sign") && element["sign"] == key && value != hide_value)
                     {
                         bool positive = (value.at(0) != '-');
@@ -755,7 +756,7 @@ struct Element RocketStats::CalculateElement(json& element, Options& options, bo
                     if (element.contains("chameleon") && element["chameleon"] == key)
                     {
                         bool positive = (value.at(0) != '-');
-                        calculated.color.color = Utils::GetImColor({ float(positive ? 30 : 224), float(positive ? 224 : 24), float(positive ? 24 : 24) }, options.opacity);
+                        calculated.color.color = Utils::GetImColor({ float(positive ? 30 : 224), float(positive ? 224 : 24), float(positive ? 24 : 24) }, element_opacity);
                     }
                 });
 
@@ -839,6 +840,9 @@ struct Element RocketStats::CalculateElement(json& element, Options& options, bo
             {
                 calculated.scale *= 0.5f;
                 calculated.value = element["file"];
+
+                if (!element.contains("color"))
+                    calculated.color = { true, Utils::GetImColor({ 255.f, 255.f, 255.f }, element_opacity) };
 
                 if (calculated.value == "{{Rank}}")
                 {
@@ -935,7 +939,7 @@ void RocketStats::RenderElement(Element& element)
             if (image->IsLoadedForImGui())
             {
                 if (element.size.x && element.size.y)
-                    drawlist->AddImage(image->GetImGuiTex(), element.positions.at(0), element.size);
+                    drawlist->AddImage(image->GetImGuiTex(), element.positions.at(0), element.size, ImVec2{ 0, 0 }, ImVec2{ 1, 1 }, element.color.color);
                 else
                     theme_refresh = 1;
             }
@@ -1101,13 +1105,14 @@ void RocketStats::ReadConfig()
                     if (config["settings"]["onchange_position"].is_boolean())
                         RS_onchange_position = config["settings"]["onchange_position"];
 
+                    if (config["settings"]["replace_mmr"].is_boolean())
+                        RS_replace_mmr = config["settings"]["replace_mmr"];
                     if (config["settings"]["hide_mmr"].is_boolean())
                         RS_hide_mmr = config["settings"]["hide_mmr"];
                     if (config["settings"]["hide_mmrc"].is_boolean())
                         RS_hide_mmrc = config["settings"]["hide_mmrc"];
                     if (config["settings"]["hide_mmrcc"].is_boolean())
                         RS_hide_mmrcc = config["settings"]["hide_mmrcc"];
-
                     if (config["settings"]["hide_win"].is_boolean())
                         RS_hide_win = config["settings"]["hide_win"];
                     if (config["settings"]["hide_loss"].is_boolean())
@@ -1170,6 +1175,7 @@ void RocketStats::WriteConfig()
     tmp["settings"]["float"] = RS_enable_float;
     tmp["settings"]["onchange_scale"] = RS_onchange_scale;
     tmp["settings"]["onchange_position"] = RS_onchange_position;
+    tmp["settings"]["replace_mmr"] = RS_replace_mmr;
     tmp["settings"]["hide_mmr"] = RS_hide_mmr;
     tmp["settings"]["hide_mmrc"] = RS_hide_mmrc;
     tmp["settings"]["hide_mmrcc"] = RS_hide_mmrcc;
@@ -1331,7 +1337,7 @@ void RocketStats::RenderOverlay()
                 (theme_config.contains("width") ? int(theme_config["width"]) : 0),
                 (theme_config.contains("height") ? int(theme_config["height"]) : 0),
                 (RS_scale * (theme_config.contains("scale") ? float(theme_config["scale"]) : 1.f)),
-                (theme_config.contains("opacity") ? float(theme_config["opacity"]) : 0.f)
+                (RS_opacity * (theme_config.contains("opacity") ? float(theme_config["opacity"]) : 1.f))
             };
 
             const size_t floating_length = (RS_enable_float ? 2 : 0);
@@ -1693,13 +1699,14 @@ void RocketStats::RenderSettings()
     if (RS_onchange_position != cvarManager->getCvar("RS_onchange_position").getBoolValue())
         cvarManager->getCvar("RS_onchange_position").setValue(RS_onchange_position);
 
+    if (RS_replace_mmr != cvarManager->getCvar("RS_replace_mmr").getBoolValue())
+        cvarManager->getCvar("RS_replace_mmr").setValue(RS_replace_mmr);
     if (RS_hide_mmr != cvarManager->getCvar("RS_hide_mmr").getBoolValue())
         cvarManager->getCvar("RS_hide_mmr").setValue(RS_hide_mmr);
     if (RS_hide_mmrc != cvarManager->getCvar("RS_hide_mmrc").getBoolValue())
         cvarManager->getCvar("RS_hide_mmrc").setValue(RS_hide_mmrc);
     if (RS_hide_mmrcc != cvarManager->getCvar("RS_hide_mmrcc").getBoolValue())
         cvarManager->getCvar("RS_hide_mmrcc").setValue(RS_hide_mmrcc);
-
     if (RS_hide_win != cvarManager->getCvar("RS_hide_win").getBoolValue())
         cvarManager->getCvar("RS_hide_win").setValue(RS_hide_win);
     if (RS_hide_loss != cvarManager->getCvar("RS_hide_loss").getBoolValue())

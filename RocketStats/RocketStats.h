@@ -27,7 +27,7 @@ typedef int ToggleFlags;
 
 struct Color {
 	bool enable = false;
-	ImColor color = ImGui::GetColorU32({ 255, 255, 255, 1 });
+	ImColor color = ImGui::GetColorU32({ 255.f, 255.f, 255.f, 1.f });
 };
 
 struct Element {
@@ -145,6 +145,7 @@ public:
 	float RS_x = 0.7f;
 	float RS_y = 0.575f;
 	float RS_scale = 1.f;
+	float RS_opacity = 1.f;
 
 	bool RS_x_edit = false;
 	bool RS_y_edit = false;
