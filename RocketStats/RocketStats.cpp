@@ -139,9 +139,10 @@ void RocketStats::onLoad()
             now.setValue(old);
     });
 
-    cvarManager->registerCvar("RS_x", std::to_string(RS_x), "X", true, true, 0, true, 1.f, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("RS_y", std::to_string(RS_y), "Y", true, true, 0, true, 1.f, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("RS_scale", std::to_string(RS_scale), "Scale", true, true, 0, true, 10.f, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_x", std::to_string(RS_x), "X", true, true, 0.f, true, 1.f, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_y", std::to_string(RS_y), "Y", true, true, 0.f, true, 1.f, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_scale", std::to_string(RS_scale), "Scale", true, true, 0.f, true, 10.f, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_opacity", std::to_string(RS_opacity), "Opacity", true, true, 0.f, true, 1.f, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
 
     cvarManager->registerCvar("RS_disp_overlay", (RS_disp_overlay ? "1" : "0"), "Overlay", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
 
@@ -1073,9 +1074,6 @@ void RocketStats::ReadConfig()
                         }
                     }
 
-                    if (config["settings"]["scale"].is_number_unsigned() || config["settings"]["scale"].is_number_integer() || config["settings"]["scale"].is_number_float())
-                        RS_scale = config["settings"]["scale"];
-
                     if (config["settings"]["position"].is_array() && config["settings"]["position"].size() == 2)
                     {
                         if (config["settings"]["position"][0].is_number_unsigned() || config["settings"]["position"][0].is_number_integer() || config["settings"]["position"][0].is_number_float())
@@ -1084,6 +1082,10 @@ void RocketStats::ReadConfig()
                         if (config["settings"]["position"][1].is_number_unsigned() || config["settings"]["position"][1].is_number_integer() || config["settings"]["position"][1].is_number_float())
                             RS_y = config["settings"]["position"][1];
                     }
+                    if (config["settings"]["scale"].is_number_unsigned() || config["settings"]["scale"].is_number_integer() || config["settings"]["scale"].is_number_float())
+                        RS_scale = config["settings"]["scale"];
+                    if (config["settings"]["opacity"].is_number_unsigned() || config["settings"]["opacity"].is_number_integer() || config["settings"]["opacity"].is_number_float())
+                        RS_opacity = config["settings"]["opacity"];
 
                     if (config["settings"]["overlay"].is_boolean())
                         RS_disp_overlay = config["settings"]["overlay"];
@@ -1165,8 +1167,9 @@ void RocketStats::WriteConfig()
     tmp["settings"] = {};
     tmp["settings"]["mode"] = RS_mode;
     tmp["settings"]["theme"] = theme_render.name;
-    tmp["settings"]["scale"] = RS_scale;
     tmp["settings"]["position"] = { RS_x, RS_y };
+    tmp["settings"]["scale"] = RS_scale;
+    tmp["settings"]["opacity"] = RS_opacity;
     tmp["settings"]["overlay"] = RS_disp_overlay;
     tmp["settings"]["obs"] = RS_disp_obs;
     tmp["settings"]["inmeny"] = RS_enable_inmenu;
@@ -1481,70 +1484,82 @@ void RocketStats::RenderSettings()
         if (ImGui::ArrowButton("##themes_right", ImGuiDir_Right) && themes.size() && RS_theme < (themes.size() - 1))
             ++RS_theme;
 
-        ImGui::SetCursorPos({ 45, 120 });
-        if (ImGui::Button(cvarManager->getCvar("RS_scale").getDescription().c_str(), { 45, 0 }))
-            RS_scale_edit = !RS_scale_edit;
-        if (ImGui::IsItemHovered())
-            ImGui::SetTooltip("Choose the size of the overlay");
-        ImGui::SetCursorPos({ 85, 120 });
-        ImGui::SetNextItemWidth(150);
-        if (RS_scale_edit)
-            ImGui::InputFloat("##scale", &RS_scale, 0.1f, 1.f, "%.3f");
-        else
-            ImGui::SliderFloat("##scale", &RS_scale, 0.f, 10.f, "%.3f");
-
-        ImGui::SetCursorPos({ 280, 120 });
-        if (ImGui::Button(cvarManager->getCvar("RS_x").getDescription().c_str(), { 45, 0 }))
+        ImGui::SetCursorPos({ 190, 120 });
+        if (ImGui::Button(cvarManager->getCvar("RS_x").getDescription().c_str(), { 65, 0 }))
             RS_x_edit = !RS_x_edit;
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Changes the horizontal position of the overlay");
-        ImGui::SetCursorPos({ 320, 120 });
+        ImGui::SetCursorPos({ 245, 120 });
         ImGui::SetNextItemWidth(150);
         if (RS_x_edit)
             ImGui::InputFloat("##x_position", &RS_x, 0.001f, 0.1f, "%.3f");
         else
             ImGui::SliderFloat("##x_position", &RS_x, 0.f, 1.f, "%.3f");
 
-        ImGui::SetCursorPos({ 515, 120 });
-        if (ImGui::Button(cvarManager->getCvar("RS_y").getDescription().c_str(), { 45, 0 }))
+        ImGui::SetCursorPos({ 465, 120 });
+        if (ImGui::Button(cvarManager->getCvar("RS_y").getDescription().c_str(), { 65, 0 }))
             RS_y_edit = !RS_y_edit;
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Changes the vertical position of the overlay");
-        ImGui::SetCursorPos({ 555, 120 });
+        ImGui::SetCursorPos({ 520, 120 });
         ImGui::SetNextItemWidth(150);
         if (RS_y_edit)
             ImGui::InputFloat("##y_position", &RS_y, 0.001f, 0.1f, "%.3f");
         else
             ImGui::SliderFloat("##y_position", &RS_y, 0.f, 1.f, "%.3f");
 
-        ImGui::SetCursorPosY(155);
+        ImGui::SetCursorPos({ 70, 165 });
+        if (ImGui::Button(cvarManager->getCvar("RS_scale").getDescription().c_str(), { 65, 0 }))
+            RS_scale_edit = !RS_scale_edit;
+        if (ImGui::IsItemHovered())
+            ImGui::SetTooltip("Choose the size of the overlay");
+        ImGui::SetCursorPos({ 125, 165 });
+        ImGui::SetNextItemWidth(150);
+        if (RS_scale_edit)
+            ImGui::InputFloat("##scale", &RS_scale, 0.1f, 1.f, "%.3f");
+        else
+            ImGui::SliderFloat("##scale", &RS_scale, 0.f, 10.f, "%.3f");
+
+        ImGui::SetCursorPos({ 345, 165 });
+        if (ImGui::Button(cvarManager->getCvar("RS_opacity").getDescription().c_str(), { 65, 0 }))
+            RS_opacity_edit = !RS_opacity_edit;
+        if (ImGui::IsItemHovered())
+            ImGui::SetTooltip("Choose the opacity of the overlay");
+        ImGui::SetCursorPos({ 400, 165 });
+        ImGui::SetNextItemWidth(150);
+        if (RS_opacity_edit)
+            ImGui::InputFloat("##opacity", &RS_opacity, 0.001f, 0.1f, "%.3f");
+        else
+            ImGui::SliderFloat("##opacity", &RS_opacity, 0.f, 1.f, "%.3f");
+
+        ImGui::SetCursorPosY(200);
         ImGui::Separator();
 
-        ImGui::SetCursorPos({ 0, 165 });
+        ImGui::SetCursorPos({ 0, 210 });
         image_pos = { p0.x + ImGui::GetCursorPosX(), p0.y + ImGui::GetCursorPosY() };
         drawlist->AddImage(rs_title->GetImGuiTex(), image_pos, { (image_size.X / 2) + image_pos.x, (image_size.Y / 2) + image_pos.y });
 
         ImGui::SetWindowFontScale(1.7f);
-        ImGui::SetCursorPos({ 23, 190 });
+        ImGui::SetCursorPos({ 23, 235 });
         ImGui::Checkbox("##overlay", &RS_disp_overlay);
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Displays the overlay on the game screen");
 
-        ImGui::SetCursorPos({ 63, 192 });
+        ImGui::SetCursorPos({ 63, 237 });
         ImGui::TextColored(ImVec4{ 0.2f, 0.2f, 0.2f, 1.f }, Utils::toupper(cvarManager->getCvar("RS_disp_overlay").getDescription()).c_str());
 
         ImGui::SetWindowFontScale(1.f);
-        ImGui::SetCursorPos({ (settings_size.x - 120), 168 });
+        ImGui::SetCursorPos({ (settings_size.x - 120), 213 });
         if (ImGui::Button("Open folder", { 110, 0 }))
             system(("powershell -WindowStyle Hidden \"start \"\"" + GetPath() + "\"\"\"").c_str());
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Access theme folders or files for OBS");
-        ImGui::SetCursorPos({ (settings_size.x - 120), 193 });
+        ImGui::SetCursorPos({ (settings_size.x - 120), 238 });
         if (ImGui::Button("Reload Theme", { 88, 0 }))
             ChangeTheme(RS_theme);
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Refresh current theme information (JSON and images)");
-        ImGui::SetCursorPos({ (settings_size.x - 27), 193 });
+        ImGui::SetCursorPos({ (settings_size.x - 27), 238 });
         if (ImGui::Button("A", { 17, 0 }))
         {
             std::string name = theme_render.name;
@@ -1560,24 +1575,24 @@ void RocketStats::RenderSettings()
         }
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Reloads all the themes (adds or removes depending on the folders)");
-        ImGui::SetCursorPos({ (settings_size.x - 120), 218 });
+        ImGui::SetCursorPos({ (settings_size.x - 120), 263 });
         if (ImGui::Button("Reset Stats", { 110, 0 }))
             ResetStats();
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Resets all plugin information for all modes (MMR, Win, Loss, etc.)");
 
         ImGui::SetWindowFontScale(1.7f);
-        ImGui::SetCursorPos({ 280, 185 });
+        ImGui::SetCursorPos({ 280, 230 });
         text_size = ImGui::CalcTextSize(theme_render.name.c_str());
         ImGui::TextColored(ImVec4{ 1.f, 1.f, 1.f, 1.f }, theme_render.name.c_str());
         ImGui::SetWindowFontScale(1.f);
-        ImGui::SetCursorPos({ (285 + text_size.x), 192 });
+        ImGui::SetCursorPos({ (285 + text_size.x), 237 });
         ImGui::TextColored(ImVec4{ 1.f, 1.f, 1.f, 0.5f }, (theme_render.version + (theme_render.date.size() ? (" - " + theme_render.date) : "")).c_str());
-        ImGui::SetCursorPos({ 290, 209 });
+        ImGui::SetCursorPos({ 290, 254 });
         ImGui::TextColored(ImVec4{ 1.f, 1.f, 1.f, 0.8f }, ("Theme by " + theme_render.author).c_str());
 
         ImGui::SetWindowFontScale(1.f);
-        ImGui::SetCursorPos({ 25, 255 });
+        ImGui::SetCursorPos({ 25, 300 });
         ImGui::BeginGroup();
         ImGui::Checkbox(cvarManager->getCvar("RS_disp_obs").getDescription().c_str(), &RS_disp_obs);
         ImGui::Checkbox(cvarManager->getCvar("RS_enable_inmenu").getDescription().c_str(), &RS_enable_inmenu);
@@ -1659,21 +1674,27 @@ void RocketStats::RenderSettings()
     if (RS_scale < 0)
         RS_scale = 0;
 
+    if (RS_opacity < 0)
+        RS_opacity = 0;
+    else if (RS_opacity > 1)
+        RS_opacity = 1;
+
     if (RS_mode != cvarManager->getCvar("RS_mode").getIntValue())
         cvarManager->getCvar("RS_mode").setValue(RS_mode);
     if (RS_theme != cvarManager->getCvar("RS_theme").getIntValue())
         cvarManager->getCvar("RS_theme").setValue(RS_theme);
 
-    if (RS_scale != cvarManager->getCvar("RS_scale").getFloatValue())
-        cvarManager->getCvar("RS_scale").setValue(RS_scale);
     if (RS_x != cvarManager->getCvar("RS_x").getFloatValue())
         cvarManager->getCvar("RS_x").setValue(RS_x);
     if (RS_y != cvarManager->getCvar("RS_y").getFloatValue())
         cvarManager->getCvar("RS_y").setValue(RS_y);
+    if (RS_scale != cvarManager->getCvar("RS_scale").getFloatValue())
+        cvarManager->getCvar("RS_scale").setValue(RS_scale);
+    if (RS_opacity != cvarManager->getCvar("RS_opacity").getFloatValue())
+        cvarManager->getCvar("RS_opacity").setValue(RS_opacity);
 
     if (RS_disp_overlay != cvarManager->getCvar("RS_disp_overlay").getBoolValue())
         cvarManager->getCvar("RS_disp_overlay").setValue(RS_disp_overlay);
-
     if (RS_disp_obs != cvarManager->getCvar("RS_disp_obs").getBoolValue())
         cvarManager->getCvar("RS_disp_obs").setValue(RS_disp_obs);
     if (RS_enable_inmenu != cvarManager->getCvar("RS_enable_inmenu").getBoolValue())

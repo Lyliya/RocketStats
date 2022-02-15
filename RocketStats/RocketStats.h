@@ -150,6 +150,7 @@ public:
 	bool RS_x_edit = false;
 	bool RS_y_edit = false;
 	bool RS_scale_edit = false;
+	bool RS_opacity_edit = false;
 
 	// Utils
 	Stats GetStats();
