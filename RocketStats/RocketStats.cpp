@@ -77,8 +77,14 @@ void RocketStats::onLoad()
     // notifierToken = gameWrapper->GetMMRWrapper().RegisterMMRNotifier(std::bind(&RocketStats::UpdateMMR, this, std::placeholders::_1));
 
     if (!ExistsPath(rs_path, true))
+    {
+        rs_fonts = "../";
         rs_path = "data/" + rs_path;
+    }
+    rs_fonts += "RocketStats";
+
     cvarManager->log("RS_path: " + GetPath());
+    cvarManager->log("RS_fonts: " + GetPath("", true) + "data/fonts/" + rs_fonts);
 
     LoadImgs();
     LoadThemes();
@@ -652,18 +658,15 @@ bool RocketStats::ChangeTheme(int idx)
 
                     std::string font_prefix = "rs_";
                     std::string font_path = ("RocketStats_themes/" + theme_render.name + "/fonts/" + font_file);
-                    std::string font_dest = ("data/fonts/" + font_prefix + font_file);
+                    std::string font_dest = (rs_fonts + "/" + font_path);
 
                     if (font_file.size() && font_size > 0 && ExistsPath(font_path))
                     {
-                        if (!ExistsPath(font_dest, true))
-                            fs::copy(GetPath(font_path), GetPath(font_dest, true));
-
                         theme_render.font_size = font_size;
                         theme_render.font_name = font_prefix + (font_file.substr(0, font_file.find_last_of('.'))) + "_" + std::to_string(font_size);
 
                         GuiManagerWrapper gui = gameWrapper->GetGUIManager();
-                        gui.LoadFont(theme_render.font_name, (font_prefix + font_file), font_size);
+                        gui.LoadFont(theme_render.font_name, font_dest, font_size);
                         cvarManager->log("Load font: " + theme_render.font_name);
                     }
                 }

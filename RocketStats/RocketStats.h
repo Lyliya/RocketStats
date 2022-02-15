@@ -84,6 +84,7 @@ class RocketStats : public BakkesMod::Plugin::BakkesModPlugin, public BakkesMod:
 private:
 	std::shared_ptr<bool> enabled;
 	std::string rs_path = "RocketStats";
+	std::string rs_fonts = "../../";
 	std::shared_ptr<ImageWrapper> rs_title;
 
 	bool escape_state = false;
