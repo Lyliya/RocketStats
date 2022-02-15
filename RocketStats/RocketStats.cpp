@@ -1284,14 +1284,16 @@ void RocketStats::RenderIcon()
 {
     float margin = 20.f;
     float icon_size = 35.f;
-    ImVec2 mouse_pos = ImGui::GetIO().MousePos;
+    LPPOINT mouse_pos = new tagPOINT;
+    bool mouse_click = GetAsyncKeyState(VK_LBUTTON);
     ImVec2 screen_size = ImGui::GetIO().DisplaySize;
     ImDrawList* drawlist = ImGui::GetBackgroundDrawList();
 
+    GetCursorPos(mouse_pos);
     ImVec2 icon_pos = { -10.f, (screen_size.y * 0.459f) };
 
-    bool hover = (mouse_pos.x > (icon_pos.x - icon_size - margin) && mouse_pos.x < (icon_pos.x + icon_size + margin));
-    hover = (hover && (mouse_pos.y > (icon_pos.y - icon_size - margin) && mouse_pos.y < (icon_pos.y + icon_size + margin)));
+    bool hover = (mouse_pos->x > (icon_pos.x - icon_size - margin) && mouse_pos->x < (icon_pos.x + icon_size + margin));
+    hover = (hover && (mouse_pos->y > (icon_pos.y - icon_size - margin) && mouse_pos->y < (icon_pos.y + icon_size + margin)));
     if (!isInGame || hover)
     {
         drawlist->AddCircle({ icon_pos.x, icon_pos.y }, icon_size, ImColor{ 0.45f, 0.72f, 1.f, (hover ? 0.8f : 0.4f) }, 25, 4.f);
@@ -1299,9 +1301,16 @@ void RocketStats::RenderIcon()
 
         if (hover)
         {
-            ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
-            if (ImGui::IsMouseClicked(0))
-                ToggleSettings("MouseEvent");
+            if (mouse_click)
+            {
+                if (!mouse_state)
+                {
+                    mouse_state = true;
+                    ToggleSettings("MouseEvent");
+                }
+            }
+            else
+                mouse_state = false;
         }
     }
 }
@@ -1766,7 +1775,7 @@ bool RocketStats::ShouldBlockInput()
 // Return true if window should be interactive
 bool RocketStats::IsActiveOverlay()
 {
-    return true;
+    return isSettingsOpen_;
 }
 
 void RocketStats::OnOpen()

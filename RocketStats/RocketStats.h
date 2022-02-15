@@ -87,6 +87,7 @@ private:
 	std::string rs_fonts = "../../";
 	std::shared_ptr<ImageWrapper> rs_title;
 
+	bool mouse_state = false;
 	bool escape_state = false;
 	std::string hide_value = "##";
 
