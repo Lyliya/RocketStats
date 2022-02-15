@@ -67,10 +67,11 @@ Each element has its own parameters, here are a few:
  - `color`: this color is in RGB or RGBA format (the alpha channel is in percentage from 0.0 to 1.0)
  - `fill`: fillable color of a shap (works the same as `color`)
  - `stroke`: outline color of a shape (works the same as `color`, centered on the contour so protrudes inside depending on the thickness)
+ - `opacity`: the opacity is added to the global opacity, but also of each color (percentage from 0.0 to 1.0)
 
 The `name` parameter is not important at this time, but plan to differentiate your elements for later releases.
 
-, and some accept calculations (to let you play with percentages).
+Some parameters accept calculations (to allow you to play with percentages).
 
 The main ones to accept the calculations are (they are all integers):
   - `x`: horizontal position
