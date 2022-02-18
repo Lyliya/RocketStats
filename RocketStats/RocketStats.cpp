@@ -105,17 +105,10 @@ void RocketStats::onLoad()
     gameWrapper->HookEvent("Function CarComponent_Boost_TA.Active.EndState", bind(&RocketStats::OnBoostEnd, this, std::placeholders::_1));
     gameWrapper->HookEvent("Function TAGame.GameEvent_TA.Destroyed", bind(&RocketStats::GameDestroyed, this, std::placeholders::_1));
 
-    WriteInFile("RocketStats_GameMode.txt", "");
-    WriteInFile("RocketStats_Rank.txt", "");
-    WriteInFile("RocketStats_Div.txt", "");
-    WriteInFile("RocketStats_MMR.txt", "0");
-    WriteInFile("RocketStats_MMRChange.txt", "0");
-    WriteInFile("RocketStats_MMRCumulChange.txt", "0");
-    WriteInFile("RocketStats_Win.txt", "0");
-    WriteInFile("RocketStats_Loss.txt", "0");
-    WriteInFile("RocketStats_Streak.txt", "0");
-    WriteInFile("RocketStats_BoostState.txt", "-1");
+    gameWrapper->HookEventWithCallerPost<ServerWrapper>("Function TAGame.GFxHUD_TA.HandleStatEvent", std::bind(&RocketStats::onStatEvent, this, std::placeholders::_1, std::placeholders::_2));
+    gameWrapper->HookEventWithCallerPost<ServerWrapper>("Function TAGame.GFxHUD_TA.HandleStatTickerMessage", std::bind(&RocketStats::onStatTickerMessage, this, std::placeholders::_1, std::placeholders::_2));
 
+    ResetFiles();
     RemoveFile("RocketStats_Loose.txt"); // Delete the old file
     RemoveFile("RocketStats_images/BoostState.txt"); // Delete the old file
 
@@ -126,19 +119,6 @@ void RocketStats::onLoad()
         isSettingsOpen_ = now.getBoolValue();
     });
 
-    cvarManager->registerCvar("RS_in_file", std::to_string(RS_in_file), "Informations", true, true, 0, true, 1, true).addOnValueChanged([this](std::string old, CVarWrapper now) {
-        if (!now.getBoolValue())
-            return;
-
-        WriteGameMode();
-        WriteMMR();
-        WriteMMRChange();
-        WriteMMRCumulChange();
-        WriteWin();
-        WriteLoss();
-        WriteStreak();
-        WriteInFile("RocketStats_BoostState.txt", std::to_string(gameWrapper->IsInGame() ? 0 : -1));
-    });
     cvarManager->registerCvar("RS_mode", std::to_string(RS_mode), "Mode", true, true, 0, true, 2, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_theme", std::to_string(RS_theme), "Theme", true, true, 0, false, 1, false).addOnValueChanged([this](std::string old, CVarWrapper now) {
         if (!ChangeTheme(now.getIntValue()))
@@ -155,23 +135,61 @@ void RocketStats::onLoad()
     cvarManager->registerCvar("RS_disp_obs", (RS_disp_obs ? "1" : "0"), "Show on OBS", true, true, 0, true, 1, false);
     cvarManager->registerCvar("RS_enable_inmenu", (RS_enable_inmenu ? "1" : "0"), "Show in menu", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_enable_ingame", (RS_enable_ingame ? "1" : "0"), "Show while in-game", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-
-    cvarManager->registerCvar("RS_enable_boost", (RS_enable_boost ? "1" : "0"), "Enable boost", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_enable_float", (RS_enable_float ? "1" : "0"), "Enable floating point", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-
     cvarManager->registerCvar("RS_onchange_scale", (RS_onchange_scale ? "1" : "0"), "Reset scale on change", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_onchange_position", (RS_onchange_position ? "1" : "0"), "Reset position on change", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
 
+    cvarManager->registerCvar("RS_in_file", std::to_string(RS_in_file), "Informations", true, true, 0, true, 1, true).addOnValueChanged([this](std::string old, CVarWrapper now) {
+        if (!now.getBoolValue())
+            return;
+
+        WriteGameMode();
+        WriteRank();
+        WriteDiv();
+        WriteMMR();
+        WriteMMRChange();
+        WriteMMRCumulChange();
+        WriteWin();
+        WriteLoss();
+        WriteStreak();
+        WriteDemo();
+        WriteDeath();
+        WriteBoost();
+    });
+    cvarManager->registerCvar("RS_file_gm", (RS_file_gm ? "1" : "0"), "Write GameMode in file", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_file_rank", (RS_file_rank ? "1" : "0"), "Write Rank in file", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_file_div", (RS_file_div ? "1" : "0"), "Write Division in file", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_file_mmr", (RS_file_mmr ? "1" : "0"), "Write MMR in file", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_file_mmrc", (RS_file_mmrc ? "1" : "0"), "Write MMRChange in file", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_file_mmrcc", (RS_file_mmrcc ? "1" : "0"), "Write MMRChangeCumul in file", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_file_win", (RS_file_win ? "1" : "0"), "Write Wins in file", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_file_loss", (RS_file_loss ? "1" : "0"), "Write Losses in file", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_file_streak", (RS_file_streak ? "1" : "0"), "Write Streaks in file", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_file_demo", (RS_file_demo ? "1" : "0"), "Write Demolitions in file", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_file_death", (RS_file_death ? "1" : "0"), "Write Deaths in file", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_file_boost", (RS_file_boost ? "1" : "0"), "Write Boost in file", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+
     cvarManager->registerCvar("RS_replace_mmr", (RS_replace_mmr ? "1" : "0"), "Replace MMR with MMRChange", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_hide_gm", (RS_hide_div ? "1" : "0"), "Hide GameMode", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_hide_rank", (RS_hide_rank ? "1" : "0"), "Hide Rank", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_hide_div", (RS_hide_div ? "1" : "0"), "Hide Division", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_hide_mmr", (RS_hide_mmr ? "1" : "0"), "Hide MMR", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_hide_mmrc", (RS_hide_mmrc ? "1" : "0"), "Hide MMRChange", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_hide_mmrcc", (RS_hide_mmrcc ? "1" : "0"), "Hide MMRChangeCumul", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_hide_win", (RS_hide_win ? "1" : "0"), "Hide Wins", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_hide_loss", (RS_hide_loss ? "1" : "0"), "Hide Losses", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_hide_streak", (RS_hide_streak ? "1" : "0"), "Hide Streaks", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_hide_demo", (RS_hide_demo ? "1" : "0"), "Hide Demolitions", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_hide_death", (RS_hide_death ? "1" : "0"), "Hide Deaths", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
 
     if (gameWrapper->IsInGame())
         TogglePlugin("IsInGame", ToggleFlags_Show);
+
+    std::vector<CareerStatsWrapper::StatValue> careerStats = CareerStatsWrapper::GetStatValues();
+    for (CareerStatsWrapper::StatValue careerValue : careerStats)
+    {
+        cvarManager->log("stat_name: " + careerValue.stat_name + " -> ranked=" + std::to_string(careerValue.ranked) + " unranked=" + std::to_string(careerValue.unranked));
+    }
 }
 
 void RocketStats::onUnload()
@@ -184,12 +202,16 @@ void RocketStats::onUnload()
     gameWrapper->UnhookEvent("Function CarComponent_Boost_TA.Active.BeginState");
     gameWrapper->UnhookEvent("Function CarComponent_Boost_TA.Active.EndState");
     gameWrapper->UnhookEvent("Function TAGame.GameEvent_TA.Destroyed");
+    /*
+    gameWrapper->UnhookEvent("Function TAGame.Car_TA.EventDemolished");
+    gameWrapper->UnhookEvent("Function TAGame.Car_TA.QueueDemolish");
+    gameWrapper->UnhookEvent("Function TAGame.Car_TA.FinishDemo");
+    gameWrapper->UnhookEvent("Function TAGame.Car_TA.OnDemolishedGoalExplosion");
+    */
 
     TogglePlugin("onUnload", ToggleFlags_Hide);
 }
-#pragma endregion
 
-#pragma region GameMgmt
 void RocketStats::ShowPlugin(std::string eventName)
 {
     TogglePlugin(eventName, ToggleFlags_Show);
@@ -210,9 +232,14 @@ void RocketStats::ToggleSettings(std::string eventName, ToggleFlags mode)
     {
         isSettingsOpen_ = !isSettingsOpen_;
         cvarManager->getCvar("cl_rocketstats_settings").setValue(isSettingsOpen_);
+
+        if (!isSettingsOpen_)
+            WriteConfig();
     }
 }
+#pragma endregion
 
+#pragma region GameMgmt
 void RocketStats::GameStart(std::string eventName)
 {
     if (!gameWrapper->IsInOnlineGame() || isGameStarted)
@@ -238,12 +265,17 @@ void RocketStats::GameStart(std::string eventName)
     cvarManager->log(std::to_string(currentPlaylist) + " -> " + GetPlaylistName(currentPlaylist));
 
     WriteGameMode();
+    WriteRank();
+    WriteDiv();
     WriteMMR();
     WriteMMRChange();
     WriteMMRCumulChange();
     WriteWin();
     WriteLoss();
     WriteStreak();
+    WriteDemo();
+    WriteDeath();
+    WriteBoost();
 
     // Get TeamNum
     myTeamNum = myTeam.GetTeamNum();
@@ -254,7 +286,7 @@ void RocketStats::GameStart(std::string eventName)
 
     UpdateMMR(gameWrapper->GetUniqueID());
     WriteConfig();
-    if (RS_in_file)
+    if (RS_in_file && RS_file_boost)
         WriteInFile("RocketStats_BoostState.txt", std::to_string(0));
 
     cvarManager->log("===== !GameStart =====");
@@ -332,7 +364,7 @@ void RocketStats::GameEnd(std::string eventName)
         // Reset myTeamNum security
         myTeamNum = -1;
 
-        if (RS_in_file)
+        if (RS_in_file && RS_file_boost)
             WriteInFile("RocketStats_BoostState.txt", std::to_string(-1));
 
         gameWrapper->SetTimeout([&](GameWrapper *gameWrapper) { UpdateMMR(gameWrapper->GetUniqueID()); }, 3.0F);
@@ -372,7 +404,7 @@ void RocketStats::GameDestroyed(std::string eventName)
 
     isGameEnded = true;
     isGameStarted = false;
-    if (RS_in_file)
+    if (RS_in_file && RS_file_boost)
         WriteInFile("RocketStats_BoostState.txt", std::to_string(-1));
 
     theme_refresh = 1;
@@ -381,6 +413,76 @@ void RocketStats::GameDestroyed(std::string eventName)
 #pragma endregion
 
 #pragma region StatsMgmt
+bool RocketStats::isPrimaryPlayer(PriWrapper PRI)
+{
+    bool check = !gameWrapper->IsInOnlineGame();
+    ServerWrapper server = gameWrapper->GetOnlineGame();
+    PlayerControllerWrapper player = server.GetLocalPrimaryPlayer();
+    PriWrapper playerPRI = player.GetPRI();
+
+    check = (check || PRI.IsNull()); // null PRI
+    check = (check || server.IsNull()); // null server
+
+    check = (check || player.IsNull()); // null controller
+    check = (check || playerPRI.IsNull()); // null player PRI
+
+    check = (check || PRI.GetUniqueIdWrapper().GetUID() != playerPRI.GetUniqueIdWrapper().GetUID());
+
+    return !check;
+}
+
+void RocketStats::onStatEvent(ServerWrapper caller, void* params)
+{
+    StatEventParams* pstats = (StatEventParams*)params;
+    if (!gameWrapper->IsInOnlineGame())
+        return;
+
+    StatEventWrapper event = StatEventWrapper(pstats->StatEvent);
+
+    std::string name = event.GetEventName(); // error
+    cvarManager->log("onStatEvent e:" + name + "=" + std::to_string(event.GetPoints()));
+}
+
+void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
+{
+    StatTickerParams* pstats = (StatTickerParams*)params;
+    if (!gameWrapper->IsInOnlineGame())
+        return;
+
+    PriWrapper receiver = PriWrapper(pstats->Receiver);
+    PriWrapper victim = PriWrapper(pstats->Victim);
+    StatEventWrapper event = StatEventWrapper(pstats->StatEvent);
+
+    std::string name = event.GetEventName();
+    //cvarManager->log("onStatTickerMessage receiver:" + std::string(isPrimaryPlayer(receiver) ? "1" : "0") + " victim:" + std::string(isPrimaryPlayer(victim) ? "1" : "0") + " e:" + name + "=" + std::to_string(event.GetPoints()));
+    if (name == "Demolish" && receiver && victim)
+    {
+        bool demo = isPrimaryPlayer(receiver);
+        if (demo && currentPlaylist)
+        {
+            session.demo;
+            stats[currentPlaylist].demo;
+            theme_refresh = 1;
+
+            if (RS_file_demo)
+                WriteInFile("RocketStats_Demolition.txt", std::to_string(0));
+        }
+
+        bool death = isPrimaryPlayer(victim);
+        if (death && currentPlaylist)
+        {
+            session.death;
+            stats[currentPlaylist].death;
+            theme_refresh = 1;
+
+            if (RS_file_death)
+                WriteInFile("RocketStats_Death.txt", std::to_string(0));
+        }
+
+        cvarManager->log("Demolish demo:" + std::string(demo ? "1" : "0") + " death:" + std::string(death ? "1" : "0") + " receiver:" + receiver.GetPlayerName().ToString() + " victim:" + victim.GetPlayerName().ToString());
+    }
+}
+
 void RocketStats::UpdateMMR(UniqueIDWrapper id)
 {
     cvarManager->log("===== UpdateMMR =====");
@@ -437,6 +539,8 @@ void RocketStats::SessionStats()
         tmp.MMRCumulChange += stats[it->first].MMRChange;
         tmp.win += stats[it->first].win;
         tmp.loss += stats[it->first].loss;
+        tmp.demo += stats[it->first].demo;
+        tmp.death += stats[it->first].death;
     }
 
     session.myMMR = stats[currentPlaylist].myMMR;
@@ -444,6 +548,8 @@ void RocketStats::SessionStats()
     session.MMRCumulChange = tmp.MMRCumulChange;
     session.win = tmp.win;
     session.loss = tmp.loss;
+    session.demo = tmp.demo;
+    session.death = tmp.death;
     session.isInit = true;
 
     always.myMMR = session.myMMR;
@@ -459,15 +565,7 @@ void RocketStats::ResetStats()
         kv.second = Stats();
 
     WriteConfig();
-    WriteInFile("RocketStats_GameMode.txt", "");
-    WriteInFile("RocketStats_Rank.txt", "");
-    WriteInFile("RocketStats_Div.txt", "");
-    WriteInFile("RocketStats_MMR.txt", std::to_string(0));
-    WriteInFile("RocketStats_MMRChange.txt", std::to_string(0));
-    WriteInFile("RocketStats_MMRCumulChange.txt", std::to_string(0));
-    WriteInFile("RocketStats_Win.txt", std::to_string(0));
-    WriteInFile("RocketStats_Loss.txt", std::to_string(0));
-    WriteInFile("RocketStats_Streak.txt", std::to_string(0));
+    ResetFiles();
 
     InitRank();
     theme_refresh = 1;
@@ -478,7 +576,7 @@ void RocketStats::ResetStats()
 void RocketStats::OnBoostStart(std::string eventName)
 {
     // Check if boost enabled in options
-    if (!RS_enable_boost || gameWrapper->IsInReplay() || isBoosting)
+    if (!RS_file_boost || gameWrapper->IsInReplay() || isBoosting)
         return;
 
     CarWrapper cWrap = gameWrapper->GetLocalCar();
@@ -501,7 +599,7 @@ void RocketStats::OnBoostStart(std::string eventName)
 void RocketStats::OnBoostEnd(std::string eventName)
 {
     // Check if boost enabled in options
-    if (!RS_enable_boost || gameWrapper->IsInReplay() || !isBoosting)
+    if (!RS_file_boost || gameWrapper->IsInReplay() || !isBoosting)
         return;
 
     CarWrapper cWrap = gameWrapper->GetLocalCar();
@@ -554,10 +652,11 @@ void RocketStats::MajRank(int _gameMode, bool isRanked, float _currentMMR, Skill
             currentRank = GetRank(playerRank.Tier);
             currentDivision = "Div. " + std::to_string(playerRank.Division + 1);
 
-            WriteInFile("RocketStats_Div.txt", currentDivision);
+            if (RS_file_div)
+                WriteInFile("RocketStats_Div.txt", currentDivision);
         }
 
-        if (currentRank != lastRank)
+        if (RS_file_rank && currentRank != lastRank)
             WriteInFile("RocketStats_Rank.txt", currentRank);
     }
     else
@@ -565,7 +664,8 @@ void RocketStats::MajRank(int _gameMode, bool isRanked, float _currentMMR, Skill
         currentRank = GetPlaylistName(currentGameMode);
         currentDivision = "";
 
-        WriteInFile("RocketStats_Rank.txt", currentRank);
+        if (RS_file_rank)
+            WriteInFile("RocketStats_Rank.txt", currentRank);
     }
 
     theme_refresh = 1;
@@ -729,8 +829,9 @@ struct Element RocketStats::CalculateElement(json& element, Options& options, bo
 
             ImVec2 element_pos = { float(options.x + element_2d.x), float(options.y + element_2d.y) };
             ImVec2 element_size = { float(element_2d.width), float(element_2d.height) };
-            const float element_scale = (element.contains("scale") ? float(element["scale"]) : 1.0f);
-            const float element_opacity = (options.opacity * (element.contains("opacity") ? float(element["opacity"]) : 1.0f));
+            const float element_scale = (element.contains("scale") ? float(element["scale"]) : 1.f);
+            const float element_rotate = (element.contains("rotate") ? float(element["rotate"]) : 0.f);
+            const float element_opacity = (options.opacity * (element.contains("opacity") ? float(element["opacity"]) : 1.f));
 
             calculated.scale = (element_scale * options.scale);
 
@@ -894,6 +995,7 @@ struct Element RocketStats::CalculateElement(json& element, Options& options, bo
 
             calculated.type = element["type"];
             calculated.positions = positions;
+            calculated.rotate = (element_rotate ? (90.f * (element_rotate / 180.f)) : 0.f);
             calculated.size = element_size;
 
             check = true;
@@ -916,6 +1018,9 @@ void RocketStats::RenderElement(Element& element)
             drawlist = ImGui::GetBackgroundDrawList();
         else
             drawlist = ImGui::GetOverlayDrawList();
+
+        if (element.rotate)
+            ImRotateStart(drawlist);
 
         if (element.fill.enable)
         {
@@ -967,6 +1072,9 @@ void RocketStats::RenderElement(Element& element)
         }
         else if (element.type == "line")
             drawlist->AddLine(element.positions.at(0), element.positions.at(1), element.color.color, element.size.x);
+
+        if (element.rotate)
+            ImRotateEnd(element.rotate);
     }
     catch (const std::exception&) {}
 }
@@ -1048,6 +1156,22 @@ void RocketStats::WriteInFile(std::string _filename, std::string _value, bool ro
     }
 }
 
+void RocketStats::ResetFiles()
+{
+    WriteInFile("RocketStats_GameMode.txt", "");
+    WriteInFile("RocketStats_Rank.txt", "");
+    WriteInFile("RocketStats_Div.txt", "");
+    WriteInFile("RocketStats_MMR.txt", std::to_string(0));
+    WriteInFile("RocketStats_MMRChange.txt", std::to_string(0));
+    WriteInFile("RocketStats_MMRCumulChange.txt", std::to_string(0));
+    WriteInFile("RocketStats_Win.txt", std::to_string(0));
+    WriteInFile("RocketStats_Loss.txt", std::to_string(0));
+    WriteInFile("RocketStats_Streak.txt", std::to_string(0));
+    WriteInFile("RocketStats_Demolition.txt", std::to_string(0));
+    WriteInFile("RocketStats_Death.txt", std::to_string(0));
+    WriteInFile("RocketStats_BoostState.txt", std::to_string(-1));
+}
+
 void RocketStats::ReadConfig()
 {
     cvarManager->log("===== ReadConfig =====");
@@ -1099,31 +1223,70 @@ void RocketStats::ReadConfig()
                         RS_enable_inmenu = config["settings"]["inmenu"];
                     if (config["settings"]["ingame"].is_number_unsigned())
                         RS_enable_ingame = config["settings"]["ingame"];
-
-                    if (config["settings"]["boost"].is_boolean())
-                        RS_enable_boost = config["settings"]["boost"];
                     if (config["settings"]["float"].is_boolean())
                         RS_enable_float = config["settings"]["float"];
-
                     if (config["settings"]["onchange_scale"].is_boolean())
                         RS_onchange_scale = config["settings"]["onchange_scale"];
                     if (config["settings"]["onchange_position"].is_boolean())
                         RS_onchange_position = config["settings"]["onchange_position"];
 
+                    if (config["settings"]["files"].is_object())
+                    {
+                        if (config["settings"]["files"]["on"].is_boolean())
+                            RS_in_file = config["settings"]["files"]["on"];
+                        if (config["settings"]["files"]["gm"].is_boolean())
+                            RS_hide_gm = config["settings"]["files"]["gm"];
+                        if (config["settings"]["files"]["rank"].is_boolean())
+                            RS_hide_rank = config["settings"]["files"]["rank"];
+                        if (config["settings"]["files"]["div"].is_boolean())
+                            RS_hide_div = config["settings"]["files"]["div"];
+                        if (config["settings"]["files"]["mmr"].is_boolean())
+                            RS_hide_mmr = config["settings"]["files"]["mmr"];
+                        if (config["settings"]["files"]["mmrc"].is_boolean())
+                            RS_hide_mmrc = config["settings"]["files"]["mmrc"];
+                        if (config["settings"]["files"]["mmrcc"].is_boolean())
+                            RS_hide_mmrcc = config["settings"]["files"]["mmrcc"];
+                        if (config["settings"]["files"]["win"].is_boolean())
+                            RS_hide_win = config["settings"]["files"]["win"];
+                        if (config["settings"]["files"]["loss"].is_boolean())
+                            RS_hide_loss = config["settings"]["files"]["loss"];
+                        if (config["settings"]["files"]["streak"].is_boolean())
+                            RS_hide_streak = config["settings"]["files"]["streak"];
+                        if (config["settings"]["files"]["demo"].is_boolean())
+                            RS_hide_demo = config["settings"]["files"]["demo"];
+                        if (config["settings"]["files"]["death"].is_boolean())
+                            RS_hide_death = config["settings"]["files"]["death"];
+                        if (config["settings"]["files"]["boost"].is_boolean())
+                            RS_file_boost = config["settings"]["files"]["boost"];
+                    }
+
                     if (config["settings"]["replace_mmr"].is_boolean())
                         RS_replace_mmr = config["settings"]["replace_mmr"];
-                    if (config["settings"]["hide_mmr"].is_boolean())
-                        RS_hide_mmr = config["settings"]["hide_mmr"];
-                    if (config["settings"]["hide_mmrc"].is_boolean())
-                        RS_hide_mmrc = config["settings"]["hide_mmrc"];
-                    if (config["settings"]["hide_mmrcc"].is_boolean())
-                        RS_hide_mmrcc = config["settings"]["hide_mmrcc"];
-                    if (config["settings"]["hide_win"].is_boolean())
-                        RS_hide_win = config["settings"]["hide_win"];
-                    if (config["settings"]["hide_loss"].is_boolean())
-                        RS_hide_loss = config["settings"]["hide_loss"];
-                    if (config["settings"]["hide_streak"].is_boolean())
-                        RS_hide_streak = config["settings"]["hide_streak"];
+                    if (config["settings"]["hides"].is_object())
+                    {
+                        if (config["settings"]["hides"]["gm"].is_boolean())
+                            RS_hide_gm = config["settings"]["hides"]["gm"];
+                        if (config["settings"]["hides"]["rank"].is_boolean())
+                            RS_hide_rank = config["settings"]["hides"]["rank"];
+                        if (config["settings"]["hides"]["div"].is_boolean())
+                            RS_hide_div = config["settings"]["hides"]["div"];
+                        if (config["settings"]["hides"]["mmr"].is_boolean())
+                            RS_hide_mmr = config["settings"]["hides"]["mmr"];
+                        if (config["settings"]["hides"]["mmrc"].is_boolean())
+                            RS_hide_mmrc = config["settings"]["hides"]["mmrc"];
+                        if (config["settings"]["hides"]["mmrcc"].is_boolean())
+                            RS_hide_mmrcc = config["settings"]["hides"]["mmrcc"];
+                        if (config["settings"]["hides"]["win"].is_boolean())
+                            RS_hide_win = config["settings"]["hides"]["win"];
+                        if (config["settings"]["hides"]["loss"].is_boolean())
+                            RS_hide_loss = config["settings"]["hides"]["loss"];
+                        if (config["settings"]["hides"]["streak"].is_boolean())
+                            RS_hide_streak = config["settings"]["hides"]["streak"];
+                        if (config["settings"]["hides"]["demo"].is_boolean())
+                            RS_hide_demo = config["settings"]["hides"]["demo"];
+                        if (config["settings"]["hides"]["death"].is_boolean())
+                            RS_hide_death = config["settings"]["hides"]["death"];
+                    }
 
                     cvarManager->log("Config: stats loaded");
                     always.isInit = true;
@@ -1142,6 +1305,12 @@ void RocketStats::ReadConfig()
 
                     if (config["always"]["Streak"].is_number_unsigned() || config["always"]["Streak"].is_number_integer())
                         always.streak = config["always"]["Streak"];
+
+                    if (config["always"]["Demo"].is_number_unsigned())
+                        always.demo = config["always"]["Demo"];
+
+                    if (config["always"]["Death"].is_number_unsigned())
+                        always.death = config["always"]["Death"];
 
                     cvarManager->log("Config: stats loaded");
                     always.isInit = true;
@@ -1177,23 +1346,47 @@ void RocketStats::WriteConfig()
     tmp["settings"]["obs"] = RS_disp_obs;
     tmp["settings"]["inmeny"] = RS_enable_inmenu;
     tmp["settings"]["ingame"] = RS_enable_ingame;
-    tmp["settings"]["boost"] = RS_enable_boost;
     tmp["settings"]["float"] = RS_enable_float;
     tmp["settings"]["onchange_scale"] = RS_onchange_scale;
     tmp["settings"]["onchange_position"] = RS_onchange_position;
+
+    tmp["settings"]["files"] = {};
+    tmp["settings"]["files"]["on"] = RS_in_file;
+    tmp["settings"]["files"]["gm"] = RS_file_gm;
+    tmp["settings"]["files"]["rank"] = RS_file_rank;
+    tmp["settings"]["files"]["div"] = RS_file_div;
+    tmp["settings"]["files"]["mmr"] = RS_file_mmr;
+    tmp["settings"]["files"]["mmr"] = RS_file_mmr;
+    tmp["settings"]["files"]["mmrc"] = RS_file_mmrc;
+    tmp["settings"]["files"]["mmrcc"] = RS_file_mmrcc;
+    tmp["settings"]["files"]["win"] = RS_file_win;
+    tmp["settings"]["files"]["loss"] = RS_file_loss;
+    tmp["settings"]["files"]["streak"] = RS_file_streak;
+    tmp["settings"]["files"]["demo"] = RS_file_demo;
+    tmp["settings"]["files"]["death"] = RS_file_death;
+    tmp["settings"]["files"]["boost"] = RS_file_boost;
+
     tmp["settings"]["replace_mmr"] = RS_replace_mmr;
-    tmp["settings"]["hide_mmr"] = RS_hide_mmr;
-    tmp["settings"]["hide_mmrc"] = RS_hide_mmrc;
-    tmp["settings"]["hide_mmrcc"] = RS_hide_mmrcc;
-    tmp["settings"]["hide_win"] = RS_hide_win;
-    tmp["settings"]["hide_loss"] = RS_hide_loss;
-    tmp["settings"]["hide_streak"] = RS_hide_streak;
+    tmp["settings"]["hides"] = {};
+    tmp["settings"]["hides"]["gm"] = RS_hide_gm;
+    tmp["settings"]["hides"]["rank"] = RS_hide_rank;
+    tmp["settings"]["hides"]["div"] = RS_hide_div;
+    tmp["settings"]["hides"]["mmr"] = RS_hide_mmr;
+    tmp["settings"]["hides"]["mmrc"] = RS_hide_mmrc;
+    tmp["settings"]["hides"]["mmrcc"] = RS_hide_mmrcc;
+    tmp["settings"]["hides"]["win"] = RS_hide_win;
+    tmp["settings"]["hides"]["loss"] = RS_hide_loss;
+    tmp["settings"]["hides"]["streak"] = RS_hide_streak;
+    tmp["settings"]["hides"]["demo"] = RS_hide_demo;
+    tmp["settings"]["hides"]["death"] = RS_hide_death;
 
     tmp["always"] = {};
     tmp["always"]["MMRCumulChange"] = always.MMRCumulChange;
     tmp["always"]["Win"] = always.win;
     tmp["always"]["Loss"] = always.loss;
     tmp["always"]["Streak"] = always.streak;
+    tmp["always"]["Demo"] = always.demo;
+    tmp["always"]["Death"] = always.death;
 
     WriteInFile("data/rocketstats.json", nlohmann::to_string(tmp), true);
 
@@ -1202,13 +1395,25 @@ void RocketStats::WriteConfig()
 
 void RocketStats::WriteGameMode()
 {
-    if (RS_in_file)
+    if (RS_in_file && RS_file_gm)
         WriteInFile("RocketStats_GameMode.txt", GetPlaylistName(currentPlaylist));
+}
+
+void RocketStats::WriteRank()
+{
+    if (RS_in_file && RS_file_rank)
+        WriteInFile("RocketStats_Div.txt", currentRank);
+}
+
+void RocketStats::WriteDiv()
+{
+    if (RS_in_file && RS_file_div)
+        WriteInFile("RocketStats_Div.txt", currentDivision);
 }
 
 void RocketStats::WriteMMR()
 {
-    if (!RS_in_file)
+    if (!RS_in_file || !RS_file_mmr)
         return;
 
     std::string tmp = Utils::FloatFixer(stats[currentPlaylist].myMMR, (RS_enable_float ? 2 : 0));
@@ -1218,7 +1423,7 @@ void RocketStats::WriteMMR()
 
 void RocketStats::WriteMMRChange()
 {
-    if (!RS_in_file)
+    if (!RS_in_file || !RS_file_mmrc)
         return;
 
     Stats current = GetStats();
@@ -1229,7 +1434,7 @@ void RocketStats::WriteMMRChange()
 
 void RocketStats::WriteMMRCumulChange()
 {
-    if (!RS_in_file)
+    if (!RS_in_file || !RS_file_mmrcc)
         return;
 
     Stats current = GetStats();
@@ -1240,25 +1445,43 @@ void RocketStats::WriteMMRCumulChange()
 
 void RocketStats::WriteWin()
 {
-    if (RS_in_file)
+    if (RS_in_file && RS_file_win)
         WriteInFile("RocketStats_Win.txt", std::to_string(GetStats().win));
 }
 
 void RocketStats::WriteLoss()
 {
-    if (RS_in_file)
+    if (RS_in_file && RS_file_loss)
         WriteInFile("RocketStats_Loss.txt", std::to_string(GetStats().loss));
 }
 
 void RocketStats::WriteStreak()
 {
-    if (!RS_in_file)
+    if (!RS_in_file || !RS_file_streak)
         return;
 
     Stats current = GetStats();
     std::string tmp = std::to_string(current.streak);
 
     WriteInFile("RocketStats_Streak.txt", (((current.streak > 0) ? "+" : "") + tmp));
+}
+
+void RocketStats::WriteDemo()
+{
+    if (RS_in_file && RS_file_demo)
+        WriteInFile("RocketStats_Demo.txt", std::to_string(GetStats().demo));
+}
+
+void RocketStats::WriteDeath()
+{
+    if (RS_in_file && RS_file_death)
+        WriteInFile("RocketStats_Death.txt", std::to_string(GetStats().death));
+}
+
+void RocketStats::WriteBoost()
+{
+    if (RS_in_file && RS_file_gm)
+        WriteInFile("RocketStats_BoostState.txt", std::to_string(gameWrapper->IsInGame() ? 0 : -1));
 }
 #pragma endregion
 
@@ -1358,29 +1581,33 @@ void RocketStats::RenderOverlay()
             const size_t floating_length = (RS_enable_float ? 2 : 0);
             if (current.isInit)
             {
-                theme_vars["GameMode"] = GetPlaylistName(currentPlaylist);
-                theme_vars["Rank"] = currentRank;
-                theme_vars["Div"] = currentDivision;
+                theme_vars["GameMode"] = (RS_hide_gm ? hide_value : GetPlaylistName(currentPlaylist));
+                theme_vars["Rank"] = (RS_hide_rank ? hide_value : currentRank);
+                theme_vars["Div"] = (RS_hide_div ? hide_value : currentDivision);
                 theme_vars["MMR"] = (RS_hide_mmr ? hide_value : Utils::FloatFixer(current.myMMR, floating_length)); // Utils::PointFixer(current.myMMR, 6, floating_length)
                 theme_vars["MMRChange"] = (RS_hide_mmrc ? hide_value : Utils::FloatFixer(current.MMRChange, floating_length)); // Utils::PointFixer(current.MMRChange, 6, floating_length)
                 theme_vars["MMRCumulChange"] = (RS_hide_mmrcc ? hide_value : Utils::FloatFixer(current.MMRCumulChange, floating_length)); // Utils::PointFixer(current.MMRCumulChange, 6, floating_length)
                 theme_vars["Win"] = (RS_hide_win ? hide_value : std::to_string(current.win));
                 theme_vars["Loss"] = (RS_hide_loss ? hide_value : std::to_string(current.loss));
                 theme_vars["Streak"] = (RS_hide_streak ? hide_value : std::to_string(current.streak));
+                theme_vars["Demolition"] = (RS_hide_demo ? hide_value : std::to_string(current.demo));
+                theme_vars["Death"] = (RS_hide_death ? hide_value : std::to_string(current.death));
 
                 Utils::ReplaceAll(theme_vars["Rank"], "_", " ");
             }
             else
             {
-                theme_vars["GameMode"] = "Unknown Game Mode";
-                theme_vars["Rank"] = "norank";
-                theme_vars["Div"] = "nodiv";
+                theme_vars["GameMode"] = (RS_hide_gm ? hide_value : "Unknown Game Mode");
+                theme_vars["Rank"] = (RS_hide_rank ? hide_value : "norank");
+                theme_vars["Div"] = (RS_hide_div ? hide_value : "nodiv");
                 theme_vars["MMR"] = (RS_hide_mmr ? hide_value : Utils::FloatFixer(100.0f, floating_length));
                 theme_vars["MMRChange"] = (RS_hide_mmrc ? hide_value : Utils::FloatFixer(0.0f, floating_length));
                 theme_vars["MMRCumulChange"] = (RS_hide_mmrcc ? hide_value : Utils::FloatFixer(0.0f, floating_length));
                 theme_vars["Win"] = (RS_hide_win ? hide_value : "0");
                 theme_vars["Loss"] = (RS_hide_loss ? hide_value : "0");
                 theme_vars["Streak"] = (RS_hide_streak ? hide_value : "0");
+                theme_vars["Demolition"] = (RS_hide_demo ? hide_value : "0");
+                theme_vars["Death"] = (RS_hide_death ? hide_value : "0");
             }
 
             if (RS_replace_mmr)
@@ -1423,13 +1650,18 @@ void RocketStats::RenderSettings()
 
     if (rs_title != nullptr && rs_title->IsLoadedForImGui())
     {
+        float column_nb = 3;
+        float column_space = 10.f;
+        float column_start = 25.f;
+        float column_width = ((settings_size.x - (column_start * 2) - (column_space * (column_nb - 1))) / column_nb);
+
         ImVec2 text_size;
         ImVec2 image_pos;
         ImVec2 win_pos = ImGui::GetWindowPos();
         ImVec2 win_size = ImGui::GetWindowSize();
         Vector2F image_size = rs_title->GetSizeF();
         ImDrawList* drawlist = ImGui::GetWindowDrawList();
-        std::string developers = "Developped by @Lyliiya & @NuSa_yt for @Maylie_tv";
+        std::string developers = "Developped by @Lyliiya, @NuSa_yt, @Arubinu42 & @Larsluph";
 
         ImVec2 p0 = win_pos;
         ImVec2 p1 = { (win_pos.x + win_size.x), (win_pos.y + win_size.y) };
@@ -1604,38 +1836,49 @@ void RocketStats::RenderSettings()
         ImGui::TextColored(ImVec4{ 1.f, 1.f, 1.f, 0.8f }, ("Theme by " + theme_render.author).c_str());
 
         ImGui::SetWindowFontScale(1.f);
-        ImGui::SetCursorPos({ 25, 300 });
-        ImGui::BeginGroup();
+        ImGui::SetCursorPos({ column_start, 300 });
+        ImGui::BeginChild("##column1", { column_width, 210 }, false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
         ImGui::Checkbox(cvarManager->getCvar("RS_disp_obs").getDescription().c_str(), &RS_disp_obs);
         ImGui::Checkbox(cvarManager->getCvar("RS_enable_inmenu").getDescription().c_str(), &RS_enable_inmenu);
         ImGui::Checkbox(cvarManager->getCvar("RS_enable_ingame").getDescription().c_str(), &RS_enable_ingame);
-        ImGui::EndGroup();
-
-        ImGui::SameLine();
-        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 10);
-        ImGui::BeginGroup();
-        ImGui::Checkbox(cvarManager->getCvar("RS_enable_boost").getDescription().c_str(), &RS_enable_boost);
         ImGui::Checkbox(cvarManager->getCvar("RS_enable_float").getDescription().c_str(), &RS_enable_float);
-        ImGui::EndGroup();
-
-        ImGui::SameLine();
-        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 10);
-        ImGui::BeginGroup();
         ImGui::Checkbox(cvarManager->getCvar("RS_onchange_scale").getDescription().c_str(), &RS_onchange_scale);
         ImGui::Checkbox(cvarManager->getCvar("RS_onchange_position").getDescription().c_str(), &RS_onchange_position);
-        ImGui::EndGroup();
+        ImGui::EndChild();
 
         ImGui::SameLine();
-        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 10);
-        ImGui::BeginGroup();
+        ImGui::SetCursorPosX(column_start + column_space + column_width);
+        ImGui::BeginChild("##column2", { column_width, 210 }, false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
+        ImGui::Checkbox(cvarManager->getCvar("RS_file_gm").getDescription().c_str(), &RS_file_gm);
+        ImGui::Checkbox(cvarManager->getCvar("RS_file_rank").getDescription().c_str(), &RS_file_rank);
+        ImGui::Checkbox(cvarManager->getCvar("RS_file_div").getDescription().c_str(), &RS_file_div);
+        ImGui::Checkbox(cvarManager->getCvar("RS_file_mmr").getDescription().c_str(), &RS_file_mmr);
+        ImGui::Checkbox(cvarManager->getCvar("RS_file_mmrc").getDescription().c_str(), &RS_file_mmrc);
+        ImGui::Checkbox(cvarManager->getCvar("RS_file_mmrcc").getDescription().c_str(), &RS_file_mmrcc);
+        ImGui::Checkbox(cvarManager->getCvar("RS_file_win").getDescription().c_str(), &RS_file_win);
+        ImGui::Checkbox(cvarManager->getCvar("RS_file_loss").getDescription().c_str(), &RS_file_loss);
+        ImGui::Checkbox(cvarManager->getCvar("RS_file_streak").getDescription().c_str(), &RS_file_streak);
+        ImGui::Checkbox(cvarManager->getCvar("RS_file_demo").getDescription().c_str(), &RS_file_demo);
+        ImGui::Checkbox(cvarManager->getCvar("RS_file_death").getDescription().c_str(), &RS_file_death);
+        ImGui::Checkbox(cvarManager->getCvar("RS_file_boost").getDescription().c_str(), &RS_file_boost);
+        ImGui::EndChild();
+
+        ImGui::SameLine();
+        ImGui::SetCursorPosX(column_start + (column_space * 2) + (column_width * 2));
+        ImGui::BeginChild("##column3", { column_width, 210 }, false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
         ImGui::Checkbox(cvarManager->getCvar("RS_replace_mmr").getDescription().c_str(), &RS_replace_mmr);
+        ImGui::Checkbox(cvarManager->getCvar("RS_hide_gm").getDescription().c_str(), &RS_hide_gm);
+        ImGui::Checkbox(cvarManager->getCvar("RS_hide_rank").getDescription().c_str(), &RS_hide_rank);
+        ImGui::Checkbox(cvarManager->getCvar("RS_hide_div").getDescription().c_str(), &RS_hide_div);
         ImGui::Checkbox(cvarManager->getCvar("RS_hide_mmr").getDescription().c_str(), &RS_hide_mmr);
         ImGui::Checkbox(cvarManager->getCvar("RS_hide_mmrc").getDescription().c_str(), &RS_hide_mmrc);
         ImGui::Checkbox(cvarManager->getCvar("RS_hide_mmrcc").getDescription().c_str(), &RS_hide_mmrcc);
         ImGui::Checkbox(cvarManager->getCvar("RS_hide_win").getDescription().c_str(), &RS_hide_win);
         ImGui::Checkbox(cvarManager->getCvar("RS_hide_loss").getDescription().c_str(), &RS_hide_loss);
         ImGui::Checkbox(cvarManager->getCvar("RS_hide_streak").getDescription().c_str(), &RS_hide_streak);
-        ImGui::EndGroup();
+        ImGui::Checkbox(cvarManager->getCvar("RS_hide_demo").getDescription().c_str(), &RS_hide_demo);
+        ImGui::Checkbox(cvarManager->getCvar("RS_hide_death").getDescription().c_str(), &RS_hide_death);
+        ImGui::EndChild();
 
         /*
         ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10);
@@ -1721,19 +1964,46 @@ void RocketStats::RenderSettings()
         if (!RS_enable_ingame && !RS_enable_inmenu)
             RS_enable_inmenu = true;
     }
-
-    if (RS_enable_boost != cvarManager->getCvar("RS_enable_boost").getBoolValue())
-        cvarManager->getCvar("RS_enable_boost").setValue(RS_enable_boost);
     if (RS_enable_float != cvarManager->getCvar("RS_enable_float").getBoolValue())
         cvarManager->getCvar("RS_enable_float").setValue(RS_enable_float);
-
     if (RS_onchange_scale != cvarManager->getCvar("RS_onchange_scale").getBoolValue())
         cvarManager->getCvar("RS_onchange_scale").setValue(RS_onchange_scale);
     if (RS_onchange_position != cvarManager->getCvar("RS_onchange_position").getBoolValue())
         cvarManager->getCvar("RS_onchange_position").setValue(RS_onchange_position);
 
+    if (RS_file_gm != cvarManager->getCvar("RS_file_gm").getBoolValue())
+        cvarManager->getCvar("RS_file_gm").setValue(RS_file_gm);
+    if (RS_file_rank != cvarManager->getCvar("RS_file_rank").getBoolValue())
+        cvarManager->getCvar("RS_file_rank").setValue(RS_file_rank);
+    if (RS_file_div != cvarManager->getCvar("RS_file_div").getBoolValue())
+        cvarManager->getCvar("RS_file_div").setValue(RS_file_div);
+    if (RS_file_mmr != cvarManager->getCvar("RS_file_mmr").getBoolValue())
+        cvarManager->getCvar("RS_file_mmr").setValue(RS_file_mmr);
+    if (RS_file_mmrc != cvarManager->getCvar("RS_file_mmrc").getBoolValue())
+        cvarManager->getCvar("RS_file_mmrc").setValue(RS_file_mmrc);
+    if (RS_file_mmrcc != cvarManager->getCvar("RS_file_mmrcc").getBoolValue())
+        cvarManager->getCvar("RS_file_mmrcc").setValue(RS_file_mmrcc);
+    if (RS_file_win != cvarManager->getCvar("RS_file_win").getBoolValue())
+        cvarManager->getCvar("RS_file_win").setValue(RS_file_win);
+    if (RS_file_loss != cvarManager->getCvar("RS_file_loss").getBoolValue())
+        cvarManager->getCvar("RS_file_loss").setValue(RS_file_loss);
+    if (RS_file_streak != cvarManager->getCvar("RS_file_streak").getBoolValue())
+        cvarManager->getCvar("RS_file_streak").setValue(RS_file_streak);
+    if (RS_file_demo != cvarManager->getCvar("RS_file_demo").getBoolValue())
+        cvarManager->getCvar("RS_file_demo").setValue(RS_file_demo);
+    if (RS_file_death != cvarManager->getCvar("RS_file_death").getBoolValue())
+        cvarManager->getCvar("RS_file_death").setValue(RS_file_death);
+    if (RS_file_boost != cvarManager->getCvar("RS_file_boost").getBoolValue())
+        cvarManager->getCvar("RS_file_boost").setValue(RS_file_boost);
+
     if (RS_replace_mmr != cvarManager->getCvar("RS_replace_mmr").getBoolValue())
         cvarManager->getCvar("RS_replace_mmr").setValue(RS_replace_mmr);
+    if (RS_hide_gm != cvarManager->getCvar("RS_hide_gm").getBoolValue())
+        cvarManager->getCvar("RS_hide_gm").setValue(RS_hide_gm);
+    if (RS_hide_rank != cvarManager->getCvar("RS_hide_rank").getBoolValue())
+        cvarManager->getCvar("RS_hide_rank").setValue(RS_hide_rank);
+    if (RS_hide_div != cvarManager->getCvar("RS_hide_div").getBoolValue())
+        cvarManager->getCvar("RS_hide_div").setValue(RS_hide_div);
     if (RS_hide_mmr != cvarManager->getCvar("RS_hide_mmr").getBoolValue())
         cvarManager->getCvar("RS_hide_mmr").setValue(RS_hide_mmr);
     if (RS_hide_mmrc != cvarManager->getCvar("RS_hide_mmrc").getBoolValue())
@@ -1746,6 +2016,10 @@ void RocketStats::RenderSettings()
         cvarManager->getCvar("RS_hide_loss").setValue(RS_hide_loss);
     if (RS_hide_streak != cvarManager->getCvar("RS_hide_streak").getBoolValue())
         cvarManager->getCvar("RS_hide_streak").setValue(RS_hide_streak);
+    if (RS_hide_demo != cvarManager->getCvar("RS_hide_demo").getBoolValue())
+        cvarManager->getCvar("RS_hide_demo").setValue(RS_hide_demo);
+    if (RS_hide_death != cvarManager->getCvar("RS_hide_death").getBoolValue())
+        cvarManager->getCvar("RS_hide_death").setValue(RS_hide_death);
 }
 
 // Name of the menu that is used to toggle the window.

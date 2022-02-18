@@ -62,6 +62,7 @@
     <ClInclude Include="imgui\imgui_impl_win32.h" />
     <ClInclude Include="imgui\imgui_internal.h" />
     <ClInclude Include="imgui\imgui_rangeslider.h" />
+    <ClInclude Include="imgui\imgui_rotate.h" />
     <ClInclude Include="imgui\imgui_searchablecombo.h" />
     <ClInclude Include="imgui\imgui_timeline.h" />
     <ClInclude Include="imgui\imstb_rectpack.h" />
@@ -79,6 +80,7 @@
     <ClCompile Include="imgui\imgui_impl_dx11.cpp" />
     <ClCompile Include="imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="imgui\imgui_rangeslider.cpp" />
+    <ClCompile Include="imgui\imgui_rotate.cpp" />
     <ClCompile Include="imgui\imgui_searchablecombo.cpp" />
     <ClCompile Include="imgui\imgui_timeline.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />

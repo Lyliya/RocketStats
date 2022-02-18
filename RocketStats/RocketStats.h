@@ -5,6 +5,7 @@
 
 #include "json.hpp"
 #include "imgui/pch.h"
+#include "imgui/imgui_rotate.h"
 #include "bakkesmod/wrappers/GuiManagerWrapper.h"
 
 #include <map>
@@ -39,7 +40,8 @@ struct Element {
 	Color color;
 	Color fill;
 	Color stroke;
-	float scale = 1;
+	float rotate = 0.f;
+	float scale = 1.f;
 };
 
 struct Options {
@@ -58,7 +60,9 @@ struct Stats {
 	int win = 0;
 	int loss = 0;
 	int streak = 0;
-	bool isInit = 0;
+	int demo = 0;
+	int death = 0;
+	bool isInit = false;
 };
 
 struct Theme {
@@ -69,6 +73,17 @@ struct Theme {
 	int font_size = 0;
 	std::string font_name = "";
 	std::vector<Element> elements;
+};
+
+struct StatTickerParams {
+	uintptr_t Receiver; // person who got a stat
+	uintptr_t Victim; // person who is victim of a stat (only exists for demos afaik)
+	uintptr_t StatEvent;
+};
+
+struct StatEventParams {
+	uintptr_t PRI; // always primary player
+	uintptr_t StatEvent; // wrapper for the stat event
 };
 
 struct Vector2D {
@@ -127,22 +142,40 @@ public:
 	int RS_mode = 0;
 	int RS_theme = 0;
 
-	bool RS_in_file = true;
 	bool RS_disp_obs = false;
 	bool RS_disp_overlay = true;
 	bool RS_enable_inmenu = true;
 	bool RS_enable_ingame = true;
-	bool RS_enable_boost = true;
 	bool RS_enable_float = false;
 	bool RS_onchange_scale = true;
 	bool RS_onchange_position = true;
+
+	bool RS_in_file = true;
+	bool RS_file_gm = true;
+	bool RS_file_rank = true;
+	bool RS_file_div = true;
+	bool RS_file_mmr = true;
+	bool RS_file_mmrc = true;
+	bool RS_file_mmrcc = true;
+	bool RS_file_win = true;
+	bool RS_file_loss = true;
+	bool RS_file_streak = true;
+	bool RS_file_demo = false;
+	bool RS_file_death = false;
+	bool RS_file_boost = true;
+
 	bool RS_replace_mmr = false;
+	bool RS_hide_gm = false;
+	bool RS_hide_rank = false;
+	bool RS_hide_div = false;
 	bool RS_hide_mmr = false;
 	bool RS_hide_mmrc = false;
 	bool RS_hide_mmrcc = false;
 	bool RS_hide_win = false;
 	bool RS_hide_loss = false;
 	bool RS_hide_streak = false;
+	bool RS_hide_demo = false;
+	bool RS_hide_death = false;
 
 	float RS_x = 0.7f;
 	float RS_y = 0.575f;
@@ -166,16 +199,19 @@ public:
 	// PluginLoadRoutines
 	virtual void onLoad();
 	virtual void onUnload();
-
-	// GameMgmt
 	void ShowPlugin(std::string eventName);
 	void TogglePlugin(std::string eventName, ToggleFlags mode = ToggleFlags_Toggle);
 	void ToggleSettings(std::string eventName, ToggleFlags mode = ToggleFlags_Toggle);
+
+	// GameMgmt
 	void GameStart(std::string eventName);
 	void GameEnd(std::string eventName);
 	void GameDestroyed(std::string eventName);
 
 	// StatsMgmt
+	bool isPrimaryPlayer(PriWrapper pri);
+	void onStatEvent(ServerWrapper caller, void* args);
+	void onStatTickerMessage(ServerWrapper caller, void* args);
 	void UpdateMMR(UniqueIDWrapper id);
 	void SessionStats();
 	void ResetStats();
@@ -203,15 +239,21 @@ public:
 	bool RemoveFile(std::string _filename, bool root = false);
 	std::string ReadFile(std::string _filename, bool root = false);
 	void WriteInFile(std::string _fileName, std::string _value, bool root = false);
+	void ResetFiles();
 	void ReadConfig();
 	void WriteConfig();
 	void WriteGameMode();
+	void WriteRank();
+	void WriteDiv();
 	void WriteMMR();
 	void WriteMMRChange();
 	void WriteMMRCumulChange();
 	void WriteWin();
 	void WriteLoss();
 	void WriteStreak();
+	void WriteBoost();
+	void WriteDemo();
+	void WriteDeath();
 
 	int currentPlaylist = 0;
 	bool isInGame = false;

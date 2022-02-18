@@ -72,6 +72,9 @@
     <ClInclude Include="imgui\imstb_truetype.h">
       <Filter>ImGui\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="imgui\imgui_rotate.h">
+      <Filter>ImGui\Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="RocketStats.cpp">
@@ -111,6 +114,9 @@
       <Filter>ImGui\Sources</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imguivariouscontrols.cpp">
+      <Filter>ImGui\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_rotate.cpp">
       <Filter>ImGui\Sources</Filter>
     </ClCompile>
   </ItemGroup>
