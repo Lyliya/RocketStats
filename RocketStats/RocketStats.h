@@ -195,6 +195,7 @@ public:
 	std::shared_ptr<ImageWrapper> LoadImg(const std::string& _filename);
 	std::shared_ptr<ImageWrapper> LoadImg(fs::path& _path);
 	void LoadImgs();
+	void RecoveryOldVars();
 
 	// PluginLoadRoutines
 	virtual void onLoad();
@@ -240,7 +241,7 @@ public:
 	std::string ReadFile(std::string _filename, bool root = false);
 	void WriteInFile(std::string _fileName, std::string _value, bool root = false);
 	void ResetFiles();
-	void ReadConfig();
+	bool ReadConfig();
 	void WriteConfig();
 	void WriteGameMode();
 	void WriteRank();
