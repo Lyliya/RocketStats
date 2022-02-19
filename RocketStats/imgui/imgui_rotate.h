@@ -4,6 +4,6 @@
 extern int rotation_start_index;
 extern ImDrawList* rotation_drawlist;
 
-void ImRotateStart(ImDrawList* drawlist);
-ImVec2 ImRotationCenter();
-void ImRotateEnd(float rad, ImVec2 center = ImRotationCenter());
+int ImRotateStart(ImDrawList* drawlist = nullptr);
+ImVec2 ImRotationCenter(int start = rotation_start_index, ImDrawList* drawlist = nullptr);
+void ImRotateEnd(float rad, int start = rotation_start_index, ImDrawList* drawlist = rotation_drawlist, ImVec2 center = ImRotationCenter());

@@ -51,8 +51,9 @@ Now the basic settings:
  - `x` et `y`: position (adjustable from the interface then, these are the only ones to be in percentage from 0.0 to 1.0)
  - `width` and `height`: size (allows you to use percentages)
  - `font`: if you want to use a specific font (the name of the file in the `fonts` folder followed by the desired base size)
- - `scale`: zoom (adjustable from the interface then)
- - `opacity`: transparency (more or less visible)
+ - `scale`: zoom (adjustable from the interface)
+ - `rotate`: rotation (adjustable from the interface)
+ - `opacity`: transparency (more or less visible, adjustable from the interface)
 
 The last **elements** will include your **texts**, **shapes**, and **images**. Add a new line after this one to separate the opening and closing brackets.
 Now you will be able to add the elements which are presented below (these must be separated by a comma, example at the very bottom).
@@ -67,6 +68,7 @@ Each element has its own parameters, here are a few:
  - `color`: this color is in RGB or RGBA format (the alpha channel is in percentage from 0.0 to 1.0)
  - `fill`: fillable color of a shap (works the same as `color`)
  - `stroke`: outline color of a shape (works the same as `color`, centered on the contour so protrudes inside depending on the thickness)
+ - `rotate`: the rotation is added to the global rotation (in degrees from -180 to 180)
  - `opacity`: the opacity is added to the global opacity, but also of each color (percentage from 0.0 to 1.0)
 
 The `name` parameter is not important at this time, but plan to differentiate your elements for later releases.
@@ -97,6 +99,8 @@ Here are the variables that are accepted (each variable depends on the selected 
  - `Win`: the number of games won
  - `Loss`: the number of games lost
  - `Streak`: the number of games won or lost in a row
+ - `Demolition`: the number of times you destroy opponents
+ - `Death`: the number of times you've been destroyed
 
 ```json
 {
@@ -123,6 +127,7 @@ Images are loaded from the `images` folder in the theme folder:
 	"file":			"background.png",
 	"x":			0,
 	"y":			0,
+	"rotate":		45.0,
 	"scale":		1.5
 }
 ```

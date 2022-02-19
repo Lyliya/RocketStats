@@ -15,6 +15,8 @@
 
 #include "Utils.h"
 
+#define  M_PI	3.14159265358979323846
+
 using json = nlohmann::json;
 
 namespace fs = std::filesystem;
@@ -40,8 +42,9 @@ struct Element {
 	Color color;
 	Color fill;
 	Color stroke;
-	float rotate = 0.f;
 	float scale = 1.f;
+	bool rotate_enable = false;
+	float rotate = 0.f;
 };
 
 struct Options {
@@ -148,6 +151,7 @@ public:
 	bool RS_enable_ingame = true;
 	bool RS_enable_float = false;
 	bool RS_onchange_scale = true;
+	bool RS_onchange_rotate = true;
 	bool RS_onchange_position = true;
 
 	bool RS_in_file = true;
@@ -180,11 +184,15 @@ public:
 	float RS_x = 0.7f;
 	float RS_y = 0.575f;
 	float RS_scale = 1.f;
+	bool RS_rotate_enabled = false;
+	float RS_rotate = 0.f;
+	float RS_crotate = 0.f;
 	float RS_opacity = 1.f;
 
 	bool RS_x_edit = false;
 	bool RS_y_edit = false;
 	bool RS_scale_edit = false;
+	bool RS_rotate_edit = false;
 	bool RS_opacity_edit = false;
 
 	// Utils
@@ -233,7 +241,7 @@ public:
 	void RefreshTheme(std::string old, CVarWrapper now);
 	//void Render(CanvasWrapper canvas);
 	struct Element CalculateElement(json& element, Options& options, bool& check);
-	void RenderElement(Element& element);
+	void RenderElement(ImDrawList* drawlist, Element& element);
 
 	// File I / O
 	std::string GetPath(std::string _path = "", bool root = false);

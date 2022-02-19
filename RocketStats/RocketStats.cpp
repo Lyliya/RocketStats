@@ -193,6 +193,7 @@ void RocketStats::onLoad()
     cvarManager->registerCvar("RS_x", std::to_string(RS_x), "X", true, true, 0.f, true, 1.f, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_y", std::to_string(RS_y), "Y", true, true, 0.f, true, 1.f, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_scale", std::to_string(RS_scale), "Scale", true, true, 0.f, true, 10.f, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_rotate", std::to_string(RS_rotate), "Rotate", true, true, -180.f, true, 180.f, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_opacity", std::to_string(RS_opacity), "Opacity", true, true, 0.f, true, 1.f, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
 
     cvarManager->registerCvar("RS_disp_overlay", (RS_disp_overlay ? "1" : "0"), "Overlay", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
@@ -202,6 +203,7 @@ void RocketStats::onLoad()
     cvarManager->registerCvar("RS_enable_ingame", (RS_enable_ingame ? "1" : "0"), "Show while in-game", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_enable_float", (RS_enable_float ? "1" : "0"), "Enable floating point", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_onchange_scale", (RS_onchange_scale ? "1" : "0"), "Reset scale on change", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_onchange_rotate", (RS_onchange_rotate ? "1" : "0"), "Reset rotate on change", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_onchange_position", (RS_onchange_position ? "1" : "0"), "Reset position on change", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
 
     cvarManager->registerCvar("RS_in_file", std::to_string(RS_in_file), "Informations", true, true, 0, true, 1, true).addOnValueChanged([this](std::string old, CVarWrapper now) {
@@ -249,12 +251,6 @@ void RocketStats::onLoad()
 
     if (gameWrapper->IsInGame())
         TogglePlugin("IsInGame", ToggleFlags_Show);
-
-    std::vector<CareerStatsWrapper::StatValue> careerStats = CareerStatsWrapper::GetStatValues();
-    for (CareerStatsWrapper::StatValue careerValue : careerStats)
-    {
-        cvarManager->log("stat_name: " + careerValue.stat_name + " -> ranked=" + std::to_string(careerValue.ranked) + " unranked=" + std::to_string(careerValue.unranked));
-    }
 }
 
 void RocketStats::onUnload()
@@ -503,7 +499,7 @@ void RocketStats::onStatEvent(ServerWrapper caller, void* params)
     StatEventWrapper event = StatEventWrapper(pstats->StatEvent);
 
     std::string name = event.GetEventName(); // error
-    cvarManager->log("onStatEvent e:" + name + "=" + std::to_string(event.GetPoints()));
+    //cvarManager->log("onStatEvent e:" + name + "=" + std::to_string(event.GetPoints()));
 }
 
 void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
@@ -1070,8 +1066,12 @@ struct Element RocketStats::CalculateElement(json& element, Options& options, bo
 
             calculated.type = element["type"];
             calculated.positions = positions;
-            calculated.rotate = (element_rotate ? (90.f * (element_rotate / 180.f)) : 0.f);
             calculated.size = element_size;
+            if (element_rotate)
+            {
+                calculated.rotate_enable = true;
+                calculated.rotate = ((90.f - element_rotate) * (float(M_PI) / 180.f));
+            }
 
             check = true;
         }
@@ -1084,17 +1084,11 @@ struct Element RocketStats::CalculateElement(json& element, Options& options, bo
     return calculated;
 }
 
-void RocketStats::RenderElement(Element& element)
+void RocketStats::RenderElement(ImDrawList* drawlist, Element& element)
 {
     try
     {
-        ImDrawList* drawlist;
-        if (RS_disp_obs)
-            drawlist = ImGui::GetBackgroundDrawList();
-        else
-            drawlist = ImGui::GetOverlayDrawList();
-
-        if (element.rotate)
+        if (element.rotate_enable)
             ImRotateStart(drawlist);
 
         if (element.fill.enable)
@@ -1148,7 +1142,7 @@ void RocketStats::RenderElement(Element& element)
         else if (element.type == "line")
             drawlist->AddLine(element.positions.at(0), element.positions.at(1), element.color.color, element.size.x);
 
-        if (element.rotate)
+        if (element.rotate_enable)
             ImRotateEnd(element.rotate);
     }
     catch (const std::exception&) {}
@@ -1280,6 +1274,8 @@ bool RocketStats::ReadConfig()
                     }
                     if (config["settings"]["scale"].is_number_unsigned() || config["settings"]["scale"].is_number_integer() || config["settings"]["scale"].is_number_float())
                         RS_scale = config["settings"]["scale"];
+                    if (config["settings"]["rotate"].is_number_unsigned() || config["settings"]["rotate"].is_number_integer() || config["settings"]["rotate"].is_number_float())
+                        RS_rotate = config["settings"]["rotate"];
                     if (config["settings"]["opacity"].is_number_unsigned() || config["settings"]["opacity"].is_number_integer() || config["settings"]["opacity"].is_number_float())
                         RS_opacity = config["settings"]["opacity"];
 
@@ -1296,6 +1292,8 @@ bool RocketStats::ReadConfig()
                         RS_enable_float = config["settings"]["float"];
                     if (config["settings"]["onchange_scale"].is_boolean())
                         RS_onchange_scale = config["settings"]["onchange_scale"];
+                    if (config["settings"]["onchange_rotate"].is_boolean())
+                        RS_onchange_scale = config["settings"]["onchange_rotate"];
                     if (config["settings"]["onchange_position"].is_boolean())
                         RS_onchange_position = config["settings"]["onchange_position"];
 
@@ -1411,6 +1409,7 @@ void RocketStats::WriteConfig()
     tmp["settings"]["theme"] = theme_render.name;
     tmp["settings"]["position"] = { RS_x, RS_y };
     tmp["settings"]["scale"] = RS_scale;
+    tmp["settings"]["rotate"] = RS_rotate;
     tmp["settings"]["opacity"] = RS_opacity;
     tmp["settings"]["overlay"] = RS_disp_overlay;
     tmp["settings"]["obs"] = RS_disp_obs;
@@ -1418,6 +1417,7 @@ void RocketStats::WriteConfig()
     tmp["settings"]["ingame"] = RS_enable_ingame;
     tmp["settings"]["float"] = RS_enable_float;
     tmp["settings"]["onchange_scale"] = RS_onchange_scale;
+    tmp["settings"]["onchange_rotate"] = RS_onchange_rotate;
     tmp["settings"]["onchange_position"] = RS_onchange_position;
 
     tmp["settings"]["files"] = {};
@@ -1629,7 +1629,10 @@ void RocketStats::RenderOverlay()
             if (theme_refresh == 2)
             {
                 if (RS_onchange_scale)
-                    RS_scale = 1.0f;
+                    RS_scale = 1.f;
+
+                if (RS_onchange_rotate)
+                    RS_rotate = 0.f;
 
                 if (RS_onchange_position && theme_config.contains("x") && theme_config.contains("y"))
                 {
@@ -1637,6 +1640,15 @@ void RocketStats::RenderOverlay()
                     RS_y = theme_config["y"];
                 }
             }
+
+            RS_rotate_enabled = (theme_config.contains("rotate") && (RS_rotate + float(theme_config["rotate"])));
+            if (RS_rotate)
+            {
+                RS_rotate_enabled = true;
+                RS_crotate = ((90.f - RS_rotate) * (float(M_PI) / 180.f));
+            }
+            else if (RS_rotate_enabled)
+                RS_crotate = ((90.f - RS_rotate + float(theme_config["rotate"])) * (float(M_PI) / 180.f));
 
             std::vector<struct Element> elements;
             Options options = {
@@ -1701,8 +1713,21 @@ void RocketStats::RenderOverlay()
             theme_render.elements = elements;
         }
 
+        ImDrawList* drawlist;
+        if (RS_disp_obs)
+            drawlist = ImGui::GetBackgroundDrawList();
+        else
+            drawlist = ImGui::GetOverlayDrawList();
+
+        int start;
+        if (RS_rotate_enabled)
+            start = ImRotateStart(drawlist);
+
         for (auto& element : theme_render.elements)
-            RenderElement(element);
+            RenderElement(drawlist, element);
+
+        if (RS_rotate_enabled)
+            ImRotateEnd(RS_crotate, start, drawlist, ImRotationCenter(start, drawlist));
     }
     catch (const std::exception&) {}
 
@@ -1798,48 +1823,60 @@ void RocketStats::RenderSettings()
         if (ImGui::ArrowButton("##themes_right", ImGuiDir_Right) && themes.size() && RS_theme < (themes.size() - 1))
             ++RS_theme;
 
-        ImGui::SetCursorPos({ 190, 120 });
+        ImGui::SetCursorPos({ 113, 120 });
         if (ImGui::Button(cvarManager->getCvar("RS_x").getDescription().c_str(), { 65, 0 }))
             RS_x_edit = !RS_x_edit;
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Changes the horizontal position of the overlay");
-        ImGui::SetCursorPos({ 245, 120 });
+        ImGui::SetCursorPos({ 168, 120 });
         ImGui::SetNextItemWidth(150);
         if (RS_x_edit)
             ImGui::InputFloat("##x_position", &RS_x, 0.001f, 0.1f, "%.3f");
         else
             ImGui::SliderFloat("##x_position", &RS_x, 0.f, 1.f, "%.3f");
 
-        ImGui::SetCursorPos({ 465, 120 });
+        ImGui::SetCursorPos({ 431, 120 });
         if (ImGui::Button(cvarManager->getCvar("RS_y").getDescription().c_str(), { 65, 0 }))
             RS_y_edit = !RS_y_edit;
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Changes the vertical position of the overlay");
-        ImGui::SetCursorPos({ 520, 120 });
+        ImGui::SetCursorPos({ 486, 120 });
         ImGui::SetNextItemWidth(150);
         if (RS_y_edit)
             ImGui::InputFloat("##y_position", &RS_y, 0.001f, 0.1f, "%.3f");
         else
             ImGui::SliderFloat("##y_position", &RS_y, 0.f, 1.f, "%.3f");
 
-        ImGui::SetCursorPos({ 70, 165 });
+        ImGui::SetCursorPos({ 34, 165 });
         if (ImGui::Button(cvarManager->getCvar("RS_scale").getDescription().c_str(), { 65, 0 }))
             RS_scale_edit = !RS_scale_edit;
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Choose the size of the overlay");
-        ImGui::SetCursorPos({ 125, 165 });
+        ImGui::SetCursorPos({ 89, 165 });
         ImGui::SetNextItemWidth(150);
         if (RS_scale_edit)
             ImGui::InputFloat("##scale", &RS_scale, 0.1f, 1.f, "%.3f");
         else
             ImGui::SliderFloat("##scale", &RS_scale, 0.f, 10.f, "%.3f");
 
-        ImGui::SetCursorPos({ 345, 165 });
+        ImGui::SetCursorPos({ 273, 165 });
+        if (ImGui::Button(cvarManager->getCvar("RS_rotate").getDescription().c_str(), { 65, 0 }))
+            RS_rotate_edit = !RS_rotate_edit;
+        if (ImGui::IsItemHovered())
+            ImGui::SetTooltip("Choose the rotation of the overlay");
+        ImGui::SetCursorPos({ 328, 165 });
+        ImGui::SetNextItemWidth(150);
+        if (RS_rotate_edit)
+            ImGui::InputFloat("##rotate", &RS_rotate, 0.001f, 0.1f, "%.3f");
+        else
+            ImGui::SliderFloat("##rotate", &RS_rotate, -180.f, 180.f, "%.3f");
+
+        ImGui::SetCursorPos({ 512, 165 });
         if (ImGui::Button(cvarManager->getCvar("RS_opacity").getDescription().c_str(), { 65, 0 }))
             RS_opacity_edit = !RS_opacity_edit;
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Choose the opacity of the overlay");
-        ImGui::SetCursorPos({ 400, 165 });
+        ImGui::SetCursorPos({ 567, 165 });
         ImGui::SetNextItemWidth(150);
         if (RS_opacity_edit)
             ImGui::InputFloat("##opacity", &RS_opacity, 0.001f, 0.1f, "%.3f");
@@ -1901,11 +1938,14 @@ void RocketStats::RenderSettings()
         ImGui::SetWindowFontScale(1.f);
         ImGui::SetCursorPos({ column_start, 300 });
         ImGui::BeginChild("##column1", { column_width, 205 }, false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
+        ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.5f);
         ImGui::Checkbox(cvarManager->getCvar("RS_disp_obs").getDescription().c_str(), &RS_disp_obs);
+        ImGui::PopStyleVar();
         ImGui::Checkbox(cvarManager->getCvar("RS_enable_inmenu").getDescription().c_str(), &RS_enable_inmenu);
         ImGui::Checkbox(cvarManager->getCvar("RS_enable_ingame").getDescription().c_str(), &RS_enable_ingame);
         ImGui::Checkbox(cvarManager->getCvar("RS_enable_float").getDescription().c_str(), &RS_enable_float);
         ImGui::Checkbox(cvarManager->getCvar("RS_onchange_scale").getDescription().c_str(), &RS_onchange_scale);
+        ImGui::Checkbox(cvarManager->getCvar("RS_onchange_rotate").getDescription().c_str(), &RS_onchange_rotate);
         ImGui::Checkbox(cvarManager->getCvar("RS_onchange_position").getDescription().c_str(), &RS_onchange_position);
         ImGui::EndChild();
 
@@ -1993,13 +2033,18 @@ void RocketStats::RenderSettings()
 
     ImGui::End();
 
-    if (RS_scale < 0)
-        RS_scale = 0;
+    if (RS_scale < 0.f)
+        RS_scale = 0.f;
 
-    if (RS_opacity < 0)
-        RS_opacity = 0;
-    else if (RS_opacity > 1)
-        RS_opacity = 1;
+    if (RS_rotate < -180.f)
+        RS_rotate = -180.f;
+    else if (RS_rotate > 180.f)
+        RS_rotate = 180.f;
+
+    if (RS_opacity < 0.f)
+        RS_opacity = 0.f;
+    else if (RS_opacity > 1.f)
+        RS_opacity = 1.f;
 
     if (RS_mode != cvarManager->getCvar("RS_mode").getIntValue())
         cvarManager->getCvar("RS_mode").setValue(RS_mode);
@@ -2012,6 +2057,8 @@ void RocketStats::RenderSettings()
         cvarManager->getCvar("RS_y").setValue(RS_y);
     if (RS_scale != cvarManager->getCvar("RS_scale").getFloatValue())
         cvarManager->getCvar("RS_scale").setValue(RS_scale);
+    if (RS_rotate != cvarManager->getCvar("RS_rotate").getFloatValue())
+        cvarManager->getCvar("RS_rotate").setValue(RS_rotate);
     if (RS_opacity != cvarManager->getCvar("RS_opacity").getFloatValue())
         cvarManager->getCvar("RS_opacity").setValue(RS_opacity);
 
@@ -2035,6 +2082,8 @@ void RocketStats::RenderSettings()
         cvarManager->getCvar("RS_enable_float").setValue(RS_enable_float);
     if (RS_onchange_scale != cvarManager->getCvar("RS_onchange_scale").getBoolValue())
         cvarManager->getCvar("RS_onchange_scale").setValue(RS_onchange_scale);
+    if (RS_onchange_rotate != cvarManager->getCvar("RS_onchange_rotate").getBoolValue())
+        cvarManager->getCvar("RS_onchange_rotate").setValue(RS_onchange_rotate);
     if (RS_onchange_position != cvarManager->getCvar("RS_onchange_position").getBoolValue())
         cvarManager->getCvar("RS_onchange_position").setValue(RS_onchange_position);
 
