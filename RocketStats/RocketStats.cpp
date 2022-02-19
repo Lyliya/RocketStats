@@ -81,15 +81,7 @@ void RocketStats::RecoveryOldVars()
     CVarWrapper RS_Use_v1 = cvarManager->getCvar("RS_Use_v1");
     CVarWrapper RS_Use_v2 = cvarManager->getCvar("RS_Use_v2");
     if (!RS_Use_v1.IsNull() && !RS_Use_v1.IsNull())
-    {
-        std::string name = ((RS_Use_v1.getBoolValue() == RS_Use_v1.getBoolValue()) ? "Arubinu42" : (RS_Use_v1.getBoolValue() ? "Default" : "Redesigned"));
-
-        for (int i = 0; i < themes.size(); ++i)
-        {
-            if (themes.at(i).name == name)
-                RS_theme = i;
-        }
-    }
+        SetTheme((RS_Use_v1.getBoolValue() == RS_Use_v1.getBoolValue()) ? "Arubinu42" : (RS_Use_v1.getBoolValue() ? "Default" : "Redesigned"));
 
     CVarWrapper RS_x_position = cvarManager->getCvar("RS_x_position");
     if (!RS_x_position.IsNull())
@@ -864,6 +856,18 @@ bool RocketStats::ChangeTheme(int idx)
     return (RS_theme == idx);
 }
 
+void RocketStats::SetTheme(std::string name)
+{
+    for (int i = 0; i < themes.size(); ++i)
+    {
+        if (themes.at(i).name == name)
+        {
+            RS_theme = i;
+            break;
+        }
+    }
+}
+
 void RocketStats::RefreshTheme(std::string old, CVarWrapper now)
 {
     theme_refresh = 1;
@@ -1262,14 +1266,7 @@ bool RocketStats::ReadConfig()
                         RS_mode = config["settings"]["mode"];
 
                     if (config["settings"]["theme"].is_string())
-                    {
-                        std::string name = config["settings"]["theme"];
-                        for (int i = 0; i < themes.size(); ++i)
-                        {
-                            if (themes.at(i).name == name)
-                                RS_theme = i;
-                        }
-                    }
+                        SetTheme(config["settings"]["theme"]);
 
                     if (config["settings"]["position"].is_array() && config["settings"]["position"].size() == 2)
                     {
@@ -1877,15 +1874,8 @@ void RocketStats::RenderSettings()
         ImGui::SetCursorPos({ (settings_size.x - 27), 238 });
         if (ImGui::Button("A", { 17, 0 }))
         {
-            std::string name = theme_render.name;
             LoadThemes();
-
-            for (int i = 0; i < themes.size(); ++i)
-            {
-                if (themes.at(i).name == name)
-                    RS_theme = i;
-            }
-
+            SetTheme(theme_render.name);
             ChangeTheme(RS_theme);
         }
         if (ImGui::IsItemHovered())
