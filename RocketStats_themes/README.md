@@ -189,23 +189,6 @@ Similar to lines, triangles are made up of points, but this time there are three
 
 In this example, the rectangle will take the entire size specified for the theme.
 
-```json
-{
-	"name":			"box",
-	"type":			"rectangle",
-	"x":			0,
-	"y":			0,
-	"width":		"100%",
-	"height":		"100%",
-	"fill":			false,
-	"stroke":		[ 127, 127, 127, 0.5 ]
-}
-```
-
-### Rectangle
-
-In this example, the rectangle will take the entire size specified for the theme.
-
 The `rounding` parameter applies a rounding on the corners of the rectangle.
 
 ```json
