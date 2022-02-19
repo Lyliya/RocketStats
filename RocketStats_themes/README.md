@@ -218,7 +218,7 @@ The position is of course in the center of the circle.
 	"x":			0,
 	"y":			0,
 	"radius":		20,
-	"segments":		"100%",
+	"segments":		12,
 	"fill":			[ 127, 127, 127, 0.5 ],
 	"stroke":		[ 255, 0, 0, 1.0 ]
 }
