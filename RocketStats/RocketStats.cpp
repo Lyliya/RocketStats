@@ -178,6 +178,10 @@ void RocketStats::onLoad()
 
     cvarManager->registerCvar("cl_rocketstats_settings", (isSettingsOpen_ ? "1" : "0"), "Display RocketStats settings", true, true, 0, true, 1, true).addOnValueChanged([this](std::string old, CVarWrapper now) {
         isSettingsOpen_ = now.getBoolValue();
+
+        cvarManager->log("cl_rocketstats_settings: " + std::string(isSettingsOpen_ ? "true" : "false"));
+        if (!isSettingsOpen_)
+            WriteConfig();
     });
 
     cvarManager->registerCvar("RS_mode", std::to_string(RS_mode), "Mode", true, true, 0, true, 2, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
@@ -263,12 +267,9 @@ void RocketStats::onUnload()
     gameWrapper->UnhookEvent("Function CarComponent_Boost_TA.Active.BeginState");
     gameWrapper->UnhookEvent("Function CarComponent_Boost_TA.Active.EndState");
     gameWrapper->UnhookEvent("Function TAGame.GameEvent_TA.Destroyed");
-    /*
-    gameWrapper->UnhookEvent("Function TAGame.Car_TA.EventDemolished");
-    gameWrapper->UnhookEvent("Function TAGame.Car_TA.QueueDemolish");
-    gameWrapper->UnhookEvent("Function TAGame.Car_TA.FinishDemo");
-    gameWrapper->UnhookEvent("Function TAGame.Car_TA.OnDemolishedGoalExplosion");
-    */
+
+    //gameWrapper->UnhookEventPost("Function TAGame.GFxHUD_TA.HandleStatEvent");
+    //gameWrapper->UnhookEventPost("Function TAGame.GFxHUD_TA.HandleStatTickerMessage");
 
     TogglePlugin("onUnload", ToggleFlags_Hide);
 }
@@ -294,6 +295,7 @@ void RocketStats::ToggleSettings(std::string eventName, ToggleFlags mode)
         isSettingsOpen_ = !isSettingsOpen_;
         cvarManager->getCvar("cl_rocketstats_settings").setValue(isSettingsOpen_);
 
+        cvarManager->log("ToggleSettings: " + std::string(isSettingsOpen_ ? "true" : "false"));
         if (!isSettingsOpen_)
             WriteConfig();
     }
@@ -1567,7 +1569,7 @@ void RocketStats::Render()
     int idx = ImGui::GetKeyIndex(ImGuiKey_Escape);
     if (ImGui::IsKeyDown(idx))
         escape_state = true;
-    if (ImGui::IsKeyReleased(idx))
+    else if (ImGui::IsKeyReleased(idx))
         escape_state = false;
 }
 
@@ -1714,7 +1716,7 @@ void RocketStats::RenderSettings()
     ImGui::SetNextWindowPos(ImVec2{ 128, 256 }, ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(settings_size);
 
-    ImGui::Begin(menuTitle_.c_str(), &isSettingsOpen_, (ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoResize));
+    ImGui::Begin(menuTitle_.c_str(), nullptr, (ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse));
 
     if (rs_title != nullptr && rs_title->IsLoadedForImGui())
     {
@@ -1898,7 +1900,7 @@ void RocketStats::RenderSettings()
 
         ImGui::SetWindowFontScale(1.f);
         ImGui::SetCursorPos({ column_start, 300 });
-        ImGui::BeginChild("##column1", { column_width, 210 }, false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
+        ImGui::BeginChild("##column1", { column_width, 205 }, false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
         ImGui::Checkbox(cvarManager->getCvar("RS_disp_obs").getDescription().c_str(), &RS_disp_obs);
         ImGui::Checkbox(cvarManager->getCvar("RS_enable_inmenu").getDescription().c_str(), &RS_enable_inmenu);
         ImGui::Checkbox(cvarManager->getCvar("RS_enable_ingame").getDescription().c_str(), &RS_enable_ingame);
@@ -1909,7 +1911,7 @@ void RocketStats::RenderSettings()
 
         ImGui::SameLine();
         ImGui::SetCursorPosX(column_start + column_space + column_width);
-        ImGui::BeginChild("##column2", { column_width, 210 }, false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
+        ImGui::BeginChild("##column2", { column_width, 205 }, false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
         if (!RS_in_file)
             ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.5f);
         ImGui::Checkbox(cvarManager->getCvar("RS_file_gm").getDescription().c_str(), &RS_file_gm);
@@ -1930,7 +1932,7 @@ void RocketStats::RenderSettings()
 
         ImGui::SameLine();
         ImGui::SetCursorPosX(column_start + (column_space * 2) + (column_width * 2));
-        ImGui::BeginChild("##column3", { column_width, 210 }, false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
+        ImGui::BeginChild("##column3", { column_width, 205 }, false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
         ImGui::Checkbox(cvarManager->getCvar("RS_hide_gm").getDescription().c_str(), &RS_hide_gm);
         ImGui::Checkbox(cvarManager->getCvar("RS_hide_rank").getDescription().c_str(), &RS_hide_rank);
         ImGui::Checkbox(cvarManager->getCvar("RS_hide_div").getDescription().c_str(), &RS_hide_div);
@@ -2124,11 +2126,13 @@ void RocketStats::OnOpen()
 
 void RocketStats::OnClose()
 {
+    cvarManager->log("onclose: " + std::string(escape_state ? "true" : "false"));
     if (escape_state)
     {
+        escape_state = false;
         gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
             cvarManager->executeCommand("togglemenu " + GetMenuName());
-        }, 0.01F);
+        }, 0.02F);
     }
 
     ToggleSettings("OnClose", ToggleFlags_Hide);

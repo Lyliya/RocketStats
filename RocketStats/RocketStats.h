@@ -229,6 +229,7 @@ public:
 	// OverlayMgmt
 	void LoadThemes();
 	bool ChangeTheme(int idx);
+	void SetTheme(std::string name);
 	void RefreshTheme(std::string old, CVarWrapper now);
 	//void Render(CanvasWrapper canvas);
 	struct Element CalculateElement(json& element, Options& options, bool& check);
