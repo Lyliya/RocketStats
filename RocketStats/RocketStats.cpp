@@ -1,6 +1,6 @@
-/* ==================================
- *   Developped by Lyliya & NuSa
- * ================================== */
+/* ===========================================================
+ *   Developped by @Lyliya, @NuSa_yt, @Arubinu42 & @Larsluph
+ * =========================================================== */
 
 #include "RocketStats.h"
 
@@ -169,7 +169,6 @@ void RocketStats::onLoad()
     cvarManager->registerCvar("RS_file_death", (RS_file_death ? "1" : "0"), "Write Deaths in file", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_file_boost", (RS_file_boost ? "1" : "0"), "Write Boost in file", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
 
-    cvarManager->registerCvar("RS_replace_mmr", (RS_replace_mmr ? "1" : "0"), "Replace MMR with MMRChange", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_hide_gm", (RS_hide_div ? "1" : "0"), "Hide GameMode", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_hide_rank", (RS_hide_rank ? "1" : "0"), "Hide Rank", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_hide_div", (RS_hide_div ? "1" : "0"), "Hide Division", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
@@ -181,6 +180,7 @@ void RocketStats::onLoad()
     cvarManager->registerCvar("RS_hide_streak", (RS_hide_streak ? "1" : "0"), "Hide Streaks", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_hide_demo", (RS_hide_demo ? "1" : "0"), "Hide Demolitions", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_hide_death", (RS_hide_death ? "1" : "0"), "Hide Deaths", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_replace_mmr", (RS_replace_mmr ? "1" : "0"), "Replace MMR with MMRChange", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
 
     if (gameWrapper->IsInGame())
         TogglePlugin("IsInGame", ToggleFlags_Show);
@@ -1260,8 +1260,6 @@ void RocketStats::ReadConfig()
                             RS_file_boost = config["settings"]["files"]["boost"];
                     }
 
-                    if (config["settings"]["replace_mmr"].is_boolean())
-                        RS_replace_mmr = config["settings"]["replace_mmr"];
                     if (config["settings"]["hides"].is_object())
                     {
                         if (config["settings"]["hides"]["gm"].is_boolean())
@@ -1287,6 +1285,8 @@ void RocketStats::ReadConfig()
                         if (config["settings"]["hides"]["death"].is_boolean())
                             RS_hide_death = config["settings"]["hides"]["death"];
                     }
+                    if (config["settings"]["replace_mmr"].is_boolean())
+                        RS_replace_mmr = config["settings"]["replace_mmr"];
 
                     cvarManager->log("Config: stats loaded");
                     always.isInit = true;
@@ -1366,7 +1366,6 @@ void RocketStats::WriteConfig()
     tmp["settings"]["files"]["death"] = RS_file_death;
     tmp["settings"]["files"]["boost"] = RS_file_boost;
 
-    tmp["settings"]["replace_mmr"] = RS_replace_mmr;
     tmp["settings"]["hides"] = {};
     tmp["settings"]["hides"]["gm"] = RS_hide_gm;
     tmp["settings"]["hides"]["rank"] = RS_hide_rank;
@@ -1379,6 +1378,7 @@ void RocketStats::WriteConfig()
     tmp["settings"]["hides"]["streak"] = RS_hide_streak;
     tmp["settings"]["hides"]["demo"] = RS_hide_demo;
     tmp["settings"]["hides"]["death"] = RS_hide_death;
+    tmp["settings"]["replace_mmr"] = RS_replace_mmr;
 
     tmp["always"] = {};
     tmp["always"]["MMRCumulChange"] = always.MMRCumulChange;
@@ -1661,7 +1661,7 @@ void RocketStats::RenderSettings()
         ImVec2 win_size = ImGui::GetWindowSize();
         Vector2F image_size = rs_title->GetSizeF();
         ImDrawList* drawlist = ImGui::GetWindowDrawList();
-        std::string developers = "Developped by @Lyliiya, @NuSa_yt, @Arubinu42 & @Larsluph";
+        std::string developers = "Developped by @Lyliya, @NuSa_yt, @Arubinu42 & @Larsluph";
 
         ImVec2 p0 = win_pos;
         ImVec2 p1 = { (win_pos.x + win_size.x), (win_pos.y + win_size.y) };
@@ -1849,6 +1849,8 @@ void RocketStats::RenderSettings()
         ImGui::SameLine();
         ImGui::SetCursorPosX(column_start + column_space + column_width);
         ImGui::BeginChild("##column2", { column_width, 210 }, false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
+        if (!RS_in_file)
+            ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.5f);
         ImGui::Checkbox(cvarManager->getCvar("RS_file_gm").getDescription().c_str(), &RS_file_gm);
         ImGui::Checkbox(cvarManager->getCvar("RS_file_rank").getDescription().c_str(), &RS_file_rank);
         ImGui::Checkbox(cvarManager->getCvar("RS_file_div").getDescription().c_str(), &RS_file_div);
@@ -1861,12 +1863,13 @@ void RocketStats::RenderSettings()
         ImGui::Checkbox(cvarManager->getCvar("RS_file_demo").getDescription().c_str(), &RS_file_demo);
         ImGui::Checkbox(cvarManager->getCvar("RS_file_death").getDescription().c_str(), &RS_file_death);
         ImGui::Checkbox(cvarManager->getCvar("RS_file_boost").getDescription().c_str(), &RS_file_boost);
+        if (!RS_in_file)
+            ImGui::PopStyleVar();
         ImGui::EndChild();
 
         ImGui::SameLine();
         ImGui::SetCursorPosX(column_start + (column_space * 2) + (column_width * 2));
         ImGui::BeginChild("##column3", { column_width, 210 }, false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
-        ImGui::Checkbox(cvarManager->getCvar("RS_replace_mmr").getDescription().c_str(), &RS_replace_mmr);
         ImGui::Checkbox(cvarManager->getCvar("RS_hide_gm").getDescription().c_str(), &RS_hide_gm);
         ImGui::Checkbox(cvarManager->getCvar("RS_hide_rank").getDescription().c_str(), &RS_hide_rank);
         ImGui::Checkbox(cvarManager->getCvar("RS_hide_div").getDescription().c_str(), &RS_hide_div);
@@ -1878,6 +1881,7 @@ void RocketStats::RenderSettings()
         ImGui::Checkbox(cvarManager->getCvar("RS_hide_streak").getDescription().c_str(), &RS_hide_streak);
         ImGui::Checkbox(cvarManager->getCvar("RS_hide_demo").getDescription().c_str(), &RS_hide_demo);
         ImGui::Checkbox(cvarManager->getCvar("RS_hide_death").getDescription().c_str(), &RS_hide_death);
+        ImGui::Checkbox(cvarManager->getCvar("RS_replace_mmr").getDescription().c_str(), &RS_replace_mmr);
         ImGui::EndChild();
 
         /*
@@ -1996,8 +2000,6 @@ void RocketStats::RenderSettings()
     if (RS_file_boost != cvarManager->getCvar("RS_file_boost").getBoolValue())
         cvarManager->getCvar("RS_file_boost").setValue(RS_file_boost);
 
-    if (RS_replace_mmr != cvarManager->getCvar("RS_replace_mmr").getBoolValue())
-        cvarManager->getCvar("RS_replace_mmr").setValue(RS_replace_mmr);
     if (RS_hide_gm != cvarManager->getCvar("RS_hide_gm").getBoolValue())
         cvarManager->getCvar("RS_hide_gm").setValue(RS_hide_gm);
     if (RS_hide_rank != cvarManager->getCvar("RS_hide_rank").getBoolValue())
@@ -2020,6 +2022,8 @@ void RocketStats::RenderSettings()
         cvarManager->getCvar("RS_hide_demo").setValue(RS_hide_demo);
     if (RS_hide_death != cvarManager->getCvar("RS_hide_death").getBoolValue())
         cvarManager->getCvar("RS_hide_death").setValue(RS_hide_death);
+    if (RS_replace_mmr != cvarManager->getCvar("RS_replace_mmr").getBoolValue())
+        cvarManager->getCvar("RS_replace_mmr").setValue(RS_replace_mmr);
 }
 
 // Name of the menu that is used to toggle the window.
