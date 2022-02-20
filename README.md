@@ -37,7 +37,7 @@ Fortunately for those who are not comfortable with creating themes, we already o
 To Add/Edit themes, you can go to the directory below, or simply open the folder from the RocketStats menu:
  - `%appdata%\bakkesmod\bakkesmod\RocketStats\RocketStats_themes`
 
-Les explications sur ce système sont présentes ici: https://github.com/Arubinu/RocketStats/tree/themes/RocketStats_themes
+The explanations on this system are present here: https://github.com/Arubinu/RocketStats/tree/themes/RocketStats_themes
 
 ### OBS Overlay
 
