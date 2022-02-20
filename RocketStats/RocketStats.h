@@ -100,6 +100,7 @@ struct Vector2D {
 class RocketStats : public BakkesMod::Plugin::BakkesModPlugin, public BakkesMod::Plugin::PluginWindow
 {
 private:
+	float rs_launch = 0.f;
 	std::shared_ptr<bool> enabled;
 	std::string rs_path = "RocketStats";
 	std::string rs_fonts = "../../";
@@ -152,6 +153,7 @@ public:
 	bool RS_enable_float = false;
 	bool RS_onchange_scale = true;
 	bool RS_onchange_rotate = true;
+	bool RS_onchange_opacity = true;
 	bool RS_onchange_position = true;
 
 	bool RS_in_file = true;
@@ -208,6 +210,7 @@ public:
 	// PluginLoadRoutines
 	virtual void onLoad();
 	virtual void onUnload();
+	void SetDefaultFolder();
 	void ShowPlugin(std::string eventName);
 	void TogglePlugin(std::string eventName, ToggleFlags mode = ToggleFlags_Toggle);
 	void ToggleSettings(std::string eventName, ToggleFlags mode = ToggleFlags_Toggle);

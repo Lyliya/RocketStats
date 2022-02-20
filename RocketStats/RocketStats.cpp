@@ -134,15 +134,7 @@ void RocketStats::onLoad()
 {
     // notifierToken = gameWrapper->GetMMRWrapper().RegisterMMRNotifier(std::bind(&RocketStats::UpdateMMR, this, std::placeholders::_1));
 
-    if (!ExistsPath(rs_path, true))
-    {
-        rs_fonts = "../";
-        rs_path = "data/" + rs_path;
-    }
-    rs_fonts += "RocketStats";
-
-    cvarManager->log("RS_path: " + GetPath());
-    cvarManager->log("RS_fonts: " + GetPath("", true) + "data/fonts/" + rs_fonts);
+    SetDefaultFolder();
 
     LoadImgs();
     LoadThemes();
@@ -169,6 +161,7 @@ void RocketStats::onLoad()
     ResetFiles();
     RemoveFile("RocketStats_Loose.txt"); // Delete the old file
     RemoveFile("RocketStats_images/BoostState.txt"); // Delete the old file
+    RemoveFile("plugins/settings/rocketstats.set", true); // Delete the old file
 
     InitRank();
 
@@ -204,6 +197,7 @@ void RocketStats::onLoad()
     cvarManager->registerCvar("RS_enable_float", (RS_enable_float ? "1" : "0"), "Enable floating point", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_onchange_scale", (RS_onchange_scale ? "1" : "0"), "Reset scale on change", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_onchange_rotate", (RS_onchange_rotate ? "1" : "0"), "Reset rotate on change", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_onchange_opacity", (RS_onchange_opacity ? "1" : "0"), "Reset opacity on change", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_onchange_position", (RS_onchange_position ? "1" : "0"), "Reset position on change", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
 
     cvarManager->registerCvar("RS_in_file", std::to_string(RS_in_file), "Informations", true, true, 0, true, 1, true).addOnValueChanged([this](std::string old, CVarWrapper now) {
@@ -249,8 +243,9 @@ void RocketStats::onLoad()
     cvarManager->registerCvar("RS_hide_death", (RS_hide_death ? "1" : "0"), "Hide Deaths", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_replace_mmr", (RS_replace_mmr ? "1" : "0"), "Replace MMR with MMRChange", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
 
-    if (gameWrapper->IsInGame())
-        TogglePlugin("IsInGame", ToggleFlags_Show);
+    gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
+        TogglePlugin("onLoad", ToggleFlags_Show);
+    }, 0.2F);
 }
 
 void RocketStats::onUnload()
@@ -268,6 +263,22 @@ void RocketStats::onUnload()
     //gameWrapper->UnhookEventPost("Function TAGame.GFxHUD_TA.HandleStatTickerMessage");
 
     TogglePlugin("onUnload", ToggleFlags_Hide);
+}
+
+void RocketStats::SetDefaultFolder()
+{
+    rs_path = "RocketStats";
+    rs_fonts = "../../";
+
+    if (!ExistsPath(rs_path, true))
+    {
+        rs_fonts = "../";
+        rs_path = "data/" + rs_path;
+    }
+    rs_fonts += "RocketStats";
+
+    cvarManager->log("RS_path: " + GetPath());
+    cvarManager->log("RS_fonts: " + GetPath("", true) + "data/fonts/" + rs_fonts);
 }
 
 void RocketStats::ShowPlugin(std::string eventName)
@@ -1293,7 +1304,9 @@ bool RocketStats::ReadConfig()
                     if (config["settings"]["onchange_scale"].is_boolean())
                         RS_onchange_scale = config["settings"]["onchange_scale"];
                     if (config["settings"]["onchange_rotate"].is_boolean())
-                        RS_onchange_scale = config["settings"]["onchange_rotate"];
+                        RS_onchange_rotate = config["settings"]["onchange_rotate"];
+                    if (config["settings"]["onchange_opacity"].is_boolean())
+                        RS_onchange_opacity = config["settings"]["onchange_opacity"];
                     if (config["settings"]["onchange_position"].is_boolean())
                         RS_onchange_position = config["settings"]["onchange_position"];
 
@@ -1418,6 +1431,7 @@ void RocketStats::WriteConfig()
     tmp["settings"]["float"] = RS_enable_float;
     tmp["settings"]["onchange_scale"] = RS_onchange_scale;
     tmp["settings"]["onchange_rotate"] = RS_onchange_rotate;
+    tmp["settings"]["onchange_opacity"] = RS_onchange_opacity;
     tmp["settings"]["onchange_position"] = RS_onchange_position;
 
     tmp["settings"]["files"] = {};
@@ -1634,11 +1648,17 @@ void RocketStats::RenderOverlay()
                 if (RS_onchange_rotate)
                     RS_rotate = 0.f;
 
+                if (RS_onchange_opacity)
+                    RS_opacity = 1.f;
+
                 if (RS_onchange_position && theme_config.contains("x") && theme_config.contains("y"))
                 {
                     RS_x = theme_config["x"];
                     RS_y = theme_config["y"];
                 }
+
+                theme_images.clear();
+                cvarManager->log("refresh all images");
             }
 
             RS_rotate_enabled = (theme_config.contains("rotate") && (RS_rotate + float(theme_config["rotate"])));
@@ -1657,7 +1677,7 @@ void RocketStats::RenderOverlay()
                 (theme_config.contains("width") ? int(theme_config["width"]) : 0),
                 (theme_config.contains("height") ? int(theme_config["height"]) : 0),
                 (RS_scale * (theme_config.contains("scale") ? float(theme_config["scale"]) : 1.f)),
-                (RS_opacity * (theme_config.contains("opacity") ? float(theme_config["opacity"]) : 1.f))
+                (rs_launch * RS_opacity * (theme_config.contains("opacity") ? float(theme_config["opacity"]) : 1.f))
             };
 
             const size_t floating_length = (RS_enable_float ? 2 : 0);
@@ -1695,12 +1715,6 @@ void RocketStats::RenderOverlay()
             if (RS_replace_mmr)
                 theme_vars["MMR"] = theme_vars["MMRChange"];
 
-            if (theme_refresh == 2)
-            {
-                theme_images.clear();
-                cvarManager->log("refresh all images");
-            }
-
             for (auto& element : theme_config["elements"])
             {
                 bool check = false;
@@ -1728,6 +1742,12 @@ void RocketStats::RenderOverlay()
 
         if (RS_rotate_enabled)
             ImRotateEnd(RS_crotate, start, drawlist, ImRotationCenter(start, drawlist));
+
+        if (rs_launch < 1.f)
+        {
+            rs_launch += 0.05f;
+            theme_refresh = 1;
+        }
     }
     catch (const std::exception&) {}
 
@@ -1946,6 +1966,7 @@ void RocketStats::RenderSettings()
         ImGui::Checkbox(cvarManager->getCvar("RS_enable_float").getDescription().c_str(), &RS_enable_float);
         ImGui::Checkbox(cvarManager->getCvar("RS_onchange_scale").getDescription().c_str(), &RS_onchange_scale);
         ImGui::Checkbox(cvarManager->getCvar("RS_onchange_rotate").getDescription().c_str(), &RS_onchange_rotate);
+        ImGui::Checkbox(cvarManager->getCvar("RS_onchange_opacity").getDescription().c_str(), &RS_onchange_opacity);
         ImGui::Checkbox(cvarManager->getCvar("RS_onchange_position").getDescription().c_str(), &RS_onchange_position);
         ImGui::EndChild();
 
@@ -2025,6 +2046,7 @@ void RocketStats::RenderSettings()
         ImGui::SetCursorPosX(settings_size.x - 80 - 7);
         if (ImGui::Button("Reload All", { 80, 0 }))
         {
+            SetDefaultFolder();
             LoadThemes();
             ChangeTheme(RS_theme);
             rs_title = LoadImg("RocketStats_images/title.png");
@@ -2084,6 +2106,8 @@ void RocketStats::RenderSettings()
         cvarManager->getCvar("RS_onchange_scale").setValue(RS_onchange_scale);
     if (RS_onchange_rotate != cvarManager->getCvar("RS_onchange_rotate").getBoolValue())
         cvarManager->getCvar("RS_onchange_rotate").setValue(RS_onchange_rotate);
+    if (RS_onchange_opacity != cvarManager->getCvar("RS_onchange_opacity").getBoolValue())
+        cvarManager->getCvar("RS_onchange_opacity").setValue(RS_onchange_opacity);
     if (RS_onchange_position != cvarManager->getCvar("RS_onchange_position").getBoolValue())
         cvarManager->getCvar("RS_onchange_position").setValue(RS_onchange_position);
 

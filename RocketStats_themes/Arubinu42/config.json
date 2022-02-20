@@ -6,8 +6,9 @@
 	"y":			0.0,
 	"width":		576,
 	"height":		40,
-	"font":			["Elmono.ttf", 35],
+	"font":			[ "Elmono.ttf", 35 ],
 	"scale":		1.0,
+	"rotate":		0.0,
 	"opacity":		1.0,
 	"elements": [
 		{

@@ -6,7 +6,7 @@
 	"y":			0.74,
 	"width":		400,
 	"height":		300,
-	"font":			["Azonix.otf", 42],
+	"font":			[ "Azonix.otf", 42 ],
 	"scale":		1.25,
 	"opacity":		1.0,
 	"elements": [
