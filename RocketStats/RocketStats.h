@@ -101,6 +101,7 @@ class RocketStats : public BakkesMod::Plugin::BakkesModPlugin, public BakkesMod:
 {
 private:
 	float rs_launch = 0.f;
+	ImVector<ImDrawVert> rs_vert;
 	std::shared_ptr<bool> enabled;
 	std::string rs_path = "RocketStats";
 	std::string rs_fonts = "../../";

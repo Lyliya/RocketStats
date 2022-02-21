@@ -169,7 +169,7 @@ void RocketStats::onLoad()
     if (recovery)
         RecoveryOldVars();
 
-    cvarManager->registerCvar("cl_rocketstats_settings", (isSettingsOpen_ ? "1" : "0"), "Display RocketStats settings", true, true, 0, true, 1, true).addOnValueChanged([this](std::string old, CVarWrapper now) {
+    cvarManager->registerCvar("cl_rocketstats_settings", (isSettingsOpen_ ? "1" : "0"), "Display RocketStats settings", true, true, 0, true, 1, false).addOnValueChanged([this](std::string old, CVarWrapper now) {
         isSettingsOpen_ = now.getBoolValue();
 
         cvarManager->log("cl_rocketstats_settings: " + std::string(isSettingsOpen_ ? "true" : "false"));
@@ -1640,6 +1640,7 @@ void RocketStats::RenderOverlay()
             Stats current = GetStats();
             ImVec2 screen_size = ImGui::GetIO().DisplaySize;
 
+            rs_vert.clear();
             if (theme_refresh == 2)
             {
                 if (RS_onchange_scale)
@@ -1733,15 +1734,24 @@ void RocketStats::RenderOverlay()
         else
             drawlist = ImGui::GetOverlayDrawList();
 
-        int start;
-        if (RS_rotate_enabled)
-            start = ImRotateStart(drawlist);
+        if (rs_vert.empty())
+        {
+            int start;
+            if (RS_rotate_enabled)
+                start = ImRotateStart(drawlist);
 
-        for (auto& element : theme_render.elements)
-            RenderElement(drawlist, element);
+            for (auto& element : theme_render.elements)
+                RenderElement(drawlist, element);
 
-        if (RS_rotate_enabled)
-            ImRotateEnd(RS_crotate, start, drawlist, ImRotationCenter(start, drawlist));
+            if (RS_rotate_enabled)
+                ImRotateEnd(RS_crotate, start, drawlist, ImRotationCenter(start, drawlist));
+        }
+        else
+        {
+            auto& buf = drawlist->VtxBuffer;
+            for (int i = 0; i < rs_vert.size(); ++i)
+                buf.push_back(rs_vert[i]);
+        }
 
         if (rs_launch < 1.f)
         {
