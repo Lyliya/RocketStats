@@ -1033,7 +1033,7 @@ struct Element RocketStats::CalculateElement(json& element, Options& options, bo
 
                 if (calculated.value == "{{Rank}}")
                 {
-                    theme_images[calculated.value] = rank[(currentTier < rank_nb) ? currentTier : 0].image;
+                    theme_images[calculated.value] = rank[(!RS_hide_rank && currentTier < rank_nb) ? currentTier : 0].image;
                 }
                 else if (!theme_images[calculated.value])
                 {
@@ -1631,7 +1631,7 @@ void RocketStats::RenderOverlay()
     ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(ImVec2(0, 0));
 
-    ImGui::Begin((menuTitle_ + " - Overlay").c_str(), (bool*)1, (ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoMouseInputs | ImGuiWindowFlags_NoFocusOnAppearing));
+    ImGui::Begin(menuTitle_.c_str(), (bool*)1, (ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoMouseInputs | ImGuiWindowFlags_NoFocusOnAppearing));
 
     try
     {
@@ -1761,7 +1761,7 @@ void RocketStats::RenderSettings()
     ImGui::SetNextWindowPos(ImVec2{ 128, 256 }, ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(settings_size);
 
-    ImGui::Begin(menuTitle_.c_str(), nullptr, (ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse));
+    ImGui::Begin((menuTitle_ + " - Settings").c_str(), nullptr, (ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse));
 
     if (rs_title != nullptr && rs_title->IsLoadedForImGui())
     {
