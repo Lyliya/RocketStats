@@ -15,6 +15,7 @@ Stats RocketStats::GetStats()
     {
         case 1: result = stats[currentPlaylist]; break;
         case 2: result = always; break;
+        case 3: result = always_gm[currentPlaylist]; break;
         default: result = session;
     }
 
@@ -177,8 +178,8 @@ void RocketStats::onLoad()
             WriteConfig();
     });
 
-    cvarManager->registerCvar("RS_mode", std::to_string(RS_mode), "Mode", true, true, 0, true, 2, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("RS_theme", std::to_string(RS_theme), "Theme", true, true, 0, false, 1, false).addOnValueChanged([this](std::string old, CVarWrapper now) {
+    cvarManager->registerCvar("RS_mode", std::to_string(RS_mode), "Mode", true, true, 0, true, (modes.size() - 1), false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_theme", std::to_string(RS_theme), "Theme", true, true, 0, false, 99, false).addOnValueChanged([this](std::string old, CVarWrapper now) {
         if (!ChangeTheme(now.getIntValue()))
             now.setValue(old);
     });
@@ -388,18 +389,21 @@ void RocketStats::GameEnd(std::string eventName)
             always.win++;
             session.win++;
             stats[currentPlaylist].win++;
+            always_gm[currentPlaylist].win++;
 
             if (stats[currentPlaylist].streak < 0)
             {
                 always.streak = 1;
                 session.streak = 1;
                 stats[currentPlaylist].streak = 1;
+                always_gm[currentPlaylist].streak = 1;
             }
             else
             {
                 always.streak++;
                 session.streak++;
                 stats[currentPlaylist].streak++;
+                always_gm[currentPlaylist].streak++;
             }
 
             theme_refresh = 1;
@@ -412,18 +416,21 @@ void RocketStats::GameEnd(std::string eventName)
             always.loss++;
             session.loss++;
             stats[currentPlaylist].loss++;
+            always_gm[currentPlaylist].loss++;
 
             if (stats[currentPlaylist].streak > 0)
             {
                 always.streak = -1;
                 session.streak = -1;
                 stats[currentPlaylist].streak = -1;
+                always_gm[currentPlaylist].streak = -1;
             }
             else
             {
                 always.streak--;
                 session.streak--;
                 stats[currentPlaylist].streak--;
+                always_gm[currentPlaylist].streak--;
             }
 
             theme_refresh = 1;
@@ -455,18 +462,21 @@ void RocketStats::GameDestroyed(std::string eventName)
         always.loss++;
         session.loss++;
         stats[currentPlaylist].loss++;
+        always_gm[currentPlaylist].loss++;
 
         if (stats[currentPlaylist].streak > 0)
         {
             always.streak = 0;
             session.streak = 0;
             stats[currentPlaylist].streak = -1;
+            always_gm[currentPlaylist].streak = -1;
         }
         else
         {
             always.streak--;
             session.streak--;
             stats[currentPlaylist].streak--;
+            always_gm[currentPlaylist].streak--;
         }
 
         WriteStreak();
@@ -532,8 +542,9 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
         bool demo = isPrimaryPlayer(receiver);
         if (demo && currentPlaylist)
         {
-            session.demo;
-            stats[currentPlaylist].demo;
+            ++session.demo;
+            ++stats[currentPlaylist].demo;
+            ++always_gm[currentPlaylist].demo;
             theme_refresh = 1;
 
             if (RS_file_demo)
@@ -543,15 +554,14 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
         bool death = isPrimaryPlayer(victim);
         if (death && currentPlaylist)
         {
-            session.death;
-            stats[currentPlaylist].death;
+            ++session.death;
+            ++stats[currentPlaylist].death;
+            ++always_gm[currentPlaylist].death;
             theme_refresh = 1;
 
             if (RS_file_death)
                 WriteInFile("RocketStats_Death.txt", std::to_string(0));
         }
-
-        cvarManager->log("Demolish demo:" + std::string(demo ? "1" : "0") + " death:" + std::string(death ? "1" : "0") + " receiver:" + receiver.GetPlayerName().ToString() + " victim:" + victim.GetPlayerName().ToString());
     }
 }
 
@@ -582,14 +592,22 @@ void RocketStats::UpdateMMR(UniqueIDWrapper id)
 
         always.MMRChange += MMRChange;
         stats[currentPlaylist].MMRChange = MMRChange;
+        always_gm[currentPlaylist].MMRChange = MMRChange;
 
         always.MMRCumulChange += MMRChange;
         for (auto it = playlistName.begin(); it != playlistName.end(); it++)
+        {
             stats[it->first].MMRCumulChange += MMRChange;
+            always_gm[it->first].MMRCumulChange += MMRChange;
+        }
     }
     else
         stats[currentPlaylist].isInit = true;
+
+    always.myMMR = mmr;
+    session.myMMR = mmr;
     stats[currentPlaylist].myMMR = mmr;
+    always_gm[currentPlaylist].myMMR = mmr;
 
     MajRank(currentPlaylist, mmrw.IsRanked(currentPlaylist), stats[currentPlaylist].myMMR, playerRank);
     SessionStats();
@@ -626,16 +644,24 @@ void RocketStats::SessionStats()
 
     always.myMMR = session.myMMR;
     always.MMRChange = session.MMRChange;
+    always.isInit = true;
 
     theme_refresh = 1;
 }
 
 void RocketStats::ResetStats()
 {
-    always = Stats();
     session = Stats();
-    for (auto &kv : stats)
+    for (auto& kv : stats)
         kv.second = Stats();
+
+    always = Stats();
+    always.isInit = true;
+    for (auto& kv : always_gm)
+    {
+        kv.second = Stats();
+        kv.second.isInit = true;
+    }
 
     WriteConfig();
     ResetFiles();
@@ -851,7 +877,7 @@ bool RocketStats::ChangeTheme(int idx)
                 }
             }
 
-            cvarManager->log("Theme changed: " + theme.name + " (old: " + ((themes.size() > RS_theme) ? themes.at(RS_theme).name : "Unknown") + ")");
+            cvarManager->log("Theme changed: " + theme.name + " (old: " + theme_render.name + ")");
             RS_theme = idx;
             theme_refresh = 2;
         }
@@ -1381,12 +1407,13 @@ bool RocketStats::ReadConfig()
                             RS_hide_demo = config["settings"]["hides"]["demo"];
                         if (config["settings"]["hides"]["death"].is_boolean())
                             RS_hide_death = config["settings"]["hides"]["death"];
+
+                        cvarManager->log("Config: hides loaded");
                     }
                     if (config["settings"]["replace_mmr"].is_boolean())
                         RS_replace_mmr = config["settings"]["replace_mmr"];
 
-                    cvarManager->log("Config: stats loaded");
-                    always.isInit = true;
+                    cvarManager->log("Config: settings loaded");
                 }
 
                 if (config["always"].is_object())
@@ -1411,6 +1438,36 @@ bool RocketStats::ReadConfig()
 
                     cvarManager->log("Config: stats loaded");
                     always.isInit = true;
+                }
+
+                if (config["always_gm_idx"].is_number_unsigned() && config["always_gm_idx"] < modes.size())
+                    currentPlaylist = config["always_gm_idx"];
+
+                if (config["always_gm"].is_array())
+                {
+                    for (int i = 0; i < config["always_gm"].size() && i < always_gm.size(); ++i)
+                    {
+                        if (config["always_gm"][i]["MMRCumulChange"].is_number_unsigned() || config["always_gm"][i]["MMRCumulChange"].is_number_integer())
+                            always_gm[i].MMRCumulChange = config["always_gm"][i]["MMRCumulChange"];
+
+                        if (config["always_gm"][i]["Win"].is_number_unsigned())
+                            always_gm[i].win = config["always_gm"][i]["Win"];
+
+                        if (config["always_gm"][i]["Loss"].is_number_unsigned())
+                            always_gm[i].loss = config["always_gm"][i]["Loss"];
+
+                        if (config["always_gm"][i]["Streak"].is_number_unsigned() || config["always"][i]["Streak"].is_number_integer())
+                            always_gm[i].streak = config["always_gm"][i]["Streak"];
+
+                        if (config["always_gm"][i]["Demo"].is_number_unsigned())
+                            always_gm[i].demo = config["always_gm"][i]["Demo"];
+
+                        if (config["always_gm"][i]["Death"].is_number_unsigned())
+                            always_gm[i].death = config["always_gm"][i]["Death"];
+
+                        always_gm[i].isInit = true;
+                    }
+                    cvarManager->log("Config: stats loaded");
                 }
 
                 theme_refresh = 1;
@@ -1488,6 +1545,19 @@ void RocketStats::WriteConfig()
     tmp["always"]["Streak"] = always.streak;
     tmp["always"]["Demo"] = always.demo;
     tmp["always"]["Death"] = always.death;
+
+    tmp["always_gm_idx"] = currentPlaylist;
+    tmp["always_gm"] = {};
+    for (int i = 0; i < always_gm.size(); ++i)
+    {
+        tmp["always_gm"][i] = {};
+        tmp["always_gm"][i]["MMRCumulChange"] = always_gm[i].MMRCumulChange;
+        tmp["always_gm"][i]["Win"] = always_gm[i].win;
+        tmp["always_gm"][i]["Loss"] = always_gm[i].loss;
+        tmp["always_gm"][i]["Streak"] = always_gm[i].streak;
+        tmp["always_gm"][i]["Demo"] = always_gm[i].demo;
+        tmp["always_gm"][i]["Death"] = always_gm[i].death;
+    }
 
     WriteInFile("data/rocketstats.json", nlohmann::to_string(tmp), true); // Save plugin settings in JSON format
 
@@ -1663,8 +1733,15 @@ void RocketStats::RenderOverlay()
             Stats current = GetStats();
             ImVec2 screen_size = ImGui::GetIO().DisplaySize;
 
-            // Reset the menu variables if you change the theme
+            // Refresh all images
             if (theme_refresh == 2)
+            {
+                theme_images.clear();
+                cvarManager->log("refresh all images");
+            }
+
+            // Reset the menu variables if you change the theme
+            if (theme_prev.size() && theme_prev != theme_render.name)
             {
                 if (RS_onchange_scale)
                     RS_scale = 1.f;
@@ -1680,10 +1757,8 @@ void RocketStats::RenderOverlay()
                     RS_x = theme_config["x"];
                     RS_y = theme_config["y"];
                 }
-
-                theme_images.clear();
-                cvarManager->log("refresh all images");
             }
+            theme_prev = theme_render.name;
 
             // Checks if there is a rotation to apply and converts degrees to radians
             RS_rotate_enabled = (theme_config.contains("rotate") && (RS_rotate + float(theme_config["rotate"])));
@@ -1708,36 +1783,20 @@ void RocketStats::RenderOverlay()
 
             // Creation of the different variables used in Text elements
             const size_t floating_length = (RS_enable_float ? 2 : 0);
-            if (current.isInit)
-            {
-                theme_vars["GameMode"] = (RS_hide_gm ? hide_value : GetPlaylistName(currentPlaylist));
-                theme_vars["Rank"] = (RS_hide_rank ? hide_value : currentRank);
-                theme_vars["Div"] = (RS_hide_div ? hide_value : currentDivision);
-                theme_vars["MMR"] = (RS_hide_mmr ? hide_value : Utils::FloatFixer(current.myMMR, floating_length)); // Utils::PointFixer(current.myMMR, 6, floating_length)
-                theme_vars["MMRChange"] = (RS_hide_mmrc ? hide_value : Utils::FloatFixer(current.MMRChange, floating_length)); // Utils::PointFixer(current.MMRChange, 6, floating_length)
-                theme_vars["MMRCumulChange"] = (RS_hide_mmrcc ? hide_value : Utils::FloatFixer(current.MMRCumulChange, floating_length)); // Utils::PointFixer(current.MMRCumulChange, 6, floating_length)
-                theme_vars["Win"] = (RS_hide_win ? hide_value : std::to_string(current.win));
-                theme_vars["Loss"] = (RS_hide_loss ? hide_value : std::to_string(current.loss));
-                theme_vars["Streak"] = (RS_hide_streak ? hide_value : std::to_string(current.streak));
-                theme_vars["Demolition"] = (RS_hide_demo ? hide_value : std::to_string(current.demo));
-                theme_vars["Death"] = (RS_hide_death ? hide_value : std::to_string(current.death));
 
-                Utils::ReplaceAll(theme_vars["Rank"], "_", " ");
-            }
-            else
-            {
-                theme_vars["GameMode"] = (RS_hide_gm ? hide_value : "Unknown Game Mode");
-                theme_vars["Rank"] = (RS_hide_rank ? hide_value : "norank");
-                theme_vars["Div"] = (RS_hide_div ? hide_value : "nodiv");
-                theme_vars["MMR"] = (RS_hide_mmr ? hide_value : Utils::FloatFixer(100.0f, floating_length));
-                theme_vars["MMRChange"] = (RS_hide_mmrc ? hide_value : Utils::FloatFixer(0.0f, floating_length));
-                theme_vars["MMRCumulChange"] = (RS_hide_mmrcc ? hide_value : Utils::FloatFixer(0.0f, floating_length));
-                theme_vars["Win"] = (RS_hide_win ? hide_value : "0");
-                theme_vars["Loss"] = (RS_hide_loss ? hide_value : "0");
-                theme_vars["Streak"] = (RS_hide_streak ? hide_value : "0");
-                theme_vars["Demolition"] = (RS_hide_demo ? hide_value : "0");
-                theme_vars["Death"] = (RS_hide_death ? hide_value : "0");
-            }
+            theme_vars["GameMode"] = (RS_hide_gm ? hide_value : GetPlaylistName(currentPlaylist));
+            theme_vars["Rank"] = (RS_hide_rank ? hide_value : currentRank);
+            theme_vars["Div"] = (RS_hide_div ? hide_value : currentDivision);
+            theme_vars["MMR"] = (RS_hide_mmr ? hide_value : Utils::FloatFixer(current.myMMR, floating_length)); // Utils::PointFixer(current.myMMR, 6, floating_length)
+            theme_vars["MMRChange"] = (RS_hide_mmrc ? hide_value : Utils::FloatFixer(current.MMRChange, floating_length)); // Utils::PointFixer(current.MMRChange, 6, floating_length)
+            theme_vars["MMRCumulChange"] = (RS_hide_mmrcc ? hide_value : Utils::FloatFixer(current.MMRCumulChange, floating_length)); // Utils::PointFixer(current.MMRCumulChange, 6, floating_length)
+            theme_vars["Win"] = (RS_hide_win ? hide_value : std::to_string(current.win));
+            theme_vars["Loss"] = (RS_hide_loss ? hide_value : std::to_string(current.loss));
+            theme_vars["Streak"] = (RS_hide_streak ? hide_value : std::to_string(current.streak));
+            theme_vars["Demolition"] = (RS_hide_demo ? hide_value : std::to_string(current.demo));
+            theme_vars["Death"] = (RS_hide_death ? hide_value : std::to_string(current.death));
+
+            Utils::ReplaceAll(theme_vars["Rank"], "_", " ");
 
             // Replace MMR with MMRChange
             if (RS_replace_mmr)
@@ -1851,10 +1910,30 @@ void RocketStats::RenderSettings()
 
         ImGui::SetWindowFontScale(1.f);
         ImGui::SetCursorPos({ 295, 68 });
-        ImGui::SetNextItemWidth(180);
-        ImGui::Combo("##mode", &RS_mode, "Session\0GameMode\0Always\0");
+        ImGui::SetNextItemWidth(142);
+        if (ImGui::BeginCombo("##modes_combo", modes.at(RS_mode).c_str(), ImGuiComboFlags_NoArrowButton))
+        {
+            int TRS_mode = RS_mode;
+            for (int i = 0; i < modes.size(); ++i)
+            {
+                bool is_selected = (TRS_mode == i);
+                if (ImGui::Selectable(modes.at(i).c_str(), is_selected))
+                    RS_mode = i;
+
+                if (is_selected)
+                    ImGui::SetItemDefaultFocus();
+            }
+
+            ImGui::EndCombo();
+        }
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Restrict information to current game or keep longer");
+        ImGui::SameLine(0, 0);
+        if (ImGui::ArrowButton("##modes_left", ImGuiDir_Left) && RS_mode > 0)
+            --RS_mode;
+        ImGui::SameLine(0, 0);
+        if (ImGui::ArrowButton("##modes_right", ImGuiDir_Right) && RS_mode < (modes.size() - 1))
+            ++RS_mode;
 
         ImGui::SetWindowFontScale(1.3f);
         ImGui::SetCursorPos({ 585, 43 });
@@ -1919,7 +1998,7 @@ void RocketStats::RenderSettings()
         ImGui::SetCursorPos({ 89, 165 });
         ImGui::SetNextItemWidth(150);
         if (RS_scale_edit)
-            ImGui::InputFloat("##scale", &RS_scale, 0.1f, 1.f, "%.3f");
+            ImGui::InputFloat("##scale", &RS_scale, 0.01f, 0.1f, "%.3f");
         else
             ImGui::SliderFloat("##scale", &RS_scale, 0.f, 10.f, "%.3f");
 

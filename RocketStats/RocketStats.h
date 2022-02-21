@@ -114,12 +114,14 @@ private:
 	tm local_time;
 	time_t current_time;
 
-	char theme_refresh = 2;
 	unsigned char theme_style = 0;
+	unsigned char theme_refresh = 2;
 
 	json theme_config;
 	Theme theme_render;
+	std::string theme_prev = "";
 	std::vector<Theme> themes;
+	std::vector<std::string> modes = { "Session", "GameMode", "Always", "Always GameMode" };
 	std::map<std::string, std::string> theme_vars;
 	std::map<std::string, std::shared_ptr<ImageWrapper>> theme_images;
 
@@ -278,6 +280,7 @@ public:
 	Stats always;
 	Stats session;
 	std::map<int, Stats> stats;
+	std::map<int, Stats> always_gm;
 
 	//std::unique_ptr<MMRNotifierToken> notifierToken;
 
