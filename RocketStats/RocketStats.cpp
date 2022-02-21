@@ -158,7 +158,7 @@ void RocketStats::onLoad()
     gameWrapper->HookEventWithCallerPost<ServerWrapper>("Function TAGame.GFxHUD_TA.HandleStatEvent", std::bind(&RocketStats::onStatEvent, this, std::placeholders::_1, std::placeholders::_2));
     gameWrapper->HookEventWithCallerPost<ServerWrapper>("Function TAGame.GFxHUD_TA.HandleStatTickerMessage", std::bind(&RocketStats::onStatTickerMessage, this, std::placeholders::_1, std::placeholders::_2));
 
-    ResetFiles();
+    ResetFiles(); // Reset all files (and create them if they don't exist)
     RemoveFile("RocketStats_Loose.txt"); // Delete the old file
     RemoveFile("RocketStats_images/BoostState.txt"); // Delete the old file
     RemoveFile("plugins/settings/rocketstats.set", true); // Delete the old file
@@ -243,6 +243,7 @@ void RocketStats::onLoad()
     cvarManager->registerCvar("RS_hide_death", (RS_hide_death ? "1" : "0"), "Hide Deaths", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_replace_mmr", (RS_replace_mmr ? "1" : "0"), "Replace MMR with MMRChange", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
 
+    // Displays the plugin shortly after initialization
     gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
         TogglePlugin("onLoad", ToggleFlags_Show);
     }, 0.2F);
@@ -250,7 +251,7 @@ void RocketStats::onLoad()
 
 void RocketStats::onUnload()
 {
-    WriteConfig();
+    WriteConfig(); // Save settings (if not already done)
 
     gameWrapper->UnhookEvent("Function TAGame.GFxData_StartMenu_TA.EventTitleScreenClicked");
     gameWrapper->UnhookEvent("Function GameEvent_TA.Countdown.BeginState");
@@ -262,7 +263,7 @@ void RocketStats::onUnload()
     //gameWrapper->UnhookEventPost("Function TAGame.GFxHUD_TA.HandleStatEvent");
     //gameWrapper->UnhookEventPost("Function TAGame.GFxHUD_TA.HandleStatTickerMessage");
 
-    TogglePlugin("onUnload", ToggleFlags_Hide);
+    TogglePlugin("onUnload", ToggleFlags_Hide); // Hide the plugin before unloading it
 }
 
 void RocketStats::SetDefaultFolder()
@@ -270,6 +271,7 @@ void RocketStats::SetDefaultFolder()
     rs_path = "RocketStats";
     rs_fonts = "../../";
 
+    // If the old folder does not exist, targets the new one in data
     if (!ExistsPath(rs_path, true))
     {
         rs_fonts = "../";
@@ -304,7 +306,7 @@ void RocketStats::ToggleSettings(std::string eventName, ToggleFlags mode)
 
         cvarManager->log("ToggleSettings: " + std::string(isSettingsOpen_ ? "true" : "false"));
         if (!isSettingsOpen_)
-            WriteConfig();
+            WriteConfig(); // Saves settings when closing the menu
     }
 }
 #pragma endregion
@@ -579,7 +581,7 @@ void RocketStats::UpdateMMR(UniqueIDWrapper id)
         float MMRChange = (mmr - stats[currentPlaylist].myMMR);
 
         always.MMRChange += MMRChange;
-        stats[currentPlaylist].MMRChange += MMRChange;
+        stats[currentPlaylist].MMRChange = MMRChange;
 
         always.MMRCumulChange += MMRChange;
         for (auto it = playlistName.begin(); it != playlistName.end(); it++)
@@ -623,6 +625,7 @@ void RocketStats::SessionStats()
     session.isInit = true;
 
     always.myMMR = session.myMMR;
+    always.MMRChange = session.MMRChange;
 
     theme_refresh = 1;
 }
@@ -751,6 +754,7 @@ void RocketStats::LoadThemes()
     std::string theme_base = GetPath("RocketStats_themes");
     if (fs::exists(theme_base))
     {
+        // List the themes (taking the name of the folder)
         for (const auto& entry : fs::directory_iterator(theme_base))
         {
             std::string theme_path = entry.path().u8string();
@@ -760,6 +764,7 @@ void RocketStats::LoadThemes()
                 theme.name = theme_path.substr(theme_path.find_last_of("/\\") + 1);
                 cvarManager->log("Theme: " + theme.name);
 
+                // Puts the "Default" theme in the first position and "Redesign" in the second position
                 if (theme.name == "Default" || theme.name == "Redesigned")
                 {
                     size_t pos = ((theme.name == "Redesigned" && themes.at(0).name == "Default") ? 1 : 0);
@@ -778,6 +783,7 @@ bool RocketStats::ChangeTheme(int idx)
 {
     cvarManager->log("===== ChangeTheme =====");
 
+    // Stores current theme variables on error
     Theme old = {
         theme_render.name,
         theme_render.author,
@@ -789,11 +795,13 @@ bool RocketStats::ChangeTheme(int idx)
 
     try
     {
+        // If the index of the theme does not fit in the list of themes, we do nothing
         if (themes.size() <= idx)
             return true;
 
         Theme& theme = themes.at(idx);
 
+        // Read the JSON file including the settings of the chosen theme
         theme_config = json::parse(ReadFile("RocketStats_themes/" + theme.name + "/config.json"));
         cvarManager->log(nlohmann::to_string(theme_config));
 
@@ -818,6 +826,7 @@ bool RocketStats::ChangeTheme(int idx)
                     theme_render.date = date;
             }
 
+            // Add theme font to system
             theme_render.font_name = "";
             if (theme_config.contains("font") && theme_config["font"].is_array() && theme_config["font"].size() == 2)
             {
@@ -853,6 +862,7 @@ bool RocketStats::ChangeTheme(int idx)
     {
         cvarManager->log("Theme config: " + std::to_string(idx) + " bad JSON -> " + std::string(e.what()));
 
+        // Returns the variables as they were before the process
         theme_render.name = old.name;
         theme_render.author = old.author;
         theme_render.version = old.version;
@@ -867,6 +877,7 @@ bool RocketStats::ChangeTheme(int idx)
 
 void RocketStats::SetTheme(std::string name)
 {
+    // Search the index of a theme with its name (changes current theme if found)
     for (int i = 0; i < themes.size(); ++i)
     {
         if (themes.at(i).name == name)
@@ -1033,10 +1044,12 @@ struct Element RocketStats::CalculateElement(json& element, Options& options, bo
 
                 if (calculated.value == "{{Rank}}")
                 {
+                    // Returns the image of the current rank
                     theme_images[calculated.value] = rank[(!RS_hide_rank && currentTier < rank_nb) ? currentTier : 0].image;
                 }
                 else if (!theme_images[calculated.value])
                 {
+                    // Get the requested image
                     element_size = { 0, 0 };
                     std::string image_path = "RocketStats_themes/" + themes.at(RS_theme).name + "/images/" + calculated.value;
 
@@ -1044,6 +1057,7 @@ struct Element RocketStats::CalculateElement(json& element, Options& options, bo
                     theme_images[calculated.value] = LoadImg(image_path);
                 }
 
+                // Calculate the image only if it is loaded (request for recalculation later if needed)
                 if (theme_images[calculated.value]->IsLoadedForImGui())
                 {
                     Vector2F image_size = theme_images[calculated.value]->GetSizeF();
@@ -1081,7 +1095,7 @@ struct Element RocketStats::CalculateElement(json& element, Options& options, bo
             if (element_rotate)
             {
                 calculated.rotate_enable = true;
-                calculated.rotate = ((90.f - element_rotate) * (float(M_PI) / 180.f));
+                calculated.rotate = ((90.f - element_rotate) * (float(M_PI) / 180.f)); // Convert degrees to radians
             }
 
             check = true;
@@ -1100,7 +1114,7 @@ void RocketStats::RenderElement(ImDrawList* drawlist, Element& element)
     try
     {
         if (element.rotate_enable)
-            ImRotateStart(drawlist);
+            ImRotateStart(drawlist); // Saves the position of the vertex array for future rotation
 
         if (element.fill.enable)
         {
@@ -1141,11 +1155,13 @@ void RocketStats::RenderElement(ImDrawList* drawlist, Element& element)
                 GuiManagerWrapper gui = gameWrapper->GetGUIManager();
                 ImFont* font = gui.GetFont(theme_render.font_name);
 
+                // Display text if font is loaded
                 if (font && font->IsLoaded())
                     drawlist->AddText(font, element.scale, element.positions.at(0), element.color.color, element.value.c_str());
             }
             else
             {
+                // Displays text without font
                 ImGui::SetWindowFontScale(element.scale);
                 drawlist->AddText(element.positions.at(0), element.color.color, element.value.c_str());
             }
@@ -1154,7 +1170,7 @@ void RocketStats::RenderElement(ImDrawList* drawlist, Element& element)
             drawlist->AddLine(element.positions.at(0), element.positions.at(1), element.color.color, element.size.x);
 
         if (element.rotate_enable)
-            ImRotateEnd(element.rotate);
+            ImRotateEnd(element.rotate); // Applies the rotation to the vertices of the current element
     }
     catch (const std::exception&) {}
 }
@@ -1262,6 +1278,7 @@ bool RocketStats::ReadConfig()
     {
         try
         {
+            // Read the plugin settings JSON file
             json config = json::parse(ReadFile(file, true));
             cvarManager->log(nlohmann::to_string(config));
 
@@ -1472,7 +1489,7 @@ void RocketStats::WriteConfig()
     tmp["always"]["Demo"] = always.demo;
     tmp["always"]["Death"] = always.death;
 
-    WriteInFile("data/rocketstats.json", nlohmann::to_string(tmp), true);
+    WriteInFile("data/rocketstats.json", nlohmann::to_string(tmp), true); // Save plugin settings in JSON format
 
     cvarManager->log("===== !WriteConfig =====");
 }
@@ -1580,6 +1597,7 @@ void RocketStats::Render()
     if (isSettingsOpen_)
         RenderSettings();
 
+    // Capture of the escape key, to prevent the plugin from disappearing
     int idx = ImGui::GetKeyIndex(ImGuiKey_Escape);
     if (ImGui::IsKeyDown(idx))
         escape_state = true;
@@ -1599,6 +1617,7 @@ void RocketStats::RenderIcon()
     GetCursorPos(mouse_pos);
     ImVec2 icon_pos = { -10.f, (screen_size.y * 0.459f) };
 
+    // Displays the button allowing the display and the hiding of the menu
     bool hover = (mouse_pos->x > (icon_pos.x - icon_size - margin) && mouse_pos->x < (icon_pos.x + icon_size + margin));
     hover = (hover && (mouse_pos->y > (icon_pos.y - icon_size - margin) && mouse_pos->y < (icon_pos.y + icon_size + margin)));
     if (!isInGame || hover)
@@ -1606,10 +1625,13 @@ void RocketStats::RenderIcon()
         drawlist->AddCircle({ icon_pos.x, icon_pos.y }, icon_size, ImColor{ 0.45f, 0.72f, 1.f, (hover ? 0.8f : 0.4f) }, 25, 4.f);
         drawlist->AddCircleFilled({ icon_pos.x, icon_pos.y }, icon_size, ImColor{ 0.04f, 0.52f, 0.89f, (hover ? 0.6f : 0.3f) }, 25);
 
+        // When hovering over the button area
         if (hover)
         {
+            // When clicking in the button area
             if (mouse_click)
             {
+                // Send the event only once to the click (not to each image)
                 if (!mouse_state)
                 {
                     mouse_state = true;
@@ -1635,12 +1657,13 @@ void RocketStats::RenderOverlay()
 
     try
     {
+        // Calculation each element of the theme (only during a modification)
         if (theme_refresh || theme_render.name == "" || (themes.size() > RS_theme && theme_render.name != themes.at(RS_theme).name))
         {
             Stats current = GetStats();
             ImVec2 screen_size = ImGui::GetIO().DisplaySize;
 
-            rs_vert.clear();
+            // Reset the menu variables if you change the theme
             if (theme_refresh == 2)
             {
                 if (RS_onchange_scale)
@@ -1662,6 +1685,7 @@ void RocketStats::RenderOverlay()
                 cvarManager->log("refresh all images");
             }
 
+            // Checks if there is a rotation to apply and converts degrees to radians
             RS_rotate_enabled = (theme_config.contains("rotate") && (RS_rotate + float(theme_config["rotate"])));
             if (RS_rotate)
             {
@@ -1671,6 +1695,7 @@ void RocketStats::RenderOverlay()
             else if (RS_rotate_enabled)
                 RS_crotate = ((90.f - RS_rotate + float(theme_config["rotate"])) * (float(M_PI) / 180.f));
 
+            // Different global options used when calculating elements
             std::vector<struct Element> elements;
             Options options = {
                 int(RS_x * screen_size.x),
@@ -1681,6 +1706,7 @@ void RocketStats::RenderOverlay()
                 (rs_launch * RS_opacity * (theme_config.contains("opacity") ? float(theme_config["opacity"]) : 1.f))
             };
 
+            // Creation of the different variables used in Text elements
             const size_t floating_length = (RS_enable_float ? 2 : 0);
             if (current.isInit)
             {
@@ -1713,9 +1739,12 @@ void RocketStats::RenderOverlay()
                 theme_vars["Death"] = (RS_hide_death ? hide_value : "0");
             }
 
+            // Replace MMR with MMRChange
             if (RS_replace_mmr)
                 theme_vars["MMR"] = theme_vars["MMRChange"];
 
+            // Calculation of each element composing the theme
+            rs_vert.clear(); // Clear the array of vertices for the next step
             for (auto& element : theme_config["elements"])
             {
                 bool check = false;
@@ -1728,6 +1757,7 @@ void RocketStats::RenderOverlay()
             theme_render.elements = elements;
         }
 
+        // Used to display or not the overlay on a game capture (not functional)
         ImDrawList* drawlist;
         if (RS_disp_obs)
             drawlist = ImGui::GetBackgroundDrawList();
@@ -1736,6 +1766,7 @@ void RocketStats::RenderOverlay()
 
         if (rs_vert.empty())
         {
+            // Generates the vertices of each element
             int start;
             if (RS_rotate_enabled)
                 start = ImRotateStart(drawlist);
@@ -1748,11 +1779,13 @@ void RocketStats::RenderOverlay()
         }
         else
         {
+            // Fill the DrawList with previously generated vertices
             auto& buf = drawlist->VtxBuffer;
             for (int i = 0; i < rs_vert.size(); ++i)
                 buf.push_back(rs_vert[i]);
         }
 
+        // Allows spawn transition
         if (rs_launch < 1.f)
         {
             rs_launch += 0.05f;
@@ -1773,6 +1806,7 @@ void RocketStats::RenderSettings()
 
     ImGui::Begin((menuTitle_ + " - Settings").c_str(), nullptr, (ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse));
 
+    // Show menu only if menu image is loaded
     if (rs_title != nullptr && rs_title->IsLoadedForImGui())
     {
         float column_nb = 3;
@@ -1793,7 +1827,7 @@ void RocketStats::RenderSettings()
 
         p0.x += 1;
         p1.x -= 1;
-        drawlist->PushClipRect(p0, p1);
+        drawlist->PushClipRect(p0, p1); // Allows you to delimit the area of the window (without internal borders)
 
         std::time(&current_time);
         const auto time_error = localtime_s(&local_time, &current_time);
@@ -2018,7 +2052,7 @@ void RocketStats::RenderSettings()
         ImGui::Checkbox(cvarManager->getCvar("RS_replace_mmr").getDescription().c_str(), &RS_replace_mmr);
         ImGui::EndChild();
 
-        /*
+        /* Variable to use to animate images
         ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10);
         ImGui::Separator();
         ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10);
@@ -2065,6 +2099,7 @@ void RocketStats::RenderSettings()
 
     ImGui::End();
 
+    // Delimits certain variables
     if (RS_scale < 0.f)
         RS_scale = 0.f;
 
@@ -2078,6 +2113,7 @@ void RocketStats::RenderSettings()
     else if (RS_opacity > 1.f)
         RS_opacity = 1.f;
 
+    // Check for changes before modifying cvars
     if (RS_mode != cvarManager->getCvar("RS_mode").getIntValue())
         cvarManager->getCvar("RS_mode").setValue(RS_mode);
     if (RS_theme != cvarManager->getCvar("RS_theme").getIntValue())
@@ -2209,7 +2245,7 @@ void RocketStats::OnOpen()
 
 void RocketStats::OnClose()
 {
-    cvarManager->log("onclose: " + std::string(escape_state ? "true" : "false"));
+    // Displays the plugin immediately after pressing the escape key
     if (escape_state)
     {
         escape_state = false;
