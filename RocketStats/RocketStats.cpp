@@ -178,7 +178,7 @@ void RocketStats::onLoad()
             WriteConfig();
     });
 
-    cvarManager->registerCvar("RS_mode", std::to_string(RS_mode), "Mode", true, true, 0, true, (modes.size() - 1), false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_mode", std::to_string(RS_mode), "Mode", true, true, 0, true, float(modes.size() - 1), false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_theme", std::to_string(RS_theme), "Theme", true, true, 0, false, 99, false).addOnValueChanged([this](std::string old, CVarWrapper now) {
         if (!ChangeTheme(now.getIntValue()))
             now.setValue(old);
@@ -935,16 +935,16 @@ struct Element RocketStats::CalculateElement(json& element, Options& options, bo
                 calculated.name = element["name"];
 
             if (element.contains("x"))
-                element_2d.x = int(float(element["x"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["x"], options.width)) : int(element["x"])) * options.scale);
+                element_2d.x = int(float(element["x"].is_string() ? Utils::EvaluateExpression(element["x"], options.width) : int(element["x"])) * options.scale);
 
             if (element.contains("y"))
-                element_2d.y = int(float(element["y"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["y"], options.height)) : int(element["y"])) * options.scale);
+                element_2d.y = int(float(element["y"].is_string() ? Utils::EvaluateExpression(element["y"], options.height) : int(element["y"])) * options.scale);
 
             if (element.contains("width"))
-                element_2d.width = int(float(element["width"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["width"], options.width)) : int(element["width"])) * options.scale);
+                element_2d.width = int(float(element["width"].is_string() ? Utils::EvaluateExpression(element["width"], options.width) : int(element["width"])) * options.scale);
 
             if (element.contains("height"))
-                element_2d.height = int(float(element["height"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["height"], options.height)) : int(element["height"])) * options.scale);
+                element_2d.height = int(float(element["height"].is_string() ? Utils::EvaluateExpression(element["height"], options.height) : int(element["height"])) * options.scale);
 
             ImVec2 element_pos = { float(options.x + element_2d.x), float(options.y + element_2d.y) };
             ImVec2 element_size = { float(element_2d.width), float(element_2d.height) };
@@ -1020,16 +1020,16 @@ struct Element RocketStats::CalculateElement(json& element, Options& options, bo
             }
             else if (element["type"] == "line")
             {
-                element_pos.x = float(options.x) + (float(element["x1"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["x1"], options.width)) : int(element["x1"])) * options.scale);
-                element_pos.y = float(options.y) + (float(element["y1"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["y1"], options.height)) : int(element["y1"])) * options.scale);
+                element_pos.x = float(options.x) + (float(element["x1"].is_string() ? Utils::EvaluateExpression(element["x1"], options.width) : int(element["x1"])) * options.scale);
+                element_pos.y = float(options.y) + (float(element["y1"].is_string() ? Utils::EvaluateExpression(element["y1"], options.height) : int(element["y1"])) * options.scale);
                 const float element_width = (element.contains("scale") ? (float)element["scale"] : 1);
 
                 element_size.x = element_width;
                 calculated.scale = (element_width * options.scale);
 
                 positions.push_back(ImVec2{
-                    float(options.x) + (float(element["x2"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["x2"], options.width)) : int(element["x2"])) * options.scale),
-                    float(options.y) + (float(element["y2"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["y2"], options.height)) : int(element["y2"])) * options.scale)
+                    float(options.x) + (float(element["x2"].is_string() ? Utils::EvaluateExpression(element["x2"], options.width) : int(element["x2"])) * options.scale),
+                    float(options.y) + (float(element["y2"].is_string() ? Utils::EvaluateExpression(element["y2"], options.height) : int(element["y2"])) * options.scale)
                 });
             }
             else if (element["type"] == "rectangle")
@@ -1043,21 +1043,21 @@ struct Element RocketStats::CalculateElement(json& element, Options& options, bo
             }
             else if (element["type"] == "triangle")
             {
-                element_pos.x = float(options.x) + (float(element["x1"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["x1"], options.width)) : int(element["x1"])) * options.scale);
-                element_pos.y = float(options.y) + (float(element["y1"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["y1"], options.height)) : int(element["y1"])) * options.scale);
+                element_pos.x = float(options.x) + (float(element["x1"].is_string() ? Utils::EvaluateExpression(element["x1"], options.width) : int(element["x1"])) * options.scale);
+                element_pos.y = float(options.y) + (float(element["y1"].is_string() ? Utils::EvaluateExpression(element["y1"], options.height) : int(element["y1"])) * options.scale);
 
                 positions.push_back(ImVec2{
-                    float(options.x) + (float(element["x2"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["x2"], options.width)) : int(element["x2"])) * options.scale),
-                    float(options.y) + (float(element["y2"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["y2"], options.height)) : int(element["y2"])) * options.scale)
+                    float(options.x) + (float(element["x2"].is_string() ? Utils::EvaluateExpression(element["x2"], options.width) : int(element["x2"])) * options.scale),
+                    float(options.y) + (float(element["y2"].is_string() ? Utils::EvaluateExpression(element["y2"], options.height) : int(element["y2"])) * options.scale)
                 });
                 positions.push_back(ImVec2{
-                    float(options.x) + (float(element["x3"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["x3"], options.width)) : int(element["x3"])) * options.scale),
-                    float(options.y) + (float(element["y3"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["y3"], options.height)) : int(element["y3"])) * options.scale)
+                    float(options.x) + (float(element["x3"].is_string() ? Utils::EvaluateExpression(element["x3"], options.width) : int(element["x3"])) * options.scale),
+                    float(options.y) + (float(element["y3"].is_string() ? Utils::EvaluateExpression(element["y3"], options.height) : int(element["y3"])) * options.scale)
                 });
             }
             else if (element["type"] == "circle")
             {
-                element_size.x = (float(element["radius"].is_string() ? Utils::EvaluateExpression(Utils::ExpressionSanitize(element["radius"], options.width)) : int(element["radius"])) * options.scale);
+                element_size.x = (float(element["radius"].is_string() ? Utils::EvaluateExpression(element["radius"], options.width) : int(element["radius"])) * options.scale);
                 element_size.y = float(element.contains("segments") ? int(element["segments"]) : 0);
             }
             else if (element["type"] == "image")

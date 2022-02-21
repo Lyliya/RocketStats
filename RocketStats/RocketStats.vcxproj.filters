@@ -75,6 +75,9 @@
     <ClInclude Include="imgui\imgui_rotate.h">
       <Filter>ImGui\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="tinyexpr\tinyexpr.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="RocketStats.cpp">
@@ -118,6 +121,9 @@
     </ClCompile>
     <ClCompile Include="imgui\imgui_rotate.cpp">
       <Filter>ImGui\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyexpr\tinyexpr.c">
+      <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

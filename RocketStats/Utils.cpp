@@ -157,7 +157,7 @@ size_t Utils::FindKeyInt(std::vector<std::map<std::string, int>> vector, std::st
 #pragma endregion
 
 #pragma region Operations
-std::string Utils::ExpressionSanitize(std::string str, int percent2pixels)
+int Utils::EvaluateExpression(std::string str, int percent2pixels)
 {
     char c;
     char lc;
@@ -176,11 +176,11 @@ std::string Utils::ExpressionSanitize(std::string str, int percent2pixels)
 
         if (c == '%' && lpos != std::string::npos)
         {
-            int percent = (std::stoi(str.substr(lpos, (pos - lpos))) / 100);
+            float percent = (std::stof(str.substr(lpos, (pos - lpos))) / 100.f);
             str.replace(lpos, ((pos + 1) - lpos), std::to_string((int)std::round(percent * percent2pixels)));
             lpos = std::string::npos;
         }
-        else if (lpos == std::string::npos)
+        else if (lpos == std::string::npos && c >= '0' && c <= '9')
             lpos = pos;
 
         if (error)
@@ -189,132 +189,7 @@ std::string Utils::ExpressionSanitize(std::string str, int percent2pixels)
 
     ReplaceAll(str, "px", "");
 
-    return str;
-}
-
-int Utils::EvaluateExpression(std::string exp)
-{
-    std::vector<int> vStack;
-    std::vector<char> opStack;
-
-    opStack.push_back('('); // Implicit opening parenthesis
-
-    int pos = 0;
-    while (pos <= exp.length())
-    {
-        if (pos == exp.length() || exp[pos] == ')')
-        {
-            ProcessClosingParenthesis(vStack, opStack);
-            pos++;
-        }
-        else if (exp[pos] >= '0' && exp[pos] <= '9')
-        {
-            pos = ProcessInputNumber(exp, pos, vStack);
-        }
-        else
-        {
-            ProcessInputOperator(exp[pos], vStack, opStack);
-            pos++;
-        }
-    }
-
-    int result = vStack.back();
-    vStack.pop_back();
-
-    return result; // Result remains on values stacks
-}
-
-void Utils::ProcessClosingParenthesis(std::vector<int>& vStack, std::vector<char>& opStack)
-{
-    while (opStack.back() != '(')
-        ExecuteOperation(vStack, opStack);
-
-    opStack.pop_back(); // Remove the opening parenthesis
-}
-
-int Utils::ProcessInputNumber(std::string& exp, int pos, std::vector<int>& vStack)
-{
-    int value = 0;
-    while (pos < exp.length() && exp[pos] >= '0' && exp[pos] <= '9')
-        value = ((10 * value) + (int)(exp[pos++] - '0'));
-
-    vStack.push_back(value);
-
-    return pos;
-}
-
-void Utils::ProcessInputOperator(char op, std::vector<int>& vStack, std::vector<char>& opStack)
-{
-    while (opStack.size() > 0 && OperatorCausesEvaluation(op, opStack.back()))
-    {
-        if ((op == '+' || op == '-') && (opStack.back() == '+' || opStack.back() == '-'))
-        {
-            bool positive = (op == opStack.back());
-            bool negative = (op != opStack.back());
-            if (positive || negative)
-            {
-                opStack.pop_back();
-                opStack.push_back(positive ? '+' : '-');
-                return;
-            }
-        }
-
-        ExecuteOperation(vStack, opStack);
-    }
-
-    opStack.push_back(op);
-}
-
-bool Utils::OperatorCausesEvaluation(char op, char prevOp)
-{
-    bool evaluate = false;
-
-    switch (op)
-    {
-    case '+':
-    case '-':
-        evaluate = (prevOp != '(');
-        break;
-    case '*':
-    case '/':
-        evaluate = (prevOp == '*' || prevOp == '/');
-        break;
-    case ')':
-        evaluate = true;
-        break;
-    }
-
-    return evaluate;
-}
-
-void Utils::ExecuteOperation(std::vector<int>& vStack, std::vector<char>& opStack)
-{
-    char op = opStack.back(); opStack.pop_back();
-    int rightOperand = vStack.back(); vStack.pop_back();
-    int leftOperand = 0;
-    if (vStack.size())
-    {
-        leftOperand = vStack.back();
-        vStack.pop_back();
-    }
-
-    int result = 0;
-    switch (op)
-    {
-    case '+':
-        result = (leftOperand + rightOperand);
-        break;
-    case '-':
-        result = (leftOperand - rightOperand);
-        break;
-    case '*':
-        result = (leftOperand * rightOperand);
-        break;
-    case '/':
-        result = (leftOperand / rightOperand);
-        break;
-    }
-
-    vStack.push_back(result);
+    int error;
+    return int(te_interp(str.c_str(), &error));
 }
 #pragma endregion

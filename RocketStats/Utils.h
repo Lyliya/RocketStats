@@ -7,6 +7,7 @@
 #include <functional>
 
 #include "imgui/pch.h"
+#include "tinyexpr/tinyexpr.h"
 
 using namespace std;
 
@@ -33,11 +34,5 @@ public:
 	static size_t FindKeyInt(std::vector<std::map<std::string, int>> vector, std::string key, int value);
 
 	// Operations
-	static std::string ExpressionSanitize(std::string str, int percent2pixels);
-	static int EvaluateExpression(std::string exp);
-	static void ProcessClosingParenthesis(std::vector<int>& vStack, std::vector<char>& opStack);
-	static int ProcessInputNumber(std::string& exp, int pos, std::vector<int>& vStack);
-	static void ProcessInputOperator(char op, std::vector<int>& vStack, std::vector<char>& opStack);
-	static bool OperatorCausesEvaluation(char op, char prevOp);
-	static void ExecuteOperation(std::vector<int>& vStack, std::vector<char>& opStack);
+	static int EvaluateExpression(std::string str, int percent2pixels);
 };
