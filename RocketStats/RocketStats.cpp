@@ -146,6 +146,11 @@ void RocketStats::onLoad()
     bool recovery = !ReadConfig();
     ChangeTheme(RS_theme);
 
+    ResetFiles(); // Reset all files (and create them if they don't exist)
+    RemoveFile("RocketStats_Loose.txt"); // Delete the old file
+    RemoveFile("RocketStats_images/BoostState.txt"); // Delete the old file
+    RemoveFile("plugins/settings/rocketstats.set", true); // Delete the old file
+
     // Can be used from the console or in bindings
     cvarManager->registerNotifier("RS_toggle_menu", [this](std::vector<std::string> params) {
             ToggleSettings("RS_toggle_menu");
@@ -161,11 +166,6 @@ void RocketStats::onLoad()
 
     gameWrapper->HookEventWithCallerPost<ServerWrapper>("Function TAGame.GFxHUD_TA.HandleStatEvent", std::bind(&RocketStats::onStatEvent, this, std::placeholders::_1, std::placeholders::_2));
     gameWrapper->HookEventWithCallerPost<ServerWrapper>("Function TAGame.GFxHUD_TA.HandleStatTickerMessage", std::bind(&RocketStats::onStatTickerMessage, this, std::placeholders::_1, std::placeholders::_2));
-
-    ResetFiles(); // Reset all files (and create them if they don't exist)
-    RemoveFile("RocketStats_Loose.txt"); // Delete the old file
-    RemoveFile("RocketStats_images/BoostState.txt"); // Delete the old file
-    RemoveFile("plugins/settings/rocketstats.set", true); // Delete the old file
 
     // Register Cvars
     if (recovery)
@@ -187,7 +187,7 @@ void RocketStats::onLoad()
 
     cvarManager->registerCvar("RS_x", std::to_string(RS_x), "X", true, true, 0.f, true, 1.f, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_y", std::to_string(RS_y), "Y", true, true, 0.f, true, 1.f, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("RS_scale", std::to_string(RS_scale), "Scale", true, true, 0.f, true, 10.f, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("RS_scale", std::to_string(RS_scale), "Scale", true, true, 0.001f, true, 10.f, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_rotate", std::to_string(RS_rotate), "Rotate", true, true, -180.f, true, 180.f, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("RS_opacity", std::to_string(RS_opacity), "Opacity", true, true, 0.f, true, 1.f, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
 
@@ -1327,17 +1327,17 @@ bool RocketStats::ReadConfig()
                     if (config["settings"]["position"].is_array() && config["settings"]["position"].size() == 2)
                     {
                         if (config["settings"]["position"][0].is_number_unsigned() || config["settings"]["position"][0].is_number_integer() || config["settings"]["position"][0].is_number_float())
-                            RS_x = config["settings"]["position"][0];
+                            RS_x = float(config["settings"]["position"][0]);
 
                         if (config["settings"]["position"][1].is_number_unsigned() || config["settings"]["position"][1].is_number_integer() || config["settings"]["position"][1].is_number_float())
-                            RS_y = config["settings"]["position"][1];
+                            RS_y = float(config["settings"]["position"][1]);
                     }
                     if (config["settings"]["scale"].is_number_unsigned() || config["settings"]["scale"].is_number_integer() || config["settings"]["scale"].is_number_float())
-                        RS_scale = config["settings"]["scale"];
+                        RS_scale = std::min(10.f, std::max(0.001f, float(config["settings"]["scale"])));
                     if (config["settings"]["rotate"].is_number_unsigned() || config["settings"]["rotate"].is_number_integer() || config["settings"]["rotate"].is_number_float())
-                        RS_rotate = config["settings"]["rotate"];
+                        RS_rotate = std::min(180.f, std::max(-180.f, float(config["settings"]["rotate"])));
                     if (config["settings"]["opacity"].is_number_unsigned() || config["settings"]["opacity"].is_number_integer() || config["settings"]["opacity"].is_number_float())
-                        RS_opacity = config["settings"]["opacity"];
+                        RS_opacity = std::min(1.f, std::max(0.f, float(config["settings"]["opacity"])));
 
                     if (config["settings"]["overlay"].is_boolean())
                         RS_disp_overlay = config["settings"]["overlay"];
@@ -1346,7 +1346,7 @@ bool RocketStats::ReadConfig()
                         RS_disp_obs = config["settings"]["obs"];
                     if (config["settings"]["inmenu"].is_boolean())
                         RS_enable_inmenu = config["settings"]["inmenu"];
-                    if (config["settings"]["ingame"].is_number_unsigned())
+                    if (config["settings"]["ingame"].is_boolean())
                         RS_enable_ingame = config["settings"]["ingame"];
                     if (config["settings"]["float"].is_boolean())
                         RS_enable_float = config["settings"]["float"];
@@ -1870,6 +1870,10 @@ void RocketStats::RenderSettings()
 {
     ImVec2 settings_size = { 750, 0 };
 
+    CVarWrapper cvar_scale = cvarManager->getCvar("RS_scale");
+    CVarWrapper cvar_rotate = cvarManager->getCvar("RS_rotate");
+    CVarWrapper cvar_opacity = cvarManager->getCvar("RS_opacity");
+
     ImGui::SetNextWindowPos(ImVec2{ 128, 256 }, ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(settings_size);
 
@@ -2001,7 +2005,7 @@ void RocketStats::RenderSettings()
             ImGui::SliderFloat("##y_position", &RS_y, 0.f, 1.f, "%.3f");
 
         ImGui::SetCursorPos({ 34, 165 });
-        if (ImGui::Button(cvarManager->getCvar("RS_scale").getDescription().c_str(), { 65, 0 }))
+        if (ImGui::Button(cvar_scale.getDescription().c_str(), { 65, 0 }))
             RS_scale_edit = !RS_scale_edit;
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Choose the size of the overlay");
@@ -2010,10 +2014,10 @@ void RocketStats::RenderSettings()
         if (RS_scale_edit)
             ImGui::InputFloat("##scale", &RS_scale, 0.01f, 0.1f, "%.3f");
         else
-            ImGui::SliderFloat("##scale", &RS_scale, 0.f, 10.f, "%.3f");
+            ImGui::SliderFloat("##scale", &RS_scale, cvar_scale.GetMinimum(), cvar_scale.GetMaximum(), "%.3f");
 
         ImGui::SetCursorPos({ 273, 165 });
-        if (ImGui::Button(cvarManager->getCvar("RS_rotate").getDescription().c_str(), { 65, 0 }))
+        if (ImGui::Button(cvar_rotate.getDescription().c_str(), { 65, 0 }))
             RS_rotate_edit = !RS_rotate_edit;
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Choose the rotation of the overlay");
@@ -2022,10 +2026,10 @@ void RocketStats::RenderSettings()
         if (RS_rotate_edit)
             ImGui::InputFloat("##rotate", &RS_rotate, 0.001f, 0.1f, "%.3f");
         else
-            ImGui::SliderFloat("##rotate", &RS_rotate, -180.f, 180.f, "%.3f");
+            ImGui::SliderFloat("##rotate", &RS_rotate, cvar_rotate.GetMinimum(), cvar_rotate.GetMaximum(), "%.3f");
 
         ImGui::SetCursorPos({ 512, 165 });
-        if (ImGui::Button(cvarManager->getCvar("RS_opacity").getDescription().c_str(), { 65, 0 }))
+        if (ImGui::Button(cvar_opacity.getDescription().c_str(), { 65, 0 }))
             RS_opacity_edit = !RS_opacity_edit;
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Choose the opacity of the overlay");
@@ -2034,7 +2038,7 @@ void RocketStats::RenderSettings()
         if (RS_opacity_edit)
             ImGui::InputFloat("##opacity", &RS_opacity, 0.001f, 0.1f, "%.3f");
         else
-            ImGui::SliderFloat("##opacity", &RS_opacity, 0.f, 1.f, "%.3f");
+            ImGui::SliderFloat("##opacity", &RS_opacity, cvar_opacity.GetMinimum(), cvar_opacity.GetMaximum(), "%.3f");
 
         ImGui::SetCursorPosY(200);
         ImGui::Separator();
@@ -2189,18 +2193,20 @@ void RocketStats::RenderSettings()
     ImGui::End();
 
     // Delimits certain variables
-    if (RS_scale < 0.f)
-        RS_scale = 0.f;
+    if (RS_scale < cvar_scale.GetMinimum())
+        RS_scale = cvar_scale.GetMinimum();
+    else if (RS_scale > cvar_scale.GetMaximum())
+        RS_scale = cvar_scale.GetMaximum();
 
-    if (RS_rotate < -180.f)
-        RS_rotate = -180.f;
-    else if (RS_rotate > 180.f)
-        RS_rotate = 180.f;
+    if (RS_rotate < cvar_rotate.GetMinimum())
+        RS_rotate = cvar_rotate.GetMinimum();
+    else if (RS_rotate > cvar_rotate.GetMaximum())
+        RS_rotate = cvar_rotate.GetMaximum();
 
-    if (RS_opacity < 0.f)
-        RS_opacity = 0.f;
-    else if (RS_opacity > 1.f)
-        RS_opacity = 1.f;
+    if (RS_opacity < cvar_opacity.GetMinimum())
+        RS_opacity = cvar_opacity.GetMinimum();
+    else if (RS_opacity > cvar_opacity.GetMaximum())
+        RS_opacity = cvar_opacity.GetMaximum();
 
     // Check for changes before modifying cvars
     if (RS_mode != cvarManager->getCvar("RS_mode").getIntValue())
@@ -2212,12 +2218,13 @@ void RocketStats::RenderSettings()
         cvarManager->getCvar("RS_x").setValue(RS_x);
     if (RS_y != cvarManager->getCvar("RS_y").getFloatValue())
         cvarManager->getCvar("RS_y").setValue(RS_y);
-    if (RS_scale != cvarManager->getCvar("RS_scale").getFloatValue())
-        cvarManager->getCvar("RS_scale").setValue(RS_scale);
-    if (RS_rotate != cvarManager->getCvar("RS_rotate").getFloatValue())
-        cvarManager->getCvar("RS_rotate").setValue(RS_rotate);
-    if (RS_opacity != cvarManager->getCvar("RS_opacity").getFloatValue())
-        cvarManager->getCvar("RS_opacity").setValue(RS_opacity);
+
+    if (RS_scale != cvar_scale.getFloatValue())
+        cvar_scale.setValue(RS_scale);
+    if (RS_rotate != cvar_rotate.getFloatValue())
+        cvar_rotate.setValue(RS_rotate);
+    if (RS_opacity != cvar_opacity.getFloatValue())
+        cvar_opacity.setValue(RS_opacity);
 
     if (RS_disp_overlay != cvarManager->getCvar("RS_disp_overlay").getBoolValue())
         cvarManager->getCvar("RS_disp_overlay").setValue(RS_disp_overlay);
