@@ -136,12 +136,14 @@ void RocketStats::onLoad()
     // notifierToken = gameWrapper->GetMMRWrapper().RegisterMMRNotifier(std::bind(&RocketStats::UpdateMMR, this, std::placeholders::_1));
 
     SetDefaultFolder();
+    rs_title = LoadImg("RocketStats_images/title.png");
 
     LoadImgs();
     LoadThemes();
+
+    InitStats();
     bool recovery = !ReadConfig();
     ChangeTheme(RS_theme);
-    rs_title = LoadImg("RocketStats_images/title.png");
 
     // Can be used from the console or in bindings
     cvarManager->registerNotifier("RS_toggle_menu", [this](std::vector<std::string> params) {
@@ -163,8 +165,6 @@ void RocketStats::onLoad()
     RemoveFile("RocketStats_Loose.txt"); // Delete the old file
     RemoveFile("RocketStats_images/BoostState.txt"); // Delete the old file
     RemoveFile("plugins/settings/rocketstats.set", true); // Delete the old file
-
-    InitRank();
 
     // Register Cvars
     if (recovery)
@@ -619,6 +619,21 @@ void RocketStats::UpdateMMR(UniqueIDWrapper id)
     cvarManager->log("===== !UpdateMMR =====");
 }
 
+void RocketStats::InitStats()
+{
+    session = Stats();
+    for (auto& kv : stats)
+        kv.second = Stats();
+
+    always = Stats();
+    always.isInit = true;
+    for (auto& kv : always_gm)
+    {
+        kv.second = Stats();
+        kv.second.isInit = true;
+    }
+}
+
 void RocketStats::SessionStats()
 {
     Stats tmp;
@@ -651,17 +666,7 @@ void RocketStats::SessionStats()
 
 void RocketStats::ResetStats()
 {
-    session = Stats();
-    for (auto& kv : stats)
-        kv.second = Stats();
-
-    always = Stats();
-    always.isInit = true;
-    for (auto& kv : always_gm)
-    {
-        kv.second = Stats();
-        kv.second.isInit = true;
-    }
+    InitStats();
 
     WriteConfig();
     ResetFiles();
@@ -1440,33 +1445,37 @@ bool RocketStats::ReadConfig()
                     always.isInit = true;
                 }
 
-                if (config["always_gm_idx"].is_number_unsigned() && config["always_gm_idx"] < modes.size())
+                if (config["always_gm_idx"].is_number_unsigned() && int(config["always_gm_idx"]) < playlistName.size())
                     currentPlaylist = config["always_gm_idx"];
 
                 if (config["always_gm"].is_array())
                 {
-                    for (int i = 0; i < config["always_gm"].size() && i < always_gm.size(); ++i)
+                    for (int i = 0; i < config["always_gm"].size() && i < playlistName.size(); ++i)
                     {
-                        if (config["always_gm"][i]["MMRCumulChange"].is_number_unsigned() || config["always_gm"][i]["MMRCumulChange"].is_number_integer())
-                            always_gm[i].MMRCumulChange = config["always_gm"][i]["MMRCumulChange"];
+                        if (config["always_gm"][i].is_object())
+                        {
+                            if (config["always_gm"][i]["MMRCumulChange"].is_number_unsigned() || config["always_gm"][i]["MMRCumulChange"].is_number_integer())
+                                always_gm[i].MMRCumulChange = config["always_gm"][i]["MMRCumulChange"];
 
-                        if (config["always_gm"][i]["Win"].is_number_unsigned())
-                            always_gm[i].win = config["always_gm"][i]["Win"];
+                            if (config["always_gm"][i]["Win"].is_number_unsigned())
+                                always_gm[i].win = config["always_gm"][i]["Win"];
 
-                        if (config["always_gm"][i]["Loss"].is_number_unsigned())
-                            always_gm[i].loss = config["always_gm"][i]["Loss"];
+                            if (config["always_gm"][i]["Loss"].is_number_unsigned())
+                                always_gm[i].loss = config["always_gm"][i]["Loss"];
 
-                        if (config["always_gm"][i]["Streak"].is_number_unsigned() || config["always"][i]["Streak"].is_number_integer())
-                            always_gm[i].streak = config["always_gm"][i]["Streak"];
+                            if (config["always_gm"][i]["Streak"].is_number_unsigned() || config["always"][i]["Streak"].is_number_integer())
+                                always_gm[i].streak = config["always_gm"][i]["Streak"];
 
-                        if (config["always_gm"][i]["Demo"].is_number_unsigned())
-                            always_gm[i].demo = config["always_gm"][i]["Demo"];
+                            if (config["always_gm"][i]["Demo"].is_number_unsigned())
+                                always_gm[i].demo = config["always_gm"][i]["Demo"];
 
-                        if (config["always_gm"][i]["Death"].is_number_unsigned())
-                            always_gm[i].death = config["always_gm"][i]["Death"];
+                            if (config["always_gm"][i]["Death"].is_number_unsigned())
+                                always_gm[i].death = config["always_gm"][i]["Death"];
 
-                        always_gm[i].isInit = true;
+                            always_gm[i].isInit = true;
+                        }
                     }
+
                     cvarManager->log("Config: stats loaded");
                 }
 
