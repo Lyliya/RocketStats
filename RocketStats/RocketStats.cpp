@@ -141,6 +141,7 @@ void RocketStats::onLoad()
     LoadImgs();
     LoadThemes();
 
+    InitRank();
     InitStats();
     bool recovery = !ReadConfig();
     ChangeTheme(RS_theme);
@@ -1423,23 +1424,23 @@ bool RocketStats::ReadConfig()
 
                 if (config["always"].is_object())
                 {
-                    if (config["always"]["MMRCumulChange"].is_number_unsigned() || config["always"]["MMRCumulChange"].is_number_integer())
-                        always.MMRCumulChange = config["always"]["MMRCumulChange"];
+                    if (config["always"]["MMRCumulChange"].is_number_unsigned() || config["always"]["MMRCumulChange"].is_number_integer() || config["always"]["MMRCumulChange"].is_number_float())
+                        always.MMRCumulChange = float(config["always"]["MMRCumulChange"]);
 
                     if (config["always"]["Win"].is_number_unsigned())
-                        always.win = config["always"]["Win"];
+                        always.win = int(config["always"]["Win"]);
 
                     if (config["always"]["Loss"].is_number_unsigned())
-                        always.loss = config["always"]["Loss"];
+                        always.loss = int(config["always"]["Loss"]);
 
                     if (config["always"]["Streak"].is_number_unsigned() || config["always"]["Streak"].is_number_integer())
-                        always.streak = config["always"]["Streak"];
+                        always.streak = int(config["always"]["Streak"]);
 
                     if (config["always"]["Demo"].is_number_unsigned())
-                        always.demo = config["always"]["Demo"];
+                        always.demo = int(config["always"]["Demo"]);
 
                     if (config["always"]["Death"].is_number_unsigned())
-                        always.death = config["always"]["Death"];
+                        always.death = int(config["always"]["Death"]);
 
                     cvarManager->log("Config: stats loaded");
                     always.isInit = true;
@@ -1454,23 +1455,23 @@ bool RocketStats::ReadConfig()
                     {
                         if (config["always_gm"][i].is_object())
                         {
-                            if (config["always_gm"][i]["MMRCumulChange"].is_number_unsigned() || config["always_gm"][i]["MMRCumulChange"].is_number_integer())
-                                always_gm[i].MMRCumulChange = config["always_gm"][i]["MMRCumulChange"];
+                            if (config["always_gm"][i]["MMRCumulChange"].is_number_unsigned() || config["always_gm"][i]["MMRCumulChange"].is_number_integer() || config["always_gm"][i]["MMRCumulChange"].is_number_float())
+                                always_gm[i].MMRCumulChange = float(config["always_gm"][i]["MMRCumulChange"]);
 
                             if (config["always_gm"][i]["Win"].is_number_unsigned())
-                                always_gm[i].win = config["always_gm"][i]["Win"];
+                                always_gm[i].win = int(config["always_gm"][i]["Win"]);
 
                             if (config["always_gm"][i]["Loss"].is_number_unsigned())
-                                always_gm[i].loss = config["always_gm"][i]["Loss"];
+                                always_gm[i].loss = int(config["always_gm"][i]["Loss"]);
 
-                            if (config["always_gm"][i]["Streak"].is_number_unsigned() || config["always"][i]["Streak"].is_number_integer())
-                                always_gm[i].streak = config["always_gm"][i]["Streak"];
+                            if (config["always_gm"][i]["Streak"].is_number_unsigned() || config["always_gm"][i]["Streak"].is_number_integer())
+                                always_gm[i].streak = int(config["always_gm"][i]["Streak"]);
 
                             if (config["always_gm"][i]["Demo"].is_number_unsigned())
-                                always_gm[i].demo = config["always_gm"][i]["Demo"];
+                                always_gm[i].demo = int(config["always_gm"][i]["Demo"]);
 
                             if (config["always_gm"][i]["Death"].is_number_unsigned())
-                                always_gm[i].death = config["always_gm"][i]["Death"];
+                                always_gm[i].death = int(config["always_gm"][i]["Death"]);
 
                             always_gm[i].isInit = true;
                         }
