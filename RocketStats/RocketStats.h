@@ -102,14 +102,7 @@ class RocketStats : public BakkesMod::Plugin::BakkesModPlugin, public BakkesMod:
 private:
 	float rs_launch = 0.f;
 	ImVector<ImDrawVert> rs_vert;
-	std::shared_ptr<bool> enabled;
-	std::string rs_path = "RocketStats";
-	std::string rs_fonts = "../../";
 	std::shared_ptr<ImageWrapper> rs_title;
-
-	bool mouse_state = false;
-	bool escape_state = false;
-	std::string hide_value = "##";
 
 	// Time
 	tm local_time;
@@ -122,6 +115,7 @@ private:
 	json theme_config;
 	Theme theme_render;
 	std::string theme_prev = "";
+	std::string theme_hide_value = "##";
 	std::vector<Theme> themes;
 	std::vector<std::string> modes = { "Session", "GameMode", "Always", "Always GameMode" };
 	std::map<std::string, std::string> theme_vars;
@@ -130,11 +124,13 @@ private:
 	//std::unique_ptr<MMRNotifierToken> notifierToken;
 
 	// Game states
-	int currentPlaylist = 0;
-	bool isInGame = false;
-	bool isGameEnded = false;
-	bool isGameStarted = false;
-	bool isBoosting = false;
+	bool is_in_game = false;
+	bool is_in_replay = false;
+	bool is_online_game = false;
+	bool is_offline_game = false;
+	bool is_boosting = false;
+	bool is_game_ended = false;
+	bool is_game_started = false;
 
 	// All stats
 	Stats always;
@@ -143,15 +139,18 @@ private:
 	std::map<int, Stats> always_gm;
 
 	// Current stats
-	int myTeamNum = -1;
+	int my_team_num = -1;
 
-	int lastGameMode = 0;
-	int currentGameMode = 0;
-	float currentMMR = 100.0f;
-	int currentTier = 0;
-	std::string currentDivision;
-	std::string currentRank;
-	std::string lastRank;
+	typedef struct s_current {
+		int tier = 0;
+		int playlist = 0;
+		float mmr = 100.0f;
+		std::string rank = "norank";
+		std::string division = "nodiv";
+	} t_current;
+
+	t_current current;
+	std::string last_rank = "norank";
 
 	// Rank
 	int rank_nb = 23;
@@ -187,7 +186,7 @@ private:
 		{"Supersonic_Legend", nullptr},
 	};
 
-	const std::map<int, std::string> playlistName = {
+	const std::map<int, std::string> playlist_name = {
 		{1, "Duel"},
 		{2, "Doubles"},
 		{3, "Standard"},
@@ -238,11 +237,13 @@ private:
 	};
 
 	// PluginWindow
-	bool isPluginOpen_ = false;
-	bool isSettingsOpen_ = false;
-	std::string menuName_ = "rocketstats";
-	std::string menuTitle_ = "RocketStats";
-	std::string menuVersion_ = "v4.0";
+	bool mouse_state = false;
+	bool escape_state = false;
+	bool plugin_open = false;
+	bool settings_open = false;
+	std::string menu_name = "rocketstats";
+	std::string menu_title = "RocketStats";
+	std::string menu_version = "v4.0";
 
 	void RenderIcon();
 	void RenderOverlay();
@@ -258,59 +259,59 @@ private:
 	virtual void OnClose() override;
 
 public:
-	int RS_mode = 0;
-	int RS_theme = 0;
+	int rs_mode = 0;
+	int rs_theme = 0;
 
-	bool RS_disp_obs = false;
-	bool RS_disp_overlay = true;
-	bool RS_enable_inmenu = true;
-	bool RS_enable_ingame = true;
-	bool RS_enable_float = false;
-	bool RS_onchange_scale = true;
-	bool RS_onchange_rotate = true;
-	bool RS_onchange_opacity = true;
-	bool RS_onchange_position = true;
+	bool rs_disp_obs = false;
+	bool rs_disp_overlay = true;
+	bool rs_enable_inmenu = true;
+	bool rs_enable_ingame = true;
+	bool rs_enable_float = false;
+	bool rs_onchange_scale = true;
+	bool rs_onchange_rotate = true;
+	bool rs_onchange_opacity = true;
+	bool rs_onchange_position = true;
 
-	bool RS_in_file = true;
-	bool RS_file_gm = true;
-	bool RS_file_rank = true;
-	bool RS_file_div = true;
-	bool RS_file_mmr = true;
-	bool RS_file_mmrc = true;
-	bool RS_file_mmrcc = true;
-	bool RS_file_win = true;
-	bool RS_file_loss = true;
-	bool RS_file_streak = true;
-	bool RS_file_demo = false;
-	bool RS_file_death = false;
-	bool RS_file_boost = true;
+	bool rs_in_file = true;
+	bool rs_file_gm = true;
+	bool rs_file_rank = true;
+	bool rs_file_div = true;
+	bool rs_file_mmr = true;
+	bool rs_file_mmrc = true;
+	bool rs_file_mmrcc = true;
+	bool rs_file_win = true;
+	bool rs_file_loss = true;
+	bool rs_file_streak = true;
+	bool rs_file_demo = false;
+	bool rs_file_death = false;
+	bool rs_file_boost = true;
 
-	bool RS_replace_mmr = false;
-	bool RS_hide_gm = false;
-	bool RS_hide_rank = false;
-	bool RS_hide_div = false;
-	bool RS_hide_mmr = false;
-	bool RS_hide_mmrc = false;
-	bool RS_hide_mmrcc = false;
-	bool RS_hide_win = false;
-	bool RS_hide_loss = false;
-	bool RS_hide_streak = false;
-	bool RS_hide_demo = false;
-	bool RS_hide_death = false;
+	bool rs_replace_mmr = false;
+	bool rs_hide_gm = false;
+	bool rs_hide_rank = false;
+	bool rs_hide_div = false;
+	bool rs_hide_mmr = false;
+	bool rs_hide_mmrc = false;
+	bool rs_hide_mmrcc = false;
+	bool rs_hide_win = false;
+	bool rs_hide_loss = false;
+	bool rs_hide_streak = false;
+	bool rs_hide_demo = false;
+	bool rs_hide_death = false;
 
-	float RS_x = 0.7f;
-	float RS_y = 0.575f;
-	float RS_scale = 1.f;
-	bool RS_rotate_enabled = false;
-	float RS_rotate = 0.f;
-	float RS_crotate = 0.f;
-	float RS_opacity = 1.f;
+	float rs_x = 0.7f;
+	float rs_y = 0.575f;
+	float rs_scale = 1.f;
+	bool rs_rotate_enabled = false;
+	float rs_rotate = 0.f;
+	float rs_crotate = 0.f;
+	float rs_opacity = 1.f;
 
-	bool RS_x_edit = false;
-	bool RS_y_edit = false;
-	bool RS_scale_edit = false;
-	bool RS_rotate_edit = false;
-	bool RS_opacity_edit = false;
+	bool rs_x_edit = false;
+	bool rs_y_edit = false;
+	bool rs_scale_edit = false;
+	bool rs_rotate_edit = false;
+	bool rs_opacity_edit = false;
 
 	// Utils
 	Stats GetStats();
@@ -334,6 +335,9 @@ public:
 	void GameStart(std::string eventName);
 	void GameEnd(std::string eventName);
 	void GameDestroyed(std::string eventName);
+	int GetGameTime();
+	TeamWrapper GetTeam(bool opposing);
+	ImColor GetTeamColor(TeamWrapper team);
 
 	// StatsMgmt
 	bool isPrimaryPlayer(PriWrapper pri);
@@ -347,11 +351,12 @@ public:
 	// BoostMgmt
 	void OnBoostStart(std::string eventName);
 	void OnBoostEnd(std::string eventName);
+	int GetBoostAmount();
 	//void StopBoost();
 
 	// Rank / Div
 	void InitRank();
-	void MajRank(int _gameMode, bool isRanked, float _currentMMR, SkillRank playerRank);
+	void MajRank(bool isRanked, float _currentMMR, SkillRank playerRank);
 
 	// OverlayMgmt
 	void LoadThemes();
