@@ -22,6 +22,15 @@ std::string Utils::ljust(std::string str, size_t n, char c)
     return str.replace(str.end(), str.end(), (n - size), c);
 }
 
+std::string Utils::tolower(std::string str)
+{
+    std::string lower;
+    for (auto& c : str)
+        lower += std::tolower(c);
+
+    return lower;
+}
+
 std::string Utils::toupper(std::string str)
 {
     std::string upper;
@@ -29,6 +38,18 @@ std::string Utils::toupper(std::string str)
         upper += std::toupper(c);
 
     return upper;
+}
+
+std::string Utils::capitalize(std::string str)
+{
+    std::string capital;
+    for (size_t i = 0; i < str.size(); ++i)
+    {
+        const char c = str[i];
+        capital += (((!i || str[i - 1] == ' ') && c >= 'a' && c <= 'z') ? (c - 32) : c);
+    }
+
+    return capital;
 }
 
 void Utils::ReplaceAll(std::string& str, const std::string& from, const std::string& to)

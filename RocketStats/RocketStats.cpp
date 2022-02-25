@@ -1056,6 +1056,17 @@ struct Element RocketStats::CalculateElement(json& element, Options& options, bo
                 if (!calculated.value.size())
                     return calculated;
 
+                if (element.contains("transform") && element["transform"].is_string())
+                {
+                    std::string transform = element["transform"];
+                    if (transform == "lower")
+                        calculated.value = Utils::tolower(calculated.value);
+                    else if (transform == "upper")
+                        calculated.value = Utils::toupper(calculated.value);
+                    else if (transform == "capitalize")
+                        calculated.value = Utils::capitalize(calculated.value);
+                }
+
                 ImVec2 string_size;
                 ImGui::SetWindowFontScale(1.f);
                 if (theme_render.font_name.size())
@@ -1234,13 +1245,10 @@ void RocketStats::RenderElement(ImDrawList* drawlist, Element& element)
         if (element.type == "image")
         {
             std::shared_ptr<ImageWrapper> image = theme_images[element.value];
-            if (image->IsLoadedForImGui())
-            {
-                if (element.size.x && element.size.y)
-                    drawlist->AddImage(image->GetImGuiTex(), element.positions.at(0), element.size, ImVec2{ 0, 0 }, ImVec2{ 1, 1 }, element.color.color);
-                else
-                    theme_refresh = 1;
-            }
+            if (image->IsLoadedForImGui() && element.size.x && element.size.y)
+                drawlist->AddImage(image->GetImGuiTex(), element.positions.at(0), element.size, ImVec2{ 0, 0 }, ImVec2{ 1, 1 }, element.color.color);
+            else
+                theme_refresh = 1;
         }
         else if (element.type == "text")
         {
@@ -1828,10 +1836,20 @@ void RocketStats::RenderOverlay()
                 if (rs_onchange_opacity)
                     rs_opacity = 1.f;
 
-                if (rs_onchange_position && theme_config.contains("x") && theme_config.contains("y"))
+                if (rs_onchange_position && theme_config.contains("x"))
                 {
-                    rs_x = theme_config["x"];
-                    rs_y = theme_config["y"];
+                    if (theme_config["x"].is_string())
+                        rs_x = (Utils::EvaluateExpression(theme_config["x"], int(screen_size.x)) / float(screen_size.x));
+                    else
+                        rs_x = theme_config["x"];
+                }
+
+                if (rs_onchange_position && theme_config.contains("y"))
+                {
+                    if (theme_config["y"].is_string())
+                        rs_y = (Utils::EvaluateExpression(theme_config["y"], int(screen_size.y)) / float(screen_size.y));
+                    else
+                        rs_y = theme_config["y"];
                 }
             }
             theme_prev = theme_render.name;
@@ -1879,7 +1897,7 @@ void RocketStats::RenderOverlay()
                 theme_vars["MMR"] = theme_vars["MMRChange"];
 
             // Calculation of each element composing the theme
-            rs_vert.clear(); // Clear the array of vertices for the next step
+            rs_drawlist->Clear(); // Clear the array of vertices for the next step
             for (auto& element : theme_config["elements"])
             {
                 bool check = false;
@@ -1892,32 +1910,44 @@ void RocketStats::RenderOverlay()
             theme_render.elements = elements;
         }
 
-        // Used to display or not the overlay on a game capture (not functional)
-        ImDrawList* drawlist;
-        if (rs_disp_obs)
-            drawlist = ImGui::GetBackgroundDrawList();
-        else
-            drawlist = ImGui::GetOverlayDrawList();
-
-        if (!theme_refresh && !rs_vert.empty())
+        if (theme_render.elements.size())
         {
-            // Fill the DrawList with previously generated vertices
-            auto& buf = drawlist->VtxBuffer;
-            for (int i = 0; i < rs_vert.size(); ++i)
-                buf.push_back(rs_vert[i]);
-        }
-        else
-        {
-            // Generates the vertices of each element
-            int start;
-            if (rs_rotate_enabled)
-                start = ImRotateStart(drawlist);
+            // Used to display or not the overlay on a game capture (not functional)
+            ImDrawList* drawlist;
+            if (rs_disp_obs)
+                drawlist = ImGui::GetBackgroundDrawList();
+            else
+                drawlist = ImGui::GetOverlayDrawList();
 
-            for (auto& element : theme_render.elements)
-                RenderElement(drawlist, element);
+            if (!theme_refresh && rs_drawlist->VtxBuffer.Size)
+            {
+                // Fill the DrawList with previously generated vertices
+                drawlist->CmdBuffer = rs_drawlist->CmdBuffer;
+                drawlist->IdxBuffer = rs_drawlist->IdxBuffer;
+                drawlist->VtxBuffer = rs_drawlist->VtxBuffer;
 
-            if (rs_rotate_enabled)
-                ImRotateEnd(rs_crotate, start, drawlist, ImRotationCenter(start, drawlist));
+                drawlist->Flags = rs_drawlist->Flags;
+                drawlist->_VtxCurrentIdx = drawlist->VtxBuffer.Size;
+                drawlist->_VtxWritePtr = drawlist->VtxBuffer.end();
+                drawlist->_IdxWritePtr = drawlist->IdxBuffer.end();
+            }
+            else
+            {
+                // Generates the vertices of each element
+                int start = drawlist->VtxBuffer.Size;
+                if (rs_rotate_enabled)
+                    start = ImRotateStart(drawlist);
+
+                for (auto& element : theme_render.elements)
+                    RenderElement(drawlist, element);
+
+                if (rs_rotate_enabled)
+                    ImRotateEnd(rs_crotate, start, drawlist, ImRotationCenter(start, drawlist));
+
+                // Stores generated vertices for future frames
+                rs_drawlist->Clear();
+                rs_drawlist = drawlist->CloneOutput();
+            }
         }
 
         // Allows spawn transition

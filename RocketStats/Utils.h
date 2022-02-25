@@ -21,7 +21,9 @@ public:
 
 	// Strings
 	static std::string ljust(std::string str, size_t n, char c);
+	static std::string tolower(std::string str);
 	static std::string toupper(std::string str);
+	static std::string capitalize(std::string str);
 	static void ReplaceAll(std::string& str, const std::string& from, const std::string& to);
 	static void ReplaceVars(std::string& str, std::map<std::string, std::string>& vars, std::function<void(const std::string&, std::string&)> passe = nullptr);
 	static std::string FloatFixer(float a_value, size_t n);

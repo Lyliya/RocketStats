@@ -101,8 +101,8 @@ class RocketStats : public BakkesMod::Plugin::BakkesModPlugin, public BakkesMod:
 {
 private:
 	float rs_launch = 0.f;
-	ImVector<ImDrawVert> rs_vert;
 	std::shared_ptr<ImageWrapper> rs_title;
+	ImDrawList* rs_drawlist = IM_NEW(ImDrawList(NULL));
 
 	// Time
 	tm local_time;
