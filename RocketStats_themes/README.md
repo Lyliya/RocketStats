@@ -48,7 +48,7 @@ You can see an example of an empty theme file, we will add the different element
 
 You find the name of the author of the theme (you), the version and the date of this one for the basic information.
 Now the basic settings:
- - `x` et `y`: position (adjustable from the interface then, these are the only ones to be in percentage from 0.0 to 1.0)
+ - `x` et `y`: position (adjustable from the interface then, in percentage from 0.0 to 1.0 or in calculation)
  - `width` and `height`: size (allows you to use percentages)
  - `font`: if you want to use a specific font (the name of the file in the `fonts` folder followed by the desired base size)
  - `scale`: zoom (adjustable from the interface)
@@ -70,6 +70,7 @@ Each element has its own parameters, here are a few:
  - `stroke`: outline color of a shape (works the same as `color`, centered on the contour so protrudes inside depending on the thickness)
  - `rotate`: the rotation is added to the global rotation (in degrees from -180 to 180)
  - `opacity`: the opacity is added to the global opacity, but also of each color (percentage from 0.0 to 1.0)
+ - `transform`: If you want to capitalize your text, lowercase, or only the first letter of each word (upper, lower or capitalize)
 
 The `name` parameter is not important at this time, but plan to differentiate your elements for later releases.
 
@@ -221,6 +222,27 @@ The position is of course in the center of the circle.
 	"segments":		12,
 	"fill":			[ 127, 127, 127, 0.5 ],
 	"stroke":		[ 255, 0, 0, 1.0 ]
+}
+```
+
+### Pie Chart
+
+Pie charts allow you to create an unfinished circle with values in degrees (`angle-min` and `angle-max`).
+
+The rest resumes the same operation as the circles.
+
+```json
+{
+	"name":			"quart",
+	"type":			"pie_chart",
+	"x":			0,
+	"y":			"50%",
+	"angle-min":	45,
+	"angle-max":	180,
+	"radius":		50,
+	"segments":		32,
+	"fill":			[ 255, 0, 0, 0.5 ],
+	"stroke":		[ 0, 255, 0, 1.0 ]
 }
 ```
 

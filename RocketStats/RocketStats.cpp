@@ -1136,8 +1136,32 @@ struct Element RocketStats::CalculateElement(json& element, Options& options, bo
             }
             else if (element["type"] == "circle")
             {
-                element_size.x = (float(element["radius"].is_string() ? Utils::EvaluateExpression(element["radius"], options.width) : int(element["radius"])) * options.scale);
+                const float radius = float(element["radius"].is_string() ? Utils::EvaluateExpression(element["radius"], options.width) : int(element["radius"]));
+
+                element_size.x = (radius * options.scale);
                 element_size.y = float(element.contains("segments") ? int(element["segments"]) : 0);
+            }
+            else if (element["type"] == "pie_chart")
+            {
+                const float radius = float(element["radius"].is_string() ? Utils::EvaluateExpression(element["radius"], options.width) : int(element["radius"]));
+                const float item_arc_span = (float(M_PI) * 2);
+                const float angle_min = ((element.contains("angle-min") ? float(element["angle-min"]) : 0.f) - 90.f);
+                const float angle_max = ((element.contains("angle-max") ? float(element["angle-max"]) : 0.f) - 90.f);
+                const float radian_min = ((angle_min / 360.f) * item_arc_span);
+                const float radian_max = ((angle_max / 360.f) * item_arc_span);
+
+                element_size.x = (radius * options.scale);
+                element_size.y = float(element.contains("segments") ? int(element["segments"]) : 0);
+
+                positions.push_back(ImVec2{ radian_min, radian_max });
+
+                if (element.contains("stroke"))
+                {
+                    positions.push_back(ImVec2{
+                        (element_pos.x + ((element_size.x * cos(radian_min)))),
+                        (element_pos.y + ((element_size.x * sin(radian_min))))
+                    });
+                }
             }
             else if (element["type"] == "image")
             {
@@ -1229,6 +1253,12 @@ void RocketStats::RenderElement(ImDrawList* drawlist, Element& element)
                 drawlist->AddRectFilled(element.positions.at(0), element.positions.at(1), element.fill.color, element.size.x, ImDrawCornerFlags_All);
             else if (element.type == "circle")
                 drawlist->AddCircleFilled(element.positions.at(0), element.size.x, element.fill.color, int(element.size.y ? element.size.y : 12));
+            else if (element.type == "pie_chart")
+            {
+                drawlist->PathLineTo(element.positions.at(0));
+                drawlist->PathArcTo(element.positions.at(0), element.size.x, element.positions.at(1).x, element.positions.at(1).y, element.size.y);
+                drawlist->PathFillConvex(element.fill.color);
+            }
         }
 
         if (element.stroke.enable)
@@ -1239,6 +1269,12 @@ void RocketStats::RenderElement(ImDrawList* drawlist, Element& element)
                 drawlist->AddRect(element.positions.at(0), element.positions.at(1), element.stroke.color, element.size.x, ImDrawCornerFlags_All, element.scale);
             else if (element.type == "circle")
                 drawlist->AddCircle(element.positions.at(0), element.size.x, element.stroke.color, int(element.size.y ? element.size.y : 12), element.scale);
+            else if (element.type == "pie_chart")
+            {
+                drawlist->PathLineTo(element.positions.at(2));
+                drawlist->PathArcTo(element.positions.at(0), element.size.x, element.positions.at(1).x, element.positions.at(1).y, element.size.y);
+                drawlist->PathStroke(element.stroke.color, false, element.scale);
+            }
         }
 
         if (element.type == "image")
