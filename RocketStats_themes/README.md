@@ -61,6 +61,7 @@ Now you will be able to add the elements which are presented below (these must b
 ## Elements
 
 Each element has its own parameters, here are a few:
+ - `visible`: is used to force the hiding of an element, by setting it to false (true or false)
  - `name`: is not important at this time, but plan to differentiate your elements for later releases
  - `value`: is often used for texts, and can include variables (example: `{{MMR}}`)
  - `align`: takes three values for the horizontal alignment (left, center, right)
