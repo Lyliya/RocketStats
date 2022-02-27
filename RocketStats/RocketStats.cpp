@@ -75,58 +75,69 @@ void RocketStats::RecoveryOldVars()
 {
     cvarManager->log("Recovery old vars !");
 
-    CVarWrapper rs_session = cvarManager->getCvar("RS_session");
-    if (!rs_session.IsNull())
-        rs_mode = (rs_session.getBoolValue() ? 1 : 0);
+    CVarWrapper ors_session = cvarManager->getCvar("RS_session");
+    if (!ors_session.IsNull())
+        rs_mode = ors_session.getBoolValue();
 
-    CVarWrapper rs_Use_v1 = cvarManager->getCvar("RS_Use_v1");
-    CVarWrapper rs_Use_v2 = cvarManager->getCvar("RS_Use_v2");
-    if (!rs_Use_v1.IsNull() && !rs_Use_v1.IsNull())
-        SetTheme((rs_Use_v1.getBoolValue() == rs_Use_v1.getBoolValue()) ? "Arubinu42" : (rs_Use_v1.getBoolValue() ? "Default" : "Redesigned"));
+    CVarWrapper ors_Use_v1 = cvarManager->getCvar("RS_Use_v1");
+    CVarWrapper ors_Use_v2 = cvarManager->getCvar("RS_Use_v2");
+    if (!ors_Use_v1.IsNull() && !ors_Use_v2.IsNull())
+        SetTheme(ors_Use_v1.getBoolValue() ? "Default" : (ors_Use_v2.getBoolValue() ? "Redesigned" : "Arubinu42"));
 
-    CVarWrapper rs_x_position = cvarManager->getCvar("RS_x_position");
-    if (!rs_x_position.IsNull())
-        rs_x = rs_x_position.getFloatValue();
+    CVarWrapper ors_x_position = cvarManager->getCvar("RS_x_position");
+    if (!ors_x_position.IsNull())
+        rs_x = ors_x_position.getFloatValue();
 
-    CVarWrapper rs_y_position = cvarManager->getCvar("RS_y_position");
-    if (!rs_y_position.IsNull())
-        rs_y = rs_y_position.getFloatValue();
+    CVarWrapper ors_y_position = cvarManager->getCvar("RS_y_position");
+    if (!ors_y_position.IsNull())
+        rs_y = ors_y_position.getFloatValue();
 
-    CVarWrapper rs_disp_ig = cvarManager->getCvar("RS_disp_ig");
-    if (!rs_disp_ig.IsNull())
-        rs_disp_overlay = (rs_disp_ig.getBoolValue() ? 1 : 0);
+    CVarWrapper ors_scale = cvarManager->getCvar("RS_scale");
+    if (!ors_scale.IsNull())
+        rs_scale = ors_scale.getFloatValue();
 
-    CVarWrapper rs_hide_overlay_ig = cvarManager->getCvar("RS_hide_overlay_ig");
-    if (!rs_hide_overlay_ig.IsNull())
-        rs_enable_ingame = (rs_hide_overlay_ig.getBoolValue() ? 0 : 1);
+    CVarWrapper ors_disp_ig = cvarManager->getCvar("RS_disp_ig");
+    if (!ors_disp_ig.IsNull())
+        rs_disp_overlay = ors_disp_ig.getBoolValue();
 
-    CVarWrapper rs_disp_gamemode = cvarManager->getCvar("RS_disp_gamemode");
-    if (!rs_disp_gamemode.IsNull())
-        rs_hide_gm = (rs_disp_gamemode.getBoolValue() ? 0 : 1);
+    CVarWrapper ors_enable_float = cvarManager->getCvar("RS_enable_float");
+    if (!ors_enable_float.IsNull())
+        rs_enable_float = ors_enable_float.getBoolValue();
 
-    CVarWrapper rs_disp_rank = cvarManager->getCvar("RS_disp_rank");
-    if (!rs_disp_rank.IsNull())
-        rs_hide_rank = (rs_disp_rank.getBoolValue() ? 0 : 1);
+    CVarWrapper ors_hide_overlay_ig = cvarManager->getCvar("RS_hide_overlay_ig");
+    if (!ors_hide_overlay_ig.IsNull())
+        rs_enable_ingame = !ors_hide_overlay_ig.getBoolValue();
 
-    CVarWrapper rs_disp_mmr = cvarManager->getCvar("RS_disp_mmr");
-    if (!rs_disp_mmr.IsNull())
-        rs_hide_mmr = (rs_disp_mmr.getBoolValue() ? 0 : 1);
+    CVarWrapper ors_disp_gamemode = cvarManager->getCvar("RS_disp_gamemode");
+    if (!ors_disp_gamemode.IsNull())
+        rs_hide_gm = !ors_disp_gamemode.getBoolValue();
 
-    CVarWrapper rs_disp_wins = cvarManager->getCvar("RS_disp_wins");
-    if (!rs_disp_wins.IsNull())
-        rs_hide_win = (rs_disp_wins.getBoolValue() ? 0 : 1);
+    CVarWrapper ors_disp_rank = cvarManager->getCvar("RS_disp_rank");
+    if (!ors_disp_rank.IsNull())
+        rs_hide_rank = !ors_disp_rank.getBoolValue();
 
-    CVarWrapper rs_disp_losses = cvarManager->getCvar("RS_disp_losses");
-    if (!rs_disp_losses.IsNull())
-        rs_hide_loss = (rs_disp_losses.getBoolValue() ? 0 : 1);
+    CVarWrapper ors_disp_mmr = cvarManager->getCvar("RS_disp_mmr");
+    if (!ors_disp_mmr.IsNull())
+        rs_hide_mmr = !ors_disp_mmr.getBoolValue();
 
-    CVarWrapper rs_disp_streak = cvarManager->getCvar("RS_disp_streak");
-    if (!rs_disp_streak.IsNull())
-        rs_hide_streak = (rs_disp_streak.getBoolValue() ? 0 : 1);
+    CVarWrapper ors_disp_wins = cvarManager->getCvar("RS_disp_wins");
+    if (!ors_disp_wins.IsNull())
+        rs_hide_win = !ors_disp_wins.getBoolValue();
 
-    CVarWrapper rs_stop_boost = cvarManager->getCvar("RocketStats_stop_boost");
-    if (!rs_stop_boost.IsNull())
-        rs_file_boost = (rs_stop_boost.getBoolValue() ? 0 : 1);
+    CVarWrapper ors_disp_losses = cvarManager->getCvar("RS_disp_losses");
+    if (!ors_disp_losses.IsNull())
+        rs_hide_loss = !ors_disp_losses.getBoolValue();
+
+    CVarWrapper ors_disp_streak = cvarManager->getCvar("RS_disp_streak");
+    if (!ors_disp_streak.IsNull())
+        rs_hide_streak = !ors_disp_streak.getBoolValue();
+
+    CVarWrapper ors_stop_boost = cvarManager->getCvar("RocketStats_stop_boost");
+    if (!ors_stop_boost.IsNull())
+        rs_file_boost = ors_stop_boost.getBoolValue();
+
+    ChangeTheme(rs_theme);
+    WriteConfig();
 }
 #pragma endregion
 
@@ -143,7 +154,7 @@ void RocketStats::onLoad()
 
     InitRank();
     InitStats();
-    bool recovery = !ReadConfig();
+    rs_recovery = !ReadConfig();
     ChangeTheme(rs_theme);
 
     ResetFiles(); // Reset all files (and create them if they don't exist)
@@ -168,8 +179,25 @@ void RocketStats::onLoad()
     gameWrapper->HookEventWithCallerPost<ServerWrapper>("Function TAGame.GFxHUD_TA.HandleStatTickerMessage", std::bind(&RocketStats::onStatTickerMessage, this, std::placeholders::_1, std::placeholders::_2));
 
     // Register Cvars
-    if (recovery)
-        RecoveryOldVars();
+    if (rs_recovery)
+    {
+        cvarManager->registerCvar("RS_Use_v1", "0", "Use the v1 overlay", true, true, 0, true, 1);
+        cvarManager->registerCvar("RS_Use_v2", "0", "Use the v2 overlay", true, true, 0, true, 1);
+        cvarManager->registerCvar("RS_disp_ig", "1", "Display information panel", true, true, 0, true, 1);
+        cvarManager->registerCvar("RS_hide_overlay_ig", "0", "Hide overlay while in-game", true, true, 0, true, 1);
+        cvarManager->registerCvar("RS_disp_mmr", "1", "Display the current MMR", true, true, 0, true, 1);
+        cvarManager->registerCvar("RS_disp_wins", "1", "Display the wins on the current game mode", true, true, 0, true, 1);
+        cvarManager->registerCvar("RS_disp_losses", "1", "Display the losses on the current game mode", true, true, 0, true, 1);
+        cvarManager->registerCvar("RS_disp_streak", "1", "Display the streak on the current game mode", true, true, 0, true, 1);
+        cvarManager->registerCvar("RS_disp_rank", "1", "Display the rank on the current game mode", true, true, 0, true, 1);
+        cvarManager->registerCvar("RS_disp_gamemode", "1", "Display the current game mode", true, true, 0, true, 1);
+        cvarManager->registerCvar("RS_enable_float", "0", "Enable floating point for MMR (OBS only)", true, true, 0, true, 1);
+        cvarManager->registerCvar("RS_x_position", "0.700", "Overlay X position", true, true, 0, true, 1.0f);
+        cvarManager->registerCvar("RS_y_position", "0.575", "Overlay Y position", true, true, 0, true, 1.0f);
+        cvarManager->registerCvar("RS_scale", "1", "Overlay scale", true, true, 0, true, 10);
+        cvarManager->registerCvar("RocketStats_stop_boost", "1", "Stop Boost animation", true, true, 0, true, 1);
+        cvarManager->registerCvar("RS_session", "0", "Display session information instead of game mode", true, true, 0, true, 1, true);
+    }
 
     cvarManager->registerCvar("cl_rocketstats_settings", (settings_open ? "1" : "0"), "Display RocketStats settings", true, true, 0, true, 1, false).addOnValueChanged([this](std::string old, CVarWrapper now) {
         settings_open = now.getBoolValue();
@@ -246,6 +274,9 @@ void RocketStats::onLoad()
 
     // Displays the plugin shortly after initialization
     gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
+        if (rs_recovery)
+            RecoveryOldVars();
+
         TogglePlugin("onLoad", ToggleFlags_Show);
     }, 0.2F);
 }
@@ -976,6 +1007,8 @@ void RocketStats::SetTheme(std::string name)
     {
         if (themes.at(i).name == name)
         {
+            cvarManager->log("SetTheme: [" + std::to_string(i) + "] " + name);
+
             rs_theme = i;
             break;
         }
@@ -1256,7 +1289,7 @@ void RocketStats::RenderElement(ImDrawList* drawlist, Element& element)
             else if (element.type == "pie_chart")
             {
                 drawlist->PathLineTo(element.positions.at(0));
-                drawlist->PathArcTo(element.positions.at(0), element.size.x, element.positions.at(1).x, element.positions.at(1).y, element.size.y);
+                drawlist->PathArcTo(element.positions.at(0), element.size.x, element.positions.at(1).x, element.positions.at(1).y, int(element.size.y));
                 drawlist->PathFillConvex(element.fill.color);
             }
         }
@@ -1272,7 +1305,7 @@ void RocketStats::RenderElement(ImDrawList* drawlist, Element& element)
             else if (element.type == "pie_chart")
             {
                 drawlist->PathLineTo(element.positions.at(2));
-                drawlist->PathArcTo(element.positions.at(0), element.size.x, element.positions.at(1).x, element.positions.at(1).y, element.size.y);
+                drawlist->PathArcTo(element.positions.at(0), element.size.x, element.positions.at(1).x, element.positions.at(1).y, int(element.size.y));
                 drawlist->PathStroke(element.stroke.color, false, element.scale);
             }
         }

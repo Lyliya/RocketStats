@@ -101,6 +101,7 @@ class RocketStats : public BakkesMod::Plugin::BakkesModPlugin, public BakkesMod:
 {
 private:
 	float rs_launch = 0.f;
+	bool rs_recovery = false;
 	std::shared_ptr<ImageWrapper> rs_title;
 	ImDrawList* rs_drawlist = IM_NEW(ImDrawList(NULL));
 
@@ -282,8 +283,8 @@ public:
 	bool rs_file_win = true;
 	bool rs_file_loss = true;
 	bool rs_file_streak = true;
-	bool rs_file_demo = false;
-	bool rs_file_death = false;
+	bool rs_file_demo = true;
+	bool rs_file_death = true;
 	bool rs_file_boost = true;
 
 	bool rs_replace_mmr = false;
