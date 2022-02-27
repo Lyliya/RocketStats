@@ -126,6 +126,7 @@ private:
 
 	// Game states
 	bool is_in_game = false;
+	bool is_in_pause = false;
 	bool is_in_replay = false;
 	bool is_online_game = false;
 	bool is_offline_game = false;
