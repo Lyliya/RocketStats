@@ -2051,7 +2051,7 @@ void RocketStats::RenderSettings()
         ImVec2 win_size = ImGui::GetWindowSize();
         Vector2F image_size = rs_title->GetSizeF();
         ImDrawList* drawlist = ImGui::GetWindowDrawList();
-        std::string obs = "To view the in-game overlay on OBS, set the game to \"Borderless\" and use a window capture.";
+        std::string obs = "To view the in-game overlay on OBS, check \"Capture third-party overlays\" in the game capture.";
         std::string developers = "Developped by @Lyliya, @NuSa_yt, @Arubinu42 & @Larsluph";
 
         ImVec2 p0 = win_pos;
