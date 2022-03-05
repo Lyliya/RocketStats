@@ -114,6 +114,7 @@ private:
 	unsigned char theme_refresh = 2;
 
 	json theme_config;
+	json themes_values;
 	Theme theme_render;
 	std::string theme_prev = "";
 	std::string theme_hide_value = "##";
@@ -269,10 +270,6 @@ public:
 	bool rs_enable_inmenu = true;
 	bool rs_enable_ingame = true;
 	bool rs_enable_float = false;
-	bool rs_onchange_scale = true;
-	bool rs_onchange_rotate = true;
-	bool rs_onchange_opacity = true;
-	bool rs_onchange_position = true;
 
 	bool rs_in_file = true;
 	bool rs_file_gm = true;
@@ -323,7 +320,14 @@ public:
 	std::shared_ptr<ImageWrapper> LoadImg(const std::string& _filename);
 	std::shared_ptr<ImageWrapper> LoadImg(fs::path& _path);
 	void LoadImgs();
+	bool GetCVar(const char* name, int& value);
+	bool GetCVar(const char* name, bool& value);
+	bool GetCVar(const char* name, float& value);
+	bool SetCVar(const char* name, int& value, bool save = false);
+	bool SetCVar(const char* name, bool& value, bool save = false);
+	bool SetCVar(const char* name, float& value, bool save = false);
 	void RecoveryOldVars();
+
 
 	// PluginLoadRoutines
 	virtual void onLoad();
@@ -364,6 +368,7 @@ public:
 	void LoadThemes();
 	bool ChangeTheme(int idx);
 	void SetTheme(std::string name);
+	void SetRefresh(unsigned char value);
 	void RefreshTheme(std::string old, CVarWrapper now);
 	//void Render(CanvasWrapper canvas);
 	struct Element CalculateElement(json& element, Options& options, bool& check);
