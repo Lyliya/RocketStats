@@ -71,6 +71,109 @@ void RocketStats::LoadImgs()
     cvarManager->log(std::to_string(load_check) + "/" + std::to_string(rank_nb) + " images were loaded successfully");
 }
 
+bool RocketStats::GetCVar(const char* name, int& value)
+{
+    if (themes_values[theme_render.name].is_object() && (themes_values[theme_render.name][name + 3].is_number_integer() || themes_values[theme_render.name][name + 3].is_number_unsigned()))
+    {
+        value = int(themes_values[theme_render.name][name + 3]);
+        cvarManager->log("GetCVar: " + std::string(name) + " " + std::to_string(value));
+
+        return true;
+    }
+
+    return false;
+}
+
+bool RocketStats::GetCVar(const char* name, bool& value)
+{
+    if (themes_values[theme_render.name].is_object() && themes_values[theme_render.name][name + 3].is_boolean())
+    {
+        value = bool(themes_values[theme_render.name][name + 3]);
+        cvarManager->log("GetCVar: " + std::string(name) + " " + std::to_string(value));
+
+        return true;
+    }
+
+    return false;
+}
+
+bool RocketStats::GetCVar(const char* name, float& value)
+{
+    if (themes_values[theme_render.name].is_object() && themes_values[theme_render.name][name + 3].is_number())
+    {
+        value = float(themes_values[theme_render.name][name + 3]);
+        cvarManager->log("GetCVar: " + std::string(name) + " " + std::to_string(value));
+
+        return true;
+    }
+
+    return false;
+}
+
+bool RocketStats::SetCVar(const char* name, int& value, bool save)
+{
+    if (value != cvarManager->getCvar(name).getIntValue())
+    {
+        cvarManager->log("SetCVar: " + std::string(name) + " " + std::to_string(value));
+        cvarManager->getCvar(name).setValue(value);
+
+        if (save)
+        {
+            if (!themes_values[theme_render.name].is_object())
+                themes_values[theme_render.name] = {};
+
+            themes_values[theme_render.name][name + 3] = value;
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+bool RocketStats::SetCVar(const char* name, bool& value, bool save)
+{
+    if (value != cvarManager->getCvar(name).getBoolValue())
+    {
+        cvarManager->log("SetCVar: " + std::string(name) + " " + std::to_string(value));
+        cvarManager->getCvar(name).setValue(value);
+
+        if (save)
+        {
+            if (!themes_values[theme_render.name].is_object())
+                themes_values[theme_render.name] = {};
+
+            themes_values[theme_render.name][name + 3] = value;
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+bool RocketStats::SetCVar(const char* name, float& value, bool save)
+{
+    value = (std::round(value * 1000.f) / 1000.f);
+    if (value != cvarManager->getCvar(name).getFloatValue())
+    {
+        cvarManager->log("SetCVar: " + std::string(name) + " " + std::to_string(value));
+        cvarManager->getCvar(name).setValue(value);
+
+        if (save)
+        {
+            if (!themes_values[theme_render.name].is_object())
+                themes_values[theme_render.name] = {};
+
+            themes_values[theme_render.name][name + 3] = value;
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
 void RocketStats::RecoveryOldVars()
 {
     cvarManager->log("Recovery old vars !");
@@ -2030,108 +2133,6 @@ void RocketStats::RenderOverlay()
     }
 
     ImGui::End();
-}
-
-bool RocketStats::GetCVar(const char* name, int& value)
-{
-    if (themes_values[theme_render.name].is_object() && (themes_values[theme_render.name][name + 3].is_number_integer() || themes_values[theme_render.name][name + 3].is_number_unsigned()))
-    {
-        value = int(themes_values[theme_render.name][name + 3]);
-        cvarManager->log("GetCVar: " + std::string(name) + " " + std::to_string(value));
-
-        return true;
-    }
-
-    return false;
-}
-
-bool RocketStats::GetCVar(const char* name, bool& value)
-{
-    if (themes_values[theme_render.name].is_object() && themes_values[theme_render.name][name + 3].is_boolean())
-    {
-        value = bool(themes_values[theme_render.name][name + 3]);
-        cvarManager->log("GetCVar: " + std::string(name) + " " + std::to_string(value));
-
-        return true;
-    }
-
-    return false;
-}
-
-bool RocketStats::GetCVar(const char* name, float& value)
-{
-    if (themes_values[theme_render.name].is_object() && themes_values[theme_render.name][name + 3].is_number())
-    {
-        value = float(themes_values[theme_render.name][name + 3]);
-        cvarManager->log("GetCVar: " + std::string(name) + " " + std::to_string(value));
-
-        return true;
-    }
-
-    return false;
-}
-
-bool RocketStats::SetCVar(const char* name, int& value, bool save)
-{
-    if (value != cvarManager->getCvar(name).getIntValue())
-    {
-        cvarManager->log("SetCVar: " + std::string(name) + " " + std::to_string(value));
-        cvarManager->getCvar(name).setValue(value);
-
-        if (save)
-        {
-            if (!themes_values[theme_render.name].is_object())
-                themes_values[theme_render.name] = {};
-
-            themes_values[theme_render.name][name + 3] = value;
-        }
-
-        return true;
-    }
-
-    return false;
-}
-
-bool RocketStats::SetCVar(const char* name, bool& value, bool save)
-{
-    if (value != cvarManager->getCvar(name).getBoolValue())
-    {
-        cvarManager->log("SetCVar: " + std::string(name) + " " + std::to_string(value));
-        cvarManager->getCvar(name).setValue(value);
-
-        if (save)
-        {
-            if (!themes_values[theme_render.name].is_object())
-                themes_values[theme_render.name] = {};
-
-            themes_values[theme_render.name][name + 3] = value;
-        }
-
-        return true;
-    }
-
-    return false;
-}
-
-bool RocketStats::SetCVar(const char* name, float& value, bool save)
-{
-    if (value != cvarManager->getCvar(name).getFloatValue())
-    {
-        cvarManager->log("SetCVar: " + std::string(name) + " " + std::to_string(value));
-        cvarManager->getCvar(name).setValue(value);
-
-        if (save)
-        {
-            if (!themes_values[theme_render.name].is_object())
-                themes_values[theme_render.name] = {};
-
-            themes_values[theme_render.name][name + 3] = value;
-        }
-
-        return true;
-    }
-
-    return false;
 }
 
 void RocketStats::RenderSettings()
