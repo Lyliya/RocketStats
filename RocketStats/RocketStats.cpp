@@ -1744,11 +1744,19 @@ void RocketStats::WriteConfig()
     tmp["settings"] = {};
     tmp["settings"]["mode"] = rs_mode;
     tmp["settings"]["theme"] = theme_render.name;
-    tmp["settings"]["themes"] = themes_values;
     tmp["settings"]["overlay"] = rs_disp_overlay;
     tmp["settings"]["inmeny"] = rs_enable_inmenu;
     tmp["settings"]["ingame"] = rs_enable_ingame;
     tmp["settings"]["float"] = rs_enable_float;
+
+    // Save only existing themes
+    tmp["settings"]["themes"] = {};
+    for (int i = 0; i < themes.size(); ++i)
+    {
+        std::string name = themes.at(i).name;
+        if (themes_values[name].is_object())
+            tmp["settings"]["themes"][name] = themes_values[name];
+    }
 
     tmp["settings"]["files"] = {};
     tmp["settings"]["files"]["on"] = rs_in_file;
