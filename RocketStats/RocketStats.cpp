@@ -2156,7 +2156,7 @@ void RocketStats::RenderSettings()
     ImGui::SetNextWindowPos(ImVec2{ 128, 256 }, ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(settings_size);
 
-    ImGui::Begin((menu_title + " - Settings").c_str(), nullptr, (ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse));
+    ImGui::Begin((menu_title + "##Settings").c_str(), nullptr, (ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse));
 
     // Show menu only if menu image is loaded
     if (rs_title != nullptr && rs_title->IsLoadedForImGui())
@@ -2266,18 +2266,22 @@ void RocketStats::RenderSettings()
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Changes the horizontal position of the overlay");
         ImGui::SetCursorPos({ 158, 120 });
-        ImGui::SetNextItemWidth(150);
-        if (rs_x_edit)
-            ImGui::InputFloat("##x_position", &rs_x, 0.001f, 0.1f, "%.3f");
-        else
-            ImGui::SliderFloat("##x_position", &rs_x, 0.f, 1.f, "%.3f");
-        ImGui::SetCursorPos({ 308, 120 });
-        if (ImGui::Button("R##Rx_position"))
+        ImGui::SetNextItemWidth(rs_x_edit ? 170 : 150);
+        if (!rs_x_edit)
         {
-            rs_x = 0.f;
-            if (theme_config["x"].is_number())
-                rs_x = float(theme_config["x"]);
+            ImGui::SliderFloat("##x_position", &rs_x, 0.f, 1.f, "%.3f");
+            ImGui::SetCursorPos({ 312, 120 });
+            if (ImGui::Button("R##Rx_position"))
+            {
+                rs_x = 0.f;
+                if (theme_config["x"].is_number())
+                    rs_x = float(theme_config["x"]);
+            }
+            if (ImGui::IsItemHovered())
+                ImGui::SetTooltip("Reset to original value");
         }
+        else
+            ImGui::InputFloat("##x_position", &rs_x, 0.001f, 0.1f, "%.3f");
 
         ImGui::SetCursorPos({ 421, 120 });
         if (ImGui::Button(cvar_y.getDescription().c_str(), { 65, 0 }))
@@ -2285,18 +2289,22 @@ void RocketStats::RenderSettings()
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Changes the vertical position of the overlay");
         ImGui::SetCursorPos({ 476, 120 });
-        ImGui::SetNextItemWidth(150);
-        if (rs_y_edit)
-            ImGui::InputFloat("##y_position", &rs_y, 0.001f, 0.1f, "%.3f");
-        else
-            ImGui::SliderFloat("##y_position", &rs_y, 0.f, 1.f, "%.3f");
-        ImGui::SetCursorPos({ 626, 120 });
-        if (ImGui::Button("R##Ry_position"))
+        ImGui::SetNextItemWidth(rs_y_edit ? 170 : 150);
+        if (!rs_y_edit)
         {
-            rs_y = 0.f;
-            if (theme_config["y"].is_number())
-                rs_y = float(theme_config["y"]);
+            ImGui::SliderFloat("##y_position", &rs_y, 0.f, 1.f, "%.3f");
+            ImGui::SetCursorPos({ 630, 120 });
+            if (ImGui::Button("R##Ry_position"))
+            {
+                rs_y = 0.f;
+                if (theme_config["y"].is_number())
+                    rs_y = float(theme_config["y"]);
+            }
+            if (ImGui::IsItemHovered())
+                ImGui::SetTooltip("Reset to original value");
         }
+        else
+            ImGui::InputFloat("##y_position", &rs_y, 0.001f, 0.1f, "%.3f");
 
         ImGui::SetCursorPos({ 24, 165 });
         if (ImGui::Button(cvar_scale.getDescription().c_str(), { 65, 0 }))
@@ -2304,18 +2312,22 @@ void RocketStats::RenderSettings()
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Choose the size of the overlay");
         ImGui::SetCursorPos({ 79, 165 });
-        ImGui::SetNextItemWidth(150);
-        if (rs_scale_edit)
-            ImGui::InputFloat("##scale", &rs_scale, 0.01f, 0.1f, "%.3f");
-        else
-            ImGui::SliderFloat("##scale", &rs_scale, cvar_scale.GetMinimum(), cvar_scale.GetMaximum(), "%.3f");
-        ImGui::SetCursorPos({ 229, 165 });
-        if (ImGui::Button("R##Rscale"))
+        ImGui::SetNextItemWidth(rs_scale_edit ? 170 : 150);
+        if (!rs_scale_edit)
         {
-            rs_scale = 1.f;
-            if (theme_config["scale"].is_number())
-                rs_scale = float(theme_config["scale"]);
+            ImGui::SliderFloat("##scale", &rs_scale, cvar_scale.GetMinimum(), cvar_scale.GetMaximum(), "%.3f");
+            ImGui::SetCursorPos({ 233, 165 });
+            if (ImGui::Button("R##Rscale"))
+            {
+                rs_scale = 1.f;
+                if (theme_config["scale"].is_number())
+                    rs_scale = float(theme_config["scale"]);
+            }
+            if (ImGui::IsItemHovered())
+                ImGui::SetTooltip("Reset to original value");
         }
+        else
+            ImGui::InputFloat("##scale", &rs_scale, 0.01f, 0.1f, "%.3f");
 
         ImGui::SetCursorPos({ 263, 165 });
         if (ImGui::Button(cvar_rotate.getDescription().c_str(), { 65, 0 }))
@@ -2323,18 +2335,22 @@ void RocketStats::RenderSettings()
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Choose the rotation of the overlay");
         ImGui::SetCursorPos({ 318, 165 });
-        ImGui::SetNextItemWidth(150);
-        if (rs_rotate_edit)
-            ImGui::InputFloat("##rotate", &rs_rotate, 0.001f, 0.1f, "%.3f");
-        else
-            ImGui::SliderFloat("##rotate", &rs_rotate, cvar_rotate.GetMinimum(), cvar_rotate.GetMaximum(), "%.3f");
-        ImGui::SetCursorPos({ 468, 165 });
-        if (ImGui::Button("R##Rrotate"))
+        ImGui::SetNextItemWidth(rs_rotate_edit ? 170 : 150);
+        if (!rs_rotate_edit)
         {
-            rs_rotate = 0.f;
-            if (theme_config["rotate"].is_number())
-                rs_rotate = float(theme_config["rotate"]);
+            ImGui::SliderFloat("##rotate", &rs_rotate, cvar_rotate.GetMinimum(), cvar_rotate.GetMaximum(), "%.3f");
+            ImGui::SetCursorPos({ 472, 165 });
+            if (ImGui::Button("R##Rrotate"))
+            {
+                rs_rotate = 0.f;
+                if (theme_config["rotate"].is_number())
+                    rs_rotate = float(theme_config["rotate"]);
+            }
+            if (ImGui::IsItemHovered())
+                ImGui::SetTooltip("Reset to original value");
         }
+        else
+            ImGui::InputFloat("##rotate", &rs_rotate, 0.001f, 0.1f, "%.3f");
 
         ImGui::SetCursorPos({ 502, 165 });
         if (ImGui::Button(cvar_opacity.getDescription().c_str(), { 65, 0 }))
@@ -2342,18 +2358,22 @@ void RocketStats::RenderSettings()
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Choose the opacity of the overlay");
         ImGui::SetCursorPos({ 557, 165 });
-        ImGui::SetNextItemWidth(150);
-        if (rs_opacity_edit)
-            ImGui::InputFloat("##opacity", &rs_opacity, 0.001f, 0.1f, "%.3f");
-        else
-            ImGui::SliderFloat("##opacity", &rs_opacity, cvar_opacity.GetMinimum(), cvar_opacity.GetMaximum(), "%.3f");
-        ImGui::SetCursorPos({ 707, 165 });
-        if (ImGui::Button("R##Ropacity"))
+        ImGui::SetNextItemWidth(rs_opacity_edit ? 170 : 150);
+        if (!rs_opacity_edit)
         {
-            rs_opacity = 1.f;
-            if (theme_config["opacity"].is_number())
-                rs_opacity = float(theme_config["opacity"]);
+            ImGui::SliderFloat("##opacity", &rs_opacity, cvar_opacity.GetMinimum(), cvar_opacity.GetMaximum(), "%.3f");
+            ImGui::SetCursorPos({ 711, 165 });
+            if (ImGui::Button("R##Ropacity"))
+            {
+                rs_opacity = 1.f;
+                if (theme_config["opacity"].is_number())
+                    rs_opacity = float(theme_config["opacity"]);
+            }
+            if (ImGui::IsItemHovered())
+                ImGui::SetTooltip("Reset to original value");
         }
+        else
+            ImGui::InputFloat("##opacity", &rs_opacity, 0.001f, 0.1f, "%.3f");
 
         text_size = ImGui::CalcTextSize(obs.c_str());
         ImGui::SetCursorPos({ ((settings_size.x - text_size.x) / 2), 200});
