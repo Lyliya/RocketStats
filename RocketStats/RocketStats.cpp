@@ -2266,7 +2266,7 @@ void RocketStats::RenderSettings()
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Changes the horizontal position of the overlay");
         ImGui::SetCursorPos({ 158, 120 });
-        ImGui::SetNextItemWidth(rs_x_edit ? 170 : 150);
+        ImGui::SetNextItemWidth(rs_x_edit ? 170.f : 150.f);
         if (!rs_x_edit)
         {
             ImGui::SliderFloat("##x_position", &rs_x, 0.f, 1.f, "%.3f");
@@ -2289,7 +2289,7 @@ void RocketStats::RenderSettings()
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Changes the vertical position of the overlay");
         ImGui::SetCursorPos({ 476, 120 });
-        ImGui::SetNextItemWidth(rs_y_edit ? 170 : 150);
+        ImGui::SetNextItemWidth(rs_y_edit ? 170.f : 150.f);
         if (!rs_y_edit)
         {
             ImGui::SliderFloat("##y_position", &rs_y, 0.f, 1.f, "%.3f");
@@ -2312,7 +2312,7 @@ void RocketStats::RenderSettings()
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Choose the size of the overlay");
         ImGui::SetCursorPos({ 79, 165 });
-        ImGui::SetNextItemWidth(rs_scale_edit ? 170 : 150);
+        ImGui::SetNextItemWidth(rs_scale_edit ? 170.f : 150.f);
         if (!rs_scale_edit)
         {
             ImGui::SliderFloat("##scale", &rs_scale, cvar_scale.GetMinimum(), cvar_scale.GetMaximum(), "%.3f");
@@ -2335,7 +2335,7 @@ void RocketStats::RenderSettings()
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Choose the rotation of the overlay");
         ImGui::SetCursorPos({ 318, 165 });
-        ImGui::SetNextItemWidth(rs_rotate_edit ? 170 : 150);
+        ImGui::SetNextItemWidth(rs_rotate_edit ? 170.f : 150.f);
         if (!rs_rotate_edit)
         {
             ImGui::SliderFloat("##rotate", &rs_rotate, cvar_rotate.GetMinimum(), cvar_rotate.GetMaximum(), "%.3f");
@@ -2358,7 +2358,7 @@ void RocketStats::RenderSettings()
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Choose the opacity of the overlay");
         ImGui::SetCursorPos({ 557, 165 });
-        ImGui::SetNextItemWidth(rs_opacity_edit ? 170 : 150);
+        ImGui::SetNextItemWidth(rs_opacity_edit ? 170.f : 150.f);
         if (!rs_opacity_edit)
         {
             ImGui::SliderFloat("##opacity", &rs_opacity, cvar_opacity.GetMinimum(), cvar_opacity.GetMaximum(), "%.3f");
