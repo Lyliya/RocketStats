@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <windows.h>
 #include <functional>
 
 #include "imgui/pch.h"
@@ -15,6 +16,8 @@ using namespace std;
 class Utils
 {
 public:
+	static LPSTR ConvertToLPSTR(const std::string& s);
+
 	// Colors
 	static float GetAlpha(std::vector<float> color, float opacity = 1.f);
 	static ImColor GetImColor(std::vector<float> color, float opacity = 1.f);

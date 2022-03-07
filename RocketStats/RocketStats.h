@@ -10,6 +10,7 @@
 
 #include <map>
 #include <fstream>
+#include <windows.h>
 #include <functional>
 #include <utils/parser.h>
 
@@ -328,11 +329,11 @@ public:
 	bool SetCVar(const char* name, float& value, bool save = false);
 	void RecoveryOldVars();
 
-
 	// PluginLoadRoutines
 	virtual void onLoad();
 	virtual void onUnload();
 	void SetDefaultFolder();
+	void SetCustomProtocol();
 	void ShowPlugin(std::string eventName);
 	void TogglePlugin(std::string eventName, ToggleFlags mode = ToggleFlags_Toggle);
 	void ToggleSettings(std::string eventName, ToggleFlags mode = ToggleFlags_Toggle);

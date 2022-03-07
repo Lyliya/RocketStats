@@ -250,6 +250,7 @@ void RocketStats::onLoad()
     // notifierToken = gameWrapper->GetMMRWrapper().RegisterMMRNotifier(std::bind(&RocketStats::UpdateMMR, this, std::placeholders::_1));
 
     SetDefaultFolder();
+    SetCustomProtocol();
     rs_title = LoadImg("RocketStats_images/title.png");
 
     LoadImgs();
@@ -405,6 +406,48 @@ void RocketStats::SetDefaultFolder()
         std::string old_path = GetPath("RocketStats", true);
         fs::copy(old_path, GetPath(), (fs::copy_options::recursive | fs::copy_options::update_existing));
         fs::remove_all(old_path);
+    }
+}
+
+void RocketStats::SetCustomProtocol()
+{
+    std::string installer = GetPath("themeinstaller.exe");
+    Utils::ReplaceAll(installer, "/", "\\");
+
+    HKEY key;
+    LPCTSTR value;
+    DWORD dwDisposition;
+    if (RegCreateKeyEx(HKEY_CURRENT_USER, TEXT("Software\\Classes\\RocketStats"), 0, NULL, 0, KEY_WRITE, NULL, &key, &dwDisposition) == ERROR_SUCCESS)
+    {
+        std::cout << "REGISTRY" << std::endl;
+
+        value = TEXT("URL:RocketStats protocol");
+        if (RegSetValueEx(key, TEXT(""), 0, REG_SZ, (const BYTE*)value, sizeof(TCHAR) * (lstrlen(value) + 1)) != ERROR_SUCCESS)
+            std::cout << "set protocol failed!" << std::endl;
+
+        value = TEXT("RocketStats");
+        if (RegSetValueEx(key, TEXT("URL Protocol"), 0, REG_SZ, (const BYTE*)value, sizeof(TCHAR) * (lstrlen(value) + 1)) != ERROR_SUCCESS)
+            std::cout << "set url failed!" << std::endl;
+
+        RegCloseKey(key);
+
+        if (RegCreateKeyEx(HKEY_CURRENT_USER, TEXT("Software\\Classes\\RocketStats\\DefaultIcon"), 0, NULL, 0, KEY_WRITE, NULL, &key, &dwDisposition) == ERROR_SUCCESS)
+        {
+            value = Utils::ConvertToLPSTR(installer + ", 1");
+            if (RegSetValueEx(key, TEXT(""), 0, REG_SZ, (const BYTE*)value, sizeof(TCHAR) * (lstrlen(value) + 1)) != ERROR_SUCCESS)
+                std::cout << "set icon failed!" << std::endl;
+
+            RegCloseKey(key);
+        }
+
+        if (RegCreateKeyEx(HKEY_CURRENT_USER, TEXT("Software\\Classes\\RocketStats\\shell\\open\\command"), 0, NULL, 0, KEY_WRITE, NULL, &key, &dwDisposition) == ERROR_SUCCESS)
+        {
+            value = Utils::ConvertToLPSTR("\"" + installer + "\" \"%1\"");
+            if (RegSetValueEx(key, TEXT(""), 0, REG_SZ, (const BYTE*)value, sizeof(TCHAR) * (lstrlen(value) + 1)) != ERROR_SUCCESS)
+                std::cout << "set command failed!" << std::endl;
+
+            RegCloseKey(key);
+        }
     }
 }
 

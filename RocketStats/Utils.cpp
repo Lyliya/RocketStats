@@ -1,5 +1,13 @@
 #include "Utils.h"
 
+LPSTR Utils::ConvertToLPSTR(const std::string& str)
+{
+    LPSTR cstr = new char[str.size() + 1]; // +1 for zero at the end
+    copy(str.begin(), str.end(), cstr);
+    cstr[str.size()] = 0; // zero at the end
+    return cstr;
+}
+
 #pragma region Colors
 float Utils::GetAlpha(std::vector<float> color, float opacity)
 {
@@ -125,7 +133,7 @@ std::string Utils::PointFixer(float a_value, size_t n, size_t md)
     else if (!n)
         str = FloatFixer(str, 0);
     else if (len > n)
-        str = FloatFixer(str, std::max((int(n) - int(pos)), int(md)));
+        str = FloatFixer(str, max((int(n) - int(pos)), int(md)));
 
     return str;
 }
