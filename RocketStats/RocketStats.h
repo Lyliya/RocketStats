@@ -124,6 +124,11 @@ private:
 	std::map<std::string, std::string> theme_vars;
 	std::map<std::string, std::shared_ptr<ImageWrapper>> theme_images;
 
+	// Overlay
+	bool overlay_move = false;
+	ImVec2 overlay_cursor;
+	ImVec2 overlay_origin;
+
 	//std::unique_ptr<MMRNotifierToken> notifierToken;
 
 	// Game states
@@ -371,7 +376,6 @@ public:
 	void SetTheme(std::string name);
 	void SetRefresh(unsigned char value);
 	void RefreshTheme(std::string old, CVarWrapper now);
-	//void Render(CanvasWrapper canvas);
 	struct Element CalculateElement(json& element, Options& options, bool& check);
 	void RenderElement(ImDrawList* drawlist, Element& element);
 

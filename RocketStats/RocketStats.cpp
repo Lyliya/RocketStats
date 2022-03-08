@@ -1958,8 +1958,8 @@ void RocketStats::Render()
     is_in_game = (is_online_game || is_offline_game);
     is_in_pause = (is_in_game && gameWrapper->IsCursorVisible());
 
-    RenderIcon();
     RenderOverlay();
+    RenderIcon();
 
     if (settings_open)
         RenderSettings();
@@ -1996,6 +1996,8 @@ void RocketStats::RenderIcon()
         // When hovering over the button area
         if (hover)
         {
+            ImGui::SetTooltip("Show RocketStats menu");
+
             // When clicking in the button area
             if (mouse_click)
             {
@@ -2026,7 +2028,7 @@ void RocketStats::RenderOverlay()
     try
     {
         // Calculation each element of the theme (only during a modification)
-        if (theme_refresh || theme_render.name == "" || (themes.size() > rs_theme && theme_render.name != themes.at(rs_theme).name))
+        if (overlay_move || theme_refresh || theme_render.name == "" || (themes.size() > rs_theme && theme_render.name != themes.at(rs_theme).name))
         {
             Stats tstats = GetStats();
             ImVec2 screen_size = ImGui::GetIO().DisplaySize;
@@ -2099,6 +2101,13 @@ void RocketStats::RenderOverlay()
                 (rs_launch * rs_opacity * (theme_config.contains("opacity") ? float(theme_config["opacity"]) : 1.f))
             };
 
+            // Change the position of the overlay when moving with the mouse
+            if (overlay_move)
+            {
+                options.x = int(overlay_cursor.x);
+                options.y = int(overlay_cursor.y);
+            }
+
             // Creation of the different variables used in Text elements
             const size_t floating_length = (rs_enable_float ? 2 : 0);
 
@@ -2167,6 +2176,60 @@ void RocketStats::RenderOverlay()
                 rs_drawlist->Clear();
                 rs_drawlist = drawlist->CloneOutput();
             }
+
+            // Displays a square and allows the movement of the overlay with the mouse
+            if (settings_open)
+            {
+                float margin = 10.f;
+                float rect_size = 10.f;
+                LPPOINT mouse_pos = new tagPOINT;
+                bool mouse_click = GetAsyncKeyState(VK_LBUTTON);
+                ImVec2 screen_size = ImGui::GetIO().DisplaySize;
+                ImVec2 overlay_pos = { (rs_x * screen_size.x), (rs_y * screen_size.y) };
+                ImVec2 rect_pos = { overlay_pos.x, overlay_pos.y };
+
+                GetCursorPos(mouse_pos);
+                bool hover = (mouse_pos->x > (overlay_pos.x - rect_size - (margin * 2)) && mouse_pos->x < (overlay_pos.x + rect_size + (margin * 2)));
+                hover = (hover && (mouse_pos->y > (overlay_pos.y - rect_size - (margin * 2)) && mouse_pos->y < (overlay_pos.y + rect_size + (margin * 2))));
+
+                // If we hover over the area of the square or if we are moving it
+                if (hover || overlay_move)
+                {
+                    ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+
+                    // Moves the overlay when you hold down the mouse click
+                    if (mouse_click)
+                    {
+                        if (!overlay_move)
+                        {
+                            overlay_move = true;
+                            overlay_origin = { float(mouse_pos->x), float(mouse_pos->y) };
+                        }
+
+                        overlay_cursor = { float(mouse_pos->x), float(mouse_pos->y) };
+                        rect_pos = overlay_cursor;
+                    }
+                    else
+                    {
+                        // Change positions when mouse click is released
+                        if (overlay_move)
+                        {
+                            rs_x = (overlay_cursor.x / screen_size.x);
+                            rs_y = (overlay_cursor.y / screen_size.y);
+
+                            overlay_move = false;
+                            SetRefresh(1);
+                        }
+                        else
+                            ImGui::SetTooltip("Click to move the overlay using the mouse");
+                    }
+                }
+
+                drawlist->AddRectFilled({ (rect_pos.x - rect_size), (rect_pos.y - rect_size) }, { (rect_pos.x + rect_size), (rect_pos.y + rect_size) }, ImGui::ColorConvertFloat4ToU32({ 1.f, 1.f, 1.f, 0.5f }), 4.f, ImDrawCornerFlags_All);
+                drawlist->AddRect({ (rect_pos.x - rect_size), (rect_pos.y - rect_size) }, { (rect_pos.x + rect_size), (rect_pos.y + rect_size) }, ImGui::ColorConvertFloat4ToU32({ 0.f, 0.f, 0.f, 0.5f }), 4.f, ImDrawCornerFlags_All, 2.f);
+            }
+            else
+                overlay_move = false;
         }
 
         // Allows spawn transition
