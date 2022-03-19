@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "imgui_rangeslider.h"
 #include "imgui_internal.h"
 #include <string>

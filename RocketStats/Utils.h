@@ -7,8 +7,8 @@
 #include <windows.h>
 #include <functional>
 
-#include "imgui/pch.h"
-#include "tinyexpr/tinyexpr.h"
+#include <pch.h>
+#include <tinyexpr/tinyexpr.h>
 
 using namespace std;
 

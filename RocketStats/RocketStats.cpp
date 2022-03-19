@@ -371,6 +371,7 @@ void RocketStats::onLoad()
     cvarManager->registerCvar("rs_hide_demo", (rs_hide_demo ? "1" : "0"), "Hide Demolitions", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("rs_hide_death", (rs_hide_death ? "1" : "0"), "Hide Deaths", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("rs_replace_mmr", (rs_replace_mmr ? "1" : "0"), "Replace MMR with MMRChange", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_replace_mmrc", (rs_replace_mmrc ? "1" : "0"), "Replace MMRChange with MMR", true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
 
     // Displays the plugin shortly after initialization
     gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
@@ -1621,7 +1622,7 @@ bool RocketStats::ReadConfig()
 
             if (config.is_object())
             {
-                if (config["settings"].is_object())
+                if (config["settings"].is_object() && !config["settings"].is_null())
                 {
                     if (config["settings"]["mode"].is_number_unsigned())
                         rs_mode = config["settings"]["mode"];
@@ -1629,7 +1630,7 @@ bool RocketStats::ReadConfig()
                     if (config["settings"]["theme"].is_string())
                         SetTheme(config["settings"]["theme"]);
 
-                    if (config["settings"]["themes"].is_object())
+                    if (config["settings"]["themes"].is_object() && !config["settings"]["themes"].is_null())
                         themes_values = config["settings"]["themes"];
 
                     if (config["settings"]["overlay"].is_boolean())
@@ -1642,7 +1643,7 @@ bool RocketStats::ReadConfig()
                     if (config["settings"]["float"].is_boolean())
                         rs_enable_float = config["settings"]["float"];
 
-                    if (config["settings"]["files"].is_object())
+                    if (config["settings"]["files"].is_object() && !config["settings"]["files"].is_null())
                     {
                         if (config["settings"]["files"]["on"].is_boolean())
                             rs_in_file = config["settings"]["files"]["on"];
@@ -1672,7 +1673,7 @@ bool RocketStats::ReadConfig()
                             rs_file_boost = config["settings"]["files"]["boost"];
                     }
 
-                    if (config["settings"]["hides"].is_object())
+                    if (config["settings"]["hides"].is_object() && !config["settings"]["hides"].is_null())
                     {
                         if (config["settings"]["hides"]["gm"].is_boolean())
                             rs_hide_gm = config["settings"]["hides"]["gm"];
@@ -1701,11 +1702,13 @@ bool RocketStats::ReadConfig()
                     }
                     if (config["settings"]["replace_mmr"].is_boolean())
                         rs_replace_mmr = config["settings"]["replace_mmr"];
+                    if (config["settings"]["replace_mmrc"].is_boolean())
+                        rs_replace_mmrc = config["settings"]["replace_mmrc"];
 
                     cvarManager->log("Config: settings loaded");
                 }
 
-                if (config["always"].is_object())
+                if (config["always"].is_object() && !config["always"].is_null())
                 {
                     if (config["always"]["MMRCumulChange"].is_number())
                         always.MMRCumulChange = float(config["always"]["MMRCumulChange"]);
@@ -1736,7 +1739,7 @@ bool RocketStats::ReadConfig()
                 {
                     for (int i = 0; i < config["always_gm"].size() && i < playlist_name.size(); ++i)
                     {
-                        if (config["always_gm"][i].is_object())
+                        if (config["always_gm"][i].is_object() && !config["always_gm"][i].is_null())
                         {
                             if (config["always_gm"][i]["MMRCumulChange"].is_number())
                                 always_gm[i].MMRCumulChange = float(config["always_gm"][i]["MMRCumulChange"]);
@@ -1830,6 +1833,7 @@ void RocketStats::WriteConfig()
     tmp["settings"]["hides"]["demo"] = rs_hide_demo;
     tmp["settings"]["hides"]["death"] = rs_hide_death;
     tmp["settings"]["replace_mmr"] = rs_replace_mmr;
+    tmp["settings"]["replace_mmrc"] = rs_replace_mmrc;
 
     tmp["always"] = {};
     tmp["always"]["MMRCumulChange"] = always.MMRCumulChange;
@@ -2126,8 +2130,11 @@ void RocketStats::RenderOverlay()
             Utils::ReplaceAll(theme_vars["Rank"], "_", " ");
 
             // Replace MMR with MMRChange
+            std::string mmr = theme_vars["MMR"];
             if (rs_replace_mmr)
                 theme_vars["MMR"] = theme_vars["MMRChange"];
+            if (rs_replace_mmrc)
+                theme_vars["MMRChange"] = mmr;
 
             // Calculation of each element composing the theme
             rs_drawlist->Clear(); // Clear the array of vertices for the next step
@@ -2548,6 +2555,7 @@ void RocketStats::RenderSettings()
         ImGui::Checkbox(cvarManager->getCvar("rs_enable_ingame").getDescription().c_str(), &rs_enable_ingame);
         ImGui::Checkbox(cvarManager->getCvar("rs_enable_float").getDescription().c_str(), &rs_enable_float);
         ImGui::Checkbox(cvarManager->getCvar("rs_replace_mmr").getDescription().c_str(), &rs_replace_mmr);
+        ImGui::Checkbox(cvarManager->getCvar("rs_replace_mmrc").getDescription().c_str(), &rs_replace_mmrc);
         ImGui::EndChild();
 
         ImGui::SameLine();
@@ -2711,6 +2719,7 @@ void RocketStats::RenderSettings()
     SetCVar("rs_hide_demo", rs_hide_demo);
     SetCVar("rs_hide_death", rs_hide_death);
     SetCVar("rs_replace_mmr", rs_replace_mmr);
+    SetCVar("rs_replace_mmrc", rs_replace_mmrc);
 }
 
 // Name of the menu that is used to toggle the window.

@@ -4,9 +4,9 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "bakkesmod/plugin/bakkesmodplugin.h"
 
+#include <memory>
 #include <string>
 #include <vector>
 #include <functional>
-#include <memory>
 
-#include "imgui.h"
+#include <imgui/imgui.h>

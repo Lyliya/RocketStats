@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "imgui_searchablecombo.h"
 #include "imgui_internal.h"
 

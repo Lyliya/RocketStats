@@ -3,9 +3,9 @@
 #include "bakkesmod/plugin/bakkesmodplugin.h"
 #include "bakkesmod/plugin/pluginwindow.h"
 
-#include "json.hpp"
-#include "imgui/pch.h"
-#include "imgui/imgui_rotate.h"
+#include <pch.h>
+#include <json.hpp>
+#include <imgui/imgui_rotate.h>
 #include "bakkesmod/wrappers/GuiManagerWrapper.h"
 
 #include <map>
@@ -119,7 +119,7 @@ private:
 	Theme theme_render;
 	std::string theme_prev = "";
 	std::string theme_hide_value = "##";
-	std::vector<Theme> themes;
+	std::vector<Theme> themes = {};
 	std::vector<std::string> modes = { "Session", "GameMode", "Always", "Always GameMode" };
 	std::map<std::string, std::string> theme_vars;
 	std::map<std::string, std::shared_ptr<ImageWrapper>> theme_images;
@@ -292,6 +292,7 @@ public:
 	bool rs_file_boost = true;
 
 	bool rs_replace_mmr = false;
+	bool rs_replace_mmrc = false;
 	bool rs_hide_gm = false;
 	bool rs_hide_rank = false;
 	bool rs_hide_div = false;
