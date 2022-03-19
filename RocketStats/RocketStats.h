@@ -103,6 +103,10 @@ class RocketStats : public BakkesMod::Plugin::BakkesModPlugin, public BakkesMod:
 private:
 	float rs_launch = 0.f;
 	bool rs_recovery = false;
+	bool rs_logo_mouv = false;
+	float rs_logo_rotate = 0.f;
+	float rs_screen_scale[2] = { 1.f, 1.f };
+	std::shared_ptr<ImageWrapper> rs_logo;
 	std::shared_ptr<ImageWrapper> rs_title;
 	ImDrawList* rs_drawlist = IM_NEW(ImDrawList(NULL));
 
@@ -341,6 +345,7 @@ public:
 	void SetDefaultFolder();
 	void SetCustomProtocol();
 	void ShowPlugin(std::string eventName);
+	void UpdateUIScale(std::string eventName);
 	void TogglePlugin(std::string eventName, ToggleFlags mode = ToggleFlags_Toggle);
 	void ToggleSettings(std::string eventName, ToggleFlags mode = ToggleFlags_Toggle);
 

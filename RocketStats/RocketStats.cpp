@@ -251,6 +251,7 @@ void RocketStats::onLoad()
 
     SetDefaultFolder();
     SetCustomProtocol();
+    rs_logo = LoadImg("RocketStats_images/logo.png");
     rs_title = LoadImg("RocketStats_images/title.png");
 
     LoadImgs();
@@ -272,12 +273,14 @@ void RocketStats::onLoad()
     }, "Toggle menu", PERMISSION_ALL);
 
     // Hook on Event
-    gameWrapper->HookEvent("Function TAGame.GFxData_StartMenu_TA.EventTitleScreenClicked", bind(&RocketStats::ShowPlugin, this, std::placeholders::_1));
-    gameWrapper->HookEvent("Function GameEvent_TA.Countdown.BeginState", bind(&RocketStats::GameStart, this, std::placeholders::_1));
-    gameWrapper->HookEvent("Function TAGame.GameEvent_Soccar_TA.EventMatchEnded", bind(&RocketStats::GameEnd, this, std::placeholders::_1));
-    gameWrapper->HookEvent("Function CarComponent_Boost_TA.Active.BeginState", bind(&RocketStats::OnBoostStart, this, std::placeholders::_1));
-    gameWrapper->HookEvent("Function CarComponent_Boost_TA.Active.EndState", bind(&RocketStats::OnBoostEnd, this, std::placeholders::_1));
-    gameWrapper->HookEvent("Function TAGame.GameEvent_TA.Destroyed", bind(&RocketStats::GameDestroyed, this, std::placeholders::_1));
+    gameWrapper->HookEvent("Function TAGame.GFxData_StartMenu_TA.EventTitleScreenClicked", std::bind(&RocketStats::ShowPlugin, this, std::placeholders::_1));
+    gameWrapper->HookEvent("Function TAGame.GameViewportClient_TA.SetUIScaleModifier", std::bind(&RocketStats::UpdateUIScale, this, std::placeholders::_1));
+    gameWrapper->HookEvent("Function Engine.GameViewportClient.IsFullScreenViewport", std::bind(&RocketStats::UpdateUIScale, this, std::placeholders::_1));
+    gameWrapper->HookEvent("Function GameEvent_TA.Countdown.BeginState", std::bind(&RocketStats::GameStart, this, std::placeholders::_1));
+    gameWrapper->HookEvent("Function TAGame.GameEvent_Soccar_TA.EventMatchEnded", std::bind(&RocketStats::GameEnd, this, std::placeholders::_1));
+    gameWrapper->HookEvent("Function CarComponent_Boost_TA.Active.BeginState", std::bind(&RocketStats::OnBoostStart, this, std::placeholders::_1));
+    gameWrapper->HookEvent("Function CarComponent_Boost_TA.Active.EndState", std::bind(&RocketStats::OnBoostEnd, this, std::placeholders::_1));
+    gameWrapper->HookEvent("Function TAGame.GameEvent_TA.Destroyed", std::bind(&RocketStats::GameDestroyed, this, std::placeholders::_1));
 
     gameWrapper->HookEventWithCallerPost<ServerWrapper>("Function TAGame.GFxHUD_TA.HandleStatEvent", std::bind(&RocketStats::onStatEvent, this, std::placeholders::_1, std::placeholders::_2));
     gameWrapper->HookEventWithCallerPost<ServerWrapper>("Function TAGame.GFxHUD_TA.HandleStatTickerMessage", std::bind(&RocketStats::onStatTickerMessage, this, std::placeholders::_1, std::placeholders::_2));
@@ -378,6 +381,7 @@ void RocketStats::onLoad()
         if (rs_recovery)
             RecoveryOldVars();
 
+        UpdateUIScale("onLoad");
         TogglePlugin("onLoad", ToggleFlags_Show);
     }, 0.2F);
 }
@@ -455,6 +459,14 @@ void RocketStats::SetCustomProtocol()
 void RocketStats::ShowPlugin(std::string eventName)
 {
     TogglePlugin(eventName, ToggleFlags_Show);
+}
+
+void RocketStats::UpdateUIScale(std::string eventName)
+{
+    rs_screen_scale[0] = gameWrapper->GetUIScale();
+    rs_screen_scale[1] = gameWrapper->GetSafeZoneRatio();
+    cvarManager->log("scale: " + std::to_string(rs_screen_scale[0]) + " " + std::to_string(rs_screen_scale[1]));
+    SetRefresh(1);
 }
 
 void RocketStats::TogglePlugin(std::string eventName, ToggleFlags mode)
@@ -1965,7 +1977,7 @@ void RocketStats::Render()
     RenderOverlay();
     RenderIcon();
 
-    if (settings_open)
+    if (!overlay_move && settings_open)
         RenderSettings();
 
     // Capture of the escape key, to prevent the plugin from disappearing
@@ -1978,24 +1990,33 @@ void RocketStats::Render()
 
 void RocketStats::RenderIcon()
 {
-    float margin = 20.f;
-    float icon_size = 35.f;
-    LPPOINT mouse_pos = new tagPOINT;
-    bool mouse_click = GetAsyncKeyState(VK_LBUTTON);
-    ImVec2 screen_size = ImGui::GetIO().DisplaySize;
-    ImDrawList* drawlist = ImGui::GetBackgroundDrawList();
-
-    GetCursorPos(mouse_pos);
-    ImVec2 icon_pos = { -10.f, (screen_size.y * 0.459f) };
 
     // Displays the button allowing the display and the hiding of the menu
-    if (!is_in_game || is_in_pause)
+    if (!overlay_move && (!is_in_game || is_in_pause))
     {
+        float margin = 20.f;
+        float icon_size = (42.f * rs_screen_scale[0]);
+        float icon_scale = (1.f - rs_screen_scale[0]);
+        ImVec2 screen_size = ImGui::GetIO().DisplaySize;
+        ImVec2 icon_pos = { 0.f, (screen_size.y * 0.459f * (icon_scale + (icon_scale * (0.18f - (1.f - rs_screen_scale[1]))) + 1.f))};
+        LPPOINT mouse_pos = new tagPOINT;
+        bool mouse_click = GetAsyncKeyState(VK_LBUTTON);
+        ImDrawList* drawlist = ImGui::GetBackgroundDrawList();
+
+        GetCursorPos(mouse_pos);
+
         bool hover = (mouse_pos->x > (icon_pos.x - icon_size - margin) && mouse_pos->x < (icon_pos.x + icon_size + margin));
         hover = (hover && (mouse_pos->y > (icon_pos.y - icon_size - margin) && mouse_pos->y < (icon_pos.y + icon_size + margin)));
 
-        drawlist->AddCircle({ icon_pos.x, icon_pos.y }, icon_size, ImColor{ 0.45f, 0.72f, 1.f, (hover ? 0.8f : 0.4f) }, 25, 4.f);
-        drawlist->AddCircleFilled({ icon_pos.x, icon_pos.y }, icon_size, ImColor{ 0.04f, 0.52f, 0.89f, (hover ? 0.6f : 0.3f) }, 25);
+        rs_logo_rotate += (rs_logo_mouv ? 0.15f : -0.15f);
+        if (rs_logo_rotate < 0 || rs_logo_rotate >= 30.f)
+            rs_logo_mouv = !rs_logo_mouv;
+
+        Vector2F image_size = rs_logo->GetSizeF();
+        float rotate = ((90.f - rs_logo_rotate) * (float(M_PI) / 180.f));
+        ImRotateStart(drawlist);
+        drawlist->AddImage(rs_logo->GetImGuiTex(), { icon_pos.x - icon_size, icon_pos.y - icon_size }, { icon_pos.x + icon_size, icon_pos.y + icon_size }, { 0, 0 }, { 1, 1 }, ImGui::ColorConvertFloat4ToU32({ 1.f, 1.f, 1.f, rs_launch }));
+        ImRotateEnd(rotate);
 
         // When hovering over the button area
         if (hover)
@@ -2272,7 +2293,7 @@ void RocketStats::RenderSettings()
     ImGui::Begin((menu_title + "##Settings").c_str(), nullptr, (ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse));
 
     // Show menu only if menu image is loaded
-    if (rs_title != nullptr && rs_title->IsLoadedForImGui())
+    if (rs_logo != nullptr && rs_title != nullptr && rs_logo->IsLoadedForImGui() && rs_title->IsLoadedForImGui())
     {
         float column_nb = 3;
         float column_space = 10.f;
@@ -2638,6 +2659,7 @@ void RocketStats::RenderSettings()
             LoadImgs();
             LoadThemes();
             ChangeTheme(rs_theme);
+            rs_logo = LoadImg("RocketStats_images/logo.png");
             rs_title = LoadImg("RocketStats_images/title.png");
         }
     }
