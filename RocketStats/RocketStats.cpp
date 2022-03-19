@@ -1996,16 +1996,14 @@ void RocketStats::RenderIcon()
         float margin = 20.f;
         float icon_size = (42.f * rs_screen_scale[0]);
         float icon_scale = (1.f - rs_screen_scale[0]);
+        ImVec2 mouse_pos = ImGui::GetIO().MousePos;
         ImVec2 screen_size = ImGui::GetIO().DisplaySize;
         ImVec2 icon_pos = { 0.f, (screen_size.y * 0.459f * (icon_scale + (icon_scale * (0.18f - (1.f - rs_screen_scale[1]))) + 1.f))};
-        LPPOINT mouse_pos = new tagPOINT;
         bool mouse_click = GetAsyncKeyState(VK_LBUTTON);
         ImDrawList* drawlist = ImGui::GetBackgroundDrawList();
 
-        GetCursorPos(mouse_pos);
-
-        bool hover = (mouse_pos->x > (icon_pos.x - icon_size - margin) && mouse_pos->x < (icon_pos.x + icon_size + margin));
-        hover = (hover && (mouse_pos->y > (icon_pos.y - icon_size - margin) && mouse_pos->y < (icon_pos.y + icon_size + margin)));
+        bool hover = (mouse_pos.x > (icon_pos.x - icon_size - margin) && mouse_pos.x < (icon_pos.x + icon_size + margin));
+        hover = (hover && (mouse_pos.y > (icon_pos.y - icon_size - margin) && mouse_pos.y < (icon_pos.y + icon_size + margin)));
 
         rs_logo_rotate += (rs_logo_mouv ? 0.15f : -0.15f);
         if (rs_logo_rotate < 0 || rs_logo_rotate >= 30.f)
@@ -2218,15 +2216,14 @@ void RocketStats::RenderOverlay()
             {
                 float margin = 10.f;
                 float rect_size = 10.f;
-                LPPOINT mouse_pos = new tagPOINT;
                 bool mouse_click = GetAsyncKeyState(VK_LBUTTON);
+                ImVec2 mouse_pos = ImGui::GetIO().MousePos;
                 ImVec2 screen_size = ImGui::GetIO().DisplaySize;
                 ImVec2 overlay_pos = { (rs_x * screen_size.x), (rs_y * screen_size.y) };
                 ImVec2 rect_pos = { overlay_pos.x, overlay_pos.y };
 
-                GetCursorPos(mouse_pos);
-                bool hover = (mouse_pos->x > (overlay_pos.x - rect_size - (margin * 2)) && mouse_pos->x < (overlay_pos.x + rect_size + (margin * 2)));
-                hover = (hover && (mouse_pos->y > (overlay_pos.y - rect_size - (margin * 2)) && mouse_pos->y < (overlay_pos.y + rect_size + (margin * 2))));
+                bool hover = (mouse_pos.x > (overlay_pos.x - rect_size - (margin * 2)) && mouse_pos.x < (overlay_pos.x + rect_size + (margin * 2)));
+                hover = (hover && (mouse_pos.y > (overlay_pos.y - rect_size - (margin * 2)) && mouse_pos.y < (overlay_pos.y + rect_size + (margin * 2))));
 
                 // If we hover over the area of the square or if we are moving it
                 if (hover || overlay_move)
@@ -2239,10 +2236,10 @@ void RocketStats::RenderOverlay()
                         if (!overlay_move)
                         {
                             overlay_move = true;
-                            overlay_origin = { float(mouse_pos->x), float(mouse_pos->y) };
+                            overlay_origin = { float(mouse_pos.x), float(mouse_pos.y) };
                         }
 
-                        overlay_cursor = { float(mouse_pos->x), float(mouse_pos->y) };
+                        overlay_cursor = { float(mouse_pos.x), float(mouse_pos.y) };
                         rect_pos = overlay_cursor;
                     }
                     else
