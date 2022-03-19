@@ -4,7 +4,7 @@
 
 #include "RocketStats.h"
 
-BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "4.0", PERMISSION_ALL)
+BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "4.0.0", PERMISSION_ALL)
 
 #pragma region Utils
 Stats RocketStats::GetStats()
@@ -1990,7 +1990,6 @@ void RocketStats::Render()
 
 void RocketStats::RenderIcon()
 {
-
     // Displays the button allowing the display and the hiding of the menu
     if (!overlay_move && (!is_in_game || is_in_pause))
     {
@@ -2012,11 +2011,20 @@ void RocketStats::RenderIcon()
         if (rs_logo_rotate < 0 || rs_logo_rotate >= 30.f)
             rs_logo_mouv = !rs_logo_mouv;
 
-        Vector2F image_size = rs_logo->GetSizeF();
-        float rotate = ((90.f - rs_logo_rotate) * (float(M_PI) / 180.f));
-        ImRotateStart(drawlist);
-        drawlist->AddImage(rs_logo->GetImGuiTex(), { icon_pos.x - icon_size, icon_pos.y - icon_size }, { icon_pos.x + icon_size, icon_pos.y + icon_size }, { 0, 0 }, { 1, 1 }, ImGui::ColorConvertFloat4ToU32({ 1.f, 1.f, 1.f, rs_launch }));
-        ImRotateEnd(rotate);
+        if (rs_logo != nullptr && rs_logo->IsLoadedForImGui())
+        {
+            Vector2F image_size = rs_logo->GetSizeF();
+            float rotate = ((90.f - rs_logo_rotate) * (float(M_PI) / 180.f));
+            ImRotateStart(drawlist);
+            drawlist->AddImage(rs_logo->GetImGuiTex(), { icon_pos.x - icon_size, icon_pos.y - icon_size }, { icon_pos.x + icon_size, icon_pos.y + icon_size }, { 0, 0 }, { 1, 1 }, ImGui::ColorConvertFloat4ToU32({ 1.f, 1.f, 1.f, rs_launch }));
+            ImRotateEnd(rotate);
+        }
+        else
+        {
+            drawlist->AddCircle({ icon_pos.x, icon_pos.y }, icon_size, ImColor{ 0.45f, 0.72f, 1.f, (hover ? 0.8f : 0.4f) }, 25, 4.f);
+            drawlist->AddCircleFilled({ icon_pos.x, icon_pos.y }, icon_size, ImColor{ 0.04f, 0.52f, 0.89f, (hover ? 0.6f : 0.3f) }, 25);
+        }
+
 
         // When hovering over the button area
         if (hover)
