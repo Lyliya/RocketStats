@@ -16,13 +16,12 @@ using namespace std;
 class Utils
 {
 public:
-	static LPSTR ConvertToLPSTR(const std::string& s);
-
 	// Colors
 	static float GetAlpha(std::vector<float> color, float opacity = 1.f);
 	static ImColor GetImColor(std::vector<float> color, float opacity = 1.f);
 
 	// Strings
+	static LPSTR ConvertToLPSTR(const std::string& s);
 	static std::string ljust(std::string str, size_t n, char c);
 	static std::string tolower(std::string str);
 	static std::string toupper(std::string str);

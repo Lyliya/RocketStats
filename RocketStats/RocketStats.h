@@ -1,4 +1,5 @@
 #pragma once
+#pragma warning(disable: 4099)
 #pragma comment(lib, "pluginsdk.lib")
 #include "bakkesmod/plugin/bakkesmodplugin.h"
 #include "bakkesmod/plugin/pluginwindow.h"
@@ -349,7 +350,7 @@ public:
 	void TogglePlugin(std::string eventName, ToggleFlags mode = ToggleFlags_Toggle);
 	void ToggleSettings(std::string eventName, ToggleFlags mode = ToggleFlags_Toggle);
 
-	// GameMgmt
+	// GameManagement
 	void GameStart(std::string eventName);
 	void GameEnd(std::string eventName);
 	void GameDestroyed(std::string eventName);
@@ -357,35 +358,34 @@ public:
 	TeamWrapper GetTeam(bool opposing);
 	ImColor GetTeamColor(TeamWrapper team);
 
-	// StatsMgmt
+	// StatsManagement
 	bool isPrimaryPlayer(PriWrapper pri);
 	void onStatEvent(ServerWrapper caller, void* args);
 	void onStatTickerMessage(ServerWrapper caller, void* args);
+	void InitRank();
+	void MajRank(bool isRanked, float _currentMMR, SkillRank playerRank);
 	void UpdateMMR(UniqueIDWrapper id);
 	void InitStats();
 	void SessionStats();
 	void ResetStats();
 
-	// BoostMgmt
+	// BoostManagement
 	void OnBoostStart(std::string eventName);
 	void OnBoostEnd(std::string eventName);
 	int GetBoostAmount();
 	//void StopBoost();
 
-	// Rank / Div
-	void InitRank();
-	void MajRank(bool isRanked, float _currentMMR, SkillRank playerRank);
-
-	// OverlayMgmt
+	// OverlayManagement
 	void LoadThemes();
 	bool ChangeTheme(int idx);
 	void SetTheme(std::string name);
 	void SetRefresh(unsigned char value);
 	void RefreshTheme(std::string old, CVarWrapper now);
-	struct Element CalculateElement(json& element, Options& options, bool& check);
+	Element CalculateElement(json& element, Options& options, bool& check);
 	void RenderElement(ImDrawList* drawlist, Element& element);
 
-	// File I / O
+	// FileManagement
+	bool ExtractResource(int index, fs::path path, bool override = false);
 	std::string GetPath(std::string _path = "", bool root = false);
 	bool ExistsPath(std::string _filename, bool root = false);
 	bool RemoveFile(std::string _filename, bool root = false);

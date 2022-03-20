@@ -19,12 +19,18 @@
     <Filter Include="Sources\Other">
       <UniqueIdentifier>{92ce0206-0307-4e3c-86c0-0eb00208a9b1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\Managements">
+      <UniqueIdentifier>{11402342-786f-42fe-a563-d2dc0ab00f9c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RocketStats.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Utils.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\resource.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
@@ -35,41 +41,69 @@
     <ClCompile Include="Utils.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui\imgui.cpp">
-      <Filter>Sources\ImGui</Filter>
+    <ClCompile Include="Managements\FileManagement.cpp">
+      <Filter>Sources\Managements</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui\imgui_additions.cpp">
-      <Filter>Sources\ImGui</Filter>
+    <ClCompile Include="Managements\GameManagement.cpp">
+      <Filter>Sources\Managements</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui\imgui_draw.cpp">
-      <Filter>Sources\ImGui</Filter>
+    <ClCompile Include="Managements\OverlayManagement.cpp">
+      <Filter>Sources\Managements</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui\imgui_impl_dx11.cpp">
-      <Filter>Sources\ImGui</Filter>
+    <ClCompile Include="Managements\StatsManagement.cpp">
+      <Filter>Sources\Managements</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui\imgui_impl_win32.cpp">
-      <Filter>Sources\ImGui</Filter>
+    <ClCompile Include="Managements\WindowManagement.cpp">
+      <Filter>Sources\Managements</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui\imgui_rangeslider.cpp">
-      <Filter>Sources\ImGui</Filter>
+    <ClCompile Include="Managements\BoostManagement.cpp">
+      <Filter>Sources\Managements</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui\imgui_rotate.cpp">
-      <Filter>Sources\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="lib\imgui\imgui_searchablecombo.cpp">
-      <Filter>Sources\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="lib\imgui\imgui_timeline.cpp">
-      <Filter>Sources\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="lib\imgui\imgui_widgets.cpp">
-      <Filter>Sources\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="lib\imgui\imguivariouscontrols.cpp">
-      <Filter>Sources\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="lib\tinyexpr\tinyexpr.c">
+    <ClCompile Include="Libraries\tinyexpr\tinyexpr.c">
       <Filter>Sources\Other</Filter>
     </ClCompile>
+    <ClCompile Include="Libraries\imgui\imgui_impl_win32.cpp">
+      <Filter>Sources\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\imgui\imgui_rangeslider.cpp">
+      <Filter>Sources\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\imgui\imgui_rotate.cpp">
+      <Filter>Sources\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\imgui\imgui_searchablecombo.cpp">
+      <Filter>Sources\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\imgui\imgui_timeline.cpp">
+      <Filter>Sources\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\imgui\imgui_widgets.cpp">
+      <Filter>Sources\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\imgui\imguivariouscontrols.cpp">
+      <Filter>Sources\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\imgui\imgui.cpp">
+      <Filter>Sources\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\imgui\imgui_additions.cpp">
+      <Filter>Sources\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\imgui\imgui_draw.cpp">
+      <Filter>Sources\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\imgui\imgui_impl_dx11.cpp">
+      <Filter>Sources\ImGui</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources\Resource.rc">
+      <Filter>Resources</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\welcome.png">
+      <Filter>Resources</Filter>
+    </Image>
   </ItemGroup>
 </Project>

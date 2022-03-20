@@ -1,13 +1,5 @@
 #include "Utils.h"
 
-LPSTR Utils::ConvertToLPSTR(const std::string& str)
-{
-    LPSTR cstr = new char[str.size() + 1]; // +1 for zero at the end
-    copy(str.begin(), str.end(), cstr);
-    cstr[str.size()] = 0; // zero at the end
-    return cstr;
-}
-
 #pragma region Colors
 float Utils::GetAlpha(std::vector<float> color, float opacity)
 {
@@ -21,6 +13,14 @@ ImColor Utils::GetImColor(std::vector<float> color, float opacity)
 #pragma endregion
 
 #pragma region Strings
+LPSTR Utils::ConvertToLPSTR(const std::string& str)
+{
+    LPSTR cstr = new char[str.size() + 1]; // +1 for zero at the end
+    copy(str.begin(), str.end(), cstr);
+    cstr[str.size()] = 0; // zero at the end
+    return cstr;
+}
+
 std::string Utils::ljust(std::string str, size_t n, char c)
 {
     size_t size = str.size();
