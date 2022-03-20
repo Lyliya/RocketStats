@@ -1,33 +1,5 @@
 #include "../RocketStats.h"
 
-bool RocketStats::ExtractResource(int index, fs::path path, bool override)
-{
-    HRSRC item_file = ::FindResource(GetModuleHandle(nullptr), MAKEINTRESOURCE(index), __TEXT("PNG"));
-    unsigned int item_size = ::SizeofResource(NULL, item_file);
-    HGLOBAL item_data = ::LoadResource(NULL, item_file);
-    void* item_bdata = ::LockResource(item_data);
-
-    try
-    {
-        if (!fs::exists(path.parent_path()))
-            fs::create_directory(path.parent_path());
-
-        if (override || !fs::exists(path))
-        {
-            std::ofstream stream(path, std::ios::out | std::ios::trunc);
-
-            (void)stream.is_open();
-            stream.write((char*)item_bdata, item_size);
-            stream.close();
-        }
-
-        return fs::exists(path);
-    }
-    catch (const std::exception&) {}
-
-    return false;
-}
-
 std::string RocketStats::GetPath(std::string _path, bool root)
 {
     std::string _return = gameWrapper->GetBakkesModPath().string() + "/";
@@ -313,7 +285,7 @@ void RocketStats::WriteConfig()
     for (int i = 0; i < themes.size(); ++i)
     {
         std::string name = themes.at(i).name;
-        if (themes_values[name].is_object())
+        if (themes_values[name].is_object() && !themes_values[name].is_null())
             tmp["settings"]["themes"][name] = themes_values[name];
     }
 

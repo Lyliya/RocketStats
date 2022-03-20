@@ -109,6 +109,7 @@ private:
 	float rs_screen_scale[2] = { 1.f, 1.f };
 	std::shared_ptr<ImageWrapper> rs_logo;
 	std::shared_ptr<ImageWrapper> rs_title;
+	std::shared_ptr<ImageWrapper> rs_welcome;
 	ImDrawList* rs_drawlist = IM_NEW(ImDrawList(NULL));
 
 	// Time
@@ -124,7 +125,7 @@ private:
 	Theme theme_render;
 	std::string theme_prev = "";
 	std::string theme_hide_value = "##";
-	std::vector<Theme> themes = {};
+	std::vector<Theme> themes;
 	std::vector<std::string> modes = { "Session", "GameMode", "Always", "Always GameMode" };
 	std::map<std::string, std::string> theme_vars;
 	std::map<std::string, std::shared_ptr<ImageWrapper>> theme_images;
@@ -338,7 +339,7 @@ public:
 	bool SetCVar(const char* name, int& value, bool save = false);
 	bool SetCVar(const char* name, bool& value, bool save = false);
 	bool SetCVar(const char* name, float& value, bool save = false);
-	void RecoveryOldVars();
+	bool RecoveryOldVars();
 
 	// PluginLoadRoutines
 	virtual void onLoad();
@@ -385,7 +386,6 @@ public:
 	void RenderElement(ImDrawList* drawlist, Element& element);
 
 	// FileManagement
-	bool ExtractResource(int index, fs::path path, bool override = false);
 	std::string GetPath(std::string _path = "", bool root = false);
 	bool ExistsPath(std::string _filename, bool root = false);
 	bool RemoveFile(std::string _filename, bool root = false);

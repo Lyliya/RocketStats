@@ -174,7 +174,7 @@ bool RocketStats::SetCVar(const char* name, float& value, bool save)
     return false;
 }
 
-void RocketStats::RecoveryOldVars()
+bool RocketStats::RecoveryOldVars()
 {
     cvarManager->log("Recovery old vars !");
 
@@ -241,6 +241,8 @@ void RocketStats::RecoveryOldVars()
 
     ChangeTheme(rs_theme);
     WriteConfig();
+
+    return !ors_session.IsNull();
 }
 #pragma endregion
 
@@ -378,7 +380,14 @@ void RocketStats::onLoad()
     // Displays the plugin shortly after initialization
     gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
         if (rs_recovery)
-            RecoveryOldVars();
+        {
+            rs_recovery = false;
+            if (RecoveryOldVars())
+            {
+                rs_recovery = true;
+                rs_welcome = LoadImg("RocketStats_images/welcome.png");
+            }
+        }
 
         UpdateUIScale("onLoad");
         TogglePlugin("onLoad", ToggleFlags_Show);

@@ -12,10 +12,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Resources">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="Sources\Other">
       <UniqueIdentifier>{92ce0206-0307-4e3c-86c0-0eb00208a9b1}</UniqueIdentifier>
     </Filter>
@@ -28,9 +24,6 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Utils.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Resources\resource.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
@@ -95,15 +88,5 @@
     <ClCompile Include="Libraries\imgui\imgui_impl_dx11.cpp">
       <Filter>Sources\ImGui</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Resources\Resource.rc">
-      <Filter>Resources</Filter>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Resources\welcome.png">
-      <Filter>Resources</Filter>
-    </Image>
   </ItemGroup>
 </Project>

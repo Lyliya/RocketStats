@@ -12,7 +12,34 @@ void RocketStats::Render()
     RenderIcon();
 
     if (!overlay_move && settings_open)
+    {
+        rs_recovery = false; // Closes the new version message when opening the settings menu
         RenderSettings();
+    }
+
+    // Displays the message to introduce the new version
+    if (rs_recovery && rs_welcome != nullptr && rs_welcome->IsLoadedForImGui())
+    {
+        ImVec2 mouse_pos = ImGui::GetIO().MousePos;
+        ImVec2 screen_size = ImGui::GetIO().DisplaySize;
+        Vector2F image_size = rs_welcome->GetSizeF();
+        bool mouse_click = GetAsyncKeyState(VK_LBUTTON);
+
+        float max_width = (screen_size.x / 2);
+        if (max_width < image_size.X)
+            image_size = { max_width, ((image_size.Y / image_size.X) * max_width) };
+        ImVec2 image_min = { ((screen_size.x - image_size.X) / 2), ((screen_size.y - image_size.Y) / 2) };
+        ImVec2 image_max = { (image_min.x + image_size.X), (image_min.y + image_size.Y) };
+
+        bool hover = (mouse_pos.x > image_min.x && mouse_pos.x < image_max.x);
+        hover = (hover && (mouse_pos.y > image_min.y && mouse_pos.y < image_max.y));
+
+        // Close the new version message when clicking on the image
+        if (hover && mouse_click)
+            rs_recovery = false;
+        else
+            ImGui::GetBackgroundDrawList()->AddImage(rs_welcome->GetImGuiTex(), image_min, image_max);
+    }
 
     // Capture of the escape key, to prevent the plugin from disappearing
     int idx = ImGui::GetKeyIndex(ImGuiKey_Escape);
@@ -39,10 +66,12 @@ void RocketStats::RenderIcon()
         bool hover = (mouse_pos.x > (icon_pos.x - icon_size - margin) && mouse_pos.x < (icon_pos.x + icon_size + margin));
         hover = (hover && (mouse_pos.y > (icon_pos.y - icon_size - margin) && mouse_pos.y < (icon_pos.y + icon_size + margin)));
 
+        // Handles logo movement
         rs_logo_rotate += (rs_logo_mouv ? 0.15f : -0.15f);
         if (rs_logo_rotate < 0 || rs_logo_rotate >= 30.f)
             rs_logo_mouv = !rs_logo_mouv;
 
+        // Displays the logo otherwise displays a circle instead
         if (rs_logo != nullptr && rs_logo->IsLoadedForImGui())
         {
             Vector2F image_size = rs_logo->GetSizeF();
@@ -56,7 +85,6 @@ void RocketStats::RenderIcon()
             drawlist->AddCircle({ icon_pos.x, icon_pos.y }, icon_size, ImColor{ 0.45f, 0.72f, 1.f, (hover ? 0.8f : 0.4f) }, 25, 4.f);
             drawlist->AddCircleFilled({ icon_pos.x, icon_pos.y }, icon_size, ImColor{ 0.04f, 0.52f, 0.89f, (hover ? 0.6f : 0.3f) }, 25);
         }
-
 
         // When hovering over the button area
         if (hover)
