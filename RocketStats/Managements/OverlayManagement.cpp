@@ -220,18 +220,24 @@ Element RocketStats::CalculateElement(json& element, Options& options, bool& che
 
             if (element["type"] == "text" && element["value"].size())
             {
-                calculated.scale *= 2.0f;
+                calculated.scale *= 2.f;
                 calculated.value = element["value"];
 
                 Utils::ReplaceVars(calculated.value, theme_vars, [this, &element, &options, &calculated, &element_opacity](const std::string& key, std::string& value) {
-                    if (element.contains("sign") && element["sign"] == key && value != theme_hide_value)
+                    std::string tkey = key;
+                    if (tkey == "MMR" && rs_replace_mmr)
+                        tkey = "MMRChange";
+                    else if (tkey == "MMRChange" && rs_replace_mmrc)
+                        tkey = "MMR";
+
+                    if (element.contains("sign") && element["sign"] == tkey && value != theme_hide_value)
                     {
                         bool positive = (value.at(0) != '-');
                         if (positive)
                             value = ("+" + value);
                     }
 
-                    if (element.contains("chameleon") && element["chameleon"] == key)
+                    if (element.contains("chameleon") && element["chameleon"] == tkey)
                     {
                         bool positive = (value.at(0) != '-');
                         calculated.color.color = Utils::GetImColor({ float(positive ? 30 : 224), float(positive ? 224 : 24), float(positive ? 24 : 24) }, element_opacity);
@@ -272,7 +278,7 @@ Element RocketStats::CalculateElement(json& element, Options& options, bool& che
                     if (element["align"] == "right")
                         element_pos.x -= string_size.x;
                     else if (element["align"] == "center")
-                        element_pos.x -= std::round(string_size.x / 2.0f);
+                        element_pos.x -= std::round(string_size.x / 2.f);
                 }
 
                 if (element.contains("valign") && element["valign"].is_string())
@@ -280,14 +286,14 @@ Element RocketStats::CalculateElement(json& element, Options& options, bool& che
                     if (element["valign"] == "bottom")
                         element_pos.y -= string_size.y;
                     else if (element["valign"] == "middle")
-                        element_pos.y -= std::round(string_size.y / 2.0f);
+                        element_pos.y -= std::round(string_size.y / 2.f);
                 }
             }
             else if (element["type"] == "line")
             {
                 element_pos.x = float(options.x) + (float(element["x1"].is_string() ? Utils::EvaluateExpression(element["x1"], options.width) : int(element["x1"])) * options.scale);
                 element_pos.y = float(options.y) + (float(element["y1"].is_string() ? Utils::EvaluateExpression(element["y1"], options.height) : int(element["y1"])) * options.scale);
-                const float element_width = (element.contains("scale") ? (float)element["scale"] : 1);
+                const float element_width = (element.contains("scale") ? float(element["scale"]) : 1);
 
                 element_size.x = element_width;
                 calculated.scale = (element_width * options.scale);
@@ -386,7 +392,7 @@ Element RocketStats::CalculateElement(json& element, Options& options, bool& che
                         if (element["align"] == "right")
                             element_pos.x -= element_size.x;
                         else if (element["align"] == "center")
-                            element_pos.x -= (element_size.x / 2.0f);
+                            element_pos.x -= (element_size.x / 2.f);
                     }
 
                     if (element.contains("valign") && element["valign"].is_string())
@@ -394,7 +400,7 @@ Element RocketStats::CalculateElement(json& element, Options& options, bool& che
                         if (element["valign"] == "bottom")
                             element_pos.y -= element_size.y;
                         else if (element["valign"] == "middle")
-                            element_pos.y -= (element_size.y / 2.0f);
+                            element_pos.y -= (element_size.y / 2.f);
                     }
 
                     element_size.x += element_pos.x;

@@ -4,7 +4,7 @@
 
 #include "RocketStats.h"
 
-BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "4.0.1", PERMISSION_ALL)
+BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "4.0.2", PERMISSION_ALL)
 
 #pragma region Utils
 Stats RocketStats::GetStats()
@@ -62,7 +62,7 @@ void RocketStats::LoadImgs()
 {
     int load_check = 0;
 
-    for (int i = 0; i < rank_nb; i++)
+    for (int i = 0; i < rank_nb; ++i)
     {
         rank[i].image = LoadImg("RocketStats_images/" + rank[i].name + ".png");
         load_check += (int)rank[i].image->IsLoadedForImGui();
@@ -248,6 +248,10 @@ bool RocketStats::RecoveryOldVars()
 
 void RocketStats::onLoad()
 {
+    // Retrieves the plugin version to display it in the menu
+    if (exports.pluginVersion != nullptr)
+        menu_version = ("v" + std::string(exports.pluginVersion));
+
     // notifierToken = gameWrapper->GetMMRWrapper().RegisterMMRNotifier(std::bind(&RocketStats::UpdateMMR, this, std::placeholders::_1));
 
     SetDefaultFolder();
@@ -282,6 +286,8 @@ void RocketStats::onLoad()
     gameWrapper->HookEvent("Function CarComponent_Boost_TA.Active.BeginState", std::bind(&RocketStats::OnBoostStart, this, std::placeholders::_1));
     gameWrapper->HookEvent("Function CarComponent_Boost_TA.Active.EndState", std::bind(&RocketStats::OnBoostEnd, this, std::placeholders::_1));
     gameWrapper->HookEvent("Function TAGame.GameEvent_TA.Destroyed", std::bind(&RocketStats::GameDestroyed, this, std::placeholders::_1));
+    gameWrapper->HookEvent("Function TAGame.GFxData_MenuStack_TA.PushMenu", std::bind([this]() { is_in_menu = true; }));
+    gameWrapper->HookEvent("Function TAGame.GFxData_MenuStack_TA.PopMenu", std::bind([this]() { is_in_menu = false; }));
 
     gameWrapper->HookEventWithCallerPost<ServerWrapper>("Function TAGame.GFxHUD_TA.HandleStatEvent", std::bind(&RocketStats::onStatEvent, this, std::placeholders::_1, std::placeholders::_2));
     gameWrapper->HookEventWithCallerPost<ServerWrapper>("Function TAGame.GFxHUD_TA.HandleStatTickerMessage", std::bind(&RocketStats::onStatTickerMessage, this, std::placeholders::_1, std::placeholders::_2));

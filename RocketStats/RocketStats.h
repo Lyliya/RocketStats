@@ -59,9 +59,9 @@ struct Options {
 };
 
 struct Stats {
-	float myMMR = 100.0f;
-	float MMRChange = 0.0f;
-	float MMRCumulChange = 0.0f;
+	float myMMR = 100.f;
+	float MMRChange = 0.f;
+	float MMRCumulChange = 0.f;
 	int win = 0;
 	int loss = 0;
 	int streak = 0;
@@ -139,8 +139,7 @@ private:
 
 	// Game states
 	bool is_in_game = false;
-	bool is_in_pause = false;
-	bool is_in_replay = false;
+	bool is_in_menu = false;
 	bool is_online_game = false;
 	bool is_offline_game = false;
 	bool is_boosting = false;
@@ -159,7 +158,7 @@ private:
 	typedef struct s_current {
 		int tier = 0;
 		int playlist = 0;
-		float mmr = 100.0f;
+		float mmr = 100.f;
 		std::string rank = "norank";
 		std::string division = "nodiv";
 	} t_current;
@@ -258,7 +257,7 @@ private:
 	bool settings_open = false;
 	std::string menu_name = "rocketstats";
 	std::string menu_title = "RocketStats";
-	std::string menu_version = "v4.0";
+	std::string menu_version = "";
 
 	void RenderIcon();
 	void RenderOverlay();

@@ -147,7 +147,7 @@ void RocketStats::UpdateMMR(UniqueIDWrapper id)
         always_gm[current.playlist].MMRChange = MMRChange;
 
         always.MMRCumulChange += MMRChange;
-        for (auto it = playlist_name.begin(); it != playlist_name.end(); it++)
+        for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
         {
             stats[it->first].MMRCumulChange += MMRChange;
             always_gm[it->first].MMRCumulChange += MMRChange;
@@ -190,7 +190,7 @@ void RocketStats::SessionStats()
 {
     Stats tmp;
 
-    for (auto it = playlist_name.begin(); it != playlist_name.end(); it++)
+    for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
     {
         tmp.MMRChange += stats[it->first].MMRChange;
         tmp.MMRCumulChange += stats[it->first].MMRChange;

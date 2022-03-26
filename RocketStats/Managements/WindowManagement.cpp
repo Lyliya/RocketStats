@@ -4,12 +4,13 @@ void RocketStats::Render()
 {
     is_online_game = gameWrapper->IsInOnlineGame();
     is_offline_game = gameWrapper->IsInGame();
-    is_in_replay = gameWrapper->IsInReplay();
     is_in_game = (is_online_game || is_offline_game);
-    is_in_pause = (is_in_game && gameWrapper->IsCursorVisible());
 
     RenderOverlay();
-    RenderIcon();
+
+    // Displays the button allowing the display and the hiding of the menu
+    if (!overlay_move && (!is_in_game || is_in_menu))
+        RenderIcon();
 
     if (!overlay_move && settings_open)
     {
@@ -51,59 +52,55 @@ void RocketStats::Render()
 
 void RocketStats::RenderIcon()
 {
-    // Displays the button allowing the display and the hiding of the menu
-    if (!overlay_move && (!is_in_game || is_in_pause))
+    float margin = 20.f;
+    float icon_size = (42.f * rs_screen_scale[0]);
+    float icon_scale = (1.f - rs_screen_scale[0]);
+    ImVec2 mouse_pos = ImGui::GetIO().MousePos;
+    ImVec2 screen_size = ImGui::GetIO().DisplaySize;
+    ImVec2 icon_pos = { 0.f, (screen_size.y * 0.459f * (icon_scale + (icon_scale * (0.18f - (1.f - rs_screen_scale[1]))) + 1.f)) };
+    bool mouse_click = GetAsyncKeyState(VK_LBUTTON);
+    ImDrawList* drawlist = ImGui::GetBackgroundDrawList();
+
+    bool hover = (mouse_pos.x > (icon_pos.x - icon_size - margin) && mouse_pos.x < (icon_pos.x + icon_size + margin));
+    hover = (hover && (mouse_pos.y > (icon_pos.y - icon_size - margin) && mouse_pos.y < (icon_pos.y + icon_size + margin)));
+
+    // Handles logo movement
+    rs_logo_rotate += (rs_logo_mouv ? 0.15f : -0.15f);
+    if (rs_logo_rotate < 0 || rs_logo_rotate >= 30.f)
+        rs_logo_mouv = !rs_logo_mouv;
+
+    // Displays the logo otherwise displays a circle instead
+    if (rs_logo != nullptr && rs_logo->IsLoadedForImGui())
     {
-        float margin = 20.f;
-        float icon_size = (42.f * rs_screen_scale[0]);
-        float icon_scale = (1.f - rs_screen_scale[0]);
-        ImVec2 mouse_pos = ImGui::GetIO().MousePos;
-        ImVec2 screen_size = ImGui::GetIO().DisplaySize;
-        ImVec2 icon_pos = { 0.f, (screen_size.y * 0.459f * (icon_scale + (icon_scale * (0.18f - (1.f - rs_screen_scale[1]))) + 1.f)) };
-        bool mouse_click = GetAsyncKeyState(VK_LBUTTON);
-        ImDrawList* drawlist = ImGui::GetBackgroundDrawList();
+        Vector2F image_size = rs_logo->GetSizeF();
+        float rotate = ((90.f - rs_logo_rotate) * (float(M_PI) / 180.f));
+        ImRotateStart(drawlist);
+        drawlist->AddImage(rs_logo->GetImGuiTex(), { icon_pos.x - icon_size, icon_pos.y - icon_size }, { icon_pos.x + icon_size, icon_pos.y + icon_size }, { 0, 0 }, { 1, 1 }, ImGui::ColorConvertFloat4ToU32({ 1.f, 1.f, 1.f, rs_launch }));
+        ImRotateEnd(rotate);
+    }
+    else
+    {
+        drawlist->AddCircle({ icon_pos.x, icon_pos.y }, icon_size, ImColor{ 0.45f, 0.72f, 1.f, (hover ? 0.8f : 0.4f) }, 25, 4.f);
+        drawlist->AddCircleFilled({ icon_pos.x, icon_pos.y }, icon_size, ImColor{ 0.04f, 0.52f, 0.89f, (hover ? 0.6f : 0.3f) }, 25);
+    }
 
-        bool hover = (mouse_pos.x > (icon_pos.x - icon_size - margin) && mouse_pos.x < (icon_pos.x + icon_size + margin));
-        hover = (hover && (mouse_pos.y > (icon_pos.y - icon_size - margin) && mouse_pos.y < (icon_pos.y + icon_size + margin)));
+    // When hovering over the button area
+    if (hover)
+    {
+        ImGui::SetTooltip("Show RocketStats menu");
 
-        // Handles logo movement
-        rs_logo_rotate += (rs_logo_mouv ? 0.15f : -0.15f);
-        if (rs_logo_rotate < 0 || rs_logo_rotate >= 30.f)
-            rs_logo_mouv = !rs_logo_mouv;
-
-        // Displays the logo otherwise displays a circle instead
-        if (rs_logo != nullptr && rs_logo->IsLoadedForImGui())
+        // When clicking in the button area
+        if (mouse_click)
         {
-            Vector2F image_size = rs_logo->GetSizeF();
-            float rotate = ((90.f - rs_logo_rotate) * (float(M_PI) / 180.f));
-            ImRotateStart(drawlist);
-            drawlist->AddImage(rs_logo->GetImGuiTex(), { icon_pos.x - icon_size, icon_pos.y - icon_size }, { icon_pos.x + icon_size, icon_pos.y + icon_size }, { 0, 0 }, { 1, 1 }, ImGui::ColorConvertFloat4ToU32({ 1.f, 1.f, 1.f, rs_launch }));
-            ImRotateEnd(rotate);
+            // Send the event only once to the click (not to each image)
+            if (!mouse_state)
+            {
+                mouse_state = true;
+                ToggleSettings("MouseEvent");
+            }
         }
         else
-        {
-            drawlist->AddCircle({ icon_pos.x, icon_pos.y }, icon_size, ImColor{ 0.45f, 0.72f, 1.f, (hover ? 0.8f : 0.4f) }, 25, 4.f);
-            drawlist->AddCircleFilled({ icon_pos.x, icon_pos.y }, icon_size, ImColor{ 0.04f, 0.52f, 0.89f, (hover ? 0.6f : 0.3f) }, 25);
-        }
-
-        // When hovering over the button area
-        if (hover)
-        {
-            ImGui::SetTooltip("Show RocketStats menu");
-
-            // When clicking in the button area
-            if (mouse_click)
-            {
-                // Send the event only once to the click (not to each image)
-                if (!mouse_state)
-                {
-                    mouse_state = true;
-                    ToggleSettings("MouseEvent");
-                }
-            }
-            else
-                mouse_state = false;
-        }
+            mouse_state = false;
     }
 }
 
@@ -266,7 +263,7 @@ void RocketStats::RenderOverlay()
                     RenderElement(drawlist, element);
 
                 if (rs_rotate_enabled)
-                    ImRotateEnd(rs_crotate, start, drawlist, ImRotationCenter(start, drawlist));
+                    ImRotateEnd(rs_crotate, start, drawlist, ImRotationCenter(start, ImGui::GetBackgroundDrawList()));
 
                 // Stores generated vertices for future frames
                 rs_drawlist->Clear();

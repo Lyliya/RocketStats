@@ -214,10 +214,10 @@ TeamWrapper RocketStats::GetTeam(bool opposing)
 
             if (!teams.IsNull() && !player.IsNull())
             {
-#pragma warning( push )
-#pragma warning( disable : 4267 )
+#pragma warning(push)
+#pragma warning(disable: 4267)
                 for (TeamWrapper team : teams)
-#pragma warning( pop )
+#pragma warning(pop)
                 {
                     if (opposing == (player.GetTeamNum2() != team.GetTeamNum2()))
                         return team;
