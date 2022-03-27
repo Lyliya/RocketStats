@@ -11,7 +11,7 @@ void RocketStats::LoadThemes()
         // List the themes (taking the name of the folder)
         for (const auto& entry : fs::directory_iterator(theme_base))
         {
-            std::string theme_path = entry.path().u8string();
+            std::string theme_path = entry.path().string();
             if (entry.is_directory() && fs::exists(theme_path + "/config.json"))
             {
                 Theme theme;

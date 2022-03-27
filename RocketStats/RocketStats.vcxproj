@@ -42,7 +42,7 @@
       <AdditionalIncludeDirectories>Libraries;$(BAKKESMOD)\bakkesmodsdk\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -54,6 +54,8 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Languages.h" />
+    <ClInclude Include="Resources\Resource.h" />
     <ClInclude Include="RocketStats.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
@@ -73,11 +75,19 @@
     <ClCompile Include="Managements\BoostManagement.cpp" />
     <ClCompile Include="Managements\FileManagement.cpp" />
     <ClCompile Include="Managements\GameManagement.cpp" />
+    <ClCompile Include="Managements\LangManagement.cpp" />
     <ClCompile Include="Managements\OverlayManagement.cpp" />
     <ClCompile Include="Managements\StatsManagement.cpp" />
     <ClCompile Include="Managements\WindowManagement.cpp" />
     <ClCompile Include="RocketStats.cpp" />
     <ClCompile Include="Utils.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources\Resource.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Languages\INT.json" />
+    <None Include="Resources\Languages\FRA.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

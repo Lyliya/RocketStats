@@ -18,12 +18,24 @@
     <Filter Include="Sources\Managements">
       <UniqueIdentifier>{11402342-786f-42fe-a563-d2dc0ab00f9c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{30974c5c-533d-41e6-a901-016a24046066}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Languages">
+      <UniqueIdentifier>{ad0a7cd5-a45f-410c-b47f-98fb5d738fe9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RocketStats.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Utils.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\Resource.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Languages.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
@@ -88,5 +100,21 @@
     <ClCompile Include="Libraries\imgui\imgui_impl_dx11.cpp">
       <Filter>Sources\ImGui</Filter>
     </ClCompile>
+    <ClCompile Include="Managements\LangManagement.cpp">
+      <Filter>Sources\Managements</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources\Resource.rc">
+      <Filter>Resources</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Languages\INT.json">
+      <Filter>Resources\Languages</Filter>
+    </None>
+    <None Include="Resources\Languages\FRA.json">
+      <Filter>Resources\Languages</Filter>
+    </None>
   </ItemGroup>
 </Project>

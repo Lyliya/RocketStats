@@ -6,16 +6,20 @@
 
 #include <pch.h>
 #include <json.hpp>
+#include <resource.hpp>
 #include <imgui/imgui_rotate.h>
 #include "bakkesmod/wrappers/GuiManagerWrapper.h"
 
 #include <map>
+#include <vector>
 #include <fstream>
 #include <windows.h>
 #include <functional>
 #include <utils/parser.h>
 
 #include "Utils.h"
+#include "Languages.h"
+#include "Resources/Resource.h"
 
 #define  M_PI	3.14159265358979323846
 
@@ -107,6 +111,7 @@ private:
 	bool rs_logo_mouv = false;
 	float rs_logo_rotate = 0.f;
 	float rs_screen_scale[2] = { 1.f, 1.f };
+	std::vector<std::string> rs_lang;
 	std::shared_ptr<ImageWrapper> rs_logo;
 	std::shared_ptr<ImageWrapper> rs_title;
 	std::shared_ptr<ImageWrapper> rs_welcome;
@@ -126,7 +131,7 @@ private:
 	std::string theme_prev = "";
 	std::string theme_hide_value = "##";
 	std::vector<Theme> themes;
-	std::vector<std::string> modes = { "Session", "GameMode", "Always", "Always GameMode" };
+	std::vector<std::string> modes;
 	std::map<std::string, std::string> theme_vars;
 	std::map<std::string, std::shared_ptr<ImageWrapper>> theme_images;
 
@@ -383,6 +388,10 @@ public:
 	void RefreshTheme(std::string old, CVarWrapper now);
 	Element CalculateElement(json& element, Options& options, bool& check);
 	void RenderElement(ImDrawList* drawlist, Element& element);
+
+	// LangManagement
+	void ChangeLang(int id = IDB_LANG_INT);
+	std::string GetLang(unsigned int id);
 
 	// FileManagement
 	std::string GetPath(std::string _path = "", bool root = false);

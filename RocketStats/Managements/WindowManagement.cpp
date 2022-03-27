@@ -87,7 +87,7 @@ void RocketStats::RenderIcon()
     // When hovering over the button area
     if (hover)
     {
-        ImGui::SetTooltip("Show RocketStats menu");
+        ImGui::SetTooltip(GetLang(LANG_TOGGLE_MENU_TOOLTIP).c_str());
 
         // When clicking in the button area
         if (mouse_click)
@@ -313,7 +313,7 @@ void RocketStats::RenderOverlay()
                             SetRefresh(1);
                         }
                         else
-                            ImGui::SetTooltip("Click to move the overlay using the mouse");
+                            ImGui::SetTooltip(GetLang(LANG_OVERLAY_MOVE).c_str());
                     }
                 }
 
@@ -370,8 +370,6 @@ void RocketStats::RenderSettings()
         ImVec2 win_size = ImGui::GetWindowSize();
         Vector2F image_size = rs_title->GetSizeF();
         ImDrawList* drawlist = ImGui::GetWindowDrawList();
-        std::string obs = "To view the in-game overlay on OBS, check \"Capture third-party overlays\" in the game capture.";
-        std::string developers = "Developped by @Lyliya, @NuSa_yt, @Arubinu42 & @Larsluph";
 
         ImVec2 p0 = win_pos;
         ImVec2 p1 = { (win_pos.x + win_size.x), (win_pos.y + win_size.y) };
@@ -391,7 +389,7 @@ void RocketStats::RenderSettings()
         ImGui::SetCursorPos({ 23, 52 });
         ImGui::Checkbox("##in_file", &rs_in_file);
         if (ImGui::IsItemHovered())
-            ImGui::SetTooltip("Updates RocketStats files with game information (usable in OBS)");
+            ImGui::SetTooltip(GetLang(LANG_IN_FILE_TOOLTIP).c_str());
 
         ImGui::SetCursorPos({ 63, 54 });
         ImGui::TextColored(ImVec4{ 0.2f, 0.2f, 0.2f, 1.f }, Utils::toupper(cvarManager->getCvar("rs_in_file").getDescription()).c_str());
@@ -419,7 +417,7 @@ void RocketStats::RenderSettings()
             ImGui::EndCombo();
         }
         if (ImGui::IsItemHovered())
-            ImGui::SetTooltip("Restrict information to current game or keep longer");
+            ImGui::SetTooltip(GetLang(LANG_IN_FILE_TOOLTIP).c_str());
         ImGui::SameLine(0, 0);
         if (ImGui::ArrowButton("##modes_left", ImGuiDir_Left) && rs_mode > 0)
             --rs_mode;
@@ -450,7 +448,7 @@ void RocketStats::RenderSettings()
             ImGui::EndCombo();
         }
         if (ImGui::IsItemHovered())
-            ImGui::SetTooltip("Themes available in RocketStats folders (fully customizable)");
+            ImGui::SetTooltip(GetLang(LANG_THEME_TOOLTIP).c_str());
         ImGui::SameLine(0, 0);
         if (ImGui::ArrowButton("##themes_left", ImGuiDir_Left) && rs_theme > 0)
             --rs_theme;
@@ -462,7 +460,7 @@ void RocketStats::RenderSettings()
         if (ImGui::Button(cvar_x.getDescription().c_str(), { 65, 0 }))
             rs_x_edit = !rs_x_edit;
         if (ImGui::IsItemHovered())
-            ImGui::SetTooltip("Changes the horizontal position of the overlay");
+            ImGui::SetTooltip(GetLang(LANG_X_TOOLTIP).c_str());
         ImGui::SetCursorPos({ 158, 120 });
         ImGui::SetNextItemWidth(rs_x_edit ? 170.f : 150.f);
         if (!rs_x_edit)
@@ -476,7 +474,7 @@ void RocketStats::RenderSettings()
                     rs_x = float(theme_config["x"]);
             }
             if (ImGui::IsItemHovered())
-                ImGui::SetTooltip("Reset to original value");
+                ImGui::SetTooltip(GetLang(LANG_RESET_TOOLTIP).c_str());
         }
         else
             ImGui::InputFloat("##x_position", &rs_x, 0.001f, 0.1f, "%.3f");
@@ -485,7 +483,7 @@ void RocketStats::RenderSettings()
         if (ImGui::Button(cvar_y.getDescription().c_str(), { 65, 0 }))
             rs_y_edit = !rs_y_edit;
         if (ImGui::IsItemHovered())
-            ImGui::SetTooltip("Changes the vertical position of the overlay");
+            ImGui::SetTooltip(GetLang(LANG_Y_TOOLTIP).c_str());
         ImGui::SetCursorPos({ 476, 120 });
         ImGui::SetNextItemWidth(rs_y_edit ? 170.f : 150.f);
         if (!rs_y_edit)
@@ -499,7 +497,7 @@ void RocketStats::RenderSettings()
                     rs_y = float(theme_config["y"]);
             }
             if (ImGui::IsItemHovered())
-                ImGui::SetTooltip("Reset to original value");
+                ImGui::SetTooltip(GetLang(LANG_RESET_TOOLTIP).c_str());
         }
         else
             ImGui::InputFloat("##y_position", &rs_y, 0.001f, 0.1f, "%.3f");
@@ -508,7 +506,7 @@ void RocketStats::RenderSettings()
         if (ImGui::Button(cvar_scale.getDescription().c_str(), { 65, 0 }))
             rs_scale_edit = !rs_scale_edit;
         if (ImGui::IsItemHovered())
-            ImGui::SetTooltip("Choose the size of the overlay");
+            ImGui::SetTooltip(GetLang(LANG_SCALE_TOOLTIP).c_str());
         ImGui::SetCursorPos({ 79, 165 });
         ImGui::SetNextItemWidth(rs_scale_edit ? 170.f : 150.f);
         if (!rs_scale_edit)
@@ -522,7 +520,7 @@ void RocketStats::RenderSettings()
                     rs_scale = float(theme_config["scale"]);
             }
             if (ImGui::IsItemHovered())
-                ImGui::SetTooltip("Reset to original value");
+                ImGui::SetTooltip(GetLang(LANG_RESET_TOOLTIP).c_str());
         }
         else
             ImGui::InputFloat("##scale", &rs_scale, 0.01f, 0.1f, "%.3f");
@@ -531,7 +529,7 @@ void RocketStats::RenderSettings()
         if (ImGui::Button(cvar_rotate.getDescription().c_str(), { 65, 0 }))
             rs_rotate_edit = !rs_rotate_edit;
         if (ImGui::IsItemHovered())
-            ImGui::SetTooltip("Choose the rotation of the overlay");
+            ImGui::SetTooltip(GetLang(LANG_ROTATE_TOOLTIP).c_str());
         ImGui::SetCursorPos({ 318, 165 });
         ImGui::SetNextItemWidth(rs_rotate_edit ? 170.f : 150.f);
         if (!rs_rotate_edit)
@@ -545,7 +543,7 @@ void RocketStats::RenderSettings()
                     rs_rotate = float(theme_config["rotate"]);
             }
             if (ImGui::IsItemHovered())
-                ImGui::SetTooltip("Reset to original value");
+                ImGui::SetTooltip(GetLang(LANG_RESET_TOOLTIP).c_str());
         }
         else
             ImGui::InputFloat("##rotate", &rs_rotate, 0.001f, 0.1f, "%.3f");
@@ -554,7 +552,7 @@ void RocketStats::RenderSettings()
         if (ImGui::Button(cvar_opacity.getDescription().c_str(), { 65, 0 }))
             rs_opacity_edit = !rs_opacity_edit;
         if (ImGui::IsItemHovered())
-            ImGui::SetTooltip("Choose the opacity of the overlay");
+            ImGui::SetTooltip(GetLang(LANG_OPACITY_TOOLTIP).c_str());
         ImGui::SetCursorPos({ 557, 165 });
         ImGui::SetNextItemWidth(rs_opacity_edit ? 170.f : 150.f);
         if (!rs_opacity_edit)
@@ -568,14 +566,14 @@ void RocketStats::RenderSettings()
                     rs_opacity = float(theme_config["opacity"]);
             }
             if (ImGui::IsItemHovered())
-                ImGui::SetTooltip("Reset to original value");
+                ImGui::SetTooltip(GetLang(LANG_RESET_TOOLTIP).c_str());
         }
         else
             ImGui::InputFloat("##opacity", &rs_opacity, 0.001f, 0.1f, "%.3f");
 
-        text_size = ImGui::CalcTextSize(obs.c_str());
+        text_size = ImGui::CalcTextSize(GetLang(LANG_OVERLAY_OBS).c_str());
         ImGui::SetCursorPos({ ((settings_size.x - text_size.x) / 2), 200 });
-        ImGui::TextColored(ImVec4{ 0.94f, 0.77f, 0.f, 1.f }, obs.c_str());
+        ImGui::TextColored(ImVec4{ 0.94f, 0.77f, 0.f, 1.f }, GetLang(LANG_OVERLAY_OBS).c_str());
 
         ImGui::SetCursorPosY(228);
         ImGui::Separator();
@@ -588,27 +586,27 @@ void RocketStats::RenderSettings()
         ImGui::SetCursorPos({ 23, 263 });
         ImGui::Checkbox("##overlay", &rs_disp_overlay);
         if (ImGui::IsItemHovered())
-            ImGui::SetTooltip("Displays the overlay on the game screen");
+            ImGui::SetTooltip(GetLang(LANG_OVERLAY_TOOLTIP).c_str());
 
         ImGui::SetCursorPos({ 63, 265 });
         ImGui::TextColored(ImVec4{ 0.2f, 0.2f, 0.2f, 1.f }, Utils::toupper(cvarManager->getCvar("rs_disp_overlay").getDescription()).c_str());
 
         ImGui::SetWindowFontScale(1.f);
-        ImGui::SetCursorPos({ (settings_size.x - 120), 241 });
-        if (ImGui::Button("Open folder", { 110, 0 }))
+        ImGui::SetCursorPos({ (settings_size.x - 135), 241 });
+        if (ImGui::Button(GetLang(LANG_OPEN_FOLDER).c_str(), { 125, 0 }))
             system(("powershell -WindowStyle Hidden \"start \"\"" + GetPath() + "\"\"\"").c_str());
         if (ImGui::IsItemHovered())
-            ImGui::SetTooltip("Access theme folders or files for OBS");
-        ImGui::SetCursorPos({ (settings_size.x - 120), 266 });
-        if (ImGui::Button("Reload Theme", { 88, 0 }))
+            ImGui::SetTooltip(GetLang(LANG_OPEN_FOLDER_TOOLTIP).c_str());
+        ImGui::SetCursorPos({ (settings_size.x - 135), 266 });
+        if (ImGui::Button(GetLang(LANG_RELOAD_THEME).c_str(), { 103, 0 }))
         {
             LoadImgs();
             ChangeTheme(rs_theme);
         }
         if (ImGui::IsItemHovered())
-            ImGui::SetTooltip("Refresh current theme information (JSON and images)");
+            ImGui::SetTooltip(GetLang(LANG_RELOAD_THEME_TOOLTIP).c_str());
         ImGui::SetCursorPos({ (settings_size.x - 27), 266 });
-        if (ImGui::Button("A", { 17, 0 }))
+        if (ImGui::Button(GetLang(LANG_RELOAD_THEME_A).c_str(), { 17, 0 }))
         {
             LoadImgs();
             LoadThemes();
@@ -616,12 +614,12 @@ void RocketStats::RenderSettings()
             ChangeTheme(rs_theme);
         }
         if (ImGui::IsItemHovered())
-            ImGui::SetTooltip("Reloads all the themes (adds or removes depending on the folders)");
-        ImGui::SetCursorPos({ (settings_size.x - 120), 291 });
-        if (ImGui::Button("Reset Stats", { 110, 0 }))
+            ImGui::SetTooltip(GetLang(LANG_RELOAD_THEME_A_TOOLTIP).c_str());
+        ImGui::SetCursorPos({ (settings_size.x - 135), 291 });
+        if (ImGui::Button(GetLang(LANG_RESET_STATS).c_str(), { 125, 0 }))
             ResetStats();
         if (ImGui::IsItemHovered())
-            ImGui::SetTooltip("Resets all plugin information for all modes (MMR, Win, Loss, etc.)");
+            ImGui::SetTooltip(GetLang(LANG_RESET_STATS_TOOLTIP).c_str());
 
         ImGui::SetWindowFontScale(1.7f);
         ImGui::SetCursorPos({ 280, 258 });
@@ -631,7 +629,7 @@ void RocketStats::RenderSettings()
         ImGui::SetCursorPos({ (285 + text_size.x), 265 });
         ImGui::TextColored(ImVec4{ 1.f, 1.f, 1.f, 0.5f }, (theme_render.version + (theme_render.date.size() ? (" - " + theme_render.date) : "")).c_str());
         ImGui::SetCursorPos({ 290, 282 });
-        ImGui::TextColored(ImVec4{ 1.f, 1.f, 1.f, 0.8f }, ("Theme by " + theme_render.author).c_str());
+        ImGui::TextColored(ImVec4{ 1.f, 1.f, 1.f, 0.8f }, ((GetLang(LANG_THEME_BY) + " ").c_str() + theme_render.author).c_str());
 
         ImGui::SetWindowFontScale(1.f);
         ImGui::SetCursorPos({ column_start, 328 });
@@ -691,7 +689,7 @@ void RocketStats::RenderSettings()
         ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10);
         ImGui::Separator();
 
-        ImGui::TextColored(((time_error || local_time.tm_sec % 2) ? ImVec4{ 0.04f, 0.52f, 0.89f, 1.f } : ImVec4{ 1.f, 1.f, 1.f, 0.5f }), "Donate");
+        ImGui::TextColored(((time_error || local_time.tm_sec % 2) ? ImVec4{ 0.04f, 0.52f, 0.89f, 1.f } : ImVec4{ 1.f, 1.f, 1.f, 0.5f }), GetLang(LANG_DONATE).c_str());
         if (ImGui::IsItemHovered())
         {
             ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -699,9 +697,19 @@ void RocketStats::RenderSettings()
                 system("powershell -WindowStyle Hidden \"start https://www.paypal.com/paypalme/rocketstats\"");
         }
         ImGui::SameLine();
-        text_size = ImGui::CalcTextSize(developers.c_str());
+        ImGui::Text("|");
+        ImGui::SameLine();
+        ImGui::TextColored(ImVec4{ 0.04f, 0.52f, 0.89f, 1.f }, "Discord");
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+            if (ImGui::IsMouseClicked(0))
+                system("powershell -WindowStyle Hidden \"start https://discord.gg/weBCBE4\"");
+        }
+        ImGui::SameLine();
+        text_size = ImGui::CalcTextSize(GetLang(LANG_DEVELOPERS).c_str());
         ImGui::SetCursorPosX((settings_size.x - text_size.x) / 2);
-        ImGui::Text(developers.c_str());
+        ImGui::Text(GetLang(LANG_DEVELOPERS).c_str());
         text_size = ImGui::CalcTextSize(menu_version.c_str());
         ImGui::SameLine();
         ImGui::SetCursorPosX(settings_size.x - text_size.x - 7);
@@ -712,11 +720,11 @@ void RocketStats::RenderSettings()
     else
     {
         ImGui::SetWindowFontScale(1.5f);
-        ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Error - Check that this folder is present in BakkesMod: data/RocketStats");
+        ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), (GetLang(LANG_ERROR) + ": data/RocketStats").c_str());
         ImGui::SameLine();
         ImGui::SetWindowFontScale(1.f);
         ImGui::SetCursorPosX(settings_size.x - 80 - 7);
-        if (ImGui::Button("Reload All", { 80, 0 }))
+        if (ImGui::Button(GetLang(LANG_ERROR_RELOAD).c_str(), {80, 0}))
         {
             SetDefaultFolder();
 
