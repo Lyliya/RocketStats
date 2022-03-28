@@ -61,7 +61,7 @@
 	"Écrire le MMRChangeCumul en fichier",
 	"Écrire les Gagnées en fichier",
 	"Écrire les Perdues en fichier",
-	"Écrire les Gains en fichier",
+	"Écrire les Séries en fichier",
 	"Écrire les Démolitions en fichier",
 	"Écrire les Morts en fichier",
 	"Écrire le Boost en fichier",
@@ -74,7 +74,7 @@
 	"Cache le MMRChangeCumul",
 	"Cache les Gagnées",
 	"Cache les Perdues",
-	"Cache les Gains",
+	"Cache les Séries",
 	"Cache les Démolitions",
 	"Cache les Morts"
 ]
