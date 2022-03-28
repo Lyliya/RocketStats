@@ -53,6 +53,21 @@
 
 	"Informations",
 	"Updates RocketStats files with game information (usable in OBS)",
+
+	"GameMode",
+	"Rank",
+	"Division",
+	"MMR",
+	"MMR change",
+	"Cumulative MMR change",
+	"Games won",
+	"Games lost",
+	"Streaks",
+	"Demolitions",
+	"Deaths",
+	"Boost",
+
+	"Write to file",
 	"Write GameMode in file",
 	"Write Rank in file",
 	"Write Division in file",
@@ -66,6 +81,7 @@
 	"Write Deaths in file",
 	"Write Boost in file",
 
+	"Hide value",
 	"Hide GameMode",
 	"Hide Rank",
 	"Hide Division",

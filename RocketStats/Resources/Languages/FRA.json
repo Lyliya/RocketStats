@@ -53,6 +53,21 @@
 
 	"Informations",
 	"Met à jour les fichiers RocketStats avec des informations du jeu (utilisable dans OBS)",
+
+	"Mode de Jeu",
+	"Rang",
+	"Division",
+	"MMR",
+	"MMR change",
+	"Cumul du MMR change",
+	"Parties gagnées",
+	"Parties perdues",
+	"Séries de victoire/défaites",
+	"Démolitions",
+	"Morts",
+	"Boost",
+
+	"Écrire en fichier",
 	"Écrire le Mode de Jeu en fichier",
 	"Écrire le Rang en fichier",
 	"Écrire la Division en fichier",
@@ -66,6 +81,7 @@
 	"Écrire les Morts en fichier",
 	"Écrire le Boost en fichier",
 
+	"Masquer la valeur",
 	"Cache le Mode de Jeu",
 	"Cache le Rang",
 	"Cache la Division",

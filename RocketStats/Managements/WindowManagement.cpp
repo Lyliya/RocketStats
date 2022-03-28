@@ -631,8 +631,11 @@ void RocketStats::RenderSettings()
         ImGui::SetCursorPos({ 290, 282 });
         ImGui::TextColored(ImVec4{ 1.f, 1.f, 1.f, 0.8f }, ((GetLang(LANG_THEME_BY) + " ").c_str() + theme_render.author).c_str());
 
+        //ImGui::SetCursorPos({ column_start, 320 });
+        //ImGui::SetWindowFontScale(1.2f);
+        //ImGui::TextColored(ImVec4{ 0.8f, 0.8f, 0.8f, 1.f }, "");
+        ImGui::SetCursorPos({ column_start, 342 });
         ImGui::SetWindowFontScale(1.f);
-        ImGui::SetCursorPos({ column_start, 328 });
         ImGui::BeginChild("##column1", { column_width, 205 }, false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
         ImGui::Checkbox(cvarManager->getCvar("rs_enable_inmenu").getDescription().c_str(), &rs_enable_inmenu);
         ImGui::Checkbox(cvarManager->getCvar("rs_enable_ingame").getDescription().c_str(), &rs_enable_ingame);
@@ -641,41 +644,47 @@ void RocketStats::RenderSettings()
         ImGui::Checkbox(cvarManager->getCvar("rs_replace_mmrc").getDescription().c_str(), &rs_replace_mmrc);
         ImGui::EndChild();
 
-        ImGui::SameLine();
-        ImGui::SetCursorPosX(column_start + column_space + column_width);
+        ImGui::SetCursorPos({ (column_start + column_space + column_width), 320 });
+        ImGui::SetWindowFontScale(1.2f);
+        ImGui::TextColored(ImVec4{ 0.8f, 0.8f, 0.8f, 1.f }, GetLang(LANG_FILE_TITLE).c_str());
+        ImGui::SetCursorPos({ (column_start + column_space + column_width), 342 });
+        ImGui::SetWindowFontScale(1.f);
         ImGui::BeginChild("##column2", { column_width, 205 }, false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
         if (!rs_in_file)
             ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.5f);
-        ImGui::Checkbox(cvarManager->getCvar("rs_file_gm").getDescription().c_str(), &rs_file_gm);
-        ImGui::Checkbox(cvarManager->getCvar("rs_file_rank").getDescription().c_str(), &rs_file_rank);
-        ImGui::Checkbox(cvarManager->getCvar("rs_file_div").getDescription().c_str(), &rs_file_div);
-        ImGui::Checkbox(cvarManager->getCvar("rs_file_mmr").getDescription().c_str(), &rs_file_mmr);
-        ImGui::Checkbox(cvarManager->getCvar("rs_file_mmrc").getDescription().c_str(), &rs_file_mmrc);
-        ImGui::Checkbox(cvarManager->getCvar("rs_file_mmrcc").getDescription().c_str(), &rs_file_mmrcc);
-        ImGui::Checkbox(cvarManager->getCvar("rs_file_win").getDescription().c_str(), &rs_file_win);
-        ImGui::Checkbox(cvarManager->getCvar("rs_file_loss").getDescription().c_str(), &rs_file_loss);
-        ImGui::Checkbox(cvarManager->getCvar("rs_file_streak").getDescription().c_str(), &rs_file_streak);
-        ImGui::Checkbox(cvarManager->getCvar("rs_file_demo").getDescription().c_str(), &rs_file_demo);
-        ImGui::Checkbox(cvarManager->getCvar("rs_file_death").getDescription().c_str(), &rs_file_death);
-        ImGui::Checkbox(cvarManager->getCvar("rs_file_boost").getDescription().c_str(), &rs_file_boost);
+        ImGui::Checkbox(GetLang(LANG_GAMEMODE).c_str(), &rs_file_gm);
+        ImGui::Checkbox(GetLang(LANG_RANK).c_str(), &rs_file_rank);
+        ImGui::Checkbox(GetLang(LANG_DIVISION).c_str(), &rs_file_div);
+        ImGui::Checkbox(GetLang(LANG_MMR).c_str(), &rs_file_mmr);
+        ImGui::Checkbox(GetLang(LANG_MMRCHANGE).c_str(), &rs_file_mmrc);
+        ImGui::Checkbox(GetLang(LANG_MMRCHANGECUMUL).c_str(), &rs_file_mmrcc);
+        ImGui::Checkbox(GetLang(LANG_WINS).c_str(), &rs_file_win);
+        ImGui::Checkbox(GetLang(LANG_LOSSES).c_str(), &rs_file_loss);
+        ImGui::Checkbox(GetLang(LANG_STREAKS).c_str(), &rs_file_streak);
+        ImGui::Checkbox(GetLang(LANG_DEMOLITIONS).c_str(), &rs_file_demo);
+        ImGui::Checkbox(GetLang(LANG_DEATH).c_str(), &rs_file_death);
+        ImGui::Checkbox(GetLang(LANG_BOOST).c_str(), &rs_file_boost);
         if (!rs_in_file)
             ImGui::PopStyleVar();
         ImGui::EndChild();
 
-        ImGui::SameLine();
-        ImGui::SetCursorPosX(column_start + (column_space * 2) + (column_width * 2));
+        ImGui::SetCursorPos({ (column_start + (column_space * 2) + (column_width * 2)), 320 });
+        ImGui::SetWindowFontScale(1.2f);
+        ImGui::TextColored(ImVec4{ 0.8f, 0.8f, 0.8f, 1.f }, GetLang(LANG_HIDE_TITLE).c_str());
+        ImGui::SetCursorPos({ (column_start + (column_space * 2) + (column_width * 2)), 342 });
+        ImGui::SetWindowFontScale(1.f);
         ImGui::BeginChild("##column3", { column_width, 205 }, false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
-        ImGui::Checkbox(cvarManager->getCvar("rs_hide_gm").getDescription().c_str(), &rs_hide_gm);
-        ImGui::Checkbox(cvarManager->getCvar("rs_hide_rank").getDescription().c_str(), &rs_hide_rank);
-        ImGui::Checkbox(cvarManager->getCvar("rs_hide_div").getDescription().c_str(), &rs_hide_div);
-        ImGui::Checkbox(cvarManager->getCvar("rs_hide_mmr").getDescription().c_str(), &rs_hide_mmr);
-        ImGui::Checkbox(cvarManager->getCvar("rs_hide_mmrc").getDescription().c_str(), &rs_hide_mmrc);
-        ImGui::Checkbox(cvarManager->getCvar("rs_hide_mmrcc").getDescription().c_str(), &rs_hide_mmrcc);
-        ImGui::Checkbox(cvarManager->getCvar("rs_hide_win").getDescription().c_str(), &rs_hide_win);
-        ImGui::Checkbox(cvarManager->getCvar("rs_hide_loss").getDescription().c_str(), &rs_hide_loss);
-        ImGui::Checkbox(cvarManager->getCvar("rs_hide_streak").getDescription().c_str(), &rs_hide_streak);
-        ImGui::Checkbox(cvarManager->getCvar("rs_hide_demo").getDescription().c_str(), &rs_hide_demo);
-        ImGui::Checkbox(cvarManager->getCvar("rs_hide_death").getDescription().c_str(), &rs_hide_death);
+        ImGui::Checkbox(GetLang(LANG_GAMEMODE).c_str(), &rs_hide_gm);
+        ImGui::Checkbox(GetLang(LANG_RANK).c_str(), &rs_hide_rank);
+        ImGui::Checkbox(GetLang(LANG_DIVISION).c_str(), &rs_hide_div);
+        ImGui::Checkbox(GetLang(LANG_MMR).c_str(), &rs_hide_mmr);
+        ImGui::Checkbox(GetLang(LANG_MMRCHANGE).c_str(), &rs_hide_mmrc);
+        ImGui::Checkbox(GetLang(LANG_MMRCHANGECUMUL).c_str(), &rs_hide_mmrcc);
+        ImGui::Checkbox(GetLang(LANG_WINS).c_str(), &rs_hide_win);
+        ImGui::Checkbox(GetLang(LANG_LOSSES).c_str(), &rs_hide_loss);
+        ImGui::Checkbox(GetLang(LANG_STREAKS).c_str(), &rs_hide_streak);
+        ImGui::Checkbox(GetLang(LANG_DEMOLITIONS).c_str(), &rs_hide_demo);
+        ImGui::Checkbox(GetLang(LANG_DEATH).c_str(), &rs_hide_death);
         ImGui::EndChild();
 
         /* Variable to use to animate images
