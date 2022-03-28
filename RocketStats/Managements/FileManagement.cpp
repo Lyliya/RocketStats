@@ -75,6 +75,32 @@ void RocketStats::WriteInFile(std::string _filename, std::string _value, bool ro
     }
 }
 
+bool RocketStats::WriteResInFile(std::string _filename, int id, const char* type, bool root)
+{
+    std::string _path = GetPath(_filename, root);
+    if (!fs::exists(_path) || fs::is_regular_file(_path))
+    {
+        Resource res = Resource(id, type, GetModuleHandle("RocketStats"));
+        std::span<const char> obj = res.GetResource();
+
+        if (obj.data())
+        {
+            std::ofstream stream(_path, std::ios::out | std::ios::trunc | std::ios::binary);
+
+            if (stream.is_open())
+            {
+                stream.write(obj.data(), obj.size());
+                stream.close();
+                return true;
+            }
+            else
+                cvarManager->log("Can't write to file: " + _filename);
+        }
+    }
+
+    return false;
+}
+
 void RocketStats::ResetFiles()
 {
     WriteInFile("RocketStats_GameMode.txt", "");

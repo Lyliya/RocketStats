@@ -405,13 +405,15 @@ void RocketStats::onLoad()
             if (RecoveryOldVars())
             {
                 rs_recovery = true;
-                rs_welcome = LoadImg("RocketStats_images/welcome.png");
+                std::string path = "RocketStats_images/welcome.png";
+                if (WriteResInFile(path, ((gameWrapper->GetUILanguage().ToString() == "FRA") ? IDB_WEL_FRA : IDB_WEL_INT), "PNG"))
+                    rs_welcome = LoadImg(path);
             }
         }
 
         UpdateUIScale("onLoad");
         TogglePlugin("onLoad", ToggleFlags_Show);
-    }, 0.2F);
+    }, 0.2f);
 }
 
 void RocketStats::onUnload()

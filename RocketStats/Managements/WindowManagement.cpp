@@ -37,7 +37,10 @@ void RocketStats::Render()
 
         // Close the new version message when clicking on the image
         if (hover && mouse_click)
+        {
             rs_recovery = false;
+            RemoveFile("RocketStats_images/welcome.png");
+        }
         else
             ImGui::GetBackgroundDrawList()->AddImage(rs_welcome->GetImGuiTex(), image_min, image_max);
     }

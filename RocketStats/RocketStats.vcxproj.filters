@@ -24,6 +24,9 @@
     <Filter Include="Resources\Languages">
       <UniqueIdentifier>{ad0a7cd5-a45f-410c-b47f-98fb5d738fe9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Welcome">
+      <UniqueIdentifier>{af49430e-9522-4446-986c-d6659148a85b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RocketStats.h">
@@ -116,5 +119,13 @@
     <None Include="Resources\Languages\FRA.json">
       <Filter>Resources\Languages</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\Welcome\INT.png">
+      <Filter>Resources\Welcome</Filter>
+    </Image>
+    <Image Include="Resources\Welcome\FRA.png">
+      <Filter>Resources\Welcome</Filter>
+    </Image>
   </ItemGroup>
 </Project>

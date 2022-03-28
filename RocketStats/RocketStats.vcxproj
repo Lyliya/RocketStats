@@ -89,6 +89,10 @@
     <None Include="Resources\Languages\INT.json" />
     <None Include="Resources\Languages\FRA.json" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\Welcome\FRA.png" />
+    <Image Include="Resources\Welcome\INT.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

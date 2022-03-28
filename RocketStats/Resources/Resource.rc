@@ -13,7 +13,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Français (France) resources
+// resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
 LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
@@ -54,7 +54,17 @@ IDB_LANG_INT            TEXT                    "Languages\\INT.json"
 
 IDB_LANG_FRA            TEXT                    "Languages\\FRA.json"
 
-#endif    // Français (France) resources
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// PNG
+//
+
+IDB_WEL_INT             PNG                     "Welcome\\INT.png"
+
+IDB_WEL_FRA             PNG                     "Welcome\\FRA.png"
+
+#endif    // resources
 /////////////////////////////////////////////////////////////////////////////
 
 

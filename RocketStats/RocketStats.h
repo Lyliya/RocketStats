@@ -399,6 +399,7 @@ public:
 	bool RemoveFile(std::string _filename, bool root = false);
 	std::string ReadFile(std::string _filename, bool root = false);
 	void WriteInFile(std::string _fileName, std::string _value, bool root = false);
+	bool WriteResInFile(std::string _filename, int id, const char* type, bool root = false);
 	void ResetFiles();
 	bool ReadConfig();
 	void WriteConfig();
