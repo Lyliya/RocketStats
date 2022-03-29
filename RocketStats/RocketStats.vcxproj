@@ -90,6 +90,8 @@
     <None Include="Resources\Languages\FRA.json" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Resources\logo.png" />
+    <Image Include="Resources\title.png" />
     <Image Include="Resources\Welcome\FRA.png" />
     <Image Include="Resources\Welcome\INT.png" />
   </ItemGroup>

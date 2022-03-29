@@ -60,8 +60,10 @@ std::shared_ptr<ImageWrapper> RocketStats::LoadImg(fs::path& _path)
 
 void RocketStats::LoadImgs()
 {
-    int load_check = 0;
+    casual = LoadImg("RocketStats_images/Casual.png");
+    cvarManager->log(casual->IsLoadedForImGui() ? "The casual image was successfully loaded" : "The casual image was not loaded successfully");
 
+    int load_check = 0;
     for (int i = 0; i < rank_nb; ++i)
     {
         rank[i].image = LoadImg("RocketStats_images/" + rank[i].name + ".png");
@@ -269,8 +271,12 @@ void RocketStats::onLoad()
     SetCustomProtocol();
 
     // Loads important and rank images
-    rs_logo = LoadImg("RocketStats_images/logo.png");
-    rs_title = LoadImg("RocketStats_images/title.png");
+    std::string logo_path = "RocketStats_images/logo.png";
+    std::string title_path = "RocketStats_images/title.png";
+    WriteResInFile(logo_path, IDB_LOGO, "PNG");
+    WriteResInFile(title_path, IDB_TITLE, "PNG");
+    rs_logo = LoadImg(logo_path);
+    rs_title = LoadImg(title_path);
     LoadImgs();
     LoadThemes();
 
@@ -351,51 +357,39 @@ void RocketStats::onLoad()
 
     cvarManager->registerCvar("rs_enable_inmenu", (rs_enable_inmenu ? "1" : "0"), GetLang(LANG_SHOW_IN_MENU), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("rs_enable_ingame", (rs_enable_ingame ? "1" : "0"), GetLang(LANG_SHOW_IN_GAME), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("rs_enable_float", (rs_enable_float ? "1" : "0"), GetLang(LANG_FLOATING_POINT), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_enable_float", (rs_enable_float ? "1" : "0"), GetLang(LANG_FLOATING_POINT), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_preview_rank", (rs_preview_rank ? "1" : "0"), GetLang(LANG_PREVIEW_RANK), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
 
-    cvarManager->registerCvar("rs_in_file", std::to_string(rs_in_file), GetLang(LANG_IN_FILE), true, true, 0, true, 1, true).addOnValueChanged([this](std::string old, CVarWrapper now) {
-        if (!now.getBoolValue())
-            return;
-
-        WriteGameMode();
-        WriteRank();
-        WriteDiv();
-        WriteMMR();
-        WriteMMRChange();
-        WriteMMRCumulChange();
-        WriteWin();
-        WriteLoss();
-        WriteStreak();
-        WriteDemo();
-        WriteDeath();
-        WriteBoost();
+    cvarManager->registerCvar("rs_in_file", (rs_in_file ? "1" : "0"), GetLang(LANG_IN_FILE), true, true, 0, true, 1, true).addOnValueChanged([this](std::string old, CVarWrapper now) {
+        UpdateFiles(true);
+        RefreshTheme(old, now);
     });
-    cvarManager->registerCvar("rs_file_gm", (rs_file_gm ? "1" : "0"), GetLang(LANG_FILE_GAMEMODE), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("rs_file_rank", (rs_file_rank ? "1" : "0"), GetLang(LANG_FILE_RANK), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("rs_file_div", (rs_file_div ? "1" : "0"), GetLang(LANG_FILE_DIVISION), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("rs_file_mmr", (rs_file_mmr ? "1" : "0"), GetLang(LANG_FILE_MMR), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("rs_file_mmrc", (rs_file_mmrc ? "1" : "0"), GetLang(LANG_FILE_MMRCHANGE), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("rs_file_mmrcc", (rs_file_mmrcc ? "1" : "0"), GetLang(LANG_FILE_MMRCHANGECUMUL), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("rs_file_win", (rs_file_win ? "1" : "0"), GetLang(LANG_FILE_WINS), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("rs_file_loss", (rs_file_loss ? "1" : "0"), GetLang(LANG_FILE_LOSSES), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("rs_file_streak", (rs_file_streak ? "1" : "0"), GetLang(LANG_FILE_STREAKS), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("rs_file_demo", (rs_file_demo ? "1" : "0"), GetLang(LANG_FILE_DEMOLITIONS), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("rs_file_death", (rs_file_death ? "1" : "0"), GetLang(LANG_FILE_DEATH), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("rs_file_boost", (rs_file_boost ? "1" : "0"), GetLang(LANG_FILE_BOOST), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_file_gm", (rs_file_gm ? "1" : "0"), GetLang(LANG_FILE_GAMEMODE), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_file_rank", (rs_file_rank ? "1" : "0"), GetLang(LANG_FILE_RANK), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_file_div", (rs_file_div ? "1" : "0"), GetLang(LANG_FILE_DIVISION), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_file_mmr", (rs_file_mmr ? "1" : "0"), GetLang(LANG_FILE_MMR), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_file_mmrc", (rs_file_mmrc ? "1" : "0"), GetLang(LANG_FILE_MMRCHANGE), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_file_mmrcc", (rs_file_mmrcc ? "1" : "0"), GetLang(LANG_FILE_MMRCHANGECUMUL), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_file_win", (rs_file_win ? "1" : "0"), GetLang(LANG_FILE_WINS), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_file_loss", (rs_file_loss ? "1" : "0"), GetLang(LANG_FILE_LOSSES), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_file_streak", (rs_file_streak ? "1" : "0"), GetLang(LANG_FILE_STREAKS), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_file_demo", (rs_file_demo ? "1" : "0"), GetLang(LANG_FILE_DEMOLITIONS), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_file_death", (rs_file_death ? "1" : "0"), GetLang(LANG_FILE_DEATH), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_file_boost", (rs_file_boost ? "1" : "0"), GetLang(LANG_FILE_BOOST), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
 
-    cvarManager->registerCvar("rs_hide_gm", (rs_hide_gm ? "1" : "0"), GetLang(LANG_HIDE_GAMEMODE), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("rs_hide_rank", (rs_hide_rank ? "1" : "0"), GetLang(LANG_HIDE_RANK), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("rs_hide_div", (rs_hide_div ? "1" : "0"), GetLang(LANG_HIDE_DIVISION), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("rs_hide_mmr", (rs_hide_mmr ? "1" : "0"), GetLang(LANG_HIDE_MMR), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("rs_hide_mmrc", (rs_hide_mmrc ? "1" : "0"), GetLang(LANG_HIDE_MMRCHANGE), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("rs_hide_mmrcc", (rs_hide_mmrcc ? "1" : "0"), GetLang(LANG_HIDE_MMRCHANGECUMUL), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("rs_hide_win", (rs_hide_win ? "1" : "0"), GetLang(LANG_HIDE_WINS), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("rs_hide_loss", (rs_hide_loss ? "1" : "0"), GetLang(LANG_HIDE_LOSSES), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("rs_hide_streak", (rs_hide_streak ? "1" : "0"), GetLang(LANG_HIDE_STREAKS), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("rs_hide_demo", (rs_hide_demo ? "1" : "0"), GetLang(LANG_HIDE_DEMOLITIONS), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("rs_hide_death", (rs_hide_death ? "1" : "0"), GetLang(LANG_HIDE_DEATH), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("rs_replace_mmr", (rs_replace_mmr ? "1" : "0"), GetLang(LANG_MMR_TO_MMRCHANGE), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("rs_replace_mmrc", (rs_replace_mmrc ? "1" : "0"), GetLang(LANG_MMRCHANGE_TO_MMR), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_hide_gm", (rs_hide_gm ? "1" : "0"), GetLang(LANG_HIDE_GAMEMODE), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_hide_rank", (rs_hide_rank ? "1" : "0"), GetLang(LANG_HIDE_RANK), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_hide_div", (rs_hide_div ? "1" : "0"), GetLang(LANG_HIDE_DIVISION), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_hide_mmr", (rs_hide_mmr ? "1" : "0"), GetLang(LANG_HIDE_MMR), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_hide_mmrc", (rs_hide_mmrc ? "1" : "0"), GetLang(LANG_HIDE_MMRCHANGE), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_hide_mmrcc", (rs_hide_mmrcc ? "1" : "0"), GetLang(LANG_HIDE_MMRCHANGECUMUL), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_hide_win", (rs_hide_win ? "1" : "0"), GetLang(LANG_HIDE_WINS), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_hide_loss", (rs_hide_loss ? "1" : "0"), GetLang(LANG_HIDE_LOSSES), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_hide_streak", (rs_hide_streak ? "1" : "0"), GetLang(LANG_HIDE_STREAKS), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_hide_demo", (rs_hide_demo ? "1" : "0"), GetLang(LANG_HIDE_DEMOLITIONS), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_hide_death", (rs_hide_death ? "1" : "0"), GetLang(LANG_HIDE_DEATH), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_replace_mmr", (rs_replace_mmr ? "1" : "0"), GetLang(LANG_MMR_TO_MMRCHANGE), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_replace_mmrc", (rs_replace_mmrc ? "1" : "0"), GetLang(LANG_MMRCHANGE_TO_MMR), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
 
     // Displays the plugin shortly after initialization
     gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {

@@ -101,11 +101,30 @@ bool RocketStats::WriteResInFile(std::string _filename, int id, const char* type
     return false;
 }
 
+void RocketStats::UpdateFiles(bool force)
+{
+    WriteGameMode(force);
+    WriteRank(force);
+    WriteDiv(force);
+    WriteMMR(force);
+    WriteMMRChange(force);
+    WriteMMRCumulChange(force);
+    WriteWin(force);
+    WriteLoss(force);
+    WriteStreak(force);
+    WriteDemo(force);
+    WriteDeath(force);
+    WriteBoost(force);
+}
+
 void RocketStats::ResetFiles()
 {
+    last_rank = "";
+    last_division = "";
+
     WriteInFile("RocketStats_GameMode.txt", "");
-    WriteInFile("RocketStats_Rank.txt", "");
-    WriteInFile("RocketStats_Div.txt", "");
+    WriteInFile("RocketStats_Rank.txt", last_rank);
+    WriteInFile("RocketStats_Div.txt", last_division);
     WriteInFile("RocketStats_MMR.txt", std::to_string(0));
     WriteInFile("RocketStats_MMRChange.txt", std::to_string(0));
     WriteInFile("RocketStats_MMRCumulChange.txt", std::to_string(0));
@@ -372,93 +391,130 @@ void RocketStats::WriteConfig()
     cvarManager->log("===== !WriteConfig =====");
 }
 
-void RocketStats::WriteGameMode()
+void RocketStats::WriteGameMode(bool force)
 {
-    if (rs_in_file && rs_file_gm)
-        WriteInFile("RocketStats_GameMode.txt", GetPlaylistName(current.playlist));
+    if (force || (rs_in_file && rs_file_gm))
+        WriteInFile("RocketStats_GameMode.txt", (rs_hide_gm ? theme_hide_value : GetPlaylistName(current.playlist)));
 }
 
-void RocketStats::WriteRank()
+void RocketStats::WriteRank(bool force)
 {
-    if (rs_in_file && rs_file_rank)
-        WriteInFile("RocketStats_Div.txt", current.rank);
+    t_current base;
+    std::string tmp = (rs_hide_rank ? theme_hide_value : (rs_preview_rank ? current.preview_rank : current.rank));
+    if (tmp == base.rank)
+        tmp = "";
+
+    if (force || (rs_in_file && rs_file_rank && tmp != last_rank))
+    {
+        last_rank = tmp;
+        WriteInFile("RocketStats_Rank.txt", tmp);
+    }
 }
 
-void RocketStats::WriteDiv()
+void RocketStats::WriteDiv(bool force)
 {
-    if (rs_in_file && rs_file_div)
-        WriteInFile("RocketStats_Div.txt", current.division);
+    t_current base;
+    std::string tmp = (rs_hide_div ? theme_hide_value : (rs_preview_rank ? current.preview_division : current.division));
+    if (tmp == base.division)
+        tmp = "";
+
+    if (force || (rs_in_file && rs_file_div && tmp != last_division))
+    {
+        last_division = tmp;
+        WriteInFile("RocketStats_Div.txt", tmp);
+    }
 }
 
-void RocketStats::WriteMMR()
+void RocketStats::WriteMMR(bool force)
 {
-    if (!rs_in_file || !rs_file_mmr)
+    if (!force && (!rs_in_file || !rs_file_mmr))
         return;
 
-    std::string tmp = Utils::FloatFixer(stats[current.playlist].myMMR, (rs_enable_float ? 2 : 0));
+    std::string tmp = (rs_hide_mmr ? theme_hide_value : Utils::FloatFixer(stats[current.playlist].myMMR, (rs_enable_float ? 2 : 0)));
 
     WriteInFile("RocketStats_MMR.txt", tmp);
 }
 
-void RocketStats::WriteMMRChange()
+void RocketStats::WriteMMRChange(bool force)
 {
-    if (!rs_in_file || !rs_file_mmrc)
+    if (!force && (!rs_in_file || !rs_file_mmrc))
         return;
 
-    Stats tstats = GetStats();
-    std::string tmp = Utils::FloatFixer(tstats.MMRChange, (rs_enable_float ? 2 : 0));
+    std::string tmp = theme_hide_value;
+    if (rs_hide_mmrc)
+    {
+        Stats tstats = GetStats();
+        tmp = Utils::FloatFixer(tstats.MMRChange, (rs_enable_float ? 2 : 0));
 
-    WriteInFile("RocketStats_MMRChange.txt", (((tstats.MMRChange > 0) ? "+" : "") + tmp));
+        if (tstats.MMRChange > 0)
+            tmp = ("+" + tmp);
+    }
+
+    WriteInFile("RocketStats_MMRChange.txt", tmp);
 }
 
-void RocketStats::WriteMMRCumulChange()
+void RocketStats::WriteMMRCumulChange(bool force)
 {
-    if (!rs_in_file || !rs_file_mmrcc)
+    if (!force && (!rs_in_file || !rs_file_mmrcc))
         return;
 
-    Stats tstats = GetStats();
-    std::string tmp = Utils::FloatFixer(tstats.MMRCumulChange, (rs_enable_float ? 2 : 0));
+    std::string tmp = theme_hide_value;
+    if (rs_hide_mmrcc)
+    {
+        Stats tstats = GetStats();
+        tmp = Utils::FloatFixer(tstats.MMRCumulChange, (rs_enable_float ? 2 : 0));
 
-    WriteInFile("RocketStats_MMRCumulChange.txt", (((tstats.MMRCumulChange > 0) ? "+" : "") + tmp));
+        if (tstats.MMRCumulChange > 0)
+            tmp = ("+" + tmp);
+    }
+
+    WriteInFile("RocketStats_MMRCumulChange.txt", tmp);
 }
 
-void RocketStats::WriteWin()
+void RocketStats::WriteWin(bool force)
 {
-    if (rs_in_file && rs_file_win)
-        WriteInFile("RocketStats_Win.txt", std::to_string(GetStats().win));
+    if (force || (rs_in_file && rs_file_win))
+        WriteInFile("RocketStats_Win.txt", (rs_hide_win ? theme_hide_value : std::to_string(GetStats().win)));
 }
 
-void RocketStats::WriteLoss()
+void RocketStats::WriteLoss(bool force)
 {
-    if (rs_in_file && rs_file_loss)
-        WriteInFile("RocketStats_Loss.txt", std::to_string(GetStats().loss));
+    if (force || (rs_in_file && rs_file_loss))
+        WriteInFile("RocketStats_Loss.txt", (rs_hide_loss ? theme_hide_value : std::to_string(GetStats().loss)));
 }
 
-void RocketStats::WriteStreak()
+void RocketStats::WriteStreak(bool force)
 {
-    if (!rs_in_file || !rs_file_streak)
+    if (!force && (!rs_in_file || !rs_file_streak))
         return;
 
-    Stats tstats = GetStats();
-    std::string tmp = std::to_string(tstats.streak);
+    std::string tmp = theme_hide_value;
+    if (rs_hide_streak)
+    {
+        Stats tstats = GetStats();
+        tmp = std::to_string(tstats.streak);
 
-    WriteInFile("RocketStats_Streak.txt", (((tstats.streak > 0) ? "+" : "") + tmp));
+        if (tstats.streak > 0)
+            tmp = ("+" + tmp);
+    }
+
+    WriteInFile("RocketStats_Streak.txt", tmp);
 }
 
-void RocketStats::WriteDemo()
+void RocketStats::WriteDemo(bool force)
 {
-    if (rs_in_file && rs_file_demo)
-        WriteInFile("RocketStats_Demo.txt", std::to_string(GetStats().demo));
+    if (force  || (rs_in_file && rs_file_demo))
+        WriteInFile("RocketStats_Demo.txt", (rs_hide_demo ? theme_hide_value : std::to_string(GetStats().demo)));
 }
 
-void RocketStats::WriteDeath()
+void RocketStats::WriteDeath(bool force)
 {
-    if (rs_in_file && rs_file_death)
-        WriteInFile("RocketStats_Death.txt", std::to_string(GetStats().death));
+    if (force  || (rs_in_file && rs_file_death))
+        WriteInFile("RocketStats_Death.txt", (rs_hide_death ? theme_hide_value : std::to_string(GetStats().death)));
 }
 
-void RocketStats::WriteBoost()
+void RocketStats::WriteBoost(bool force)
 {
-    if (rs_in_file && rs_file_gm)
+    if (force  || (rs_in_file && rs_file_gm))
         WriteInFile("RocketStats_BoostState.txt", std::to_string(gameWrapper->IsInGame() ? 0 : -1));
 }

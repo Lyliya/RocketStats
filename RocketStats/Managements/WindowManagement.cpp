@@ -205,8 +205,8 @@ void RocketStats::RenderOverlay()
             const size_t floating_length = (rs_enable_float ? 2 : 0);
 
             theme_vars["GameMode"] = (rs_hide_gm ? theme_hide_value : GetPlaylistName(current.playlist));
-            theme_vars["Rank"] = (rs_hide_rank ? theme_hide_value : current.rank);
-            theme_vars["Div"] = (rs_hide_div ? theme_hide_value : current.division);
+            theme_vars["Rank"] = (rs_hide_rank ? theme_hide_value : (rs_preview_rank ? current.preview_rank : current.rank));
+            theme_vars["Div"] = (rs_hide_div ? theme_hide_value : (rs_preview_rank ? current.preview_division : current.division));
             theme_vars["MMR"] = (rs_hide_mmr ? theme_hide_value : Utils::FloatFixer(tstats.myMMR, floating_length)); // Utils::PointFixer(current.myMMR, 6, floating_length)
             theme_vars["MMRChange"] = (rs_hide_mmrc ? theme_hide_value : Utils::FloatFixer(tstats.MMRChange, floating_length)); // Utils::PointFixer(current.MMRChange, 6, floating_length)
             theme_vars["MMRCumulChange"] = (rs_hide_mmrcc ? theme_hide_value : Utils::FloatFixer(tstats.MMRCumulChange, floating_length)); // Utils::PointFixer(current.MMRCumulChange, 6, floating_length)
@@ -643,6 +643,7 @@ void RocketStats::RenderSettings()
         ImGui::Checkbox(cvarManager->getCvar("rs_enable_inmenu").getDescription().c_str(), &rs_enable_inmenu);
         ImGui::Checkbox(cvarManager->getCvar("rs_enable_ingame").getDescription().c_str(), &rs_enable_ingame);
         ImGui::Checkbox(cvarManager->getCvar("rs_enable_float").getDescription().c_str(), &rs_enable_float);
+        ImGui::Checkbox(cvarManager->getCvar("rs_preview_rank").getDescription().c_str(), &rs_preview_rank);
         ImGui::Checkbox(cvarManager->getCvar("rs_replace_mmr").getDescription().c_str(), &rs_replace_mmr);
         ImGui::Checkbox(cvarManager->getCvar("rs_replace_mmrc").getDescription().c_str(), &rs_replace_mmrc);
         ImGui::EndChild();
@@ -799,6 +800,7 @@ void RocketStats::RenderSettings()
             rs_enable_inmenu = true;
     }
     SetCVar("rs_enable_float", rs_enable_float);
+    SetCVar("rs_preview_rank", rs_preview_rank);
 
     SetCVar("rs_file_gm", rs_file_gm);
     SetCVar("rs_file_rank", rs_file_rank);

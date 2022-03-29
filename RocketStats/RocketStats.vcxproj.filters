@@ -127,5 +127,11 @@
     <Image Include="Resources\Welcome\FRA.png">
       <Filter>Resources\Welcome</Filter>
     </Image>
+    <Image Include="Resources\title.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\logo.png">
+      <Filter>Resources</Filter>
+    </Image>
   </ItemGroup>
 </Project>

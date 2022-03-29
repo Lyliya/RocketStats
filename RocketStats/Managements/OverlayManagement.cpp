@@ -168,6 +168,12 @@ void RocketStats::SetRefresh(unsigned char value)
         theme_refresh = value;
 }
 
+void RocketStats::RefreshFiles(std::string old, CVarWrapper now)
+{
+    UpdateFiles(true);
+    RefreshTheme(old, now);
+}
+
 void RocketStats::RefreshTheme(std::string old, CVarWrapper now)
 {
     SetRefresh(1);
@@ -365,8 +371,13 @@ Element RocketStats::CalculateElement(json& element, Options& options, bool& che
 
                 if (calculated.value == "{{Rank}}")
                 {
-                    // Returns the image of the current rank
-                    theme_images[calculated.value] = rank[(!rs_hide_rank && current.tier < rank_nb) ? current.tier : 0].image;
+                    theme_images[calculated.value] = rank[0].image;
+
+                    // Returns the casual games image, otherwise returns the current ranking image
+                    if (current.playlist >= 1 && current.playlist <= 4)
+                        theme_images[calculated.value] = casual;
+                    else if (current.ranked || rs_preview_rank)
+                        theme_images[calculated.value] = rank[(!rs_hide_rank && current.tier < rank_nb) ? current.tier : 0].image;
                 }
                 else if (!theme_images[calculated.value])
                 {

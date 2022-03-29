@@ -163,16 +163,21 @@ private:
 	typedef struct s_current {
 		int tier = 0;
 		int playlist = 0;
+		bool ranked = false;
 		float mmr = 100.f;
 		std::string rank = "norank";
 		std::string division = "nodiv";
+		std::string preview_rank = "norank";
+		std::string preview_division = "nodiv";
 	} t_current;
 
 	t_current current;
 	std::string last_rank = "norank";
+	std::string last_division = "nodiv";
 
 	// Rank
 	int rank_nb = 23;
+	std::shared_ptr<ImageWrapper> casual;
 
 	typedef struct s_ranks {
 		std::string name;
@@ -286,6 +291,7 @@ public:
 	bool rs_enable_inmenu = true;
 	bool rs_enable_ingame = true;
 	bool rs_enable_float = false;
+	bool rs_preview_rank = false;
 
 	bool rs_in_file = true;
 	bool rs_file_gm = true;
@@ -385,6 +391,7 @@ public:
 	bool ChangeTheme(int idx);
 	void SetTheme(std::string name);
 	void SetRefresh(unsigned char value);
+	void RefreshFiles(std::string old, CVarWrapper now);
 	void RefreshTheme(std::string old, CVarWrapper now);
 	Element CalculateElement(json& element, Options& options, bool& check);
 	void RenderElement(ImDrawList* drawlist, Element& element);
@@ -400,19 +407,20 @@ public:
 	std::string ReadFile(std::string _filename, bool root = false);
 	void WriteInFile(std::string _fileName, std::string _value, bool root = false);
 	bool WriteResInFile(std::string _filename, int id, const char* type, bool root = false);
+	void UpdateFiles(bool force = false);
 	void ResetFiles();
 	bool ReadConfig();
 	void WriteConfig();
-	void WriteGameMode();
-	void WriteRank();
-	void WriteDiv();
-	void WriteMMR();
-	void WriteMMRChange();
-	void WriteMMRCumulChange();
-	void WriteWin();
-	void WriteLoss();
-	void WriteStreak();
-	void WriteBoost();
-	void WriteDemo();
-	void WriteDeath();
+	void WriteGameMode(bool force = false);
+	void WriteRank(bool force = false);
+	void WriteDiv(bool force = false);
+	void WriteMMR(bool force = false);
+	void WriteMMRChange(bool force = false);
+	void WriteMMRCumulChange(bool force = false);
+	void WriteWin(bool force = false);
+	void WriteLoss(bool force = false);
+	void WriteStreak(bool force = false);
+	void WriteBoost(bool force = false);
+	void WriteDemo(bool force = false);
+	void WriteDeath(bool force = false);
 };

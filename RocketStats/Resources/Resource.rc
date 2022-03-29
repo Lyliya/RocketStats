@@ -60,6 +60,10 @@ IDB_LANG_FRA            TEXT                    "Languages\\FRA.json"
 // PNG
 //
 
+IDB_LOGO                PNG                     "logo.png"
+
+IDB_TITLE               PNG                     "title.png"
+
 IDB_WEL_INT             PNG                     "Welcome\\INT.png"
 
 IDB_WEL_FRA             PNG                     "Welcome\\FRA.png"

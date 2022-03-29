@@ -73,21 +73,28 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
 void RocketStats::InitRank()
 {
     int tier = current.tier;
+    bool ranked = current.ranked;
     int playlist = current.playlist;
 
+    last_rank = "";
+    last_division = "";
     current = t_current();
 
-    last_rank = "norank";
     current.tier = tier;
+    current.ranked = ranked;
     current.playlist = playlist;
 }
 
 void RocketStats::MajRank(bool isRanked, float _currentMMR, SkillRank playerRank)
 {
     current.tier = playerRank.Tier;
+    current.ranked = isRanked;
 
     if (isRanked)
     {
+        current.preview_rank = GetRank(playerRank.Tier);
+        current.preview_division = "Div. " + std::to_string(playerRank.Division + 1);
+
         if (current.playlist != 34 && playerRank.MatchesPlayed < 10)
         {
             current.rank = "Placement: " + std::to_string(playerRank.MatchesPlayed) + "/10";
@@ -95,24 +102,21 @@ void RocketStats::MajRank(bool isRanked, float _currentMMR, SkillRank playerRank
         }
         else
         {
-            current.rank = GetRank(playerRank.Tier);
-            current.division = "Div. " + std::to_string(playerRank.Division + 1);
-
-            if (rs_file_div)
-                WriteInFile("RocketStats_Div.txt", current.division);
+            current.rank = current.preview_rank;
+            current.division = current.preview_division;
         }
-
-        if (rs_file_rank && current.rank != last_rank)
-            WriteInFile("RocketStats_Rank.txt", current.rank);
     }
     else
     {
         current.rank = GetPlaylistName(current.playlist);
         current.division = "";
 
-        if (rs_file_rank)
-            WriteInFile("RocketStats_Rank.txt", current.rank);
+        current.preview_rank = current.rank;
+        current.preview_division = current.division;
     }
+
+    WriteRank();
+    WriteDiv();
 
     SetRefresh(1);
 }
