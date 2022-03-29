@@ -2,6 +2,8 @@
 
 void RocketStats::Render()
 {
+    timer_30fps.tick();
+
     is_online_game = gameWrapper->IsInOnlineGame();
     is_offline_game = gameWrapper->IsInGame();
     is_in_game = (is_online_game || is_offline_game);
@@ -68,9 +70,12 @@ void RocketStats::RenderIcon()
     hover = (hover && (mouse_pos.y > (icon_pos.y - icon_size - margin) && mouse_pos.y < (icon_pos.y + icon_size + margin)));
 
     // Handles logo movement
-    rs_logo_rotate += (rs_logo_mouv ? 0.15f : -0.15f);
+    rs_logo_rotate += (rs_logo_mouv ? 0.3f : -0.3f) * float(timer_30fps.frames());
     if (rs_logo_rotate < 0 || rs_logo_rotate >= 30.f)
+    {
         rs_logo_mouv = !rs_logo_mouv;
+        rs_logo_rotate = max(0.f, min(30.f, rs_logo_rotate));
+    }
 
     // Displays the logo otherwise displays a circle instead
     if (rs_logo != nullptr && rs_logo->IsLoadedForImGui())

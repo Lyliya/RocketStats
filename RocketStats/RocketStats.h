@@ -6,6 +6,7 @@
 
 #include <pch.h>
 #include <json.hpp>
+#include <fpstimer.hpp>
 #include <resource.hpp>
 #include <imgui/imgui_rotate.h>
 #include "bakkesmod/wrappers/GuiManagerWrapper.h"
@@ -120,6 +121,7 @@ private:
 	// Time
 	tm local_time;
 	time_t current_time;
+	FPSTimer timer_30fps = FPSTimer(30, true);
 
 	// Themes
 	unsigned char theme_style = 0;
