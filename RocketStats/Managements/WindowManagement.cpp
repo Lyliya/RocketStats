@@ -135,7 +135,7 @@ void RocketStats::RenderOverlay()
             if (theme_refresh == 2)
             {
                 theme_images.clear();
-                cvarManager->log("refresh all images");
+                cvarManager->log("Refresh all images");
             }
 
             // Reset the menu variables if you change the theme

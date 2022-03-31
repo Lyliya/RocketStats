@@ -24,7 +24,7 @@ Stats RocketStats::GetStats()
 
 std::string RocketStats::GetRank(int tierID)
 {
-    cvarManager->log("tier: " + std::to_string(tierID));
+    cvarManager->log("Tier: " + std::to_string(tierID));
     if (tierID < rank_nb)
         return rank[tierID].name;
     else
@@ -60,24 +60,28 @@ std::shared_ptr<ImageWrapper> RocketStats::LoadImg(fs::path& _path)
 
 void RocketStats::LoadImgs()
 {
-    casual = LoadImg("RocketStats_images/Casual.png");
-    cvarManager->log(casual->IsLoadedForImGui() ? "The casual image was successfully loaded" : "The casual image was not loaded successfully");
-
     int load_check = 0;
+
+    casual = LoadImg("RocketStats_images/Casual.png");
+    load_check += (int)casual->IsLoadedForImGui();
+    if (!load_check)
+        cvarManager->log("Casual: failed to load");
+
     for (int i = 0; i < rank_nb; ++i)
     {
         rank[i].image = LoadImg("RocketStats_images/" + rank[i].name + ".png");
         load_check += (int)rank[i].image->IsLoadedForImGui();
         LogImageLoadStatus(rank[i].image->IsLoadedForImGui(), rank[i].name);
     }
-    cvarManager->log(std::to_string(load_check) + "/" + std::to_string(rank_nb) + " images were loaded successfully");
+    cvarManager->log(std::to_string(load_check) + "/" + std::to_string(rank_nb + 1) + " images were loaded successfully");
 }
 
 bool RocketStats::GetCVar(const char* name, int& value)
 {
-    if (themes_values[theme_render.name].is_object() && (themes_values[theme_render.name][name + 3].is_number_integer() || themes_values[theme_render.name][name + 3].is_number_unsigned()))
+    std::string key = (name + 3);
+    if (themes_values[theme_render.name].is_object() && (themes_values[theme_render.name][key].is_number_integer() || themes_values[theme_render.name][key].is_number_unsigned()))
     {
-        value = int(themes_values[theme_render.name][name + 3]);
+        value = int(themes_values[theme_render.name][key]);
         cvarManager->log("GetCVar: " + std::string(name) + " " + std::to_string(value));
 
         return true;
@@ -88,9 +92,10 @@ bool RocketStats::GetCVar(const char* name, int& value)
 
 bool RocketStats::GetCVar(const char* name, bool& value)
 {
-    if (themes_values[theme_render.name].is_object() && themes_values[theme_render.name][name + 3].is_boolean())
+    std::string key = (name + 3);
+    if (themes_values[theme_render.name].is_object() && themes_values[theme_render.name][key].is_boolean())
     {
-        value = bool(themes_values[theme_render.name][name + 3]);
+        value = bool(themes_values[theme_render.name][key]);
         cvarManager->log("GetCVar: " + std::string(name) + " " + std::to_string(value));
 
         return true;
@@ -101,9 +106,10 @@ bool RocketStats::GetCVar(const char* name, bool& value)
 
 bool RocketStats::GetCVar(const char* name, float& value)
 {
-    if (themes_values[theme_render.name].is_object() && themes_values[theme_render.name][name + 3].is_number())
+    std::string key = (name + 3);
+    if (themes_values[theme_render.name].is_object() && themes_values[theme_render.name][key].is_number())
     {
-        value = float(themes_values[theme_render.name][name + 3]);
+        value = float(themes_values[theme_render.name][key]);
         cvarManager->log("GetCVar: " + std::string(name) + " " + std::to_string(value));
 
         return true;
@@ -114,6 +120,7 @@ bool RocketStats::GetCVar(const char* name, float& value)
 
 bool RocketStats::SetCVar(const char* name, int& value, bool save)
 {
+    std::string key = (name + 3);
     if (value != cvarManager->getCvar(name).getIntValue())
     {
         cvarManager->log("SetCVar: " + std::string(name) + " " + std::to_string(value));
@@ -122,9 +129,9 @@ bool RocketStats::SetCVar(const char* name, int& value, bool save)
         if (save)
         {
             if (!themes_values[theme_render.name].is_object())
-                themes_values[theme_render.name] = {};
+                themes_values[theme_render.name] = json::object();
 
-            themes_values[theme_render.name][name + 3] = value;
+            themes_values[theme_render.name][key] = value;
         }
 
         return true;
@@ -135,6 +142,7 @@ bool RocketStats::SetCVar(const char* name, int& value, bool save)
 
 bool RocketStats::SetCVar(const char* name, bool& value, bool save)
 {
+    std::string key = (name + 3);
     if (value != cvarManager->getCvar(name).getBoolValue())
     {
         cvarManager->log("SetCVar: " + std::string(name) + " " + std::to_string(value));
@@ -143,9 +151,9 @@ bool RocketStats::SetCVar(const char* name, bool& value, bool save)
         if (save)
         {
             if (!themes_values[theme_render.name].is_object())
-                themes_values[theme_render.name] = {};
+                themes_values[theme_render.name] = json::object();
 
-            themes_values[theme_render.name][name + 3] = value;
+            themes_values[theme_render.name][key] = value;
         }
 
         return true;
@@ -156,6 +164,7 @@ bool RocketStats::SetCVar(const char* name, bool& value, bool save)
 
 bool RocketStats::SetCVar(const char* name, float& value, bool save)
 {
+    std::string key = (name + 3);
     value = (std::round(value * 1000.f) / 1000.f);
     if (value != cvarManager->getCvar(name).getFloatValue())
     {
@@ -165,9 +174,9 @@ bool RocketStats::SetCVar(const char* name, float& value, bool save)
         if (save)
         {
             if (!themes_values[theme_render.name].is_object())
-                themes_values[theme_render.name] = {};
+                themes_values[theme_render.name] = json::object();
 
-            themes_values[theme_render.name][name + 3] = value;
+            themes_values[theme_render.name][key] = value;
         }
 
         return true;
@@ -450,11 +459,11 @@ void RocketStats::SetCustomProtocol()
     {
         value = TEXT("URL:RocketStats protocol");
         if (RegSetValueEx(key, TEXT(""), 0, REG_SZ, (const BYTE*)value, sizeof(TCHAR) * (lstrlen(value) + 1)) != ERROR_SUCCESS)
-            cvarManager->log("set protocol failed!");
+            cvarManager->log("Set protocol failed!");
 
         value = TEXT("RocketStats");
         if (RegSetValueEx(key, TEXT("URL Protocol"), 0, REG_SZ, (const BYTE*)value, sizeof(TCHAR) * (lstrlen(value) + 1)) != ERROR_SUCCESS)
-            cvarManager->log("set url failed!");
+            cvarManager->log("Set url failed!");
 
         RegCloseKey(key);
 
@@ -462,7 +471,7 @@ void RocketStats::SetCustomProtocol()
         {
             value = Utils::ConvertToLPSTR(installer + ", 1");
             if (RegSetValueEx(key, TEXT(""), 0, REG_SZ, (const BYTE*)value, sizeof(TCHAR) * (lstrlen(value) + 1)) != ERROR_SUCCESS)
-                cvarManager->log("set icon failed!");
+                cvarManager->log("Set icon failed!");
 
             RegCloseKey(key);
         }*/
@@ -471,7 +480,7 @@ void RocketStats::SetCustomProtocol()
         {
             value = Utils::ConvertToLPSTR("rundll32 shell32.dll,ShellExec_RunDLL \"powershell\" \"try { $theme = \\\"%1\\\".split( '/' )[ 3 ]; $version = \\\"%1\\\".split( '/' )[ 4 ]; $dir = \\\"" + dir + "\"; $url = \\\"http://rocketstats.net/$theme/dl/$version\\\"; $zip = \\\"$dir\\toinstall.zip\\\"; $dest = \\\"$dir\\RocketStats_themes\\\"; if ( \\\"%1\\\".split( '/' )[ 2 ] -eq 'install' -and $theme -match '^\\d+$' -and $version -match '^\\d+$' ) { echo 'Theme being downloaded ...'; Invoke-WebRequest -Uri $url -OutFile $zip >$null 2>$null; try { echo 'Theme being installed ...'; Expand-Archive $zip -DestinationPath $dest -Force >$null 2>$null; echo 'Theme successfully installed.'; echo 'Click ''R'' to the right of the ''Reload Theme'' button in RocketStats to add the theme to the list.'; Remove-Item $zip >$null 2>$null; } catch { echo 'Install error!'; } } else { echo 'The requested theme could not be found!'; } } catch { echo 'Download error!'; } echo ''; echo 'Press Enter to continue ...'; Read-Host;\"");
             if (RegSetValueEx(key, TEXT(""), 0, REG_SZ, (const BYTE*)value, sizeof(TCHAR) * (lstrlen(value) + 1)) != ERROR_SUCCESS)
-                cvarManager->log("set command failed!");
+                cvarManager->log("Set command failed!");
 
             RegCloseKey(key);
         }
@@ -485,9 +494,9 @@ void RocketStats::ShowPlugin(std::string eventName)
 
 void RocketStats::UpdateUIScale(std::string eventName)
 {
-    rs_screen_scale[0] = gameWrapper->GetUIScale();
-    rs_screen_scale[1] = gameWrapper->GetSafeZoneRatio();
-    cvarManager->log("scale: " + std::to_string(rs_screen_scale[0]) + " " + std::to_string(rs_screen_scale[1]));
+    rs_screen_scale[0] = gameWrapper->GetInterfaceScale();
+    rs_screen_scale[1] = gameWrapper->GetDisplayScale();
+    cvarManager->log("Scale: " + std::to_string(rs_screen_scale[0]) + " " + std::to_string(rs_screen_scale[1]));
     SetRefresh(1);
 }
 

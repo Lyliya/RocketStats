@@ -127,8 +127,8 @@ private:
 	unsigned char theme_style = 0;
 	unsigned char theme_refresh = 2;
 
-	json theme_config;
-	json themes_values;
+	json theme_config = json::object();
+	json themes_values = json::object();
 	Theme theme_render;
 	std::string theme_prev = "";
 	std::string theme_hide_value = "##";
@@ -407,6 +407,7 @@ public:
 	bool ExistsPath(std::string _filename, bool root = false);
 	bool RemoveFile(std::string _filename, bool root = false);
 	std::string ReadFile(std::string _filename, bool root = false);
+	json ReadJSON(std::string _filename, bool root = false);
 	void WriteInFile(std::string _fileName, std::string _value, bool root = false);
 	bool WriteResInFile(std::string _filename, int id, const char* type, bool root = false);
 	void UpdateFiles(bool force = false);

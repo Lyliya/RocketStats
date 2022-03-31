@@ -126,10 +126,10 @@ void RocketStats::UpdateMMR(UniqueIDWrapper id)
     cvarManager->log("===== UpdateMMR =====");
     /*
     if (id.GetIdString() != gameWrapper->GetUniqueID().GetIdString()) {
-        cvarManager->log("not the user");
+        cvarManager->log("Not the user");
         return;
     }
-    cvarManager->log("user match");
+    cvarManager->log("User match");
     */
 
     if (current.playlist == 0)

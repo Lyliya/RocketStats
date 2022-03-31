@@ -56,7 +56,7 @@ bool RocketStats::ChangeTheme(int idx)
         Theme& theme = themes.at(idx);
 
         // Read the JSON file including the settings of the chosen theme
-        theme_config = json::parse(ReadFile("RocketStats_themes/" + theme.name + "/config.json"));
+        theme_config = ReadJSON("RocketStats_themes/" + theme.name + "/config.json");
         cvarManager->log(nlohmann::to_string(theme_config));
 
         if (theme_config.is_object())
@@ -107,14 +107,10 @@ bool RocketStats::ChangeTheme(int idx)
 
             if (themes_values[theme_render.name].is_object())
             {
-                if (themes_values[theme_render.name]["position"].is_array() && themes_values[theme_render.name]["position"].size() == 2)
-                {
-                    if (themes_values[theme_render.name]["position"][0].is_number())
-                        rs_x = float(themes_values[theme_render.name]["position"][0]);
-
-                    if (themes_values[theme_render.name]["position"][1].is_number())
-                        rs_y = float(themes_values[theme_render.name]["position"][1]);
-                }
+                if (themes_values[theme_render.name]["x"].is_number())
+                    rs_x = float(themes_values[theme_render.name]["x"]);
+                if (themes_values[theme_render.name]["y"].is_number())
+                    rs_y = float(themes_values[theme_render.name]["y"]);
                 if (themes_values[theme_render.name]["scale"].is_number())
                     rs_scale = std::min(10.f, std::max(0.001f, float(themes_values[theme_render.name]["scale"])));
                 if (themes_values[theme_render.name]["rotate"].is_number())
@@ -385,7 +381,7 @@ Element RocketStats::CalculateElement(json& element, Options& options, bool& che
                     element_size = { 0, 0 };
                     std::string image_path = "RocketStats_themes/" + themes.at(rs_theme).name + "/images/" + calculated.value;
 
-                    cvarManager->log("load image: " + image_path);
+                    cvarManager->log("Load image: " + image_path);
                     theme_images[calculated.value] = LoadImg(image_path);
                 }
 

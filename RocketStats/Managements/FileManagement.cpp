@@ -55,6 +55,12 @@ std::string RocketStats::ReadFile(std::string _filename, bool root)
     return _value;
 }
 
+json RocketStats::ReadJSON(std::string _filename, bool root)
+{
+    cvarManager->log("Read JSON: " + _filename);
+    return json::parse(ReadFile(_filename, root));
+}
+
 void RocketStats::WriteInFile(std::string _filename, std::string _value, bool root)
 {
     std::string _path = GetPath(_filename, root);
@@ -147,7 +153,7 @@ bool RocketStats::ReadConfig()
         try
         {
             // Read the plugin settings JSON file
-            json config = json::parse(ReadFile(file, true));
+            json config = ReadJSON(file, true);
             cvarManager->log(nlohmann::to_string(config));
 
             if (config.is_object())
@@ -160,8 +166,28 @@ bool RocketStats::ReadConfig()
                     if (config["settings"]["theme"].is_string())
                         SetTheme(config["settings"]["theme"]);
 
-                    if (config["settings"]["themes"].is_object() && !config["settings"]["themes"].is_null())
-                        themes_values = config["settings"]["themes"];
+                    if (config["settings"]["themes"].is_object() && !config["settings"]["themes"].is_null() && config["settings"]["themes"].size())
+                    {
+                        json tmp = json::object();
+                        for (auto it = config["settings"]["themes"].begin(); it != config["settings"]["themes"].end(); ++it)
+                        {
+                            if (!it.value().is_null())
+                            {
+                                json ctmp = json::object();
+                                for (auto cit = it.value().begin(); cit != it.value().end(); ++cit)
+                                {
+                                    if (!cit.value().is_null())
+                                        ctmp[cit.key()] = cit.value();
+                                }
+
+                                if (ctmp.size())
+                                    tmp[it.key()] = ctmp;
+                            }
+                        }
+
+                        if (tmp.size())
+                            themes_values = tmp;
+                    }
 
                     if (config["settings"]["overlay"].is_boolean())
                         rs_disp_overlay = config["settings"]["overlay"];
@@ -315,9 +341,9 @@ void RocketStats::WriteConfig()
 {
     cvarManager->log("===== WriteConfig =====");
 
-    json tmp = {};
+    json tmp = json::object();
 
-    tmp["settings"] = {};
+    tmp["settings"] = json::object();
     tmp["settings"]["mode"] = rs_mode;
     tmp["settings"]["theme"] = theme_render.name;
     tmp["settings"]["overlay"] = rs_disp_overlay;
@@ -326,15 +352,15 @@ void RocketStats::WriteConfig()
     tmp["settings"]["float"] = rs_enable_float;
 
     // Save only existing themes
-    tmp["settings"]["themes"] = {};
+    tmp["settings"]["themes"] = json::object();
     for (int i = 0; i < themes.size(); ++i)
     {
         std::string name = themes.at(i).name;
-        if (themes_values[name].is_object() && !themes_values[name].is_null())
+        if (themes_values[name].is_object() && !themes_values[name].is_null() && themes_values[name].size())
             tmp["settings"]["themes"][name] = themes_values[name];
     }
 
-    tmp["settings"]["files"] = {};
+    tmp["settings"]["files"] = json::object();
     tmp["settings"]["files"]["on"] = rs_in_file;
     tmp["settings"]["files"]["gm"] = rs_file_gm;
     tmp["settings"]["files"]["rank"] = rs_file_rank;
@@ -350,7 +376,7 @@ void RocketStats::WriteConfig()
     tmp["settings"]["files"]["death"] = rs_file_death;
     tmp["settings"]["files"]["boost"] = rs_file_boost;
 
-    tmp["settings"]["hides"] = {};
+    tmp["settings"]["hides"] = json::object();
     tmp["settings"]["hides"]["gm"] = rs_hide_gm;
     tmp["settings"]["hides"]["rank"] = rs_hide_rank;
     tmp["settings"]["hides"]["div"] = rs_hide_div;
@@ -365,7 +391,7 @@ void RocketStats::WriteConfig()
     tmp["settings"]["replace_mmr"] = rs_replace_mmr;
     tmp["settings"]["replace_mmrc"] = rs_replace_mmrc;
 
-    tmp["always"] = {};
+    tmp["always"] = json::object();
     tmp["always"]["MMRCumulChange"] = always.MMRCumulChange;
     tmp["always"]["Win"] = always.win;
     tmp["always"]["Loss"] = always.loss;
@@ -374,10 +400,10 @@ void RocketStats::WriteConfig()
     tmp["always"]["Death"] = always.death;
 
     tmp["always_gm_idx"] = current.playlist;
-    tmp["always_gm"] = {};
+    tmp["always_gm"] = json::array();
     for (int i = 0; i < always_gm.size(); ++i)
     {
-        tmp["always_gm"][i] = {};
+        tmp["always_gm"][i] = json::object();
         tmp["always_gm"][i]["MMRCumulChange"] = always_gm[i].MMRCumulChange;
         tmp["always_gm"][i]["Win"] = always_gm[i].win;
         tmp["always_gm"][i]["Loss"] = always_gm[i].loss;
@@ -386,7 +412,7 @@ void RocketStats::WriteConfig()
         tmp["always_gm"][i]["Death"] = always_gm[i].death;
     }
 
-    WriteInFile("data/rocketstats.json", nlohmann::to_string(tmp), true); // Save plugin settings in JSON format
+    WriteInFile("data/rocketstats.json", tmp.dump(2), true); // Save plugin settings in JSON format
 
     cvarManager->log("===== !WriteConfig =====");
 }
