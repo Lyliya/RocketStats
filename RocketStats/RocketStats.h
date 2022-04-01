@@ -71,7 +71,9 @@ struct Stats {
 	int loss = 0;
 	int streak = 0;
 	int demo = 0;
+	int demoCumul = 0;
 	int death = 0;
+	int deathCumul = 0;
 	bool isInit = false;
 };
 
@@ -163,10 +165,11 @@ private:
 	int my_team_num = -1;
 
 	typedef struct s_current {
+		int demo = 0;
 		int tier = 0;
+		int death = 0;
 		int playlist = 0;
 		bool ranked = false;
-		float mmr = 100.f;
 		std::string rank = "norank";
 		std::string division = "nodiv";
 		std::string preview_rank = "norank";
@@ -306,7 +309,11 @@ public:
 	bool rs_file_loss = true;
 	bool rs_file_streak = true;
 	bool rs_file_demo = true;
+	bool rs_file_demom = true;
+	bool rs_file_democ = true;
 	bool rs_file_death = true;
+	bool rs_file_deathm = true;
+	bool rs_file_deathc = true;
 	bool rs_file_boost = true;
 
 	bool rs_replace_mmr = false;
@@ -321,7 +328,11 @@ public:
 	bool rs_hide_loss = false;
 	bool rs_hide_streak = false;
 	bool rs_hide_demo = false;
+	bool rs_hide_demom = false;
+	bool rs_hide_democ = false;
 	bool rs_hide_death = false;
+	bool rs_hide_deathm = false;
+	bool rs_hide_deathc = false;
 
 	float rs_x = 0.7f;
 	float rs_y = 0.575f;
@@ -381,6 +392,7 @@ public:
 	void InitStats();
 	void SessionStats();
 	void ResetStats();
+	void ResetBasicStats();
 
 	// BoostManagement
 	void OnBoostStart(std::string eventName);
@@ -419,7 +431,6 @@ public:
 	void WriteDiv(bool force = false);
 	void WriteMMR(bool force = false);
 	void WriteMMRChange(bool force = false);
-	void WriteMMRCumulChange(bool force = false);
 	void WriteWin(bool force = false);
 	void WriteLoss(bool force = false);
 	void WriteStreak(bool force = false);

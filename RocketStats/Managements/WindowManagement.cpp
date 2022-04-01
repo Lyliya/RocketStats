@@ -218,8 +218,12 @@ void RocketStats::RenderOverlay()
             theme_vars["Win"] = (rs_hide_win ? theme_hide_value : std::to_string(tstats.win));
             theme_vars["Loss"] = (rs_hide_loss ? theme_hide_value : std::to_string(tstats.loss));
             theme_vars["Streak"] = (rs_hide_streak ? theme_hide_value : std::to_string(tstats.streak));
-            theme_vars["Demolition"] = (rs_hide_demo ? theme_hide_value : std::to_string(tstats.demo));
+            theme_vars["Demolitions"] = (rs_hide_demo ? theme_hide_value : std::to_string(tstats.demo));
+            theme_vars["DemolitionsMatch"] = (rs_hide_demom ? theme_hide_value : std::to_string(current.demo));
+            theme_vars["DemolitionsCumul"] = (rs_hide_democ ? theme_hide_value : std::to_string(tstats.demoCumul));
             theme_vars["Death"] = (rs_hide_death ? theme_hide_value : std::to_string(tstats.death));
+            theme_vars["DeathMatch"] = (rs_hide_deathm ? theme_hide_value : std::to_string(current.death));
+            theme_vars["DeathCumul"] = (rs_hide_deathc ? theme_hide_value : std::to_string(tstats.deathCumul));
 
             Utils::ReplaceAll(theme_vars["Rank"], "_", " ");
 
@@ -666,12 +670,16 @@ void RocketStats::RenderSettings()
         ImGui::Checkbox(GetLang(LANG_DIVISION).c_str(), &rs_file_div);
         ImGui::Checkbox(GetLang(LANG_MMR).c_str(), &rs_file_mmr);
         ImGui::Checkbox(GetLang(LANG_MMRCHANGE).c_str(), &rs_file_mmrc);
-        ImGui::Checkbox(GetLang(LANG_MMRCHANGECUMUL).c_str(), &rs_file_mmrcc);
+        ImGui::Checkbox(GetLang(LANG_MMRCUMULCHANGE).c_str(), &rs_file_mmrcc);
         ImGui::Checkbox(GetLang(LANG_WINS).c_str(), &rs_file_win);
         ImGui::Checkbox(GetLang(LANG_LOSSES).c_str(), &rs_file_loss);
         ImGui::Checkbox(GetLang(LANG_STREAKS).c_str(), &rs_file_streak);
         ImGui::Checkbox(GetLang(LANG_DEMOLITIONS).c_str(), &rs_file_demo);
+        ImGui::Checkbox(GetLang(LANG_DEMOLITIONSMATCH).c_str(), &rs_file_demom);
+        ImGui::Checkbox(GetLang(LANG_DEMOLITIONSCUMUL).c_str(), &rs_file_democ);
         ImGui::Checkbox(GetLang(LANG_DEATH).c_str(), &rs_file_death);
+        ImGui::Checkbox(GetLang(LANG_DEATHMATCH).c_str(), &rs_file_deathm);
+        ImGui::Checkbox(GetLang(LANG_DEATHCUMUL).c_str(), &rs_file_deathc);
         ImGui::Checkbox(GetLang(LANG_BOOST).c_str(), &rs_file_boost);
         if (!rs_in_file)
             ImGui::PopStyleVar();
@@ -688,12 +696,16 @@ void RocketStats::RenderSettings()
         ImGui::Checkbox(GetLang(LANG_DIVISION).c_str(), &rs_hide_div);
         ImGui::Checkbox(GetLang(LANG_MMR).c_str(), &rs_hide_mmr);
         ImGui::Checkbox(GetLang(LANG_MMRCHANGE).c_str(), &rs_hide_mmrc);
-        ImGui::Checkbox(GetLang(LANG_MMRCHANGECUMUL).c_str(), &rs_hide_mmrcc);
+        ImGui::Checkbox(GetLang(LANG_MMRCUMULCHANGE).c_str(), &rs_hide_mmrcc);
         ImGui::Checkbox(GetLang(LANG_WINS).c_str(), &rs_hide_win);
         ImGui::Checkbox(GetLang(LANG_LOSSES).c_str(), &rs_hide_loss);
         ImGui::Checkbox(GetLang(LANG_STREAKS).c_str(), &rs_hide_streak);
         ImGui::Checkbox(GetLang(LANG_DEMOLITIONS).c_str(), &rs_hide_demo);
+        ImGui::Checkbox(GetLang(LANG_DEMOLITIONSMATCH).c_str(), &rs_hide_demom);
+        ImGui::Checkbox(GetLang(LANG_DEMOLITIONSCUMUL).c_str(), &rs_hide_democ);
         ImGui::Checkbox(GetLang(LANG_DEATH).c_str(), &rs_hide_death);
+        ImGui::Checkbox(GetLang(LANG_DEATHMATCH).c_str(), &rs_hide_deathm);
+        ImGui::Checkbox(GetLang(LANG_DEATHCUMUL).c_str(), &rs_hide_deathc);
         ImGui::EndChild();
 
         /* Variable to use to animate images
@@ -817,7 +829,11 @@ void RocketStats::RenderSettings()
     SetCVar("rs_file_loss", rs_file_loss);
     SetCVar("rs_file_streak", rs_file_streak);
     SetCVar("rs_file_demo", rs_file_demo);
+    SetCVar("rs_file_demom", rs_file_demom);
+    SetCVar("rs_file_democ", rs_file_democ);
     SetCVar("rs_file_death", rs_file_death);
+    SetCVar("rs_file_deathm", rs_file_deathm);
+    SetCVar("rs_file_deathc", rs_file_deathc);
     SetCVar("rs_file_boost", rs_file_boost);
 
     SetCVar("rs_hide_gm", rs_hide_gm);
@@ -830,7 +846,11 @@ void RocketStats::RenderSettings()
     SetCVar("rs_hide_loss", rs_hide_loss);
     SetCVar("rs_hide_streak", rs_hide_streak);
     SetCVar("rs_hide_demo", rs_hide_demo);
+    SetCVar("rs_hide_demom", rs_hide_demom);
+    SetCVar("rs_hide_democ", rs_hide_democ);
     SetCVar("rs_hide_death", rs_hide_death);
+    SetCVar("rs_hide_deathm", rs_hide_deathm);
+    SetCVar("rs_hide_deathc", rs_hide_deathc);
     SetCVar("rs_replace_mmr", rs_replace_mmr);
     SetCVar("rs_replace_mmrc", rs_replace_mmrc);
 }

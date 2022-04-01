@@ -114,7 +114,6 @@ void RocketStats::UpdateFiles(bool force)
     WriteDiv(force);
     WriteMMR(force);
     WriteMMRChange(force);
-    WriteMMRCumulChange(force);
     WriteWin(force);
     WriteLoss(force);
     WriteStreak(force);
@@ -138,7 +137,11 @@ void RocketStats::ResetFiles()
     WriteInFile("RocketStats_Loss.txt", std::to_string(0));
     WriteInFile("RocketStats_Streak.txt", std::to_string(0));
     WriteInFile("RocketStats_Demolition.txt", std::to_string(0));
+    WriteInFile("RocketStats_DemolitionMatch.txt", std::to_string(0));
+    WriteInFile("RocketStats_DemolitionCumul.txt", std::to_string(0));
     WriteInFile("RocketStats_Death.txt", std::to_string(0));
+    WriteInFile("RocketStats_DeathMatch.txt", std::to_string(0));
+    WriteInFile("RocketStats_DeathCumul.txt", std::to_string(0));
     WriteInFile("RocketStats_BoostState.txt", std::to_string(-1));
 }
 
@@ -223,8 +226,16 @@ bool RocketStats::ReadConfig()
                             rs_hide_streak = config["settings"]["files"]["streak"];
                         if (config["settings"]["files"]["demo"].is_boolean())
                             rs_hide_demo = config["settings"]["files"]["demo"];
+                        if (config["settings"]["files"]["demom"].is_boolean())
+                            rs_hide_demom = config["settings"]["files"]["demom"];
+                        if (config["settings"]["files"]["democ"].is_boolean())
+                            rs_hide_democ = config["settings"]["files"]["democ"];
                         if (config["settings"]["files"]["death"].is_boolean())
                             rs_hide_death = config["settings"]["files"]["death"];
+                        if (config["settings"]["files"]["deathm"].is_boolean())
+                            rs_hide_deathm = config["settings"]["files"]["deathm"];
+                        if (config["settings"]["files"]["deathc"].is_boolean())
+                            rs_hide_deathc = config["settings"]["files"]["deathc"];
                         if (config["settings"]["files"]["boost"].is_boolean())
                             rs_file_boost = config["settings"]["files"]["boost"];
                     }
@@ -251,8 +262,16 @@ bool RocketStats::ReadConfig()
                             rs_hide_streak = config["settings"]["hides"]["streak"];
                         if (config["settings"]["hides"]["demo"].is_boolean())
                             rs_hide_demo = config["settings"]["hides"]["demo"];
+                        if (config["settings"]["hides"]["demom"].is_boolean())
+                            rs_hide_demom = config["settings"]["hides"]["demom"];
+                        if (config["settings"]["hides"]["democ"].is_boolean())
+                            rs_hide_democ = config["settings"]["hides"]["democ"];
                         if (config["settings"]["hides"]["death"].is_boolean())
                             rs_hide_death = config["settings"]["hides"]["death"];
+                        if (config["settings"]["hides"]["deathm"].is_boolean())
+                            rs_hide_deathm = config["settings"]["hides"]["deathm"];
+                        if (config["settings"]["hides"]["deathc"].is_boolean())
+                            rs_hide_deathc = config["settings"]["hides"]["deathc"];
 
                         cvarManager->log("Config: hides loaded");
                     }
@@ -281,8 +300,14 @@ bool RocketStats::ReadConfig()
                     if (config["always"]["Demo"].is_number_unsigned())
                         always.demo = int(config["always"]["Demo"]);
 
+                    if (config["always"]["DemoCumul"].is_number_unsigned())
+                        always.demoCumul = int(config["always"]["DemoCumul"]);
+
                     if (config["always"]["Death"].is_number_unsigned())
                         always.death = int(config["always"]["Death"]);
+
+                    if (config["always"]["DeathCumul"].is_number_unsigned())
+                        always.deathCumul = int(config["always"]["DeathCumul"]);
 
                     cvarManager->log("Config: stats loaded");
                     always.isInit = true;
@@ -312,8 +337,14 @@ bool RocketStats::ReadConfig()
                             if (config["always_gm"][i]["Demo"].is_number_unsigned())
                                 always_gm[i].demo = int(config["always_gm"][i]["Demo"]);
 
+                            if (config["always_gm"][i]["DemoCumul"].is_number_unsigned())
+                                always_gm[i].demoCumul = int(config["always_gm"][i]["DemoCumul"]);
+
                             if (config["always_gm"][i]["Death"].is_number_unsigned())
                                 always_gm[i].death = int(config["always_gm"][i]["Death"]);
+
+                            if (config["always_gm"][i]["DeathCumul"].is_number_unsigned())
+                                always_gm[i].deathCumul = int(config["always_gm"][i]["DeathCumul"]);
 
                             always_gm[i].isInit = true;
                         }
@@ -373,7 +404,11 @@ void RocketStats::WriteConfig()
     tmp["settings"]["files"]["loss"] = rs_file_loss;
     tmp["settings"]["files"]["streak"] = rs_file_streak;
     tmp["settings"]["files"]["demo"] = rs_file_demo;
+    tmp["settings"]["files"]["demom"] = rs_file_demom;
+    tmp["settings"]["files"]["democ"] = rs_file_democ;
     tmp["settings"]["files"]["death"] = rs_file_death;
+    tmp["settings"]["files"]["deathm"] = rs_file_deathm;
+    tmp["settings"]["files"]["deathc"] = rs_file_deathc;
     tmp["settings"]["files"]["boost"] = rs_file_boost;
 
     tmp["settings"]["hides"] = json::object();
@@ -387,7 +422,11 @@ void RocketStats::WriteConfig()
     tmp["settings"]["hides"]["loss"] = rs_hide_loss;
     tmp["settings"]["hides"]["streak"] = rs_hide_streak;
     tmp["settings"]["hides"]["demo"] = rs_hide_demo;
+    tmp["settings"]["hides"]["demom"] = rs_hide_demom;
+    tmp["settings"]["hides"]["democ"] = rs_hide_democ;
     tmp["settings"]["hides"]["death"] = rs_hide_death;
+    tmp["settings"]["hides"]["deathm"] = rs_hide_deathm;
+    tmp["settings"]["hides"]["deathc"] = rs_hide_deathc;
     tmp["settings"]["replace_mmr"] = rs_replace_mmr;
     tmp["settings"]["replace_mmrc"] = rs_replace_mmrc;
 
@@ -397,7 +436,9 @@ void RocketStats::WriteConfig()
     tmp["always"]["Loss"] = always.loss;
     tmp["always"]["Streak"] = always.streak;
     tmp["always"]["Demo"] = always.demo;
+    tmp["always"]["DemoCumul"] = always.demoCumul;
     tmp["always"]["Death"] = always.death;
+    tmp["always"]["DeathCumul"] = always.deathCumul;
 
     tmp["always_gm_idx"] = current.playlist;
     tmp["always_gm"] = json::array();
@@ -409,7 +450,9 @@ void RocketStats::WriteConfig()
         tmp["always_gm"][i]["Loss"] = always_gm[i].loss;
         tmp["always_gm"][i]["Streak"] = always_gm[i].streak;
         tmp["always_gm"][i]["Demo"] = always_gm[i].demo;
+        tmp["always_gm"][i]["DemoCumul"] = always_gm[i].demoCumul;
         tmp["always_gm"][i]["Death"] = always_gm[i].death;
+        tmp["always_gm"][i]["DeathCumul"] = always_gm[i].deathCumul;
     }
 
     WriteInFile("data/rocketstats.json", tmp.dump(2), true); // Save plugin settings in JSON format
@@ -463,38 +506,35 @@ void RocketStats::WriteMMR(bool force)
 
 void RocketStats::WriteMMRChange(bool force)
 {
-    if (!force && (!rs_in_file || !rs_file_mmrc))
-        return;
-
-    std::string tmp = theme_hide_value;
-    if (rs_hide_mmrc)
+    if (force || (rs_in_file && rs_file_mmrc))
     {
-        Stats tstats = GetStats();
-        tmp = Utils::FloatFixer(tstats.MMRChange, (rs_enable_float ? 2 : 0));
+        std::string tmp = theme_hide_value;
+        if (rs_hide_mmrc)
+        {
+            Stats tstats = GetStats();
+            tmp = Utils::FloatFixer(tstats.MMRChange, (rs_enable_float ? 2 : 0));
 
-        if (tstats.MMRChange > 0)
-            tmp = ("+" + tmp);
+            if (tstats.MMRChange > 0)
+                tmp = ("+" + tmp);
+        }
+
+        WriteInFile("RocketStats_MMRChange.txt", tmp);
     }
 
-    WriteInFile("RocketStats_MMRChange.txt", tmp);
-}
-
-void RocketStats::WriteMMRCumulChange(bool force)
-{
-    if (!force && (!rs_in_file || !rs_file_mmrcc))
-        return;
-
-    std::string tmp = theme_hide_value;
-    if (rs_hide_mmrcc)
+    if (force || (rs_in_file && rs_file_mmrcc))
     {
-        Stats tstats = GetStats();
-        tmp = Utils::FloatFixer(tstats.MMRCumulChange, (rs_enable_float ? 2 : 0));
+        std::string tmp = theme_hide_value;
+        if (rs_hide_mmrcc)
+        {
+            Stats tstats = GetStats();
+            tmp = Utils::FloatFixer(tstats.MMRCumulChange, (rs_enable_float ? 2 : 0));
 
-        if (tstats.MMRCumulChange > 0)
-            tmp = ("+" + tmp);
+            if (tstats.MMRCumulChange > 0)
+                tmp = ("+" + tmp);
+        }
+
+        WriteInFile("RocketStats_MMRCumulChange.txt", tmp);
     }
-
-    WriteInFile("RocketStats_MMRCumulChange.txt", tmp);
 }
 
 void RocketStats::WriteWin(bool force)
@@ -529,18 +569,30 @@ void RocketStats::WriteStreak(bool force)
 
 void RocketStats::WriteDemo(bool force)
 {
-    if (force  || (rs_in_file && rs_file_demo))
+    if (force || (rs_in_file && rs_file_demo))
         WriteInFile("RocketStats_Demo.txt", (rs_hide_demo ? theme_hide_value : std::to_string(GetStats().demo)));
+
+    if (force || (rs_in_file && rs_file_demom))
+        WriteInFile("RocketStats_DemoMatch.txt", (rs_hide_demom ? theme_hide_value : std::to_string(current.demo)));
+
+    if (force || (rs_in_file && rs_file_democ))
+        WriteInFile("RocketStats_DemoCumul.txt", (rs_hide_democ ? theme_hide_value : std::to_string(GetStats().demoCumul)));
 }
 
 void RocketStats::WriteDeath(bool force)
 {
-    if (force  || (rs_in_file && rs_file_death))
+    if (force || (rs_in_file && rs_file_death))
         WriteInFile("RocketStats_Death.txt", (rs_hide_death ? theme_hide_value : std::to_string(GetStats().death)));
+
+    if (force || (rs_in_file && rs_file_deathm))
+        WriteInFile("RocketStats_DeathMatch.txt", (rs_hide_deathm ? theme_hide_value : std::to_string(current.death)));
+
+    if (force || (rs_in_file && rs_file_deathc))
+        WriteInFile("RocketStats_DeathCumul.txt", (rs_hide_deathc ? theme_hide_value : std::to_string(GetStats().deathCumul)));
 }
 
 void RocketStats::WriteBoost(bool force)
 {
-    if (force  || (rs_in_file && rs_file_gm))
+    if (force || (rs_in_file && rs_file_boost))
         WriteInFile("RocketStats_BoostState.txt", std::to_string(gameWrapper->IsInGame() ? 0 : -1));
 }

@@ -102,7 +102,11 @@ Here are the variables that are accepted (each variable depends on the selected 
  - `Loss`: the number of games lost
  - `Streak`: the number of games won or lost in a row
  - `Demolition`: the number of times you destroy opponents
+ - `DemolitionsCumul`: the number of cumulative demolitions
+ - `DemolitionsMatch`: the number of demolitions in the match
  - `Death`: the number of times you've been destroyed
+ - `DeathCumul`: the number of cumulative deaths
+ - `DeathMatch`: the number of deaths of the match
 
 ```json
 {

@@ -24,19 +24,6 @@ void RocketStats::GameStart(std::string eventName)
     SkillRank playerRank = mmrw.GetPlayerRank(gameWrapper->GetUniqueID(), current.playlist);
     cvarManager->log(std::to_string(current.playlist) + " -> " + GetPlaylistName(current.playlist));
 
-    WriteGameMode();
-    WriteRank();
-    WriteDiv();
-    WriteMMR();
-    WriteMMRChange();
-    WriteMMRCumulChange();
-    WriteWin();
-    WriteLoss();
-    WriteStreak();
-    WriteDemo();
-    WriteDeath();
-    WriteBoost();
-
     // Get TeamNum
     my_team_num = myTeam.GetTeamNum();
 
@@ -46,8 +33,7 @@ void RocketStats::GameStart(std::string eventName)
 
     UpdateMMR(gameWrapper->GetUniqueID());
     WriteConfig();
-    if (rs_in_file && rs_file_boost)
-        WriteInFile("RocketStats_BoostState.txt", std::to_string(0));
+    UpdateFiles();
 
     cvarManager->log("===== !GameStart =====");
 }
@@ -66,8 +52,6 @@ void RocketStats::GameEnd(std::string eventName)
 
         // Game as ended
         is_game_ended = true;
-
-        MMRWrapper mw = gameWrapper->GetMMRWrapper();
 
         if (my_team_num == winningTeam.GetTeamNum())
         {
@@ -125,6 +109,7 @@ void RocketStats::GameEnd(std::string eventName)
         }
 
         WriteStreak();
+        ResetBasicStats();
         WriteConfig();
 
         // Reset myTeamNum security
@@ -168,6 +153,7 @@ void RocketStats::GameDestroyed(std::string eventName)
 
         WriteStreak();
         WriteLoss();
+        ResetBasicStats();
         WriteConfig();
     }
 

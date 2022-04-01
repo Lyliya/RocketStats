@@ -48,8 +48,11 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
         if (demo && current.playlist)
         {
             ++session.demo;
+            ++session.demoCumul;
             ++stats[current.playlist].demo;
+            ++stats[current.playlist].demoCumul;
             ++always_gm[current.playlist].demo;
+            ++always_gm[current.playlist].demoCumul;
             SetRefresh(1);
 
             if (rs_file_demo)
@@ -60,8 +63,11 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
         if (death && current.playlist)
         {
             ++session.death;
+            ++session.deathCumul;
             ++stats[current.playlist].death;
+            ++stats[current.playlist].deathCumul;
             ++always_gm[current.playlist].death;
+            ++always_gm[current.playlist].deathCumul;
             SetRefresh(1);
 
             if (rs_file_death)
@@ -169,7 +175,6 @@ void RocketStats::UpdateMMR(UniqueIDWrapper id)
     SessionStats();
     WriteMMR();
     WriteMMRChange();
-    WriteMMRCumulChange();
 
     SetRefresh(1);
     cvarManager->log("===== !UpdateMMR =====");
@@ -201,7 +206,9 @@ void RocketStats::SessionStats()
         tmp.win += stats[it->first].win;
         tmp.loss += stats[it->first].loss;
         tmp.demo += stats[it->first].demo;
+        tmp.demoCumul += stats[it->first].demo;
         tmp.death += stats[it->first].death;
+        tmp.deathCumul += stats[it->first].death;
     }
 
     session.myMMR = stats[current.playlist].myMMR;
@@ -210,7 +217,9 @@ void RocketStats::SessionStats()
     session.win = tmp.win;
     session.loss = tmp.loss;
     session.demo = tmp.demo;
+    session.demoCumul = tmp.demoCumul;
     session.death = tmp.death;
+    session.deathCumul = tmp.deathCumul;
     session.isInit = true;
 
     always.myMMR = session.myMMR;
@@ -229,4 +238,10 @@ void RocketStats::ResetStats()
 
     InitRank();
     SetRefresh(1);
+}
+
+void RocketStats::ResetBasicStats()
+{
+    current.demo = 0;
+    current.death = 0;
 }
