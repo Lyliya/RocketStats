@@ -38,5 +38,5 @@ public:
 	static size_t FindKeyInt(std::vector<std::map<std::string, int>> vector, std::string key, int value);
 
 	// Operations
-	static int EvaluateExpression(std::string str, int percent2pixels);
+	static int EvaluateExpression(std::string str, int percent2pixels, ImVec2 screen_size = { 0, 0 });
 };

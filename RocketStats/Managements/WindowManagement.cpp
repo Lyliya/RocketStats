@@ -3,6 +3,7 @@
 void RocketStats::Render()
 {
     timer_30fps.tick();
+    display_size = ImGui::GetIO().DisplaySize;
 
     is_online_game = gameWrapper->IsInOnlineGame();
     is_offline_game = gameWrapper->IsInGame();
@@ -24,14 +25,13 @@ void RocketStats::Render()
     if (rs_recovery && rs_welcome != nullptr && rs_welcome->IsLoadedForImGui())
     {
         ImVec2 mouse_pos = ImGui::GetIO().MousePos;
-        ImVec2 screen_size = ImGui::GetIO().DisplaySize;
         Vector2F image_size = rs_welcome->GetSizeF();
         bool mouse_click = GetAsyncKeyState(VK_LBUTTON);
 
-        float max_width = (screen_size.x / 2);
+        float max_width = (display_size.x / 2);
         if (max_width < image_size.X)
             image_size = { max_width, ((image_size.Y / image_size.X) * max_width) };
-        ImVec2 image_min = { ((screen_size.x - image_size.X) / 2), ((screen_size.y - image_size.Y) / 2) };
+        ImVec2 image_min = { ((display_size.x - image_size.X) / 2), ((display_size.y - image_size.Y) / 2) };
         ImVec2 image_max = { (image_min.x + image_size.X), (image_min.y + image_size.Y) };
 
         bool hover = (mouse_pos.x > image_min.x && mouse_pos.x < image_max.x);
@@ -61,8 +61,7 @@ void RocketStats::RenderIcon()
     float icon_size = (42.f * rs_screen_scale[0]);
     float icon_scale = (1.f - rs_screen_scale[0]);
     ImVec2 mouse_pos = ImGui::GetIO().MousePos;
-    ImVec2 screen_size = ImGui::GetIO().DisplaySize;
-    ImVec2 icon_pos = { 0.f, (screen_size.y * 0.459f * (icon_scale + (icon_scale * (0.18f - (1.f - rs_screen_scale[1]))) + 1.f)) };
+    ImVec2 icon_pos = { 0.f, (display_size.y * 0.459f * (icon_scale + (icon_scale * (0.18f - (1.f - rs_screen_scale[1]))) + 1.f)) };
     bool mouse_click = GetAsyncKeyState(VK_LBUTTON);
     ImDrawList* drawlist = ImGui::GetBackgroundDrawList();
 
@@ -129,7 +128,16 @@ void RocketStats::RenderOverlay()
         if (overlay_move || theme_refresh || theme_render.name == "" || (themes.size() > rs_theme && theme_render.name != themes.at(rs_theme).name))
         {
             Stats tstats = GetStats();
-            ImVec2 screen_size = ImGui::GetIO().DisplaySize;
+
+            theme_size = { 0, 0 };
+            if (theme_config["width"].is_string())
+                theme_size.x = float(Utils::EvaluateExpression(theme_config["width"], display_size.x, display_size));
+            else if (theme_config["width"].is_number())
+                theme_size.x = int(theme_config["width"]);
+            if (theme_config["height"].is_string())
+                theme_size.y = float(Utils::EvaluateExpression(theme_config["height"], display_size.y, display_size));
+            else if (theme_config["height"].is_number())
+                theme_size.y = int(theme_config["height"]);
 
             // Refresh all images
             if (theme_refresh == 2)
@@ -144,14 +152,18 @@ void RocketStats::RenderOverlay()
                 if (!GetCVar("rs_x", rs_x))
                 {
                     rs_x = 0.f;
-                    if (theme_config["x"].is_number())
+                    if (theme_config["x"].is_string())
+                        rs_x = (float(Utils::EvaluateExpression(theme_config["x"], theme_size.x, display_size)) / display_size.x);
+                    else if (theme_config["x"].is_number())
                         rs_x = float(theme_config["x"]);
                 }
 
                 if (!GetCVar("rs_y", rs_y))
                 {
                     rs_y = 0.f;
-                    if (theme_config["y"].is_number())
+                    if (theme_config["y"].is_string())
+                        rs_y = (float(Utils::EvaluateExpression(theme_config["y"], theme_size.y, display_size)) / display_size.y);
+                    else if (theme_config["y"].is_number())
                         rs_y = float(theme_config["y"]);
                 }
 
@@ -191,10 +203,10 @@ void RocketStats::RenderOverlay()
             // Different global options used when calculating elements
             std::vector<Element> elements;
             Options options = {
-                int(rs_x * screen_size.x),
-                int(rs_y * screen_size.y),
-                (theme_config.contains("width") ? int(theme_config["width"]) : 0),
-                (theme_config.contains("height") ? int(theme_config["height"]) : 0),
+                int(rs_x * display_size.x),
+                int(rs_y * display_size.y),
+                theme_size.x,
+                theme_size.y,
                 (rs_scale * (theme_config.contains("scale") ? float(theme_config["scale"]) : 1.f)),
                 (rs_launch * rs_opacity * (theme_config.contains("opacity") ? float(theme_config["opacity"]) : 1.f))
             };
@@ -289,8 +301,7 @@ void RocketStats::RenderOverlay()
                 float rect_size = 10.f;
                 bool mouse_click = GetAsyncKeyState(VK_LBUTTON);
                 ImVec2 mouse_pos = ImGui::GetIO().MousePos;
-                ImVec2 screen_size = ImGui::GetIO().DisplaySize;
-                ImVec2 overlay_pos = { (rs_x * screen_size.x), (rs_y * screen_size.y) };
+                ImVec2 overlay_pos = { (rs_x * display_size.x), (rs_y * display_size.y) };
                 ImVec2 rect_pos = { overlay_pos.x, overlay_pos.y };
 
                 bool hover = (mouse_pos.x > (overlay_pos.x - rect_size - (margin * 2)) && mouse_pos.x < (overlay_pos.x + rect_size + (margin * 2)));
@@ -318,8 +329,8 @@ void RocketStats::RenderOverlay()
                         // Change positions when mouse click is released
                         if (overlay_move)
                         {
-                            rs_x = (overlay_cursor.x / screen_size.x);
-                            rs_y = (overlay_cursor.y / screen_size.y);
+                            rs_x = (overlay_cursor.x / display_size.x);
+                            rs_y = (overlay_cursor.y / display_size.y);
 
                             overlay_move = false;
                             SetRefresh(1);
@@ -482,7 +493,9 @@ void RocketStats::RenderSettings()
             if (ImGui::Button("R##Rx_position"))
             {
                 rs_x = 0.f;
-                if (theme_config["x"].is_number())
+                if (theme_config["x"].is_string())
+                    rs_x = (float(Utils::EvaluateExpression(theme_config["x"], theme_size.x, display_size)) / display_size.x);
+                else if (theme_config["x"].is_number())
                     rs_x = float(theme_config["x"]);
             }
             if (ImGui::IsItemHovered())
@@ -505,7 +518,9 @@ void RocketStats::RenderSettings()
             if (ImGui::Button("R##Ry_position"))
             {
                 rs_y = 0.f;
-                if (theme_config["y"].is_number())
+                if (theme_config["y"].is_string())
+                    rs_y = (float(Utils::EvaluateExpression(theme_config["y"], theme_size.y, display_size)) / display_size.y);
+                else if (theme_config["y"].is_number())
                     rs_y = float(theme_config["y"]);
             }
             if (ImGui::IsItemHovered())

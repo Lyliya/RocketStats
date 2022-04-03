@@ -186,7 +186,7 @@ size_t Utils::FindKeyInt(std::vector<std::map<std::string, int>> vector, std::st
 #pragma endregion
 
 #pragma region Operations
-int Utils::EvaluateExpression(std::string str, int percent2pixels)
+int Utils::EvaluateExpression(std::string str, int percent2pixels, ImVec2 screen_size)
 {
     char c;
     char lc;
@@ -200,13 +200,20 @@ int Utils::EvaluateExpression(std::string str, int percent2pixels)
         if (pos)
             lc = str[pos - 1];
 
-        bool error = ((c == '%' || c == 'p') && (!pos || (lc < '0' || lc > '9')));
+        bool error = ((c == '%' || c == 'v' || c == 'p') && (!pos || (lc < '0' || lc > '9')));
+        error = (error || ((c == 'w' || c == 'h') && (!pos || lc != 'v')));
         error = (error || (c == 'x' && (!pos || lc != 'p')));
 
-        if (c == '%' && lpos != std::string::npos)
+        if (lpos != std::string::npos && c == '%')
         {
             float percent = (std::stof(str.substr(lpos, (pos - lpos))) / 100.f);
             str.replace(lpos, ((pos + 1) - lpos), std::to_string((int)std::round(percent * percent2pixels)));
+            lpos = std::string::npos;
+        }
+        else if (lpos != std::string::npos && (c == 'w' || c == 'h'))
+        {
+            float percent = (std::stof(str.substr(lpos, ((pos - 1) - lpos))) / 100.f);
+            str.replace(lpos, ((pos + 1) - lpos), std::to_string((int)std::round(percent * ((c == 'h') ? screen_size.y : screen_size.x))));
             lpos = std::string::npos;
         }
         else if (lpos == std::string::npos && c >= '0' && c <= '9')

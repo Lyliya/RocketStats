@@ -191,16 +191,16 @@ Element RocketStats::CalculateElement(json& element, Options& options, bool& che
                 calculated.name = element["name"];
 
             if (element.contains("x"))
-                element_2d.x = int(float(element["x"].is_string() ? Utils::EvaluateExpression(element["x"], options.width) : int(element["x"])) * options.scale);
+                element_2d.x = int(float(element["x"].is_string() ? Utils::EvaluateExpression(element["x"], options.width, display_size) : int(element["x"])) * options.scale);
 
             if (element.contains("y"))
-                element_2d.y = int(float(element["y"].is_string() ? Utils::EvaluateExpression(element["y"], options.height) : int(element["y"])) * options.scale);
+                element_2d.y = int(float(element["y"].is_string() ? Utils::EvaluateExpression(element["y"], options.height, display_size) : int(element["y"])) * options.scale);
 
             if (element.contains("width"))
-                element_2d.width = int(float(element["width"].is_string() ? Utils::EvaluateExpression(element["width"], options.width) : int(element["width"])) * options.scale);
+                element_2d.width = int(float(element["width"].is_string() ? Utils::EvaluateExpression(element["width"], options.width, display_size) : int(element["width"])) * options.scale);
 
             if (element.contains("height"))
-                element_2d.height = int(float(element["height"].is_string() ? Utils::EvaluateExpression(element["height"], options.height) : int(element["height"])) * options.scale);
+                element_2d.height = int(float(element["height"].is_string() ? Utils::EvaluateExpression(element["height"], options.height, display_size) : int(element["height"])) * options.scale);
 
             ImVec2 element_pos = { float(options.x + element_2d.x), float(options.y + element_2d.y) };
             ImVec2 element_size = { float(element_2d.width), float(element_2d.height) };
@@ -293,16 +293,16 @@ Element RocketStats::CalculateElement(json& element, Options& options, bool& che
             }
             else if (element["type"] == "line")
             {
-                element_pos.x = float(options.x) + (float(element["x1"].is_string() ? Utils::EvaluateExpression(element["x1"], options.width) : int(element["x1"])) * options.scale);
-                element_pos.y = float(options.y) + (float(element["y1"].is_string() ? Utils::EvaluateExpression(element["y1"], options.height) : int(element["y1"])) * options.scale);
+                element_pos.x = float(options.x) + (float(element["x1"].is_string() ? Utils::EvaluateExpression(element["x1"], options.width, display_size) : int(element["x1"])) * options.scale);
+                element_pos.y = float(options.y) + (float(element["y1"].is_string() ? Utils::EvaluateExpression(element["y1"], options.height, display_size) : int(element["y1"])) * options.scale);
                 const float element_width = (element.contains("scale") ? float(element["scale"]) : 1);
 
                 element_size.x = element_width;
                 calculated.scale = (element_width * options.scale);
 
                 positions.push_back(ImVec2{
-                    float(options.x) + (float(element["x2"].is_string() ? Utils::EvaluateExpression(element["x2"], options.width) : int(element["x2"])) * options.scale),
-                    float(options.y) + (float(element["y2"].is_string() ? Utils::EvaluateExpression(element["y2"], options.height) : int(element["y2"])) * options.scale)
+                    float(options.x) + (float(element["x2"].is_string() ? Utils::EvaluateExpression(element["x2"], options.width, display_size) : int(element["x2"])) * options.scale),
+                    float(options.y) + (float(element["y2"].is_string() ? Utils::EvaluateExpression(element["y2"], options.height, display_size) : int(element["y2"])) * options.scale)
                     });
             }
             else if (element["type"] == "rectangle")
@@ -316,28 +316,28 @@ Element RocketStats::CalculateElement(json& element, Options& options, bool& che
             }
             else if (element["type"] == "triangle")
             {
-                element_pos.x = float(options.x) + (float(element["x1"].is_string() ? Utils::EvaluateExpression(element["x1"], options.width) : int(element["x1"])) * options.scale);
-                element_pos.y = float(options.y) + (float(element["y1"].is_string() ? Utils::EvaluateExpression(element["y1"], options.height) : int(element["y1"])) * options.scale);
+                element_pos.x = float(options.x) + (float(element["x1"].is_string() ? Utils::EvaluateExpression(element["x1"], options.width, display_size) : int(element["x1"])) * options.scale);
+                element_pos.y = float(options.y) + (float(element["y1"].is_string() ? Utils::EvaluateExpression(element["y1"], options.height, display_size) : int(element["y1"])) * options.scale);
 
                 positions.push_back(ImVec2{
-                    float(options.x) + (float(element["x2"].is_string() ? Utils::EvaluateExpression(element["x2"], options.width) : int(element["x2"])) * options.scale),
-                    float(options.y) + (float(element["y2"].is_string() ? Utils::EvaluateExpression(element["y2"], options.height) : int(element["y2"])) * options.scale)
+                    float(options.x) + (float(element["x2"].is_string() ? Utils::EvaluateExpression(element["x2"], options.width, display_size) : int(element["x2"])) * options.scale),
+                    float(options.y) + (float(element["y2"].is_string() ? Utils::EvaluateExpression(element["y2"], options.height, display_size) : int(element["y2"])) * options.scale)
                     });
                 positions.push_back(ImVec2{
-                    float(options.x) + (float(element["x3"].is_string() ? Utils::EvaluateExpression(element["x3"], options.width) : int(element["x3"])) * options.scale),
-                    float(options.y) + (float(element["y3"].is_string() ? Utils::EvaluateExpression(element["y3"], options.height) : int(element["y3"])) * options.scale)
+                    float(options.x) + (float(element["x3"].is_string() ? Utils::EvaluateExpression(element["x3"], options.width, display_size) : int(element["x3"])) * options.scale),
+                    float(options.y) + (float(element["y3"].is_string() ? Utils::EvaluateExpression(element["y3"], options.height, display_size) : int(element["y3"])) * options.scale)
                     });
             }
             else if (element["type"] == "circle")
             {
-                const float radius = float(element["radius"].is_string() ? Utils::EvaluateExpression(element["radius"], options.width) : int(element["radius"]));
+                const float radius = float(element["radius"].is_string() ? Utils::EvaluateExpression(element["radius"], options.width, display_size) : int(element["radius"]));
 
                 element_size.x = (radius * options.scale);
                 element_size.y = float(element.contains("segments") ? int(element["segments"]) : 0);
             }
             else if (element["type"] == "pie_chart")
             {
-                const float radius = float(element["radius"].is_string() ? Utils::EvaluateExpression(element["radius"], options.width) : int(element["radius"]));
+                const float radius = float(element["radius"].is_string() ? Utils::EvaluateExpression(element["radius"], options.width, display_size) : int(element["radius"]));
                 const float item_arc_span = (float(M_PI) * 2);
                 const float angle_min = ((element.contains("angle-min") ? float(element["angle-min"]) : 0.f) - 90.f);
                 const float angle_max = ((element.contains("angle-max") ? float(element["angle-max"]) : 0.f) - 90.f);

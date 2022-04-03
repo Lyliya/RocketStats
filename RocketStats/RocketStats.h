@@ -126,6 +126,8 @@ private:
 	FPSTimer timer_30fps = FPSTimer(30, true);
 
 	// Themes
+	ImVec2 theme_size = { 0.f, 0.f };
+	ImVec2 display_size = { 0.f, 0.f };
 	unsigned char theme_style = 0;
 	unsigned char theme_refresh = 2;
 

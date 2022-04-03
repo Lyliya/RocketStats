@@ -9,7 +9,7 @@ Add **texts**, **shapes**, or **images**, only with a JSON file.
 To create a theme, start by creating a folder here, with the name you want.
 Then in this folder, create a `config.json` file (it's a text file with a different file extension) that will contain all your stuff.
 
-Example theme tree (fonts are not yet functional):
+Example theme tree:
 ```
 theme_folder
 ├─── fonts
@@ -48,7 +48,7 @@ You can see an example of an empty theme file, we will add the different element
 
 You find the name of the author of the theme (you), the version and the date of this one for the basic information.
 Now the basic settings:
- - `x` et `y`: position (adjustable from the interface then, in percentage from 0.0 to 1.0 or in calculation)
+ - `x` and `y`: position (adjustable from the interface then, in percentage from 0.0 to 1.0 or in calculation)
  - `width` and `height`: size (allows you to use percentages)
  - `font`: if you want to use a specific font (the name of the file in the `fonts` folder followed by the desired base size)
  - `scale`: zoom (adjustable from the interface)
@@ -71,7 +71,7 @@ Each element has its own parameters, here are a few:
  - `stroke`: outline color of a shape (works the same as `color`, centered on the contour so protrudes inside depending on the thickness)
  - `rotate`: the rotation is added to the global rotation (in degrees from -180 to 180)
  - `opacity`: the opacity is added to the global opacity, but also of each color (percentage from 0.0 to 1.0)
- - `transform`: If you want to capitalize your text, lowercase, or only the first letter of each word (upper, lower or capitalize)
+ - `transform`: if you want to capitalize your text, lowercase, or only the first letter of each word (upper, lower or capitalize)
 
 The `name` parameter is not important at this time, but plan to differentiate your elements for later releases.
 
@@ -85,11 +85,9 @@ The main ones to accept the calculations are (they are all integers):
   - `x[0-9]` and `y[0-9]`: used for example for a triangle (x1, y1, x2, y2, etc...)
   - `radius`: percentages are based on width
 
-So either they are presented directly with an integer, or they are surrounded by double quotes (which is used for strings), take example on the elements above.
+So either they are presented directly with an integer, or they are surrounded by double quotes (which is used for strings), take example from the elements below.
 
 ### Text
-
-As you can see, the text includes a variable preceded by a title. You can arrange it however you like.
 
 Here are the variables that are accepted (each variable depends on the selected mode):
  - `GameMode`: the current game mode (Duel, Chaos, etc.)
@@ -107,6 +105,8 @@ Here are the variables that are accepted (each variable depends on the selected 
  - `Death`: the number of times you've been destroyed
  - `DeathCumul`: the number of cumulative deaths
  - `DeathMatch`: the number of deaths of the match
+
+As you can see, the text includes a variable preceded by a title. You can arrange it however you like.
 
 ```json
 {
