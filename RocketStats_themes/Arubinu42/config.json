@@ -1,8 +1,8 @@
 {
 	"author":		"Arubinu42",
-	"version":		"v1.0.0",
+	"version":		"v1.0.1",
 	"date":			"29/07/2019",
-	"x":			0.0,
+	"x":			"100vw - 100%",
 	"y":			0.0,
 	"width":		576,
 	"height":		40,

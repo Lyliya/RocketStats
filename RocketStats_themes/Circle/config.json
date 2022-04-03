@@ -1,9 +1,9 @@
 {
 	"author":		"Rimey",
-	"version":		"v1.0.0",
+	"version":		"v1.0.1",
 	"date":			"14/09/2019",
-	"x":			0.7,
-	"y":			0.74,
+	"x":			"100vw - (100% + 150px)",
+	"y":			"100vh - (100% - 55px)",
 	"width":		400,
 	"height":		300,
 	"font":			[ "Azonix.otf", 42 ],
@@ -84,7 +84,7 @@
 			"y":			"42.2%",
 			"align":		"center",
 			"valign":		"middle",
-			"opacity":		0.35,
+			"opacity":		0.25,
 			"scale":		3
 		}
 	]
