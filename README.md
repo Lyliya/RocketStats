@@ -12,6 +12,10 @@ First, you'll need to install [Bakkesmod](https://www.bakkesmod.com/) and make s
 
 Use the Wiki available in the menu at the top of the page. You will have all the information easily accessible to understand the plugin.
 
+### Additional themes
+
+If you want more themes while waiting for the future website: https://github.com/Arubinu/RocketStats_themes
+
 ## Community & Thanks :)
 
 You can come and ask your questions or discuss with the community in our [discord](https://discord.gg/weBCBE4).
