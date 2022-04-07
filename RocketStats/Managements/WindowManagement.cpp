@@ -12,17 +12,17 @@ void RocketStats::Render()
     RenderOverlay();
 
     // Displays the button allowing the display and the hiding of the menu
-    if (!overlay_move && (!is_in_game || is_in_menu))
+    if (rs_recovery > 0 || (!overlay_move && (!is_in_game || is_in_menu)))
         RenderIcon();
 
     if (!overlay_move && settings_open)
     {
-        rs_recovery = false; // Closes the new version message when opening the settings menu
+        CloseWelcome();
         RenderSettings();
     }
 
     // Displays the message to introduce the new version
-    if (rs_recovery && rs_welcome != nullptr && rs_welcome->IsLoadedForImGui())
+    if (rs_recovery == 1 && rs_welcome != nullptr && rs_welcome->IsLoadedForImGui())
     {
         ImVec2 mouse_pos = ImGui::GetIO().MousePos;
         Vector2F image_size = rs_welcome->GetSizeF();
@@ -39,13 +39,12 @@ void RocketStats::Render()
 
         // Close the new version message when clicking on the image
         if (hover && mouse_click)
-        {
-            rs_recovery = false;
-            RemoveFile("RocketStats_images/welcome.png");
-        }
+            CloseWelcome();
         else
             ImGui::GetBackgroundDrawList()->AddImage(rs_welcome->GetImGuiTex(), image_min, image_max);
     }
+    else if (rs_recovery == 3)
+        rs_recovery = 0;
 
     // Capture of the escape key, to prevent the plugin from disappearing
     int idx = ImGui::GetKeyIndex(ImGuiKey_Escape);
@@ -131,13 +130,13 @@ void RocketStats::RenderOverlay()
 
             theme_size = { 0, 0 };
             if (theme_config["width"].is_string())
-                theme_size.x = float(Utils::EvaluateExpression(theme_config["width"], display_size.x, display_size));
+                theme_size.x = float(Utils::EvaluateExpression(theme_config["width"], int(display_size.x), display_size));
             else if (theme_config["width"].is_number())
-                theme_size.x = int(theme_config["width"]);
+                theme_size.x = float(theme_config["width"]);
             if (theme_config["height"].is_string())
-                theme_size.y = float(Utils::EvaluateExpression(theme_config["height"], display_size.y, display_size));
+                theme_size.y = float(Utils::EvaluateExpression(theme_config["height"], int(display_size.y), display_size));
             else if (theme_config["height"].is_number())
-                theme_size.y = int(theme_config["height"]);
+                theme_size.y = float(theme_config["height"]);
 
             // Refresh all images
             if (theme_refresh == 2)
@@ -149,7 +148,7 @@ void RocketStats::RenderOverlay()
             // Reset the menu variables if you change the theme
             if (theme_prev != theme_render.name)
             {
-                if (!GetCVar("rs_scale", rs_scale))
+                if (rs_recovery != 3 && !GetCVar("rs_scale", rs_scale))
                 {
                     rs_scale = 1.f;
                     if (theme_config["scale"].is_number())
@@ -170,24 +169,23 @@ void RocketStats::RenderOverlay()
                         rs_opacity = float(theme_config["opacity"]);
                 }
 
-                if (!GetCVar("rs_x", rs_x))
+                if (rs_recovery != 3 && !GetCVar("rs_x", rs_x))
                 {
                     rs_x = 0.f;
                     if (theme_config["x"].is_string())
-                        rs_x = (float(Utils::EvaluateExpression(theme_config["x"], (theme_size.x * rs_scale), display_size)) / display_size.x);
+                        rs_x = (float(Utils::EvaluateExpression(theme_config["x"], int(theme_size.x * rs_scale), display_size)) / display_size.x);
                     else if (theme_config["x"].is_number())
                         rs_x = float(theme_config["x"]);
                 }
 
-                if (!GetCVar("rs_y", rs_y))
+                if (rs_recovery != 3 && !GetCVar("rs_y", rs_y))
                 {
                     rs_y = 0.f;
                     if (theme_config["y"].is_string())
-                        rs_y = (float(Utils::EvaluateExpression(theme_config["y"], (theme_size.y * rs_scale), display_size)) / display_size.y);
+                        rs_y = (float(Utils::EvaluateExpression(theme_config["y"], int(theme_size.y * rs_scale), display_size)) / display_size.y);
                     else if (theme_config["y"].is_number())
                         rs_y = float(theme_config["y"]);
                 }
-
             }
             theme_prev = theme_render.name;
 
@@ -206,8 +204,8 @@ void RocketStats::RenderOverlay()
             Options options = {
                 int(rs_x * display_size.x),
                 int(rs_y * display_size.y),
-                theme_size.x,
-                theme_size.y,
+                int(theme_size.x),
+                int(theme_size.y),
                 rs_scale,
                 (rs_launch * rs_opacity)
             };
@@ -284,8 +282,11 @@ void RocketStats::RenderOverlay()
                 if (rs_rotate_enabled)
                     start = ImRotateStart(drawlist);
 
-                for (auto& element : theme_render.elements)
-                    RenderElement(drawlist, element);
+                if (!rs_recovery || rs_recovery == 3)
+                {
+                    for (auto& element : theme_render.elements)
+                        RenderElement(drawlist, element);
+                }
 
                 if (rs_rotate_enabled)
                     ImRotateEnd(rs_crotate, start, drawlist, ImRotationCenter(start, ImGui::GetBackgroundDrawList()));
@@ -334,7 +335,7 @@ void RocketStats::RenderOverlay()
                             rs_y = (overlay_cursor.y / display_size.y);
 
                             overlay_move = false;
-                            SetRefresh(1);
+                            SetRefresh(RefreshFlags_Refresh);
                         }
                         else
                             ImGui::SetTooltip(GetLang(LANG_OVERLAY_MOVE).c_str());
@@ -352,7 +353,7 @@ void RocketStats::RenderOverlay()
         if (rs_launch < 1.f)
         {
             rs_launch += 0.05f;
-            SetRefresh(1);
+            SetRefresh(RefreshFlags_Refresh);
         }
     }
     catch (const std::exception& err)
@@ -495,7 +496,7 @@ void RocketStats::RenderSettings()
             {
                 rs_x = 0.f;
                 if (theme_config["x"].is_string())
-                    rs_x = (float(Utils::EvaluateExpression(theme_config["x"], (theme_size.x * rs_scale), display_size)) / display_size.x);
+                    rs_x = (float(Utils::EvaluateExpression(theme_config["x"], int(theme_size.x * rs_scale), display_size)) / display_size.x);
                 else if (theme_config["x"].is_number())
                     rs_x = float(theme_config["x"]);
             }
@@ -520,7 +521,7 @@ void RocketStats::RenderSettings()
             {
                 rs_y = 0.f;
                 if (theme_config["y"].is_string())
-                    rs_y = (float(Utils::EvaluateExpression(theme_config["y"], (theme_size.y * rs_scale), display_size)) / display_size.y);
+                    rs_y = (float(Utils::EvaluateExpression(theme_config["y"], int(theme_size.y * rs_scale), display_size)) / display_size.y);
                 else if (theme_config["y"].is_number())
                     rs_y = float(theme_config["y"]);
             }

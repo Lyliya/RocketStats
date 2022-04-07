@@ -353,7 +353,7 @@ bool RocketStats::ReadConfig()
                     cvarManager->log("Config: stats loaded");
                 }
 
-                SetRefresh(1);
+                SetRefresh(RefreshFlags_Refresh);
             }
             else
                 cvarManager->log("Config: bad JSON");

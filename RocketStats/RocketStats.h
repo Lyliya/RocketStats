@@ -35,6 +35,13 @@ enum ToggleFlags_ {
 };
 typedef int ToggleFlags;
 
+enum RefreshFlags_ {
+	RefreshFlags_Off,
+	RefreshFlags_Refresh,
+	RefreshFlags_RefreshAndImages
+};
+typedef int RefreshFlags;
+
 struct Color {
 	bool enable = false;
 	ImColor color = ImGui::GetColorU32({ 255.f, 255.f, 255.f, 1.f });
@@ -109,8 +116,8 @@ struct Vector2D {
 class RocketStats : public BakkesMod::Plugin::BakkesModPlugin, public BakkesMod::Plugin::PluginWindow
 {
 private:
+	int rs_recovery = 0;
 	float rs_launch = 0.f;
-	bool rs_recovery = false;
 	bool rs_logo_mouv = false;
 	float rs_logo_rotate = 0.f;
 	float rs_screen_scale[2] = { 1.f, 1.f };
@@ -364,6 +371,7 @@ public:
 	bool SetCVar(const char* name, int& value, bool save = false);
 	bool SetCVar(const char* name, bool& value, bool save = false);
 	bool SetCVar(const char* name, float& value, bool save = false);
+	void CloseWelcome();
 	bool RecoveryOldVars();
 
 	// PluginLoadRoutines

@@ -121,7 +121,7 @@ bool RocketStats::ChangeTheme(int idx)
 
             cvarManager->log("Theme changed: " + theme.name + " (old: " + theme_render.name + ")");
             rs_theme = idx;
-            SetRefresh(2);
+            SetRefresh(RefreshFlags_RefreshAndImages);
         }
         else
             cvarManager->log("Theme config: " + theme.name + " bad JSON");
@@ -172,7 +172,7 @@ void RocketStats::RefreshFiles(std::string old, CVarWrapper now)
 
 void RocketStats::RefreshTheme(std::string old, CVarWrapper now)
 {
-    SetRefresh(1);
+    SetRefresh(RefreshFlags_Refresh);
 }
 
 Element RocketStats::CalculateElement(json& element, Options& options, bool& check)
@@ -482,7 +482,7 @@ void RocketStats::RenderElement(ImDrawList* drawlist, Element& element)
             if (image != nullptr && image->GetImGuiTex() != nullptr && element.size.x && element.size.y)
                 drawlist->AddImage(image->GetImGuiTex(), element.positions.at(0), element.size, ImVec2{ 0, 0 }, ImVec2{ 1, 1 }, element.color.color);
             else
-                SetRefresh(1);
+                SetRefresh(RefreshFlags_Refresh);
         }
         else if (element.type == "text")
         {

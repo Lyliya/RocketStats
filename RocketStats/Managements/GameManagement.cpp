@@ -77,7 +77,7 @@ void RocketStats::GameEnd(std::string eventName)
                 always_gm[current.playlist].streak++;
             }
 
-            SetRefresh(1);
+            SetRefresh(RefreshFlags_Refresh);
             WriteWin();
         }
         else
@@ -104,7 +104,7 @@ void RocketStats::GameEnd(std::string eventName)
                 always_gm[current.playlist].streak--;
             }
 
-            SetRefresh(1);
+            SetRefresh(RefreshFlags_Refresh);
             WriteLoss();
         }
 
@@ -162,7 +162,7 @@ void RocketStats::GameDestroyed(std::string eventName)
     if (rs_in_file && rs_file_boost)
         WriteInFile("RocketStats_BoostState.txt", std::to_string(-1));
 
-    SetRefresh(1);
+    SetRefresh(RefreshFlags_Refresh);
     cvarManager->log("===== !GameDestroyed =====");
 }
 

@@ -185,6 +185,27 @@ bool RocketStats::SetCVar(const char* name, float& value, bool save)
     return false;
 }
 
+void RocketStats::CloseWelcome()
+{
+    if (rs_recovery == 1)
+    {
+        rs_recovery = 2;
+        RemoveFile("RocketStats_images/welcome.png");
+
+        gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
+            cvarManager->executeCommand("exec config");
+
+            gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
+                RecoveryOldVars();
+                SetRefresh(RefreshFlags_Refresh);
+
+                rs_launch = 0.f;
+                rs_recovery = 3;
+            }, 1.0f);
+        }, 0.2f);
+    }
+}
+
 bool RocketStats::RecoveryOldVars()
 {
     cvarManager->log("Recovery old vars !");
@@ -292,7 +313,7 @@ void RocketStats::onLoad()
     // Initializes the different functionalities
     InitRank();
     InitStats();
-    rs_recovery = !ReadConfig();
+    rs_recovery = (ReadConfig() ? 0 : 1);
     ChangeTheme(rs_theme);
 
     // Reset all files (and create them if they don't exist)
@@ -412,14 +433,9 @@ void RocketStats::onLoad()
     gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
         if (rs_recovery)
         {
-            rs_recovery = false;
-            if (RecoveryOldVars())
-            {
-                rs_recovery = true;
-                std::string path = "RocketStats_images/welcome.png";
-                if (WriteResInFile(path, ((gameWrapper->GetUILanguage().ToString() == "FRA") ? IDB_WEL_FRA : IDB_WEL_INT), "PNG"))
-                    rs_welcome = LoadImg(path);
-            }
+            std::string path = "RocketStats_images/welcome.png";
+            if (WriteResInFile(path, ((gameWrapper->GetUILanguage().ToString() == "FRA") ? IDB_WEL_FRA : IDB_WEL_INT), "PNG"))
+                rs_welcome = LoadImg(path);
         }
 
         UpdateUIScale("onLoad");
@@ -505,7 +521,7 @@ void RocketStats::UpdateUIScale(std::string eventName)
     rs_screen_scale[0] = gameWrapper->GetInterfaceScale();
     rs_screen_scale[1] = gameWrapper->GetDisplayScale();
     cvarManager->log("Scale: " + std::to_string(rs_screen_scale[0]) + " " + std::to_string(rs_screen_scale[1]));
-    SetRefresh(1);
+    SetRefresh(RefreshFlags_Refresh);
 }
 
 void RocketStats::TogglePlugin(std::string eventName, ToggleFlags mode)

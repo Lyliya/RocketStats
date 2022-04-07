@@ -53,7 +53,7 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
             ++stats[current.playlist].demoCumul;
             ++always_gm[current.playlist].demo;
             ++always_gm[current.playlist].demoCumul;
-            SetRefresh(1);
+            SetRefresh(RefreshFlags_Refresh);
 
             if (rs_file_demo)
                 WriteInFile("RocketStats_Demolition.txt", std::to_string(0));
@@ -68,7 +68,7 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
             ++stats[current.playlist].deathCumul;
             ++always_gm[current.playlist].death;
             ++always_gm[current.playlist].deathCumul;
-            SetRefresh(1);
+            SetRefresh(RefreshFlags_Refresh);
 
             if (rs_file_death)
                 WriteInFile("RocketStats_Death.txt", std::to_string(0));
@@ -124,7 +124,7 @@ void RocketStats::MajRank(bool isRanked, float _currentMMR, SkillRank playerRank
     WriteRank();
     WriteDiv();
 
-    SetRefresh(1);
+    SetRefresh(RefreshFlags_Refresh);
 }
 
 void RocketStats::UpdateMMR(UniqueIDWrapper id)
@@ -176,7 +176,7 @@ void RocketStats::UpdateMMR(UniqueIDWrapper id)
     WriteMMR();
     WriteMMRChange();
 
-    SetRefresh(1);
+    SetRefresh(RefreshFlags_Refresh);
     cvarManager->log("===== !UpdateMMR =====");
 }
 
@@ -226,7 +226,7 @@ void RocketStats::SessionStats()
     always.MMRChange = session.MMRChange;
     always.isInit = true;
 
-    SetRefresh(1);
+    SetRefresh(RefreshFlags_Refresh);
 }
 
 void RocketStats::ResetStats()
@@ -237,7 +237,7 @@ void RocketStats::ResetStats()
     ResetFiles();
 
     InitRank();
-    SetRefresh(1);
+    SetRefresh(RefreshFlags_Refresh);
 }
 
 void RocketStats::ResetBasicStats()

@@ -16,7 +16,7 @@ void RocketStats::OnBoostStart(std::string eventName)
         if (!bWrap.IsNull() && bWrap.GetbActive() == 1 && !is_boosting)
         {
             is_boosting = true;
-            SetRefresh(1);
+            SetRefresh(RefreshFlags_Refresh);
             if (rs_in_file)
                 WriteInFile("RocketStats_BoostState.txt", std::to_string(1));
         }
@@ -39,7 +39,7 @@ void RocketStats::OnBoostEnd(std::string eventName)
         if (!bWrap.IsNull() && bWrap.GetbActive() == 0 && is_boosting)
         {
             is_boosting = false;
-            SetRefresh(1);
+            SetRefresh(RefreshFlags_Refresh);
             if (rs_in_file)
                 WriteInFile("RocketStats_BoostState.txt", std::to_string(0));
         }
