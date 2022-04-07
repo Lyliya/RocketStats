@@ -12,7 +12,7 @@ void RocketStats::Render()
     RenderOverlay();
 
     // Displays the button allowing the display and the hiding of the menu
-    if (rs_recovery > 0 || (!overlay_move && (!is_in_game || is_in_menu)))
+    if (rs_recovery > 0 || settings_open || (!overlay_move && (!is_in_game || is_in_menu)))
         RenderIcon();
 
     if (!overlay_move && settings_open)
