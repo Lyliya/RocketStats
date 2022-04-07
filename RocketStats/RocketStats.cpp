@@ -196,11 +196,9 @@ void RocketStats::CloseWelcome()
             cvarManager->executeCommand("exec config");
 
             gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
-                RecoveryOldVars();
-                SetRefresh(RefreshFlags_Refresh);
-
                 rs_launch = 0.f;
-                rs_recovery = 3;
+                rs_recovery = (RecoveryOldVars() ? 3 : 0);
+                SetRefresh(RefreshFlags_RefreshAndImages);
             }, 1.0f);
         }, 0.2f);
     }
