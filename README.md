@@ -24,9 +24,15 @@ You can come and ask your questions or discuss with the community in our [discor
 
 Thanks to all the people who helped us during the development.
 
-- [Maylie](https://www.twitch.tv/Maylie_tv) for ideas and support
-- [Ekon](https://www.twitch.tv/ekonrl) for tests
-- [Fuury](https://www.twitch.tv/FuuRy_Off) for tests
+##### Thanks for ideas and support:
+- [Maylie](https://www.twitch.tv/Maylie_tv)
+
+##### Thanks for tests:
+- [Daakiii_](https://www.twitch.tv/daakiii_)
+- [Ekon](https://www.twitch.tv/ekonrl)
+- [Fuury](https://www.twitch.tv/FuuRy_Off)
+- [Loppeur](https://www.twitch.tv/loppeur)
+- [sw1tch_rl](https://www.twitch.tv/sw1tch_rl)
 
 #### Development Team & Contributors
 
