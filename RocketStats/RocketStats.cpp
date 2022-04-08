@@ -4,7 +4,7 @@
 
 #include "RocketStats.h"
 
-BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "4.0.6", PERMISSION_ALL)
+BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "4.0.7", PERMISSION_ALL)
 
 #pragma region Utils
 Stats RocketStats::GetStats()
