@@ -33,6 +33,7 @@ Thanks to all the people who helped us during the development.
 - [Fuury](https://www.twitch.tv/FuuRy_Off)
 - [Loppeur](https://www.twitch.tv/loppeur)
 - [sw1tch_rl](https://www.twitch.tv/sw1tch_rl)
+- [T_o_T_o_N_e](https://www.twitch.tv/t_o_t_o_n_e)
 
 #### Development Team & Contributors
 

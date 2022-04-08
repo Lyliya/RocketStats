@@ -509,7 +509,7 @@ void RocketStats::WriteMMRChange(bool force)
     if (force || (rs_in_file && rs_file_mmrc))
     {
         std::string tmp = theme_hide_value;
-        if (rs_hide_mmrc)
+        if (!rs_hide_mmrc)
         {
             Stats tstats = GetStats();
             tmp = Utils::FloatFixer(tstats.MMRChange, (rs_enable_float ? 2 : 0));
@@ -524,7 +524,7 @@ void RocketStats::WriteMMRChange(bool force)
     if (force || (rs_in_file && rs_file_mmrcc))
     {
         std::string tmp = theme_hide_value;
-        if (rs_hide_mmrcc)
+        if (!rs_hide_mmrcc)
         {
             Stats tstats = GetStats();
             tmp = Utils::FloatFixer(tstats.MMRCumulChange, (rs_enable_float ? 2 : 0));
@@ -555,7 +555,7 @@ void RocketStats::WriteStreak(bool force)
         return;
 
     std::string tmp = theme_hide_value;
-    if (rs_hide_streak)
+    if (!rs_hide_streak)
     {
         Stats tstats = GetStats();
         tmp = std::to_string(tstats.streak);

@@ -836,6 +836,7 @@ void RocketStats::RenderSettings()
     SetCVar("rs_enable_float", rs_enable_float);
     SetCVar("rs_preview_rank", rs_preview_rank);
 
+    SetCVar("rs_in_file", rs_in_file);
     SetCVar("rs_file_gm", rs_file_gm);
     SetCVar("rs_file_rank", rs_file_rank);
     SetCVar("rs_file_div", rs_file_div);
