@@ -12,7 +12,7 @@ First, you'll need to install [Bakkesmod](https://www.bakkesmod.com/) and make s
 
 Use the Wiki available in the menu at the top of the page. You will have all the information easily accessible to understand the plugin.
 
-Wiki: https://github.com/Arubinu/RocketStats/wiki
+Wiki: https://github.com/Lyliya/RocketStats/wiki
 
 ### Additional themes
 
