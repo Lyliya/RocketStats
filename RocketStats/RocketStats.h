@@ -1,89 +1,197 @@
 #pragma once
-#pragma comment( lib, "pluginsdk.lib" )
+#pragma warning(disable: 4099)
+#pragma comment(lib, "pluginsdk.lib")
 #include "bakkesmod/plugin/bakkesmodplugin.h"
 #include "bakkesmod/plugin/pluginwindow.h"
 
-struct Stats {
-	float myMMR = 100.0f;
-	float MMRChange = 0.0f;
-	int win = 0;
-	int losses = 0;
-	int streak = 0;
-	bool isInit = 0;
+#include <pch.h>
+#include <json.hpp>
+#include <fpstimer.hpp>
+#include <resource.hpp>
+#include <imgui/imgui_rotate.h>
+#include "bakkesmod/wrappers/GuiManagerWrapper.h"
+
+#include <map>
+#include <vector>
+#include <fstream>
+#include <windows.h>
+#include <functional>
+#include <utils/parser.h>
+
+#include "Utils.h"
+#include "Languages.h"
+#include "Resources/Resource.h"
+
+#define  M_PI	3.14159265358979323846
+
+using json = nlohmann::json;
+
+namespace fs = std::filesystem;
+
+enum ToggleFlags_ {
+	ToggleFlags_Toggle,
+	ToggleFlags_Show,
+	ToggleFlags_Hide
+};
+typedef int ToggleFlags;
+
+enum RefreshFlags_ {
+	RefreshFlags_Off,
+	RefreshFlags_Refresh,
+	RefreshFlags_RefreshAndImages
+};
+typedef int RefreshFlags;
+
+struct Color {
+	bool enable = false;
+	ImColor color = ImGui::GetColorU32({ 255.f, 255.f, 255.f, 1.f });
 };
 
-class RocketStats : public BakkesMod::Plugin::BakkesModPlugin
+struct Element {
+	std::string name = "Unknown";
+	std::string type;
+	std::string value;
+	std::vector<ImVec2> positions;
+	ImVec2 size;
+	Color color;
+	Color fill;
+	Color stroke;
+	float scale = 1.f;
+	bool rotate_enable = false;
+	float rotate = 0.f;
+};
+
+struct Options {
+	int x;
+	int y;
+	int width;
+	int height;
+	float scale;
+	float opacity;
+};
+
+struct Stats {
+	float myMMR = 100.f;
+	float MMRChange = 0.f;
+	float MMRCumulChange = 0.f;
+	int win = 0;
+	int loss = 0;
+	int streak = 0;
+	int demo = 0;
+	int demoCumul = 0;
+	int death = 0;
+	int deathCumul = 0;
+	bool isInit = false;
+};
+
+struct Theme {
+	std::string name = "Unknown";
+	std::string author = "Unknown";
+	std::string version = "v1.0.0";
+	std::string date = "";
+	int font_size = 0;
+	std::string font_name = "";
+	std::vector<Element> elements;
+};
+
+struct StatTickerParams {
+	uintptr_t Receiver; // person who got a stat
+	uintptr_t Victim; // person who is victim of a stat (only exists for demos afaik)
+	uintptr_t StatEvent;
+};
+
+struct StatEventParams {
+	uintptr_t PRI; // always primary player
+	uintptr_t StatEvent; // wrapper for the stat event
+};
+
+struct Vector2D {
+	int x = 0;
+	int y = 0;
+	int width = 0;
+	int height = 0;
+};
+
+
+class RocketStats : public BakkesMod::Plugin::BakkesModPlugin, public BakkesMod::Plugin::PluginWindow
 {
 private:
-	std::shared_ptr<bool> enabled;
+	int rs_recovery = 0;
+	float rs_launch = 0.f;
+	bool rs_logo_mouv = false;
+	float rs_logo_rotate = 0.f;
+	float rs_screen_scale[2] = { 1.f, 1.f };
+	std::vector<std::string> rs_lang;
+	std::shared_ptr<ImageWrapper> rs_logo;
+	std::shared_ptr<ImageWrapper> rs_title;
+	std::shared_ptr<ImageWrapper> rs_welcome;
+	ImDrawList* rs_drawlist = IM_NEW(ImDrawList(NULL));
 
-public:
-	virtual void onLoad();
-	virtual void onUnload();
+	// Time
+	tm local_time;
+	time_t current_time;
+	FPSTimer timer_30fps = FPSTimer(30, true);
 
-	void LogImageLoadStatus(bool status, std::string imageName);
-	std::string GetRank(int tierID);
-	std::string GetPlaylistName(int playlistID);
-	void replaceAll(std::string& str, const std::string& from, const std::string& to);
-	void LoadImgs();
+	// Themes
+	ImVec2 theme_size = { 0.f, 0.f };
+	ImVec2 display_size = { 0.f, 0.f };
+	unsigned char theme_style = 0;
+	unsigned char theme_refresh = 2;
 
-	void GameStart(std::string eventName);
-	void GameEnd(std::string eventName);
-	void GameDestroyed(std::string eventName);
+	json theme_config = json::object();
+	json themes_values = json::object();
+	Theme theme_render;
+	std::string theme_prev = "";
+	std::string theme_hide_value = "##";
+	std::vector<Theme> themes;
+	std::vector<std::string> modes;
+	std::map<std::string, std::string> theme_vars;
+	std::map<std::string, std::shared_ptr<ImageWrapper>> theme_images;
 
-	void UpdateMMR(UniqueIDWrapper id);
-	void SessionStats();
-	void ResetStats();
-
-	void OnBoostStart(std::string eventName);
-	void OnBoostEnd(std::string eventName);
-	//void StopBoost();
-
-
-	void InitRank();
-	void MajRank(int _gameMode, bool isRanked, float _currentMMR, SkillRank playerRank);
-
-	void DisplayRank(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, float scale, bool showText);
-	void DisplayMMR(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale, bool showImage);
-	void DisplayWins(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale);
-	void DisplayLoose(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale);
-	void DisplayStreak(CanvasWrapper canvas, Vector2 imagePos, Vector2 textPos_tmp, Stats current, float scale, bool showImage);
-	void Render(CanvasWrapper canvas);
-
-	void WriteInFile(std::string _fileName, std::string _value);
-	void writeGameMode();
-	void writeMMR();
-	void writeMMRChange();
-	void writeStreak();
-	void writeWin();
-	void writeLosses();
-
-	int currentPlaylist = 0;
-	bool isGameEnded = false;
-	bool isGameStarted = false;
-	bool isBoosting = false;
-
-	std::map<int, Stats> stats;
-	Stats session;
+	// Overlay
+	bool overlay_move = false;
+	ImVec2 overlay_cursor;
+	ImVec2 overlay_origin;
 
 	//std::unique_ptr<MMRNotifierToken> notifierToken;
 
-	int myTeamNum = -1;
+	// Game states
+	bool is_in_game = false;
+	bool is_in_menu = false;
+	bool is_online_game = false;
+	bool is_offline_game = false;
+	bool is_boosting = false;
+	bool is_game_ended = false;
+	bool is_game_started = false;
 
-	int lastGameMode = 0;
-	int currentGameMode = 0;
-	float currentMMR = 100.0f;
-	int currentTier = 0;
-	std::string currentDivision;
-	std::string currentRank;
-	std::string lastRank;
+	// All stats
+	Stats always;
+	Stats session;
+	std::map<int, Stats> stats;
+	std::map<int, Stats> always_gm;
 
-	std::shared_ptr<ImageWrapper> crown;
-	std::shared_ptr<ImageWrapper> win;
-	std::shared_ptr<ImageWrapper> loose;
-	std::shared_ptr<ImageWrapper> streak;
+	// Current stats
+	int my_team_num = -1;
 
+	typedef struct s_current {
+		int demo = 0;
+		int tier = 0;
+		int death = 0;
+		int playlist = 0;
+		bool ranked = false;
+		std::string rank = "norank";
+		std::string division = "nodiv";
+		std::string preview_rank = "norank";
+		std::string preview_division = "nodiv";
+	} t_current;
+
+	t_current current;
+	std::string last_rank = "norank";
+	std::string last_division = "nodiv";
+
+	// Rank
 	int rank_nb = 23;
+	std::shared_ptr<ImageWrapper> casual;
 
 	typedef struct s_ranks {
 		std::string name;
@@ -116,7 +224,7 @@ public:
 		{"Supersonic_Legend", nullptr},
 	};
 
-	const std::map<int, std::string> playlistName = {
+	const std::map<int, std::string> playlist_name = {
 		{1, "Duel"},
 		{2, "Doubles"},
 		{3, "Standard"},
@@ -165,4 +273,180 @@ public:
 		{48, "Tactical Rumble"},
 		{49, "Spring Loaded"}
 	};
+
+	// PluginWindow
+	bool mouse_state = false;
+	bool escape_state = false;
+	bool plugin_open = false;
+	bool settings_open = false;
+	std::string menu_name = "rocketstats";
+	std::string menu_title = "RocketStats";
+	std::string menu_version = "";
+
+	void RenderIcon();
+	void RenderOverlay();
+	void RenderSettings();
+
+	virtual void Render() override;
+	virtual std::string GetMenuName() override;
+	virtual std::string GetMenuTitle() override;
+	virtual void SetImGuiContext(uintptr_t ctx) override;
+	virtual bool ShouldBlockInput() override;
+	virtual bool IsActiveOverlay() override;
+	virtual void OnOpen() override;
+	virtual void OnClose() override;
+
+public:
+	int rs_mode = 0;
+	int rs_theme = 0;
+
+	bool rs_disp_obs = false;
+	bool rs_disp_overlay = true;
+	bool rs_enable_inmenu = true;
+	bool rs_enable_ingame = true;
+	bool rs_enable_float = false;
+	bool rs_preview_rank = false;
+
+	bool rs_in_file = true;
+	bool rs_select_all_file = true;
+	bool rs_file_gm = true;
+	bool rs_file_rank = true;
+	bool rs_file_div = true;
+	bool rs_file_mmr = true;
+	bool rs_file_mmrc = true;
+	bool rs_file_mmrcc = true;
+	bool rs_file_win = true;
+	bool rs_file_loss = true;
+	bool rs_file_streak = true;
+	bool rs_file_demo = true;
+	bool rs_file_demom = true;
+	bool rs_file_democ = true;
+	bool rs_file_death = true;
+	bool rs_file_deathm = true;
+	bool rs_file_deathc = true;
+	bool rs_file_boost = true;
+
+	bool rs_replace_mmr = false;
+	bool rs_replace_mmrc = false;
+	bool rs_select_all_hide = true;
+	bool rs_hide_gm = false;
+	bool rs_hide_rank = false;
+	bool rs_hide_div = false;
+	bool rs_hide_mmr = false;
+	bool rs_hide_mmrc = false;
+	bool rs_hide_mmrcc = false;
+	bool rs_hide_win = false;
+	bool rs_hide_loss = false;
+	bool rs_hide_streak = false;
+	bool rs_hide_demo = false;
+	bool rs_hide_demom = false;
+	bool rs_hide_democ = false;
+	bool rs_hide_death = false;
+	bool rs_hide_deathm = false;
+	bool rs_hide_deathc = false;
+
+	float rs_x = 0.7f;
+	float rs_y = 0.575f;
+	float rs_scale = 1.f;
+	bool rs_rotate_enabled = false;
+	float rs_rotate = 0.f;
+	float rs_crotate = 0.f;
+	float rs_opacity = 1.f;
+
+	bool rs_x_edit = false;
+	bool rs_y_edit = false;
+	bool rs_scale_edit = false;
+	bool rs_rotate_edit = false;
+	bool rs_opacity_edit = false;
+
+	// Utils
+	Stats GetStats();
+	std::string GetRank(int tierID);
+	std::string GetPlaylistName(int playlistID);
+	void LogImageLoadStatus(bool status, std::string imageName);
+	std::shared_ptr<ImageWrapper> LoadImg(const std::string& _filename);
+	std::shared_ptr<ImageWrapper> LoadImg(fs::path& _path);
+	void LoadImgs();
+	bool GetCVar(const char* name, int& value);
+	bool GetCVar(const char* name, bool& value);
+	bool GetCVar(const char* name, float& value);
+	bool SetCVar(const char* name, int& value, bool save = false);
+	bool SetCVar(const char* name, bool& value, bool save = false);
+	bool SetCVar(const char* name, float& value, bool save = false);
+	void CloseWelcome();
+	bool RecoveryOldVars();
+
+	// PluginLoadRoutines
+	virtual void onLoad();
+	virtual void onUnload();
+	void SetDefaultFolder();
+	void SetCustomProtocol();
+	void ShowPlugin(std::string eventName);
+	void UpdateUIScale(std::string eventName);
+	void TogglePlugin(std::string eventName, ToggleFlags mode = ToggleFlags_Toggle);
+	void ToggleSettings(std::string eventName, ToggleFlags mode = ToggleFlags_Toggle);
+
+	// GameManagement
+	void GameStart(std::string eventName);
+	void GameEnd(std::string eventName);
+	void GameDestroyed(std::string eventName);
+	int GetGameTime();
+	TeamWrapper GetTeam(bool opposing);
+	ImColor GetTeamColor(TeamWrapper team);
+
+	// StatsManagement
+	bool isPrimaryPlayer(PriWrapper pri);
+	void onStatEvent(ServerWrapper caller, void* args);
+	void onStatTickerMessage(ServerWrapper caller, void* args);
+	void InitRank();
+	void MajRank(bool isRanked, float _currentMMR, SkillRank playerRank);
+	void UpdateMMR(UniqueIDWrapper id);
+	void InitStats();
+	void SessionStats();
+	void ResetStats();
+	void ResetBasicStats();
+
+	// BoostManagement
+	void OnBoostStart(std::string eventName);
+	void OnBoostEnd(std::string eventName);
+	int GetBoostAmount();
+	//void StopBoost();
+
+	// OverlayManagement
+	void LoadThemes();
+	bool ChangeTheme(int idx);
+	void SetTheme(std::string name);
+	void SetRefresh(unsigned char value);
+	void RefreshFiles(std::string old, CVarWrapper now);
+	void RefreshTheme(std::string old, CVarWrapper now);
+	Element CalculateElement(json& element, Options& options, bool& check);
+	void RenderElement(ImDrawList* drawlist, Element& element);
+
+	// LangManagement
+	void ChangeLang(int id = IDB_LANG_INT);
+	std::string GetLang(unsigned int id);
+
+	// FileManagement
+	std::string GetPath(std::string _path = "", bool root = false);
+	bool ExistsPath(std::string _filename, bool root = false);
+	bool RemoveFile(std::string _filename, bool root = false);
+	std::string ReadFile(std::string _filename, bool root = false);
+	json ReadJSON(std::string _filename, bool root = false);
+	void WriteInFile(std::string _fileName, std::string _value, bool root = false);
+	bool WriteResInFile(std::string _filename, int id, const char* type, bool root = false);
+	void UpdateFiles(bool force = false);
+	void ResetFiles();
+	bool ReadConfig();
+	void WriteConfig();
+	void WriteGameMode(bool force = false);
+	void WriteRank(bool force = false);
+	void WriteDiv(bool force = false);
+	void WriteMMR(bool force = false);
+	void WriteMMRChange(bool force = false);
+	void WriteWin(bool force = false);
+	void WriteLoss(bool force = false);
+	void WriteStreak(bool force = false);
+	void WriteBoost(bool force = false);
+	void WriteDemo(bool force = false);
+	void WriteDeath(bool force = false);
 };

@@ -1,7 +1,7 @@
+.DS_Store
+Thumbs.db
+
 .vs/
 Release/
 x64/
-RocketStatsNusa/*
-!RocketStatsNusa/*.cpp
-!RocketStatsNusa/*.h
-!RocketStatsNusa/*.hpp
+Resource.aps

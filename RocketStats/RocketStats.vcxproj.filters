@@ -1,30 +1,137 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Fichiers sources">
+    <Filter Include="Sources">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Fichiers d%27en-tête">
+    <Filter Include="Sources\ImGui">
+      <UniqueIdentifier>{a4fd5196-fe28-409d-95c5-96353735734a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Fichiers de ressources">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="Sources\Other">
+      <UniqueIdentifier>{92ce0206-0307-4e3c-86c0-0eb00208a9b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Managements">
+      <UniqueIdentifier>{11402342-786f-42fe-a563-d2dc0ab00f9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{30974c5c-533d-41e6-a901-016a24046066}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Languages">
+      <UniqueIdentifier>{ad0a7cd5-a45f-410c-b47f-98fb5d738fe9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Welcome">
+      <UniqueIdentifier>{af49430e-9522-4446-986c-d6659148a85b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RocketStats.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\Resource.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Languages.h">
+      <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="RocketStats.cpp">
-      <Filter>Fichiers sources</Filter>
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Managements\FileManagement.cpp">
+      <Filter>Sources\Managements</Filter>
+    </ClCompile>
+    <ClCompile Include="Managements\GameManagement.cpp">
+      <Filter>Sources\Managements</Filter>
+    </ClCompile>
+    <ClCompile Include="Managements\OverlayManagement.cpp">
+      <Filter>Sources\Managements</Filter>
+    </ClCompile>
+    <ClCompile Include="Managements\StatsManagement.cpp">
+      <Filter>Sources\Managements</Filter>
+    </ClCompile>
+    <ClCompile Include="Managements\WindowManagement.cpp">
+      <Filter>Sources\Managements</Filter>
+    </ClCompile>
+    <ClCompile Include="Managements\BoostManagement.cpp">
+      <Filter>Sources\Managements</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\tinyexpr\tinyexpr.c">
+      <Filter>Sources\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\imgui\imgui_impl_win32.cpp">
+      <Filter>Sources\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\imgui\imgui_rangeslider.cpp">
+      <Filter>Sources\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\imgui\imgui_rotate.cpp">
+      <Filter>Sources\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\imgui\imgui_searchablecombo.cpp">
+      <Filter>Sources\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\imgui\imgui_timeline.cpp">
+      <Filter>Sources\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\imgui\imgui_widgets.cpp">
+      <Filter>Sources\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\imgui\imguivariouscontrols.cpp">
+      <Filter>Sources\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\imgui\imgui.cpp">
+      <Filter>Sources\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\imgui\imgui_additions.cpp">
+      <Filter>Sources\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\imgui\imgui_draw.cpp">
+      <Filter>Sources\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\imgui\imgui_impl_dx11.cpp">
+      <Filter>Sources\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Managements\LangManagement.cpp">
+      <Filter>Sources\Managements</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\settings\rocketstats.set" />
+    <ResourceCompile Include="Resources\Resource.rc">
+      <Filter>Resources</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Languages\INT.json">
+      <Filter>Resources\Languages</Filter>
+    </None>
+    <None Include="Resources\Languages\FRA.json">
+      <Filter>Resources\Languages</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\Welcome\INT.png">
+      <Filter>Resources\Welcome</Filter>
+    </Image>
+    <Image Include="Resources\Welcome\FRA.png">
+      <Filter>Resources\Welcome</Filter>
+    </Image>
+    <Image Include="Resources\title.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\logo.png">
+      <Filter>Resources</Filter>
+    </Image>
   </ItemGroup>
 </Project>

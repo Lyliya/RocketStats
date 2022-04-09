@@ -1,0 +1,61 @@
+<!-- %appdata%\bakkesmod\bakkesmod\RocketStats\RocketStats_images -->
+<html>
+	<head>
+		<script type="text/javascript">
+			let delay = 2000; // Time between each rank change check (milliseconds)
+			let occasionnal = 'Occasional'; // Leave empty to display the images of the occasional modes (if none will display 'Unranked'), otherwise will display the image of the specified name.
+
+			function readTextFile( file )
+			{
+				return new Promise( ( resolve, reject ) => {
+					var request = new XMLHttpRequest();
+					request.open( 'GET', file, false );
+
+					request.onreadystatechange = () => {
+						if ( request.readyState === 4 )
+						{
+							if ( request.status === 200 || request.status == 0 )
+								resolve( request.responseText );
+							else
+								reject( request );
+						}
+					}
+
+					request.send( null );
+				} );
+			}
+
+			window.addEventListener( 'load', () => {
+				let last = 'Unranked';
+				let image = document.querySelector( 'img' );
+				let change = value => {
+					image.src = `${value || last}.png`;
+				};
+				let update = () => {
+					readTextFile( '../RocketStats_Rank.txt' ).then( value => {
+						value = value.trim();
+						if ( occasionnal && [ 'Standard', 'Duel', 'Doubles', 'Chaos' ].indexOf( value ) >= 0 )
+							value = occasionnal;
+
+						if ( value == last )
+							return ;
+
+						last = value;
+						change();
+					} );
+				};
+
+				image.onerror = () => {
+					change( 'Unranked' );
+				};
+
+				update();
+				setInterval( update, delay );
+			} );
+		</script>
+	</head>
+
+	<body>
+		<img src="Unranked.png" />
+	</body>
+<html>
