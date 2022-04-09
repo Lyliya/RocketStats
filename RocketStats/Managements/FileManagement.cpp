@@ -378,7 +378,7 @@ void RocketStats::WriteConfig()
     tmp["settings"]["mode"] = rs_mode;
     tmp["settings"]["theme"] = theme_render.name;
     tmp["settings"]["overlay"] = rs_disp_overlay;
-    tmp["settings"]["inmeny"] = rs_enable_inmenu;
+    tmp["settings"]["inmenu"] = rs_enable_inmenu;
     tmp["settings"]["ingame"] = rs_enable_ingame;
     tmp["settings"]["float"] = rs_enable_float;
 

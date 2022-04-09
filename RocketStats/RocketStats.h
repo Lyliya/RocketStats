@@ -308,6 +308,7 @@ public:
 	bool rs_preview_rank = false;
 
 	bool rs_in_file = true;
+	bool rs_select_all_file = true;
 	bool rs_file_gm = true;
 	bool rs_file_rank = true;
 	bool rs_file_div = true;
@@ -327,6 +328,7 @@ public:
 
 	bool rs_replace_mmr = false;
 	bool rs_replace_mmrc = false;
+	bool rs_select_all_hide = true;
 	bool rs_hide_gm = false;
 	bool rs_hide_rank = false;
 	bool rs_hide_div = false;
