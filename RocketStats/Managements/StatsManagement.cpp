@@ -152,16 +152,15 @@ void RocketStats::UpdateMMR(UniqueIDWrapper id)
     {
         float MMRChange = (mmr - stats[current.playlist].myMMR);
 
-        always.MMRChange += MMRChange;
+        always.MMRChange = MMRChange;
+        session.MMRChange = MMRChange;
         stats[current.playlist].MMRChange = MMRChange;
         always_gm[current.playlist].MMRChange = MMRChange;
 
         always.MMRCumulChange += MMRChange;
-        for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
-        {
-            stats[it->first].MMRCumulChange += MMRChange;
-            always_gm[it->first].MMRCumulChange += MMRChange;
-        }
+        session.MMRCumulChange += MMRChange;
+        stats[current.playlist].MMRCumulChange += MMRChange;
+        always_gm[current.playlist].MMRCumulChange += MMRChange;
     }
     else
         stats[current.playlist].isInit = true;
@@ -201,7 +200,6 @@ void RocketStats::SessionStats()
 
     for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
     {
-        tmp.MMRChange += stats[it->first].MMRChange;
         tmp.MMRCumulChange += stats[it->first].MMRChange;
         tmp.win += stats[it->first].win;
         tmp.loss += stats[it->first].loss;
@@ -212,8 +210,7 @@ void RocketStats::SessionStats()
     }
 
     session.myMMR = stats[current.playlist].myMMR;
-    session.MMRChange = tmp.MMRChange;
-    session.MMRCumulChange = tmp.MMRCumulChange;
+    session.MMRChange = stats[current.playlist].MMRChange;
     session.win = tmp.win;
     session.loss = tmp.loss;
     session.demo = tmp.demo;
