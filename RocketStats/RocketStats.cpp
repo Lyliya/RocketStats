@@ -31,12 +31,54 @@ std::string RocketStats::GetRank(int tierID)
         return "Unranked";
 }
 
+std::string RocketStats::GetRankName(int tierID, int& number)
+{
+    std::string tmp = GetRank(tierID);
+    std::vector<std::string> num = {};
+
+    Utils::ReplaceAll(tmp, "_", " ");
+    num = Utils::Split(tmp, ' ');
+
+    if (num.back().size())
+    {
+        auto it = std::find(roman_numbers.begin(), roman_numbers.end(), num.back());
+        if (it != roman_numbers.end())
+        {
+            num.pop_back();
+            number = int(it - roman_numbers.begin());
+
+            tmp = "";
+            for (int i = 0; i < num.size(); ++i)
+                tmp += (i ? " " : "") + num.at(i);
+        }
+    }
+
+    return tmp;
+}
+
 std::string RocketStats::GetPlaylistName(int playlistID)
 {
     if (playlist_name.find(playlistID) != playlist_name.end())
         return playlist_name.at(playlistID);
     else
         return "Unknown Game Mode";
+}
+
+std::string RocketStats::GetRoman(int number)
+{
+    return ((number >= 0 && number < roman_numbers.size()) ? roman_numbers.at(number) : "");
+}
+
+std::string RocketStats::AddRoman(std::string str, int number)
+{
+    std::string tmp;
+    if (rs_roman_numbers && number >= 0 && number < roman_numbers.size())
+        tmp = roman_numbers.at(number);
+    else
+        tmp = std::to_string(number);
+
+    Utils::ReplaceAll(str, "{{Number}}", tmp);
+    return str;
 }
 
 void RocketStats::LogImageLoadStatus(bool status, std::string imageName)
@@ -189,6 +231,8 @@ void RocketStats::CloseWelcome()
 {
     if (rs_recovery == 1)
     {
+        cvarManager->log("CloseWelcome");
+
         rs_recovery = 2;
         RemoveFile("RocketStats_images/welcome.png");
 
@@ -318,11 +362,10 @@ void RocketStats::onLoad()
     ResetFiles();
     RemoveFile("RocketStats_Loose.txt"); // Delete the old file
     RemoveFile("RocketStats_images/BoostState.txt"); // Delete the old file
-    RemoveFile("plugins/settings/rocketstats.set", true); // Delete the old file
 
     // Can be used from the console or in bindings
     cvarManager->registerNotifier("rs_toggle_menu", [this](std::vector<std::string> params) {
-            ToggleSettings("rs_toggle_menu");
+        ToggleSettings("rs_toggle_menu");
     }, GetLang(LANG_TOGGLE_MENU), PERMISSION_ALL);
 
     // Hook on Event
@@ -361,6 +404,7 @@ void RocketStats::onLoad()
         cvarManager->registerCvar("RS_session", "0", "Display session information instead of game mode", true, true, 0, true, 1, true);
     }
 
+    cvarManager->registerCvar("rs_toggle_logo", "1", GetLang(LANG_TOGGLE_LOGO_HELP), true, true, 0, true, 1);
     cvarManager->registerCvar("cl_rocketstats_settings", (settings_open ? "1" : "0"), GetLang(LANG_TOGGLE_MENU_HELP), true, true, 0, true, 1, false).addOnValueChanged([this](std::string old, CVarWrapper now) {
         settings_open = now.getBoolValue();
 
@@ -387,6 +431,7 @@ void RocketStats::onLoad()
     cvarManager->registerCvar("rs_enable_ingame", (rs_enable_ingame ? "1" : "0"), GetLang(LANG_SHOW_IN_GAME), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("rs_enable_float", (rs_enable_float ? "1" : "0"), GetLang(LANG_FLOATING_POINT), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("rs_preview_rank", (rs_preview_rank ? "1" : "0"), GetLang(LANG_PREVIEW_RANK), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_roman_numbers", (rs_roman_numbers ? "1" : "0"), GetLang(LANG_ROMAN_NUMBERS), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
 
     cvarManager->registerCvar("rs_in_file", (rs_in_file ? "1" : "0"), GetLang(LANG_IN_FILE), true, true, 0, true, 1, true).addOnValueChanged([this](std::string old, CVarWrapper now) {
         UpdateFiles(true);

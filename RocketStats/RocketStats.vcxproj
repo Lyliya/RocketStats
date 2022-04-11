@@ -50,7 +50,8 @@
       <AdditionalLibraryDirectories>$(BAKKESMOD)\bakkesmodsdk\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>"$(BAKKESMOD)\bakkesmodsdk\bakkesmod-patch.exe" $(TargetPath)</Command>
+      <Command>"$(BAKKESMOD)\bakkesmodsdk\bakkesmod-patch.exe" $(TargetPath)
+copy "$(SolutionDir)settings\$(ProjectName).set" "$(BAKKESMOD)\plugins\settings\$(ProjectName.toLower()).set"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -86,6 +87,7 @@
     <ResourceCompile Include="Resources\Resource.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\settings\rocketstats.set" />
     <None Include="Resources\Languages\INT.json" />
     <None Include="Resources\Languages\FRA.json" />
   </ItemGroup>

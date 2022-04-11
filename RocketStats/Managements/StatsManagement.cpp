@@ -98,27 +98,38 @@ void RocketStats::MajRank(bool isRanked, float _currentMMR, SkillRank playerRank
 
     if (isRanked)
     {
-        current.preview_rank = GetRank(playerRank.Tier);
-        current.preview_division = "Div. " + std::to_string(playerRank.Division + 1);
+        current.preview_rank = GetRankName(playerRank.Tier, current.preview_rank_number);
+        if (current.preview_rank_number)
+            current.preview_rank += " {{Number}}";
+
+        current.preview_division = "Div. {{Number}}";
+        current.preview_division_number = (playerRank.Division + 1);
 
         if (current.playlist != 34 && playerRank.MatchesPlayed < 10)
         {
             current.rank = "Placement: " + std::to_string(playerRank.MatchesPlayed) + "/10";
             current.division = "";
+            current.division_number = 0;
         }
         else
         {
             current.rank = current.preview_rank;
+            current.rank_number = current.preview_rank_number;
             current.division = current.preview_division;
+            current.division_number = current.preview_division_number;
         }
     }
     else
     {
         current.rank = GetPlaylistName(current.playlist);
+        current.rank_number = 0;
         current.division = "";
+        current.division_number = 0;
 
         current.preview_rank = current.rank;
+        current.preview_rank_number = current.rank_number;
         current.preview_division = current.division;
+        current.preview_division_number = current.division_number;
     }
 
     WriteRank();

@@ -183,15 +183,20 @@ private:
 		std::string division = "nodiv";
 		std::string preview_rank = "norank";
 		std::string preview_division = "nodiv";
+		int rank_number = 0;
+		int division_number = 0;
+		int preview_rank_number = 0;
+		int preview_division_number = 0;
 	} t_current;
 
 	t_current current;
 	std::string last_rank = "norank";
 	std::string last_division = "nodiv";
 
-	// Rank
+	// Rank & Division
 	int rank_nb = 23;
 	std::shared_ptr<ImageWrapper> casual;
+	std::vector<std::string> roman_numbers = { "", "I", "II", "III", "IV", "V" };
 
 	typedef struct s_ranks {
 		std::string name;
@@ -306,6 +311,7 @@ public:
 	bool rs_enable_ingame = true;
 	bool rs_enable_float = false;
 	bool rs_preview_rank = false;
+	bool rs_roman_numbers = true;
 
 	bool rs_in_file = true;
 	bool rs_select_all_file = true;
@@ -362,7 +368,10 @@ public:
 	// Utils
 	Stats GetStats();
 	std::string GetRank(int tierID);
+	std::string GetRankName(int tierID, int& number);
 	std::string GetPlaylistName(int playlistID);
+	std::string GetRoman(int number);
+	std::string AddRoman(std::string str, int number);
 	void LogImageLoadStatus(bool status, std::string imageName);
 	std::shared_ptr<ImageWrapper> LoadImg(const std::string& _filename);
 	std::shared_ptr<ImageWrapper> LoadImg(fs::path& _path);

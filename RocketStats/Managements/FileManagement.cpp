@@ -129,7 +129,11 @@ void RocketStats::ResetFiles()
 
     WriteInFile("RocketStats_GameMode.txt", "");
     WriteInFile("RocketStats_Rank.txt", last_rank);
+    WriteInFile("RocketStats_RankName.txt", last_rank);
+    WriteInFile("RocketStats_RankNumber.txt", (rs_roman_numbers ? "" : std::to_string(0)));
     WriteInFile("RocketStats_Div.txt", last_division);
+    WriteInFile("RocketStats_DivName.txt", last_division);
+    WriteInFile("RocketStats_DivNumber.txt", (rs_roman_numbers ? "" : std::to_string(0)));
     WriteInFile("RocketStats_MMR.txt", std::to_string(0));
     WriteInFile("RocketStats_MMRChange.txt", std::to_string(0));
     WriteInFile("RocketStats_MMRCumulChange.txt", std::to_string(0));
@@ -201,6 +205,10 @@ bool RocketStats::ReadConfig()
                         rs_enable_ingame = config["settings"]["ingame"];
                     if (config["settings"]["float"].is_boolean())
                         rs_enable_float = config["settings"]["float"];
+                    if (config["settings"]["preview"].is_boolean())
+                        rs_preview_rank = config["settings"]["preview"];
+                    if (config["settings"]["roman"].is_boolean())
+                        rs_roman_numbers = config["settings"]["roman"];
 
                     if (config["settings"]["files"].is_object() && !config["settings"]["files"].is_null())
                     {
@@ -381,6 +389,8 @@ void RocketStats::WriteConfig()
     tmp["settings"]["inmenu"] = rs_enable_inmenu;
     tmp["settings"]["ingame"] = rs_enable_ingame;
     tmp["settings"]["float"] = rs_enable_float;
+    tmp["settings"]["preview"] = rs_preview_rank;
+    tmp["settings"]["roman"] = rs_roman_numbers;
 
     // Save only existing themes
     tmp["settings"]["themes"] = json::object();
@@ -469,28 +479,46 @@ void RocketStats::WriteGameMode(bool force)
 void RocketStats::WriteRank(bool force)
 {
     t_current base;
-    std::string tmp = (rs_hide_rank ? theme_hide_value : (rs_preview_rank ? current.preview_rank : current.rank));
-    if (tmp == base.rank)
-        tmp = "";
+    std::string tmp = theme_hide_value;
+    int number = (rs_preview_rank ? current.preview_rank_number : current.rank_number);
+    if (!rs_hide_rank)
+    {
+        tmp = AddRoman((rs_preview_rank ? current.preview_rank : current.rank), number);
+        if (tmp == base.rank)
+            tmp = "";
+    }
 
     if (force || (rs_in_file && rs_file_rank && tmp != last_rank))
     {
         last_rank = tmp;
+        std::string tnumber = (rs_roman_numbers ? GetRoman(number) : std::to_string(number));
+
         WriteInFile("RocketStats_Rank.txt", tmp);
+        WriteInFile("RocketStats_RankName.txt", (rs_hide_rank ? theme_hide_value : (number ? tmp.substr(0, (tmp.size() - (tnumber.size() + 1))) : tmp)));
+        WriteInFile("RocketStats_RankNumber.txt", (rs_hide_rank ? theme_hide_value : tnumber));
     }
 }
 
 void RocketStats::WriteDiv(bool force)
 {
     t_current base;
-    std::string tmp = (rs_hide_div ? theme_hide_value : (rs_preview_rank ? current.preview_division : current.division));
-    if (tmp == base.division)
-        tmp = "";
+    std::string tmp = theme_hide_value;
+    int number = (rs_preview_rank ? current.preview_division_number : current.division_number);
+    if (!rs_hide_div)
+    {
+        tmp = AddRoman((rs_preview_rank ? current.preview_division : current.division), number);
+        if (tmp == base.division)
+            tmp = "";
+    }
 
     if (force || (rs_in_file && rs_file_div && tmp != last_division))
     {
         last_division = tmp;
+        std::string tnumber = (rs_roman_numbers ? GetRoman(number) : std::to_string(number));
+
         WriteInFile("RocketStats_Div.txt", tmp);
+        WriteInFile("RocketStats_DivName.txt", (rs_hide_div ? theme_hide_value : (number ? tmp.substr(0, (tmp.size() - (tnumber.size() + 1))) : tmp)));
+        WriteInFile("RocketStats_DivNumber.txt", (rs_hide_div ? theme_hide_value : tnumber));
     }
 }
 

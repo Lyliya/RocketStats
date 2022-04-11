@@ -119,6 +119,7 @@
     <None Include="Resources\Languages\FRA.json">
       <Filter>Resources\Languages</Filter>
     </None>
+    <None Include="..\settings\rocketstats.set" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Welcome\INT.png">

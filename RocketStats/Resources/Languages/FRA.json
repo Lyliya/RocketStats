@@ -11,6 +11,7 @@
 	"Affiche la superposition sur l'écran de jeu",
 	"Tout sélectionner/désélectionner",
 
+	"Affiche/Masque le logo",
 	"Affiche/Masque le menu",
 	"Affiche les paramètres RocketStats",
 	"Affiche le menu RocketStats",
@@ -50,6 +51,7 @@
 	"Afficher pendant le jeu",
 	"Activer la virgule flottante",
 	"Prévisualiser le rang",
+	"Conversion en nombres romain",
 	"Remplace MMR avec MMRChanger",
 	"Remplace MMRChange avec MMR",
 

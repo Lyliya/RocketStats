@@ -11,6 +11,7 @@
 	"Displays the overlay on the game screen",
 	"Select/Unselect all",
 
+	"Toggle logo",
 	"Toggle menu",
 	"Display RocketStats settings",
 	"Show RocketStats menu",
@@ -50,6 +51,7 @@
 	"Show while in-game",
 	"Enable floating point",
 	"Preview rank",
+	"Conversion to roman numerals",
 	"Replace MMR with MMRChange",
 	"Replace MMRChange with MMR",
 

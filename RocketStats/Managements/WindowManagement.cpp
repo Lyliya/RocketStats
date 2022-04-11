@@ -12,7 +12,7 @@ void RocketStats::Render()
     RenderOverlay();
 
     // Displays the button allowing the display and the hiding of the menu
-    if (rs_recovery > 0 || settings_open || (!overlay_move && (!is_in_game || is_in_menu)))
+    if (cvarManager->getCvar("rs_toggle_logo").getBoolValue() && (rs_recovery > 0 || settings_open || (!overlay_move && (!is_in_game || is_in_menu))))
         RenderIcon();
 
     if (!overlay_move && settings_open)
@@ -219,10 +219,37 @@ void RocketStats::RenderOverlay()
 
             // Creation of the different variables used in Text elements
             const size_t floating_length = (rs_enable_float ? 2 : 0);
+            const int div_tnumber = (rs_preview_rank ? current.preview_division_number : current.division_number);
+            const int rank_tnumber = (rs_preview_rank ? current.preview_rank_number : current.rank_number);
+
+            std::string div_name = theme_hide_value;
+            std::string div_number = theme_hide_value;
+            std::string div_string = theme_hide_value;
+            if (!rs_hide_div)
+            {
+                div_number = (rs_roman_numbers ? GetRoman(div_tnumber) : std::to_string(div_tnumber));
+                div_string = AddRoman((rs_preview_rank ? current.preview_division : current.division), (rs_preview_rank ? current.preview_division_number : current.division_number));
+                div_name = (div_tnumber ? div_string.substr(0, (div_string.size() - (div_number.size() + 1))) : div_string);
+            }
+
+            std::string rank_name = theme_hide_value;
+            std::string rank_number = theme_hide_value;
+            std::string rank_string = theme_hide_value;
+            if (!rs_hide_rank)
+            {
+                rank_number = (rs_roman_numbers ? GetRoman(rank_tnumber) : std::to_string(rank_tnumber));
+                rank_string = AddRoman((rs_preview_rank ? current.preview_rank : current.rank), (rs_preview_rank ? current.preview_rank_number : current.rank_number));
+                rank_name = rank_string.substr(0, (rank_string.size() - (rank_number.size() + 1)));
+                rank_name = (rank_tnumber ? rank_string.substr(0, (rank_string.size() - (rank_number.size() + 1))) : rank_string);
+            }
 
             theme_vars["GameMode"] = (rs_hide_gm ? theme_hide_value : GetPlaylistName(current.playlist));
-            theme_vars["Rank"] = (rs_hide_rank ? theme_hide_value : (rs_preview_rank ? current.preview_rank : current.rank));
-            theme_vars["Div"] = (rs_hide_div ? theme_hide_value : (rs_preview_rank ? current.preview_division : current.division));
+            theme_vars["Rank"] = rank_string;
+            theme_vars["RankName"] = rank_name;
+            theme_vars["RankNumber"] = rank_number;
+            theme_vars["Div"] = div_string;
+            theme_vars["DivName"] = div_name;
+            theme_vars["DivNumber"] = div_number;
             theme_vars["MMR"] = (rs_hide_mmr ? theme_hide_value : Utils::FloatFixer(tstats.myMMR, floating_length)); // Utils::PointFixer(current.myMMR, 6, floating_length)
             theme_vars["MMRChange"] = (rs_hide_mmrc ? theme_hide_value : Utils::FloatFixer(tstats.MMRChange, floating_length)); // Utils::PointFixer(current.MMRChange, 6, floating_length)
             theme_vars["MMRCumulChange"] = (rs_hide_mmrcc ? theme_hide_value : Utils::FloatFixer(tstats.MMRCumulChange, floating_length)); // Utils::PointFixer(current.MMRCumulChange, 6, floating_length)
@@ -672,6 +699,7 @@ void RocketStats::RenderSettings()
         ImGui::Checkbox(GetLang(LANG_SHOW_IN_GAME).c_str(), &rs_enable_ingame);
         ImGui::Checkbox(GetLang(LANG_FLOATING_POINT).c_str(), &rs_enable_float);
         ImGui::Checkbox(GetLang(LANG_PREVIEW_RANK).c_str(), &rs_preview_rank);
+        ImGui::Checkbox(GetLang(LANG_ROMAN_NUMBERS).c_str(), &rs_roman_numbers);
         ImGui::Checkbox(GetLang(LANG_MMR_TO_MMRCHANGE).c_str(), &rs_replace_mmr);
         ImGui::Checkbox(GetLang(LANG_MMRCHANGE_TO_MMR).c_str(), &rs_replace_mmrc);
         ImGui::EndChild();
@@ -838,8 +866,18 @@ void RocketStats::RenderSettings()
                 system("powershell -WindowStyle Hidden \"start https://discord.gg/weBCBE4\"");
         }
         ImGui::SameLine();
+        ImGui::Text("|");
+        ImGui::SameLine();
+        ImGui::TextColored(ImVec4{ 0.04f, 0.52f, 0.89f, 1.f }, "Documentation");
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+            if (ImGui::IsMouseClicked(0))
+                system("powershell -WindowStyle Hidden \"start https://github.com/Lyliya/RocketStats/wiki\"");
+        }
+        ImGui::SameLine();
         text_size = ImGui::CalcTextSize(GetLang(LANG_DEVELOPERS).c_str());
-        ImGui::SetCursorPosX((settings_size.x - text_size.x) / 2);
+        ImGui::SetCursorPosX(((settings_size.x - text_size.x) / 2) + 95.f);
         ImGui::Text(GetLang(LANG_DEVELOPERS).c_str());
         text_size = ImGui::CalcTextSize(menu_version.c_str());
         ImGui::SameLine();
@@ -919,6 +957,7 @@ void RocketStats::RenderSettings()
     }
     SetCVar("rs_enable_float", rs_enable_float);
     SetCVar("rs_preview_rank", rs_preview_rank);
+    SetCVar("rs_roman_numbers", rs_roman_numbers);
 
     SetCVar("rs_in_file", rs_in_file);
     SetCVar("rs_file_gm", rs_file_gm);
