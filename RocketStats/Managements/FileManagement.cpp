@@ -117,6 +117,7 @@ void RocketStats::UpdateFiles(bool force)
     WriteWin(force);
     WriteLoss(force);
     WriteStreak(force);
+    WriteWinRatio(force);
     WriteDemo(force);
     WriteDeath(force);
     WriteBoost(force);
@@ -140,6 +141,7 @@ void RocketStats::ResetFiles()
     WriteInFile("RocketStats_Win.txt", std::to_string(0));
     WriteInFile("RocketStats_Loss.txt", std::to_string(0));
     WriteInFile("RocketStats_Streak.txt", std::to_string(0));
+    WriteInFile("RocketStats_WinRatio.txt", std::to_string(0));
     WriteInFile("RocketStats_Demolition.txt", std::to_string(0));
     WriteInFile("RocketStats_DemolitionMatch.txt", std::to_string(0));
     WriteInFile("RocketStats_DemolitionCumul.txt", std::to_string(0));
@@ -215,35 +217,37 @@ bool RocketStats::ReadConfig()
                         if (config["settings"]["files"]["on"].is_boolean())
                             rs_in_file = config["settings"]["files"]["on"];
                         if (config["settings"]["files"]["gm"].is_boolean())
-                            rs_hide_gm = config["settings"]["files"]["gm"];
+                            rs_file_gm = config["settings"]["files"]["gm"];
                         if (config["settings"]["files"]["rank"].is_boolean())
-                            rs_hide_rank = config["settings"]["files"]["rank"];
+                            rs_file_rank = config["settings"]["files"]["rank"];
                         if (config["settings"]["files"]["div"].is_boolean())
-                            rs_hide_div = config["settings"]["files"]["div"];
+                            rs_file_div = config["settings"]["files"]["div"];
                         if (config["settings"]["files"]["mmr"].is_boolean())
-                            rs_hide_mmr = config["settings"]["files"]["mmr"];
+                            rs_file_mmr = config["settings"]["files"]["mmr"];
                         if (config["settings"]["files"]["mmrc"].is_boolean())
-                            rs_hide_mmrc = config["settings"]["files"]["mmrc"];
+                            rs_file_mmrc = config["settings"]["files"]["mmrc"];
                         if (config["settings"]["files"]["mmrcc"].is_boolean())
-                            rs_hide_mmrcc = config["settings"]["files"]["mmrcc"];
+                            rs_file_mmrcc = config["settings"]["files"]["mmrcc"];
                         if (config["settings"]["files"]["win"].is_boolean())
-                            rs_hide_win = config["settings"]["files"]["win"];
+                            rs_file_win = config["settings"]["files"]["win"];
                         if (config["settings"]["files"]["loss"].is_boolean())
-                            rs_hide_loss = config["settings"]["files"]["loss"];
+                            rs_file_loss = config["settings"]["files"]["loss"];
                         if (config["settings"]["files"]["streak"].is_boolean())
-                            rs_hide_streak = config["settings"]["files"]["streak"];
+                            rs_file_streak = config["settings"]["files"]["streak"];
+                        if (config["settings"]["files"]["winratio"].is_boolean())
+                            rs_file_winratio = config["settings"]["files"]["winratio"];
                         if (config["settings"]["files"]["demo"].is_boolean())
-                            rs_hide_demo = config["settings"]["files"]["demo"];
+                            rs_file_demo = config["settings"]["files"]["demo"];
                         if (config["settings"]["files"]["demom"].is_boolean())
-                            rs_hide_demom = config["settings"]["files"]["demom"];
+                            rs_file_demom = config["settings"]["files"]["demom"];
                         if (config["settings"]["files"]["democ"].is_boolean())
-                            rs_hide_democ = config["settings"]["files"]["democ"];
+                            rs_file_democ = config["settings"]["files"]["democ"];
                         if (config["settings"]["files"]["death"].is_boolean())
-                            rs_hide_death = config["settings"]["files"]["death"];
+                            rs_file_death = config["settings"]["files"]["death"];
                         if (config["settings"]["files"]["deathm"].is_boolean())
-                            rs_hide_deathm = config["settings"]["files"]["deathm"];
+                            rs_file_deathm = config["settings"]["files"]["deathm"];
                         if (config["settings"]["files"]["deathc"].is_boolean())
-                            rs_hide_deathc = config["settings"]["files"]["deathc"];
+                            rs_file_deathc = config["settings"]["files"]["deathc"];
                         if (config["settings"]["files"]["boost"].is_boolean())
                             rs_file_boost = config["settings"]["files"]["boost"];
                     }
@@ -268,6 +272,8 @@ bool RocketStats::ReadConfig()
                             rs_hide_loss = config["settings"]["hides"]["loss"];
                         if (config["settings"]["hides"]["streak"].is_boolean())
                             rs_hide_streak = config["settings"]["hides"]["streak"];
+                        if (config["settings"]["hides"]["winratio"].is_boolean())
+                            rs_hide_winratio = config["settings"]["hides"]["winratio"];
                         if (config["settings"]["hides"]["demo"].is_boolean())
                             rs_hide_demo = config["settings"]["hides"]["demo"];
                         if (config["settings"]["hides"]["demom"].is_boolean())
@@ -413,6 +419,7 @@ void RocketStats::WriteConfig()
     tmp["settings"]["files"]["win"] = rs_file_win;
     tmp["settings"]["files"]["loss"] = rs_file_loss;
     tmp["settings"]["files"]["streak"] = rs_file_streak;
+    tmp["settings"]["files"]["winratio"] = rs_file_winratio;
     tmp["settings"]["files"]["demo"] = rs_file_demo;
     tmp["settings"]["files"]["demom"] = rs_file_demom;
     tmp["settings"]["files"]["democ"] = rs_file_democ;
@@ -431,6 +438,7 @@ void RocketStats::WriteConfig()
     tmp["settings"]["hides"]["win"] = rs_hide_win;
     tmp["settings"]["hides"]["loss"] = rs_hide_loss;
     tmp["settings"]["hides"]["streak"] = rs_hide_streak;
+    tmp["settings"]["hides"]["winratio"] = rs_hide_winratio;
     tmp["settings"]["hides"]["demo"] = rs_hide_demo;
     tmp["settings"]["hides"]["demom"] = rs_hide_demom;
     tmp["settings"]["hides"]["democ"] = rs_hide_democ;
@@ -593,6 +601,24 @@ void RocketStats::WriteStreak(bool force)
     }
 
     WriteInFile("RocketStats_Streak.txt", tmp);
+}
+
+void RocketStats::WriteWinRatio(bool force)
+{
+    if (!force && (!rs_in_file || !rs_file_winratio))
+        return;
+
+    std::string tmp = theme_hide_value;
+    if (!rs_hide_winratio)
+    {
+        Stats tstats = GetStats();
+        tmp = std::to_string(tstats.win - tstats.loss);
+
+        if ((tstats.win - tstats.loss) > 0)
+            tmp = ("+" + tmp);
+    }
+
+    WriteInFile("RocketStats_WinRatio.txt", tmp);
 }
 
 void RocketStats::WriteDemo(bool force)

@@ -324,6 +324,7 @@ public:
 	bool rs_file_win = true;
 	bool rs_file_loss = true;
 	bool rs_file_streak = true;
+	bool rs_file_winratio = true;
 	bool rs_file_demo = true;
 	bool rs_file_demom = true;
 	bool rs_file_democ = true;
@@ -344,6 +345,7 @@ public:
 	bool rs_hide_win = false;
 	bool rs_hide_loss = false;
 	bool rs_hide_streak = false;
+	bool rs_hide_winratio = false;
 	bool rs_hide_demo = false;
 	bool rs_hide_demom = false;
 	bool rs_hide_democ = false;
@@ -455,7 +457,8 @@ public:
 	void WriteWin(bool force = false);
 	void WriteLoss(bool force = false);
 	void WriteStreak(bool force = false);
-	void WriteBoost(bool force = false);
+	void WriteWinRatio(bool force = false);
 	void WriteDemo(bool force = false);
 	void WriteDeath(bool force = false);
+	void WriteBoost(bool force = false);
 };
