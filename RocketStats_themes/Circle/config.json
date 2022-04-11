@@ -19,10 +19,10 @@
 			"scale":		1.5
 		},
 		{
-			"name":			"mmrchange",
+			"name":			"mmrcumulchange",
 			"type":			"text",
-			"value":		"{{MMRChange}}",
-			"sign":			"MMRChange",
+			"value":		"{{MMRCumulChange}}",
+			"sign":			"MMRCumulChange",
 			"x":			254,
 			"y":			75,
 			"align":		"right",
