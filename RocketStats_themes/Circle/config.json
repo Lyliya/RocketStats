@@ -23,12 +23,12 @@
 			"type":			"text",
 			"value":		"{{MMRChange}}",
 			"sign":			"MMRChange",
-			"x":			243,
+			"x":			254,
 			"y":			75,
 			"align":		"right",
 			"valign":		"middle",
 			"color":		[ 255, 255, 255 ],
-			"scale":		0.35
+			"scale":		0.32
 		},
 		{
 			"name":			"streak",
