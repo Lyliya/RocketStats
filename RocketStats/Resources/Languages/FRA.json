@@ -5,6 +5,11 @@
 	"Documentation",
 	"Developpé par @Lyliya, @NuSa_yt, @Arubinu42 & @Larsluph",
 
+	"Nous avons trouvé des fichiers d'une ancienne version.\nQue voulez-vous faire avec ces fichiers ?",
+	"Migrer",
+	"Supprimer",
+	"Rien faire",
+
 	"Réinitialiser à la valeur d'origine",
 	"Choisissez la taille de la superposition",
 	"Choisissez la rotation de la superposition",
@@ -50,6 +55,7 @@
 
 	"Afficher dans le menu",
 	"Afficher pendant le jeu",
+	"Afficher sur les scores",
 	"Activer la virgule flottante",
 	"Prévisualiser le rang",
 	"Conversion en nombres romain",

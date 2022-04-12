@@ -2,7 +2,7 @@
 
 bool RocketStats::isPrimaryPlayer(PriWrapper PRI)
 {
-    bool check = !gameWrapper->IsInOnlineGame();
+    bool check = !is_online_game;
     ServerWrapper server = gameWrapper->GetOnlineGame();
     PlayerControllerWrapper player = server.GetLocalPrimaryPlayer();
     PriWrapper playerPRI = player.GetPRI();
@@ -21,7 +21,7 @@ bool RocketStats::isPrimaryPlayer(PriWrapper PRI)
 void RocketStats::onStatEvent(ServerWrapper caller, void* params)
 {
     StatEventParams* pstats = (StatEventParams*)params;
-    if (!gameWrapper->IsInOnlineGame())
+    if (!is_online_game)
         return;
 
     StatEventWrapper event = StatEventWrapper(pstats->StatEvent);
@@ -33,7 +33,7 @@ void RocketStats::onStatEvent(ServerWrapper caller, void* params)
 void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
 {
     StatTickerParams* pstats = (StatTickerParams*)params;
-    if (!gameWrapper->IsInOnlineGame())
+    if (!is_online_game)
         return;
 
     PriWrapper receiver = PriWrapper(pstats->Receiver);

@@ -2,7 +2,7 @@
 
 void RocketStats::GameStart(std::string eventName)
 {
-    if (!gameWrapper->IsInOnlineGame() || is_game_started)
+    if (!is_online_game || is_game_started)
         return;
 
     cvarManager->log("===== GameStart =====");
@@ -40,7 +40,7 @@ void RocketStats::GameStart(std::string eventName)
 
 void RocketStats::GameEnd(std::string eventName)
 {
-    if (gameWrapper->IsInOnlineGame() && my_team_num != -1)
+    if (is_online_game && my_team_num != -1)
     {
         cvarManager->log("===== GameEnd =====");
         ServerWrapper server = gameWrapper->GetOnlineGame();

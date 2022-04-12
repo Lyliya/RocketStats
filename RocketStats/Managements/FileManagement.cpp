@@ -107,6 +107,26 @@ bool RocketStats::WriteResInFile(std::string _filename, int id, const char* type
     return false;
 }
 
+void RocketStats::MigrateFolder()
+{
+    // If the old folder exist, copy everything to the new path
+    if (ExistsPath("RocketStats", true))
+    {
+        std::string old_path = GetPath("RocketStats", true);
+        fs::copy(old_path, GetPath(), (fs::copy_options::recursive | fs::copy_options::update_existing));
+        MigrateRemove();
+    }
+}
+
+void RocketStats::MigrateRemove()
+{
+    if (ExistsPath("RocketStats", true))
+        fs::remove_all(GetPath("RocketStats", true));
+
+    RemoveFile("RocketStats_Loose.txt"); // Delete the old file
+    RemoveFile("RocketStats_images/BoostState.txt"); // Delete the old file
+}
+
 void RocketStats::UpdateFiles(bool force)
 {
     WriteGameMode(force);
@@ -205,6 +225,8 @@ bool RocketStats::ReadConfig()
                         rs_enable_inmenu = config["settings"]["inmenu"];
                     if (config["settings"]["ingame"].is_boolean())
                         rs_enable_ingame = config["settings"]["ingame"];
+                    if (config["settings"]["inscoreboard"].is_boolean())
+                        rs_enable_inscoreboard = config["settings"]["inscoreboard"];
                     if (config["settings"]["float"].is_boolean())
                         rs_enable_float = config["settings"]["float"];
                     if (config["settings"]["preview"].is_boolean())
@@ -394,6 +416,7 @@ void RocketStats::WriteConfig()
     tmp["settings"]["overlay"] = rs_disp_overlay;
     tmp["settings"]["inmenu"] = rs_enable_inmenu;
     tmp["settings"]["ingame"] = rs_enable_ingame;
+    tmp["settings"]["inscoreboard"] = rs_enable_inscoreboard;
     tmp["settings"]["float"] = rs_enable_float;
     tmp["settings"]["preview"] = rs_preview_rank;
     tmp["settings"]["roman"] = rs_roman_numbers;
@@ -648,5 +671,5 @@ void RocketStats::WriteDeath(bool force)
 void RocketStats::WriteBoost(bool force)
 {
     if (force || (rs_in_file && rs_file_boost))
-        WriteInFile("RocketStats_BoostState.txt", std::to_string(gameWrapper->IsInGame() ? 0 : -1));
+        WriteInFile("RocketStats_BoostState.txt", std::to_string(is_offline_game ? 0 : -1));
 }

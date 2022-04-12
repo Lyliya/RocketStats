@@ -42,6 +42,15 @@ enum RefreshFlags_ {
 };
 typedef int RefreshFlags;
 
+enum RecoveryFlags_ {
+	RecoveryFlags_Off,
+	RecoveryFlags_Files,
+	RecoveryFlags_Welcome,
+	RecoveryFlags_Process,
+	RecoveryFlags_Finish
+};
+typedef int RecoveryFlags;
+
 struct Color {
 	bool enable = false;
 	ImColor color = ImGui::GetColorU32({ 255.f, 255.f, 255.f, 1.f });
@@ -116,9 +125,11 @@ struct Vector2D {
 class RocketStats : public BakkesMod::Plugin::BakkesModPlugin, public BakkesMod::Plugin::PluginWindow
 {
 private:
-	int rs_recovery = 0;
+	int rs_recovery = RecoveryFlags_Off;
 	float rs_launch = 0.f;
+	float rs_llaunch = 0.f;
 	bool rs_logo_mouv = false;
+	float rs_buttons_x = 0.f;
 	float rs_logo_rotate = 0.f;
 	float rs_screen_scale[2] = { 1.f, 1.f };
 	std::vector<std::string> rs_lang;
@@ -158,6 +169,8 @@ private:
 	// Game states
 	bool is_in_game = false;
 	bool is_in_menu = false;
+	bool is_in_freeplay = false;
+	bool is_in_scoreboard = false;
 	bool is_online_game = false;
 	bool is_offline_game = false;
 	bool is_boosting = false;
@@ -309,6 +322,7 @@ public:
 	bool rs_disp_overlay = true;
 	bool rs_enable_inmenu = true;
 	bool rs_enable_ingame = true;
+	bool rs_enable_inscoreboard = true;
 	bool rs_enable_float = false;
 	bool rs_preview_rank = false;
 	bool rs_roman_numbers = true;
@@ -390,7 +404,7 @@ public:
 	// PluginLoadRoutines
 	virtual void onLoad();
 	virtual void onUnload();
-	void SetDefaultFolder();
+	void onInit();
 	void SetCustomProtocol();
 	void ShowPlugin(std::string eventName);
 	void UpdateUIScale(std::string eventName);
@@ -430,6 +444,7 @@ public:
 	void SetRefresh(unsigned char value);
 	void RefreshFiles(std::string old, CVarWrapper now);
 	void RefreshTheme(std::string old, CVarWrapper now);
+	void RefreshVars();
 	Element CalculateElement(json& element, Options& options, bool& check);
 	void RenderElement(ImDrawList* drawlist, Element& element);
 
@@ -445,6 +460,8 @@ public:
 	json ReadJSON(std::string _filename, bool root = false);
 	void WriteInFile(std::string _fileName, std::string _value, bool root = false);
 	bool WriteResInFile(std::string _filename, int id, const char* type, bool root = false);
+	void MigrateFolder();
+	void MigrateRemove();
 	void UpdateFiles(bool force = false);
 	void ResetFiles();
 	bool ReadConfig();

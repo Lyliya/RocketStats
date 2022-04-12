@@ -172,7 +172,131 @@ void RocketStats::RefreshFiles(std::string old, CVarWrapper now)
 
 void RocketStats::RefreshTheme(std::string old, CVarWrapper now)
 {
+    bool refresh = true;
+    bool value = now.getBoolValue();
+    std::string name = now.getCVarName();
+    if (name == "rs_disp_overlay")
+        rs_disp_overlay = value;
+    else if (name == "rs_enable_inmenu")
+        rs_enable_inmenu = value;
+    else if (name == "rs_enable_ingame")
+        rs_enable_ingame = value;
+    else if (name == "rs_enable_inscoreboard")
+        rs_enable_inscoreboard = value;
+    else
+        refresh = false;
+
+    if (refresh)
+    {
+        cvarManager->log("SetCVar: " + std::string(name) + " " + std::to_string(value));
+        RefreshVars();
+    }
+
     SetRefresh(RefreshFlags_Refresh);
+}
+
+void RocketStats::RefreshVars()
+{
+    CVarWrapper cvar_x = cvarManager->getCvar("rs_x");
+    CVarWrapper cvar_y = cvarManager->getCvar("rs_y");
+    CVarWrapper cvar_scale = cvarManager->getCvar("rs_scale");
+    CVarWrapper cvar_rotate = cvarManager->getCvar("rs_rotate");
+    CVarWrapper cvar_opacity = cvarManager->getCvar("rs_opacity");
+
+    // Delimits certain variables
+    if (rs_x < cvar_x.GetMinimum())
+        rs_x = cvar_x.GetMinimum();
+    else if (rs_x > cvar_x.GetMaximum())
+        rs_x = cvar_x.GetMaximum();
+
+    if (rs_y < cvar_y.GetMinimum())
+        rs_y = cvar_y.GetMinimum();
+    else if (rs_y > cvar_y.GetMaximum())
+        rs_y = cvar_y.GetMaximum();
+
+    if (rs_scale < cvar_scale.GetMinimum())
+        rs_scale = cvar_scale.GetMinimum();
+    else if (rs_scale > cvar_scale.GetMaximum())
+        rs_scale = cvar_scale.GetMaximum();
+
+    if (rs_rotate < cvar_rotate.GetMinimum())
+        rs_rotate = cvar_rotate.GetMinimum();
+    else if (rs_rotate > cvar_rotate.GetMaximum())
+        rs_rotate = cvar_rotate.GetMaximum();
+
+    if (rs_opacity < cvar_opacity.GetMinimum())
+        rs_opacity = cvar_opacity.GetMinimum();
+    else if (rs_opacity > cvar_opacity.GetMaximum())
+        rs_opacity = cvar_opacity.GetMaximum();
+
+    // Check for changes before modifying cvars
+    SetCVar("rs_mode", rs_mode);
+    SetCVar("rs_theme", rs_theme);
+
+    SetCVar("rs_x", rs_x, true);
+    SetCVar("rs_y", rs_y, true);
+
+    SetCVar("rs_scale", rs_scale, true);
+    SetCVar("rs_rotate", rs_rotate, true);
+    SetCVar("rs_opacity", rs_opacity, true);
+
+    SetCVar("rs_disp_overlay", rs_disp_overlay);
+    if (SetCVar("rs_enable_inmenu", rs_enable_inmenu))
+    {
+        if (!rs_enable_inmenu && !rs_enable_ingame && !rs_enable_inscoreboard)
+            rs_enable_ingame = true;
+    }
+    if (SetCVar("rs_enable_ingame", rs_enable_ingame))
+    {
+        if (!rs_enable_ingame && !rs_enable_inmenu && !rs_enable_inscoreboard)
+            rs_enable_inmenu = true;
+    }
+    if (SetCVar("rs_enable_inscoreboard", rs_enable_inscoreboard))
+    {
+        if (!rs_enable_ingame && !rs_enable_inmenu && !rs_enable_inscoreboard)
+            rs_enable_inmenu = true;
+    }
+    SetCVar("rs_enable_float", rs_enable_float);
+    SetCVar("rs_preview_rank", rs_preview_rank);
+    SetCVar("rs_roman_numbers", rs_roman_numbers);
+
+    SetCVar("rs_in_file", rs_in_file);
+    SetCVar("rs_file_gm", rs_file_gm);
+    SetCVar("rs_file_rank", rs_file_rank);
+    SetCVar("rs_file_div", rs_file_div);
+    SetCVar("rs_file_mmr", rs_file_mmr);
+    SetCVar("rs_file_mmrc", rs_file_mmrc);
+    SetCVar("rs_file_mmrcc", rs_file_mmrcc);
+    SetCVar("rs_file_win", rs_file_win);
+    SetCVar("rs_file_loss", rs_file_loss);
+    SetCVar("rs_file_streak", rs_file_streak);
+    SetCVar("rs_file_winratio", rs_file_winratio);
+    SetCVar("rs_file_demo", rs_file_demo);
+    SetCVar("rs_file_demom", rs_file_demom);
+    SetCVar("rs_file_democ", rs_file_democ);
+    SetCVar("rs_file_death", rs_file_death);
+    SetCVar("rs_file_deathm", rs_file_deathm);
+    SetCVar("rs_file_deathc", rs_file_deathc);
+    SetCVar("rs_file_boost", rs_file_boost);
+
+    SetCVar("rs_hide_gm", rs_hide_gm);
+    SetCVar("rs_hide_rank", rs_hide_rank);
+    SetCVar("rs_hide_div", rs_hide_div);
+    SetCVar("rs_hide_mmr", rs_hide_mmr);
+    SetCVar("rs_hide_mmrc", rs_hide_mmrc);
+    SetCVar("rs_hide_mmrcc", rs_hide_mmrcc);
+    SetCVar("rs_hide_win", rs_hide_win);
+    SetCVar("rs_hide_loss", rs_hide_loss);
+    SetCVar("rs_hide_streak", rs_hide_streak);
+    SetCVar("rs_hide_winratio", rs_hide_winratio);
+    SetCVar("rs_hide_demo", rs_hide_demo);
+    SetCVar("rs_hide_demom", rs_hide_demom);
+    SetCVar("rs_hide_democ", rs_hide_democ);
+    SetCVar("rs_hide_death", rs_hide_death);
+    SetCVar("rs_hide_deathm", rs_hide_deathm);
+    SetCVar("rs_hide_deathc", rs_hide_deathc);
+    SetCVar("rs_replace_mmr", rs_replace_mmr);
+    SetCVar("rs_replace_mmrc", rs_replace_mmrc);
 }
 
 Element RocketStats::CalculateElement(json& element, Options& options, bool& check)

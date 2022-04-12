@@ -5,6 +5,11 @@
 	"Documentation",
 	"Developped by @Lyliya, @NuSa_yt, @Arubinu42 & @Larsluph",
 
+	"We found files from an older version.\nWhat do you want to do with these files?",
+	"Migrate",
+	"Remove",
+	"Do nothing",
+
 	"Reset to original value",
 	"Choose the size of the overlay",
 	"Choose the rotation of the overlay",
@@ -50,6 +55,7 @@
 
 	"Show in menu",
 	"Show while in-game",
+	"Show on scoreboard",
 	"Enable floating point",
 	"Preview rank",
 	"Conversion to roman numerals",

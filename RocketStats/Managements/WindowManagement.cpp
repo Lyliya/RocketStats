@@ -7,12 +7,60 @@ void RocketStats::Render()
 
     is_online_game = gameWrapper->IsInOnlineGame();
     is_offline_game = gameWrapper->IsInGame();
+    is_in_freeplay = gameWrapper->IsInFreeplay();
     is_in_game = (is_online_game || is_offline_game);
+
+    // Capture of the escape key, to prevent the plugin from disappearing
+    int idx = ImGui::GetKeyIndex(ImGuiKey_Escape);
+    if (ImGui::IsKeyDown(idx))
+        escape_state = true;
+    else if (ImGui::IsKeyReleased(idx))
+        escape_state = false;
+
+    if (rs_recovery == RecoveryFlags_Files)
+    {
+        ImGui::SetNextWindowPos({ 10.f, (display_size.y - (95.f + 10.f)) }, ImGuiCond_Appearing);
+        ImGui::SetNextWindowSize({ 0.f, 0.f });
+
+        bool opened = true;
+        ImGui::Begin((menu_title + "##Recovery").c_str(), &opened, (ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse));
+
+        ImGui::Text(GetLang(LANG_MIGRATE_MESSAGE).c_str());
+
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10.f);
+        if (rs_buttons_x)
+            ImGui::SetCursorPosX(rs_buttons_x);
+
+        float x = ImGui::GetCursorPosX();
+        if (ImGui::Button(GetLang(LANG_MIGRATE_BUTTON_MIGRATE).c_str()))
+        {
+            opened = false;
+            MigrateFolder();
+        }
+        ImGui::SameLine();
+        if (ImGui::Button(GetLang(LANG_MIGRATE_BUTTON_REMOVE).c_str()))
+        {
+            opened = false;
+            MigrateRemove();
+        }
+        ImGui::SameLine();
+        if (ImGui::Button(GetLang(LANG_MIGRATE_BUTTON_NOTHING).c_str()))
+            opened = false;
+        ImGui::SameLine();
+        rs_buttons_x = ((ImGui::GetWindowWidth() - (ImGui::GetCursorPosX() - x)) / 2);
+
+        ImGui::End();
+
+        if (!opened)
+            onInit();
+
+        return;
+    }
 
     RenderOverlay();
 
     // Displays the button allowing the display and the hiding of the menu
-    if (cvarManager->getCvar("rs_toggle_logo").getBoolValue() && (rs_recovery > 0 || settings_open || (!overlay_move && (!is_in_game || is_in_menu))))
+    if (cvarManager->getCvar("rs_toggle_logo").getBoolValue() && (rs_recovery != RecoveryFlags_Off || settings_open || (!overlay_move && (!is_in_game || is_in_menu))))
         RenderIcon();
 
     if (!overlay_move && settings_open)
@@ -22,7 +70,7 @@ void RocketStats::Render()
     }
 
     // Displays the message to introduce the new version
-    if (rs_recovery == 1 && rs_welcome != nullptr && rs_welcome->IsLoadedForImGui())
+    if (rs_recovery == RecoveryFlags_Welcome && rs_welcome != nullptr && rs_welcome->IsLoadedForImGui())
     {
         ImVec2 mouse_pos = ImGui::GetIO().MousePos;
         Vector2F image_size = rs_welcome->GetSizeF();
@@ -43,15 +91,8 @@ void RocketStats::Render()
         else
             ImGui::GetBackgroundDrawList()->AddImage(rs_welcome->GetImGuiTex(), image_min, image_max);
     }
-    else if (rs_recovery == 3)
-        rs_recovery = 0;
-
-    // Capture of the escape key, to prevent the plugin from disappearing
-    int idx = ImGui::GetKeyIndex(ImGuiKey_Escape);
-    if (ImGui::IsKeyDown(idx))
-        escape_state = true;
-    else if (ImGui::IsKeyReleased(idx))
-        escape_state = false;
+    else if (rs_recovery == RecoveryFlags_Finish)
+        rs_recovery = RecoveryFlags_Off;
 }
 
 void RocketStats::RenderIcon()
@@ -80,8 +121,15 @@ void RocketStats::RenderIcon()
     {
         Vector2F image_size = rs_logo->GetSizeF();
         float rotate = ((90.f - rs_logo_rotate) * (float(M_PI) / 180.f));
+
+        if (rs_llaunch < 1.f)
+        {
+            rs_llaunch += 0.05f;
+            SetRefresh(RefreshFlags_Refresh);
+        }
+
         ImRotateStart(drawlist);
-        drawlist->AddImage(rs_logo->GetImGuiTex(), { icon_pos.x - icon_size, icon_pos.y - icon_size }, { icon_pos.x + icon_size, icon_pos.y + icon_size }, { 0, 0 }, { 1, 1 }, ImGui::ColorConvertFloat4ToU32({ 1.f, 1.f, 1.f, rs_launch }));
+        drawlist->AddImage(rs_logo->GetImGuiTex(), { icon_pos.x - icon_size, icon_pos.y - icon_size }, { icon_pos.x + icon_size, icon_pos.y + icon_size }, { 0, 0 }, { 1, 1 }, ImGui::ColorConvertFloat4ToU32({ 1.f, 1.f, 1.f, rs_llaunch }));
         ImRotateEnd(rotate);
     }
     else
@@ -112,12 +160,12 @@ void RocketStats::RenderIcon()
 
 void RocketStats::RenderOverlay()
 {
-    bool show_overlay = ((rs_enable_ingame && is_in_game) || (rs_enable_inmenu && !is_in_game));
+    bool show_overlay = ((rs_enable_inmenu && is_in_menu) || (rs_enable_ingame && is_in_game && (!is_in_scoreboard || is_in_freeplay)) || (rs_enable_inscoreboard && is_in_scoreboard && !is_in_freeplay));
     if (!rs_disp_overlay || !show_overlay)
         return;
 
-    ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_FirstUseEver);
-    ImGui::SetNextWindowSize(ImVec2(0, 0));
+    ImGui::SetNextWindowPos({ 0.f, 0.f }, ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize({ 0.f, 0.f });
 
     ImGui::Begin(menu_title.c_str(), (bool*)1, (ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoMouseInputs | ImGuiWindowFlags_NoFocusOnAppearing));
 
@@ -148,7 +196,7 @@ void RocketStats::RenderOverlay()
             // Reset the menu variables if you change the theme
             if (theme_prev != theme_render.name)
             {
-                if (rs_recovery != 3 && !GetCVar("rs_scale", rs_scale))
+                if (rs_recovery != RecoveryFlags_Off && !GetCVar("rs_scale", rs_scale))
                 {
                     rs_scale = 1.f;
                     if (theme_config["scale"].is_number())
@@ -169,7 +217,7 @@ void RocketStats::RenderOverlay()
                         rs_opacity = float(theme_config["opacity"]);
                 }
 
-                if (rs_recovery != 3 && !GetCVar("rs_x", rs_x))
+                if (rs_recovery != RecoveryFlags_Off && !GetCVar("rs_x", rs_x))
                 {
                     rs_x = 0.f;
                     if (theme_config["x"].is_string())
@@ -178,7 +226,7 @@ void RocketStats::RenderOverlay()
                         rs_x = float(theme_config["x"]);
                 }
 
-                if (rs_recovery != 3 && !GetCVar("rs_y", rs_y))
+                if (rs_recovery != RecoveryFlags_Off && !GetCVar("rs_y", rs_y))
                 {
                     rs_y = 0.f;
                     if (theme_config["y"].is_string())
@@ -310,7 +358,7 @@ void RocketStats::RenderOverlay()
                 if (rs_rotate_enabled)
                     start = ImRotateStart(drawlist);
 
-                if (!rs_recovery || rs_recovery == 3)
+                if (rs_recovery == RecoveryFlags_Off || rs_recovery == RecoveryFlags_Finish)
                 {
                     for (auto& element : theme_render.elements)
                         RenderElement(drawlist, element);
@@ -396,15 +444,13 @@ void RocketStats::RenderOverlay()
 
 void RocketStats::RenderSettings()
 {
-    ImVec2 settings_size = { 750, 0 };
+    ImVec2 settings_size = { 750.f, 0.f };
 
-    CVarWrapper cvar_x = cvarManager->getCvar("rs_x");
-    CVarWrapper cvar_y = cvarManager->getCvar("rs_y");
     CVarWrapper cvar_scale = cvarManager->getCvar("rs_scale");
     CVarWrapper cvar_rotate = cvarManager->getCvar("rs_rotate");
     CVarWrapper cvar_opacity = cvarManager->getCvar("rs_opacity");
 
-    ImGui::SetNextWindowPos(ImVec2{ 128, 256 }, ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowPos({ 128.f, 256.f }, ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(settings_size);
 
     ImGui::Begin((menu_title + "##Settings").c_str(), nullptr, (ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse));
@@ -698,6 +744,7 @@ void RocketStats::RenderSettings()
         ImGui::BeginChild("##column1", { column_width, 205 }, false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
         ImGui::Checkbox(GetLang(LANG_SHOW_IN_MENU).c_str(), &rs_enable_inmenu);
         ImGui::Checkbox(GetLang(LANG_SHOW_IN_GAME).c_str(), &rs_enable_ingame);
+        ImGui::Checkbox(GetLang(LANG_SHOW_IN_SCOREBOARD).c_str(), &rs_enable_inscoreboard);
         ImGui::Checkbox(GetLang(LANG_FLOATING_POINT).c_str(), &rs_enable_float);
         ImGui::Checkbox(GetLang(LANG_PREVIEW_RANK).c_str(), &rs_preview_rank);
         ImGui::Checkbox(GetLang(LANG_ROMAN_NUMBERS).c_str(), &rs_roman_numbers);
@@ -900,8 +947,6 @@ void RocketStats::RenderSettings()
         ImGui::SetCursorPosX(settings_size.x - 80 - 7);
         if (ImGui::Button(GetLang(LANG_ERROR_RELOAD).c_str(), {80, 0}))
         {
-            SetDefaultFolder();
-
             LoadImgs();
             LoadThemes();
             ChangeTheme(rs_theme);
@@ -912,95 +957,7 @@ void RocketStats::RenderSettings()
 
     ImGui::End();
 
-    // Delimits certain variables
-    if (rs_x < cvar_x.GetMinimum())
-        rs_x = cvar_x.GetMinimum();
-    else if (rs_x > cvar_x.GetMaximum())
-        rs_x = cvar_x.GetMaximum();
-
-    if (rs_y < cvar_y.GetMinimum())
-        rs_y = cvar_y.GetMinimum();
-    else if (rs_y > cvar_y.GetMaximum())
-        rs_y = cvar_y.GetMaximum();
-
-    if (rs_scale < cvar_scale.GetMinimum())
-        rs_scale = cvar_scale.GetMinimum();
-    else if (rs_scale > cvar_scale.GetMaximum())
-        rs_scale = cvar_scale.GetMaximum();
-
-    if (rs_rotate < cvar_rotate.GetMinimum())
-        rs_rotate = cvar_rotate.GetMinimum();
-    else if (rs_rotate > cvar_rotate.GetMaximum())
-        rs_rotate = cvar_rotate.GetMaximum();
-
-    if (rs_opacity < cvar_opacity.GetMinimum())
-        rs_opacity = cvar_opacity.GetMinimum();
-    else if (rs_opacity > cvar_opacity.GetMaximum())
-        rs_opacity = cvar_opacity.GetMaximum();
-
-    // Check for changes before modifying cvars
-    SetCVar("rs_mode", rs_mode);
-    SetCVar("rs_theme", rs_theme);
-
-    SetCVar("rs_x", rs_x, true);
-    SetCVar("rs_y", rs_y, true);
-
-    SetCVar("rs_scale", rs_scale, true);
-    SetCVar("rs_rotate", rs_rotate, true);
-    SetCVar("rs_opacity", rs_opacity, true);
-
-    SetCVar("rs_disp_overlay", rs_disp_overlay);
-    if (SetCVar("rs_enable_inmenu", rs_enable_inmenu))
-    {
-        if (!rs_enable_inmenu && !rs_enable_ingame)
-            rs_enable_ingame = true;
-    }
-    if (SetCVar("rs_enable_ingame", rs_enable_ingame))
-    {
-        if (!rs_enable_ingame && !rs_enable_inmenu)
-            rs_enable_inmenu = true;
-    }
-    SetCVar("rs_enable_float", rs_enable_float);
-    SetCVar("rs_preview_rank", rs_preview_rank);
-    SetCVar("rs_roman_numbers", rs_roman_numbers);
-
-    SetCVar("rs_in_file", rs_in_file);
-    SetCVar("rs_file_gm", rs_file_gm);
-    SetCVar("rs_file_rank", rs_file_rank);
-    SetCVar("rs_file_div", rs_file_div);
-    SetCVar("rs_file_mmr", rs_file_mmr);
-    SetCVar("rs_file_mmrc", rs_file_mmrc);
-    SetCVar("rs_file_mmrcc", rs_file_mmrcc);
-    SetCVar("rs_file_win", rs_file_win);
-    SetCVar("rs_file_loss", rs_file_loss);
-    SetCVar("rs_file_streak", rs_file_streak);
-    SetCVar("rs_file_winratio", rs_file_winratio);
-    SetCVar("rs_file_demo", rs_file_demo);
-    SetCVar("rs_file_demom", rs_file_demom);
-    SetCVar("rs_file_democ", rs_file_democ);
-    SetCVar("rs_file_death", rs_file_death);
-    SetCVar("rs_file_deathm", rs_file_deathm);
-    SetCVar("rs_file_deathc", rs_file_deathc);
-    SetCVar("rs_file_boost", rs_file_boost);
-
-    SetCVar("rs_hide_gm", rs_hide_gm);
-    SetCVar("rs_hide_rank", rs_hide_rank);
-    SetCVar("rs_hide_div", rs_hide_div);
-    SetCVar("rs_hide_mmr", rs_hide_mmr);
-    SetCVar("rs_hide_mmrc", rs_hide_mmrc);
-    SetCVar("rs_hide_mmrcc", rs_hide_mmrcc);
-    SetCVar("rs_hide_win", rs_hide_win);
-    SetCVar("rs_hide_loss", rs_hide_loss);
-    SetCVar("rs_hide_streak", rs_hide_streak);
-    SetCVar("rs_hide_winratio", rs_hide_winratio);
-    SetCVar("rs_hide_demo", rs_hide_demo);
-    SetCVar("rs_hide_demom", rs_hide_demom);
-    SetCVar("rs_hide_democ", rs_hide_democ);
-    SetCVar("rs_hide_death", rs_hide_death);
-    SetCVar("rs_hide_deathm", rs_hide_deathm);
-    SetCVar("rs_hide_deathc", rs_hide_deathc);
-    SetCVar("rs_replace_mmr", rs_replace_mmr);
-    SetCVar("rs_replace_mmrc", rs_replace_mmrc);
+    RefreshVars();
 }
 
 // Name of the menu that is used to toggle the window.
@@ -1030,7 +987,7 @@ bool RocketStats::ShouldBlockInput()
 // Return true if window should be interactive
 bool RocketStats::IsActiveOverlay()
 {
-    return settings_open;
+    return (settings_open || rs_recovery == RecoveryFlags_Files);
 }
 
 void RocketStats::OnOpen()

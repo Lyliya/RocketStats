@@ -229,11 +229,11 @@ bool RocketStats::SetCVar(const char* name, float& value, bool save)
 
 void RocketStats::CloseWelcome()
 {
-    if (rs_recovery == 1)
+    if (rs_recovery == RecoveryFlags_Welcome)
     {
         cvarManager->log("CloseWelcome");
 
-        rs_recovery = 2;
+        rs_recovery = RecoveryFlags_Process;
         RemoveFile("RocketStats_images/welcome.png");
 
         gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
@@ -241,7 +241,7 @@ void RocketStats::CloseWelcome()
 
             gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
                 rs_launch = 0.f;
-                rs_recovery = (RecoveryOldVars() ? 3 : 0);
+                rs_recovery = (RecoveryOldVars() ? RecoveryFlags_Finish : RecoveryFlags_Off);
                 SetRefresh(RefreshFlags_RefreshAndImages);
             }, 1.0f);
         }, 0.2f);
@@ -338,10 +338,36 @@ void RocketStats::onLoad()
         GetLang(LANG_MODE_ALWAYS_GAMEMODE)
     };
 
-    // Define the operating folder, the "One Click" protocol
-    SetDefaultFolder();
+    // Define the "One Click" protocol
     SetCustomProtocol();
 
+    // Force InMenu variable
+    is_in_menu = (!gameWrapper->IsInGame() && !gameWrapper->IsInOnlineGame() && !gameWrapper->IsInFreeplay());
+
+    gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
+        if (!ExistsPath("data/rocketstats.json", true))
+        {
+            if (ExistsPath("RocketStats", true))
+            {
+                rs_recovery = RecoveryFlags_Files;
+
+                gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
+                    UpdateUIScale("onLoad");
+                    ShowPlugin("onLoad");
+                }, 1.f);
+                return;
+            }
+        }
+
+        onInit();
+
+        UpdateUIScale("onLoad");
+        ShowPlugin("onLoad");
+    }, 0.1f);
+}
+
+void RocketStats::onInit()
+{
     // Loads important and rank images
     std::string logo_path = "RocketStats_images/logo.png";
     std::string title_path = "RocketStats_images/title.png";
@@ -355,13 +381,11 @@ void RocketStats::onLoad()
     // Initializes the different functionalities
     InitRank();
     InitStats();
-    rs_recovery = (ReadConfig() ? 0 : 1);
+    rs_recovery = (ReadConfig() ? RecoveryFlags_Off : RecoveryFlags_Welcome);
     ChangeTheme(rs_theme);
 
     // Reset all files (and create them if they don't exist)
     ResetFiles();
-    RemoveFile("RocketStats_Loose.txt"); // Delete the old file
-    RemoveFile("RocketStats_images/BoostState.txt"); // Delete the old file
 
     // Can be used from the console or in bindings
     cvarManager->registerNotifier("rs_toggle_menu", [this](std::vector<std::string> params) {
@@ -379,12 +403,14 @@ void RocketStats::onLoad()
     gameWrapper->HookEvent("Function TAGame.GameEvent_TA.Destroyed", std::bind(&RocketStats::GameDestroyed, this, std::placeholders::_1));
     gameWrapper->HookEvent("Function TAGame.GFxData_MenuStack_TA.PushMenu", std::bind([this]() { is_in_menu = true; }));
     gameWrapper->HookEvent("Function TAGame.GFxData_MenuStack_TA.PopMenu", std::bind([this]() { is_in_menu = false; }));
+    gameWrapper->HookEvent("Function TAGame.GFxData_GameEvent_TA.OnOpenScoreboard", std::bind([this]() { is_in_scoreboard = true; }));
+    gameWrapper->HookEvent("Function TAGame.GFxData_GameEvent_TA.OnCloseScoreboard", std::bind([this]() { is_in_scoreboard = false; }));
 
     gameWrapper->HookEventWithCallerPost<ServerWrapper>("Function TAGame.GFxHUD_TA.HandleStatEvent", std::bind(&RocketStats::onStatEvent, this, std::placeholders::_1, std::placeholders::_2));
     gameWrapper->HookEventWithCallerPost<ServerWrapper>("Function TAGame.GFxHUD_TA.HandleStatTickerMessage", std::bind(&RocketStats::onStatTickerMessage, this, std::placeholders::_1, std::placeholders::_2));
 
     // Register Cvars
-    if (rs_recovery)
+    if (rs_recovery == RecoveryFlags_Welcome)
     {
         cvarManager->registerCvar("RS_Use_v1", "0", "Use the v1 overlay", true, true, 0, true, 1);
         cvarManager->registerCvar("RS_Use_v2", "0", "Use the v2 overlay", true, true, 0, true, 1);
@@ -429,6 +455,7 @@ void RocketStats::onLoad()
 
     cvarManager->registerCvar("rs_enable_inmenu", (rs_enable_inmenu ? "1" : "0"), GetLang(LANG_SHOW_IN_MENU), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("rs_enable_ingame", (rs_enable_ingame ? "1" : "0"), GetLang(LANG_SHOW_IN_GAME), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_enable_inscoreboard", (rs_enable_inscoreboard ? "1" : "0"), GetLang(LANG_SHOW_IN_SCOREBOARD), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("rs_enable_float", (rs_enable_float ? "1" : "0"), GetLang(LANG_FLOATING_POINT), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("rs_preview_rank", (rs_preview_rank ? "1" : "0"), GetLang(LANG_PREVIEW_RANK), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("rs_roman_numbers", (rs_roman_numbers ? "1" : "0"), GetLang(LANG_ROMAN_NUMBERS), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
@@ -474,18 +501,17 @@ void RocketStats::onLoad()
     cvarManager->registerCvar("rs_replace_mmr", (rs_replace_mmr ? "1" : "0"), GetLang(LANG_MMR_TO_MMRCHANGE), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("rs_replace_mmrc", (rs_replace_mmrc ? "1" : "0"), GetLang(LANG_MMRCHANGE_TO_MMR), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
 
-    // Displays the plugin shortly after initialization
     gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
-        if (rs_recovery)
+        // Displays the plugin shortly after initialization
+        if (rs_recovery == RecoveryFlags_Welcome)
         {
             std::string path = "RocketStats_images/welcome.png";
             if (WriteResInFile(path, ((gameWrapper->GetUILanguage().ToString() == "FRA") ? IDB_WEL_FRA : IDB_WEL_INT), "PNG"))
                 rs_welcome = LoadImg(path);
         }
 
-        UpdateUIScale("onLoad");
-        TogglePlugin("onLoad", ToggleFlags_Show);
-    }, 0.2f);
+        SetRefresh(RefreshFlags_Refresh);
+    }, 0.1f);
 }
 
 void RocketStats::onUnload()
@@ -503,17 +529,6 @@ void RocketStats::onUnload()
     //gameWrapper->UnhookEventPost("Function TAGame.GFxHUD_TA.HandleStatTickerMessage");
 
     TogglePlugin("onUnload", ToggleFlags_Hide); // Hide the plugin before unloading it
-}
-
-void RocketStats::SetDefaultFolder()
-{
-    // If the old folder exist, copy everything to the new path
-    if (ExistsPath("RocketStats", true))
-    {
-        std::string old_path = GetPath("RocketStats", true);
-        fs::copy(old_path, GetPath(), (fs::copy_options::recursive | fs::copy_options::update_existing));
-        fs::remove_all(old_path);
-    }
 }
 
 void RocketStats::SetCustomProtocol()
