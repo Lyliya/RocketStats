@@ -60,7 +60,8 @@ void RocketStats::Render()
     RenderOverlay();
 
     // Displays the button allowing the display and the hiding of the menu
-    if (cvarManager->getCvar("rs_toggle_logo").getBoolValue() && (rs_recovery != RecoveryFlags_Off || settings_open || (!overlay_move && (!is_in_game || is_in_menu))))
+    CVarWrapper rs_toggle_logo = cvarManager->getCvar("rs_toggle_logo");
+    if (rs_toggle_logo && rs_toggle_logo.getBoolValue() && (rs_recovery != RecoveryFlags_Off || settings_open || (!overlay_move && (!is_in_game || is_in_menu))))
         RenderIcon();
 
     if (!overlay_move && settings_open)

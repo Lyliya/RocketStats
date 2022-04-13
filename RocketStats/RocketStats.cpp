@@ -338,6 +338,9 @@ void RocketStats::onLoad()
         GetLang(LANG_MODE_ALWAYS_GAMEMODE)
     };
 
+    // Must be placed here, otherwise it is not generated in the menu
+    cvarManager->registerCvar("rs_toggle_logo", "1", GetLang(LANG_TOGGLE_LOGO_HELP), true, true, 0, true, 1);
+
     // Define the "One Click" protocol
     SetCustomProtocol();
 
@@ -430,7 +433,6 @@ void RocketStats::onInit()
         cvarManager->registerCvar("RS_session", "0", "Display session information instead of game mode", true, true, 0, true, 1, true);
     }
 
-    cvarManager->registerCvar("rs_toggle_logo", "1", GetLang(LANG_TOGGLE_LOGO_HELP), true, true, 0, true, 1);
     cvarManager->registerCvar("cl_rocketstats_settings", (settings_open ? "1" : "0"), GetLang(LANG_TOGGLE_MENU_HELP), true, true, 0, true, 1, false).addOnValueChanged([this](std::string old, CVarWrapper now) {
         settings_open = now.getBoolValue();
 
