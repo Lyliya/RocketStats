@@ -108,6 +108,7 @@ void RocketStats::MajRank(bool isRanked, float _currentMMR, SkillRank playerRank
         if (current.playlist != 34 && playerRank.MatchesPlayed < 10)
         {
             current.rank = "Placement: " + std::to_string(playerRank.MatchesPlayed) + "/10";
+            current.rank_number = 0;
             current.division = "";
             current.division_number = 0;
         }
@@ -211,6 +212,7 @@ void RocketStats::SessionStats()
 
     for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
     {
+        tmp.games += stats[it->first].games;
         tmp.MMRCumulChange += stats[it->first].MMRChange;
         tmp.win += stats[it->first].win;
         tmp.loss += stats[it->first].loss;
@@ -220,6 +222,7 @@ void RocketStats::SessionStats()
         tmp.deathCumul += stats[it->first].death;
     }
 
+    session.games = tmp.games;
     session.myMMR = stats[current.playlist].myMMR;
     session.MMRChange = stats[current.playlist].MMRChange;
     session.win = tmp.win;

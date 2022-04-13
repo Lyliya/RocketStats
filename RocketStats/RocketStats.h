@@ -80,6 +80,7 @@ struct Options {
 };
 
 struct Stats {
+	int games = 0;
 	float myMMR = 100.f;
 	float MMRChange = 0.f;
 	float MMRCumulChange = 0.f;
@@ -326,9 +327,12 @@ public:
 	bool rs_enable_float = false;
 	bool rs_preview_rank = false;
 	bool rs_roman_numbers = true;
+	bool rs_replace_mmr = false;
+	bool rs_replace_mmrc = false;
 
 	bool rs_in_file = true;
 	bool rs_select_all_file = true;
+	bool rs_file_games = true;
 	bool rs_file_gm = true;
 	bool rs_file_rank = true;
 	bool rs_file_div = true;
@@ -347,9 +351,8 @@ public:
 	bool rs_file_deathc = true;
 	bool rs_file_boost = true;
 
-	bool rs_replace_mmr = false;
-	bool rs_replace_mmrc = false;
 	bool rs_select_all_hide = true;
+	bool rs_hide_games = false;
 	bool rs_hide_gm = false;
 	bool rs_hide_rank = false;
 	bool rs_hide_div = false;
@@ -466,6 +469,7 @@ public:
 	void ResetFiles();
 	bool ReadConfig();
 	void WriteConfig();
+	void WriteGames(bool force = false);
 	void WriteGameMode(bool force = false);
 	void WriteRank(bool force = false);
 	void WriteDiv(bool force = false);

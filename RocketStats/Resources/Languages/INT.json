@@ -65,6 +65,7 @@
 	"Informations",
 	"Updates RocketStats files with game information (usable in OBS)",
 
+	"Number of games",
 	"GameMode",
 	"Rank",
 	"Division",
@@ -84,6 +85,7 @@
 	"Boost",
 
 	"Write to file",
+	"Write Number of games in file",
 	"Write GameMode in file",
 	"Write Rank in file",
 	"Write Division in file",
@@ -103,6 +105,7 @@
 	"Write Boost in file",
 
 	"Hide value",
+	"Hide Number of games",
 	"Hide GameMode",
 	"Hide Rank",
 	"Hide Division",

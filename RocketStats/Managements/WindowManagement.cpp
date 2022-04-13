@@ -196,7 +196,7 @@ void RocketStats::RenderOverlay()
             // Reset the menu variables if you change the theme
             if (theme_prev != theme_render.name)
             {
-                if (rs_recovery != RecoveryFlags_Off && !GetCVar("rs_scale", rs_scale))
+                if (rs_recovery != RecoveryFlags_Finish && !GetCVar("rs_scale", rs_scale))
                 {
                     rs_scale = 1.f;
                     if (theme_config["scale"].is_number())
@@ -217,7 +217,7 @@ void RocketStats::RenderOverlay()
                         rs_opacity = float(theme_config["opacity"]);
                 }
 
-                if (rs_recovery != RecoveryFlags_Off && !GetCVar("rs_x", rs_x))
+                if (rs_recovery != RecoveryFlags_Finish && !GetCVar("rs_x", rs_x))
                 {
                     rs_x = 0.f;
                     if (theme_config["x"].is_string())
@@ -226,7 +226,7 @@ void RocketStats::RenderOverlay()
                         rs_x = float(theme_config["x"]);
                 }
 
-                if (rs_recovery != RecoveryFlags_Off && !GetCVar("rs_y", rs_y))
+                if (rs_recovery != RecoveryFlags_Finish && !GetCVar("rs_y", rs_y))
                 {
                     rs_y = 0.f;
                     if (theme_config["y"].is_string())
@@ -291,6 +291,7 @@ void RocketStats::RenderOverlay()
                 rank_name = (rank_tnumber ? rank_string.substr(0, (rank_string.size() - (rank_number.size() + 1))) : rank_string);
             }
 
+            theme_vars["Games"] = (rs_hide_games ? theme_hide_value : std::to_string(tstats.games));
             theme_vars["GameMode"] = (rs_hide_gm ? theme_hide_value : GetPlaylistName(current.playlist));
             theme_vars["Rank"] = rank_string;
             theme_vars["RankName"] = rank_name;
@@ -752,7 +753,7 @@ void RocketStats::RenderSettings()
         ImGui::Checkbox(GetLang(LANG_MMRCHANGE_TO_MMR).c_str(), &rs_replace_mmrc);
         ImGui::EndChild();
 
-        rs_select_all_file = (rs_file_gm && rs_file_rank && rs_file_div &&
+        rs_select_all_file = (rs_file_games && rs_file_gm && rs_file_rank && rs_file_div &&
             rs_file_mmr && rs_file_mmrc && rs_file_mmrcc &&
             rs_file_win && rs_file_loss && rs_file_streak && rs_file_winratio &&
             rs_file_demo && rs_file_demom && rs_file_democ &&
@@ -780,6 +781,7 @@ void RocketStats::RenderSettings()
         ImGui::BeginChild("##column2", { column_width, 205 }, false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
         if (!rs_in_file)
             ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.5f);
+        ImGui::Checkbox(GetLang(LANG_GAMES).c_str(), &rs_file_games);
         ImGui::Checkbox(GetLang(LANG_GAMEMODE).c_str(), &rs_file_gm);
         ImGui::Checkbox(GetLang(LANG_RANK).c_str(), &rs_file_rank);
         ImGui::Checkbox(GetLang(LANG_DIVISION).c_str(), &rs_file_div);
@@ -805,6 +807,7 @@ void RocketStats::RenderSettings()
         {
             rs_select_all_file = !rs_select_all_file;
 
+            rs_file_games = rs_select_all_file;
             rs_file_gm = rs_select_all_file;
             rs_file_rank = rs_select_all_file;
             rs_file_div = rs_select_all_file;
@@ -824,7 +827,7 @@ void RocketStats::RenderSettings()
             rs_file_boost = rs_select_all_file;
         }
 
-        rs_select_all_hide = (rs_hide_gm && rs_hide_rank && rs_hide_div &&
+        rs_select_all_hide = (rs_hide_games && rs_hide_gm && rs_hide_rank && rs_hide_div &&
             rs_hide_mmr && rs_hide_mmrc && rs_hide_mmrcc &&
             rs_hide_win && rs_hide_loss && rs_hide_streak && rs_hide_winratio &&
             rs_hide_demo && rs_hide_demom && rs_hide_democ &&
@@ -849,6 +852,7 @@ void RocketStats::RenderSettings()
         ImGui::SetCursorPos({ (column_start + (column_space * 2) + (column_width * 2)), 342 });
         ImGui::SetWindowFontScale(1.f);
         ImGui::BeginChild("##column3", { column_width, 205 }, false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
+        ImGui::Checkbox(GetLang(LANG_GAMES).c_str(), &rs_hide_games);
         ImGui::Checkbox(GetLang(LANG_GAMEMODE).c_str(), &rs_hide_gm);
         ImGui::Checkbox(GetLang(LANG_RANK).c_str(), &rs_hide_rank);
         ImGui::Checkbox(GetLang(LANG_DIVISION).c_str(), &rs_hide_div);
@@ -871,6 +875,7 @@ void RocketStats::RenderSettings()
         {
             rs_select_all_hide = !rs_select_all_hide;
 
+            rs_hide_games = rs_select_all_hide;
             rs_hide_gm = rs_select_all_hide;
             rs_hide_rank = rs_select_all_hide;
             rs_hide_div = rs_select_all_hide;

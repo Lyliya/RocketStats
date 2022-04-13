@@ -129,6 +129,7 @@ void RocketStats::MigrateRemove()
 
 void RocketStats::UpdateFiles(bool force)
 {
+    WriteGames(force);
     WriteGameMode(force);
     WriteRank(force);
     WriteDiv(force);
@@ -148,6 +149,7 @@ void RocketStats::ResetFiles()
     last_rank = "";
     last_division = "";
 
+    WriteInFile("RocketStats_Games.txt", std::to_string(0));
     WriteInFile("RocketStats_GameMode.txt", "");
     WriteInFile("RocketStats_Rank.txt", last_rank);
     WriteInFile("RocketStats_RankName.txt", last_rank);
@@ -233,11 +235,17 @@ bool RocketStats::ReadConfig()
                         rs_preview_rank = config["settings"]["preview"];
                     if (config["settings"]["roman"].is_boolean())
                         rs_roman_numbers = config["settings"]["roman"];
+                    if (config["settings"]["replace_mmr"].is_boolean())
+                        rs_replace_mmr = config["settings"]["replace_mmr"];
+                    if (config["settings"]["replace_mmrc"].is_boolean())
+                        rs_replace_mmrc = config["settings"]["replace_mmrc"];
 
                     if (config["settings"]["files"].is_object() && !config["settings"]["files"].is_null())
                     {
                         if (config["settings"]["files"]["on"].is_boolean())
                             rs_in_file = config["settings"]["files"]["on"];
+                        if (config["settings"]["files"]["games"].is_boolean())
+                            rs_file_games = config["settings"]["files"]["games"];
                         if (config["settings"]["files"]["gm"].is_boolean())
                             rs_file_gm = config["settings"]["files"]["gm"];
                         if (config["settings"]["files"]["rank"].is_boolean())
@@ -276,6 +284,8 @@ bool RocketStats::ReadConfig()
 
                     if (config["settings"]["hides"].is_object() && !config["settings"]["hides"].is_null())
                     {
+                        if (config["settings"]["hides"]["games"].is_boolean())
+                            rs_hide_games = config["settings"]["hides"]["games"];
                         if (config["settings"]["hides"]["gm"].is_boolean())
                             rs_hide_gm = config["settings"]["hides"]["gm"];
                         if (config["settings"]["hides"]["rank"].is_boolean())
@@ -311,16 +321,15 @@ bool RocketStats::ReadConfig()
 
                         cvarManager->log("Config: hides loaded");
                     }
-                    if (config["settings"]["replace_mmr"].is_boolean())
-                        rs_replace_mmr = config["settings"]["replace_mmr"];
-                    if (config["settings"]["replace_mmrc"].is_boolean())
-                        rs_replace_mmrc = config["settings"]["replace_mmrc"];
 
                     cvarManager->log("Config: settings loaded");
                 }
 
                 if (config["always"].is_object() && !config["always"].is_null())
                 {
+                    if (config["always"]["Games"].is_number_unsigned())
+                        always.games = int(config["always"]["Games"]);
+
                     if (config["always"]["MMRCumulChange"].is_number())
                         always.MMRCumulChange = float(config["always"]["MMRCumulChange"]);
 
@@ -358,6 +367,9 @@ bool RocketStats::ReadConfig()
                     {
                         if (config["always_gm"][i].is_object() && !config["always_gm"][i].is_null())
                         {
+                            if (config["always_gm"][i]["Games"].is_number_unsigned())
+                                always_gm[i].games = int(config["always_gm"][i]["Games"]);
+
                             if (config["always_gm"][i]["MMRCumulChange"].is_number())
                                 always_gm[i].MMRCumulChange = float(config["always_gm"][i]["MMRCumulChange"]);
 
@@ -420,6 +432,8 @@ void RocketStats::WriteConfig()
     tmp["settings"]["float"] = rs_enable_float;
     tmp["settings"]["preview"] = rs_preview_rank;
     tmp["settings"]["roman"] = rs_roman_numbers;
+    tmp["settings"]["replace_mmr"] = rs_replace_mmr;
+    tmp["settings"]["replace_mmrc"] = rs_replace_mmrc;
 
     // Save only existing themes
     tmp["settings"]["themes"] = json::object();
@@ -432,6 +446,7 @@ void RocketStats::WriteConfig()
 
     tmp["settings"]["files"] = json::object();
     tmp["settings"]["files"]["on"] = rs_in_file;
+    tmp["settings"]["files"]["games"] = rs_file_games;
     tmp["settings"]["files"]["gm"] = rs_file_gm;
     tmp["settings"]["files"]["rank"] = rs_file_rank;
     tmp["settings"]["files"]["div"] = rs_file_div;
@@ -452,6 +467,7 @@ void RocketStats::WriteConfig()
     tmp["settings"]["files"]["boost"] = rs_file_boost;
 
     tmp["settings"]["hides"] = json::object();
+    tmp["settings"]["hides"]["games"] = rs_hide_games;
     tmp["settings"]["hides"]["gm"] = rs_hide_gm;
     tmp["settings"]["hides"]["rank"] = rs_hide_rank;
     tmp["settings"]["hides"]["div"] = rs_hide_div;
@@ -468,10 +484,9 @@ void RocketStats::WriteConfig()
     tmp["settings"]["hides"]["death"] = rs_hide_death;
     tmp["settings"]["hides"]["deathm"] = rs_hide_deathm;
     tmp["settings"]["hides"]["deathc"] = rs_hide_deathc;
-    tmp["settings"]["replace_mmr"] = rs_replace_mmr;
-    tmp["settings"]["replace_mmrc"] = rs_replace_mmrc;
 
     tmp["always"] = json::object();
+    tmp["always"]["Games"] = always.games;
     tmp["always"]["MMRCumulChange"] = always.MMRCumulChange;
     tmp["always"]["Win"] = always.win;
     tmp["always"]["Loss"] = always.loss;
@@ -486,6 +501,7 @@ void RocketStats::WriteConfig()
     for (int i = 0; i < always_gm.size(); ++i)
     {
         tmp["always_gm"][i] = json::object();
+        tmp["always_gm"][i]["Games"] = always_gm[i].games;
         tmp["always_gm"][i]["MMRCumulChange"] = always_gm[i].MMRCumulChange;
         tmp["always_gm"][i]["Win"] = always_gm[i].win;
         tmp["always_gm"][i]["Loss"] = always_gm[i].loss;
@@ -499,6 +515,12 @@ void RocketStats::WriteConfig()
     WriteInFile("data/rocketstats.json", tmp.dump(2), true); // Save plugin settings in JSON format
 
     cvarManager->log("===== !WriteConfig =====");
+}
+
+void RocketStats::WriteGames(bool force)
+{
+    if (force || (rs_in_file && rs_file_games))
+        WriteInFile("RocketStats_Games.txt", (rs_hide_games ? theme_hide_value : std::to_string(GetStats().games)));
 }
 
 void RocketStats::WriteGameMode(bool force)

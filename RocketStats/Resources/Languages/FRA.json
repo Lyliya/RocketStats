@@ -65,6 +65,7 @@
 	"Informations",
 	"Met à jour les fichiers RocketStats avec des informations du jeu (utilisable dans OBS)",
 
+	"Nombre de parties",
 	"Mode de Jeu",
 	"Rang",
 	"Division",
@@ -84,6 +85,7 @@
 	"Boost",
 
 	"Écrire en fichier",
+	"Écrire le Nombre de parties en fichier",
 	"Écrire le Mode de Jeu en fichier",
 	"Écrire le Rang en fichier",
 	"Écrire la Division en fichier",
@@ -103,6 +105,7 @@
 	"Écrire le Boost en fichier",
 
 	"Masquer la valeur",
+	"Masque le Nombre de parties",
 	"Masque le Mode de Jeu",
 	"Masque le Rang",
 	"Masque la Division",

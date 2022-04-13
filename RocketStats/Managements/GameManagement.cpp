@@ -53,14 +53,19 @@ void RocketStats::GameEnd(std::string eventName)
         // Game as ended
         is_game_ended = true;
 
+        ++always.games;
+        ++session.games;
+        ++stats[current.playlist].games;
+        ++always_gm[current.playlist].games;
+
         if (my_team_num == winningTeam.GetTeamNum())
         {
             cvarManager->log("===== Game Won =====");
             // On Win, Increase streak and Win Number
-            always.win++;
-            session.win++;
-            stats[current.playlist].win++;
-            always_gm[current.playlist].win++;
+            ++always.win;
+            ++session.win;
+            ++stats[current.playlist].win;
+            ++always_gm[current.playlist].win;
 
             if (stats[current.playlist].streak < 0)
             {
@@ -71,10 +76,10 @@ void RocketStats::GameEnd(std::string eventName)
             }
             else
             {
-                always.streak++;
-                session.streak++;
-                stats[current.playlist].streak++;
-                always_gm[current.playlist].streak++;
+                ++always.streak;
+                ++session.streak;
+                ++stats[current.playlist].streak;
+                ++always_gm[current.playlist].streak;
             }
 
             SetRefresh(RefreshFlags_Refresh);
@@ -84,10 +89,10 @@ void RocketStats::GameEnd(std::string eventName)
         {
             cvarManager->log("===== Game Lost =====");
             // On Loose, Increase loose Number and decrease streak
-            always.loss++;
-            session.loss++;
-            stats[current.playlist].loss++;
-            always_gm[current.playlist].loss++;
+            ++always.loss;
+            ++session.loss;
+            ++stats[current.playlist].loss;
+            ++always_gm[current.playlist].loss;
 
             if (stats[current.playlist].streak > 0)
             {
@@ -98,10 +103,10 @@ void RocketStats::GameEnd(std::string eventName)
             }
             else
             {
-                always.streak--;
-                session.streak--;
-                stats[current.playlist].streak--;
-                always_gm[current.playlist].streak--;
+                --always.streak;
+                --session.streak;
+                --stats[current.playlist].streak;
+                --always_gm[current.playlist].streak;
             }
 
             SetRefresh(RefreshFlags_Refresh);
@@ -131,10 +136,15 @@ void RocketStats::GameDestroyed(std::string eventName)
     // Check if Game Ended, if not, RAGE QUIT or disconnect
     if (is_game_started == true && is_game_ended == false)
     {
-        always.loss++;
-        session.loss++;
-        stats[current.playlist].loss++;
-        always_gm[current.playlist].loss++;
+        ++always.games;
+        ++session.games;
+        ++stats[current.playlist].games;
+        ++always_gm[current.playlist].games;
+
+        ++always.loss;
+        ++session.loss;
+        ++stats[current.playlist].loss;
+        ++always_gm[current.playlist].loss;
 
         if (stats[current.playlist].streak > 0)
         {
@@ -145,10 +155,10 @@ void RocketStats::GameDestroyed(std::string eventName)
         }
         else
         {
-            always.streak--;
-            session.streak--;
-            stats[current.playlist].streak--;
-            always_gm[current.playlist].streak--;
+            --always.streak;
+            --session.streak;
+            --stats[current.playlist].streak;
+            --always_gm[current.playlist].streak;
         }
 
         WriteStreak();

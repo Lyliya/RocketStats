@@ -259,8 +259,11 @@ void RocketStats::RefreshVars()
     SetCVar("rs_enable_float", rs_enable_float);
     SetCVar("rs_preview_rank", rs_preview_rank);
     SetCVar("rs_roman_numbers", rs_roman_numbers);
+    SetCVar("rs_replace_mmr", rs_replace_mmr);
+    SetCVar("rs_replace_mmrc", rs_replace_mmrc);
 
     SetCVar("rs_in_file", rs_in_file);
+    SetCVar("rs_file_games", rs_file_games);
     SetCVar("rs_file_gm", rs_file_gm);
     SetCVar("rs_file_rank", rs_file_rank);
     SetCVar("rs_file_div", rs_file_div);
@@ -279,6 +282,7 @@ void RocketStats::RefreshVars()
     SetCVar("rs_file_deathc", rs_file_deathc);
     SetCVar("rs_file_boost", rs_file_boost);
 
+    SetCVar("rs_hide_games", rs_hide_games);
     SetCVar("rs_hide_gm", rs_hide_gm);
     SetCVar("rs_hide_rank", rs_hide_rank);
     SetCVar("rs_hide_div", rs_hide_div);
@@ -295,8 +299,6 @@ void RocketStats::RefreshVars()
     SetCVar("rs_hide_death", rs_hide_death);
     SetCVar("rs_hide_deathm", rs_hide_deathm);
     SetCVar("rs_hide_deathc", rs_hide_deathc);
-    SetCVar("rs_replace_mmr", rs_replace_mmr);
-    SetCVar("rs_replace_mmrc", rs_replace_mmrc);
 }
 
 Element RocketStats::CalculateElement(json& element, Options& options, bool& check)
