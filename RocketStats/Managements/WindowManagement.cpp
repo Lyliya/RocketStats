@@ -161,7 +161,7 @@ void RocketStats::RenderIcon()
 void RocketStats::RenderOverlay()
 {
     bool show_overlay = ((rs_enable_inmenu && is_in_menu) || (rs_enable_ingame && is_in_game && (!is_in_scoreboard || is_in_freeplay)) || (rs_enable_inscoreboard && is_in_scoreboard && !is_in_freeplay));
-    if (!rs_disp_overlay || !show_overlay)
+    if (!rs_disp_overlay || !show_overlay || (rs_recovery != RecoveryFlags_Off && rs_recovery != RecoveryFlags_Finish))
         return;
 
     ImGui::SetNextWindowPos({ 0.f, 0.f }, ImGuiCond_FirstUseEver);
@@ -359,11 +359,8 @@ void RocketStats::RenderOverlay()
                 if (rs_rotate_enabled)
                     start = ImRotateStart(drawlist);
 
-                if (rs_recovery == RecoveryFlags_Off || rs_recovery == RecoveryFlags_Finish)
-                {
-                    for (auto& element : theme_render.elements)
-                        RenderElement(drawlist, element);
-                }
+                for (auto& element : theme_render.elements)
+                    RenderElement(drawlist, element);
 
                 if (rs_rotate_enabled)
                     ImRotateEnd(rs_crotate, start, drawlist, ImRotationCenter(start, ImGui::GetBackgroundDrawList()));
