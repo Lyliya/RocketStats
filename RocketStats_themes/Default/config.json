@@ -57,8 +57,8 @@
 		{
 			"name":			"mmrchange",
 			"type":			"text",
-			"value":		"MMRChange : {{MMRChange}}",
-			"sign":			"MMRChange",
+			"value":		"MMRChange : {{MMRCumulChange}}",
+			"sign":			"MMRCumulChange",
 			"x":			10,
 			"y":			"(3 * 20px) + 10px",
 			"align":		"left",

@@ -43,7 +43,7 @@
 		{
 			"name":			"mmr",
 			"type":			"text",
-			"value":		"{{MMR}} ({{MMRChange}})",
+			"value":		"{{MMR}} ({{MMRCumulChange}})",
 			"x":			50,
 			"y":			68,
 			"align":		"left",
