@@ -98,7 +98,7 @@ void RocketStats::Render()
 
 void RocketStats::RenderIcon()
 {
-    float margin = 20.f;
+    float margin = 0.f;
     float icon_size = (42.f * rs_screen_scale[0]);
     float icon_scale = (1.f - rs_screen_scale[0]);
     ImVec2 mouse_pos = ImGui::GetIO().MousePos;
@@ -1006,7 +1006,7 @@ void RocketStats::OnClose()
         escape_state = false;
         gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
             cvarManager->executeCommand("togglemenu " + GetMenuName());
-            }, 0.02F);
+        }, 0.02F);
     }
 
     ToggleSettings("OnClose", ToggleFlags_Hide);

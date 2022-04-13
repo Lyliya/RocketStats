@@ -406,6 +406,8 @@ void RocketStats::onInit()
     gameWrapper->HookEvent("Function TAGame.GameEvent_TA.Destroyed", std::bind(&RocketStats::GameDestroyed, this, std::placeholders::_1));
     gameWrapper->HookEvent("Function TAGame.GFxData_MenuStack_TA.PushMenu", std::bind([this]() { is_in_menu = true; }));
     gameWrapper->HookEvent("Function TAGame.GFxData_MenuStack_TA.PopMenu", std::bind([this]() { is_in_menu = false; }));
+    gameWrapper->HookEvent("Function TAGame.MenuSequence_TA.EnterSequence", std::bind([this]() { is_in_menu = true; }));
+    gameWrapper->HookEvent("Function TAGame.MenuSequence_TA.LeaveSequence", std::bind([this]() { is_in_menu = false; }));
     gameWrapper->HookEvent("Function TAGame.GFxData_GameEvent_TA.OnOpenScoreboard", std::bind([this]() { is_in_scoreboard = true; }));
     gameWrapper->HookEvent("Function TAGame.GFxData_GameEvent_TA.OnCloseScoreboard", std::bind([this]() { is_in_scoreboard = false; }));
 
@@ -521,17 +523,6 @@ void RocketStats::onInit()
 void RocketStats::onUnload()
 {
     WriteConfig(); // Save settings (if not already done)
-
-    gameWrapper->UnhookEvent("Function TAGame.GFxData_StartMenu_TA.EventTitleScreenClicked");
-    gameWrapper->UnhookEvent("Function GameEvent_TA.Countdown.BeginState");
-    gameWrapper->UnhookEvent("Function TAGame.GameEvent_Soccar_TA.EventMatchEnded");
-    gameWrapper->UnhookEvent("Function CarComponent_Boost_TA.Active.BeginState");
-    gameWrapper->UnhookEvent("Function CarComponent_Boost_TA.Active.EndState");
-    gameWrapper->UnhookEvent("Function TAGame.GameEvent_TA.Destroyed");
-
-    //gameWrapper->UnhookEventPost("Function TAGame.GFxHUD_TA.HandleStatEvent");
-    //gameWrapper->UnhookEventPost("Function TAGame.GFxHUD_TA.HandleStatTickerMessage");
-
     TogglePlugin("onUnload", ToggleFlags_Hide); // Hide the plugin before unloading it
 }
 
@@ -602,7 +593,10 @@ void RocketStats::ToggleSettings(std::string eventName, ToggleFlags mode)
     if (mode == ToggleFlags_Toggle || (mode == ToggleFlags_Show && !settings_open) || (mode == ToggleFlags_Hide && settings_open))
     {
         settings_open = !settings_open;
-        cvarManager->getCvar("cl_rocketstats_settings").setValue(settings_open);
+
+        CVarWrapper cvar = cvarManager->getCvar("cl_rocketstats_settings");
+        if (cvar)
+            cvar.setValue(settings_open);
 
         if (!settings_open)
             WriteConfig(); // Saves settings when closing the menu
