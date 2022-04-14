@@ -168,6 +168,7 @@ private:
 	//std::unique_ptr<MMRNotifierToken> notifierToken;
 
 	// Game states
+	int menu_stack = 0;
 	bool is_in_game = false;
 	bool is_in_menu = false;
 	bool is_in_freeplay = false;
