@@ -33,8 +33,24 @@
 				};
 				let update = () => {
 					readTextFile( '../RocketStats_Rank.txt' ).then( value => {
-						value = value.trim();
-						if ( occasionnal && [ 'Standard', 'Duel', 'Doubles', 'Chaos' ].indexOf( value ) >= 0 )
+						value = value.trim().replace( / /g, '_' );
+						if ( !occasionnal || [ 'Standard', 'Duel', 'Doubles', 'Chaos' ].indexOf( value ) < 0 )
+						{
+							let split = value.split( '_' );
+							let num = split.slice( -1 )[ 0 ];
+							if ( !isNaN( num ) )
+							{
+								num = parseInt( num );
+								let roman = [ '', 'I', 'II', 'III', 'IV', 'V' ];
+								if ( num > 0 && num < roman.length )
+								{
+									split.pop();
+									split.push( roman[ num ] );
+									value = split.join( '_' );
+								}
+							}
+						}
+						else
 							value = occasionnal;
 
 						if ( value == last )
