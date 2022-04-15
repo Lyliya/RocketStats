@@ -1,43 +1,62 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>RocketStats</title>
-</head>
-<body>
-  <video autoplay muted loop src="boost.webm" id="vid1" position="absolute" z-index="1" hidden></video>
-  <video autoplay muted loop src="noboost.webm" id="vid2" position="absolute" z-index="2" hidden></video>
-  <script>
-    document.getElementById("vid1").currentTime = 0;
-    document.getElementById("vid2").currentTime = 0;
-    let save = "0";
-    window.setInterval(() => {
-	  var rawFile = new XMLHttpRequest();
-		rawFile.open("GET", 'BoostState.txt', false);
-		rawFile.onreadystatechange = function () {
-			if(rawFile.readyState === 4) {
-				if(rawFile.status === 200 || rawFile.status == 0) {
-					var allText = rawFile.responseText;
-					if (allText == "1" && save != allText) {
-					// Boost
-					document.getElementById("vid1").hidden = false;
-					document.getElementById("vid2").hidden = true;
-					} else if (allText == "0" && save != allText) {
-					// No Boost
-					document.getElementById("vid1").hidden = true;
-					document.getElementById("vid2").hidden = false;
-					} else if (allText == "-1" && save != allText) {
-					document.getElementById("vid1").hidden = true;
-					document.getElementById("vid2").hidden = true;
+<!-- %appdata%\bakkesmod\bakkesmod\data\RocketStats\RocketStats_images -->
+<html>
+	<head>
+		<script type="text/javascript">
+			function readTextFile( file )
+			{
+				return new Promise( ( resolve, reject ) => {
+					var request = new XMLHttpRequest();
+					request.open( 'GET', file, false );
+
+					request.onreadystatechange = () => {
+						if ( request.readyState === 4 )
+						{
+							if ( request.status === 200 || request.status == 0 )
+								resolve( request.responseText );
+							else
+								reject( request );
+						}
 					}
-					save = allText;
-				}
+
+					request.send( null );
+				} );
 			}
-		}
-		rawFile.send(null);
-    }, 100)
-  </script>
-</body>
+
+			window.addEventListener( 'load', () => {
+				let vid1 = document.getElementById( 'vid1' )
+				let vid2 = document.getElementById( 'vid2' );
+
+				vid1.currentTime = 0;
+				vid2.currentTime = 0;
+
+				let save = '0';
+				window.setInterval(() => {
+					readTextFile( '../RocketStats_BoostState.txt' ).then( value => {
+						if ( value == "1" && save != value ) // Boost
+						{
+							vid1.hidden = false;
+							vid2.hidden = true;
+						}
+						else if ( value == '0' && save != value ) // No Boost
+						{
+							vid1.hidden = true;
+							vid2.hidden = false;
+						}
+						else if ( value == '-1' && save != value )
+						{
+							vid1.hidden = true;
+							vid2.hidden = true;
+						}
+
+						save = value;
+					} );
+				}, 100 );
+			} );
+		</script>
+	</head>
+
+	<body>
+		<video autoplay muted loop src="boost.webm" id="vid1" position="absolute" z-index="1" hidden></video>
+		<video autoplay muted loop src="noboost.webm" id="vid2" position="absolute" z-index="2" hidden></video>
+	</body>
 </html>
