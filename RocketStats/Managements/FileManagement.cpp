@@ -235,10 +235,19 @@ bool RocketStats::ReadConfig()
                         rs_preview_rank = config["settings"]["preview"];
                     if (config["settings"]["roman"].is_boolean())
                         rs_roman_numbers = config["settings"]["roman"];
+
                     if (config["settings"]["replace_mmr"].is_boolean())
                         rs_replace_mmr = config["settings"]["replace_mmr"];
+                    if (config["settings"]["replace_mmr_cc"].is_boolean())
+                        rs_replace_mmr_cc = config["settings"]["replace_mmr_cc"];
                     if (config["settings"]["replace_mmrc"].is_boolean())
                         rs_replace_mmrc = config["settings"]["replace_mmrc"];
+                    if (config["settings"]["replace_mmrc_cc"].is_boolean())
+                        rs_replace_mmrc_cc = config["settings"]["replace_mmrc_cc"];
+                    if (config["settings"]["replace_mmrcc"].is_boolean())
+                        rs_replace_mmrcc = config["settings"]["replace_mmrcc"];
+                    if (config["settings"]["replace_mmrcc_c"].is_boolean())
+                        rs_replace_mmrcc_c = config["settings"]["replace_mmrcc_c"];
 
                     if (config["settings"]["files"].is_object() && !config["settings"]["files"].is_null())
                     {
@@ -432,8 +441,13 @@ void RocketStats::WriteConfig()
     tmp["settings"]["float"] = rs_enable_float;
     tmp["settings"]["preview"] = rs_preview_rank;
     tmp["settings"]["roman"] = rs_roman_numbers;
+
     tmp["settings"]["replace_mmr"] = rs_replace_mmr;
+    tmp["settings"]["replace_mmr_cc"] = rs_replace_mmr_cc;
     tmp["settings"]["replace_mmrc"] = rs_replace_mmrc;
+    tmp["settings"]["replace_mmrc_cc"] = rs_replace_mmrc_cc;
+    tmp["settings"]["replace_mmrcc"] = rs_replace_mmrcc;
+    tmp["settings"]["replace_mmrcc_c"] = rs_replace_mmrcc_c;
 
     // Save only existing themes
     tmp["settings"]["themes"] = json::object();

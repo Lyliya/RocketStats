@@ -318,10 +318,21 @@ void RocketStats::RenderOverlay()
 
             // Replace MMR with MMRChange
             std::string mmr = theme_vars["MMR"];
+            std::string mmrc = theme_vars["MMRChange"];
+            std::string mmrcc = theme_vars["MMRCumulChange"];
+
             if (rs_replace_mmr)
-                theme_vars["MMR"] = theme_vars["MMRChange"];
+                theme_vars["MMR"] = mmrc;
+            else if (rs_replace_mmr_cc)
+                theme_vars["MMR"] = mmrcc;
             if (rs_replace_mmrc)
                 theme_vars["MMRChange"] = mmr;
+            else if (rs_replace_mmrc_cc)
+                theme_vars["MMRChange"] = mmrcc;
+            if (rs_replace_mmrcc)
+                theme_vars["MMRCumulChange"] = mmr;
+            else if (rs_replace_mmrcc_c)
+                theme_vars["MMRCumulChange"] = mmrc;
 
             // Calculation of each element composing the theme
             rs_drawlist->Clear(); // Clear the array of vertices for the next step
@@ -735,12 +746,9 @@ void RocketStats::RenderSettings()
         ImGui::SetCursorPos({ 290, 282 });
         ImGui::TextColored(ImVec4{ 1.f, 1.f, 1.f, 0.8f }, ((GetLang(LANG_THEME_BY) + " ").c_str() + theme_render.author).c_str());
 
-        //ImGui::SetCursorPos({ column_start, 320 });
-        //ImGui::SetWindowFontScale(1.2f);
-        //ImGui::TextColored(ImVec4{ 0.8f, 0.8f, 0.8f, 1.f }, "");
-        ImGui::SetCursorPos({ column_start, 342 });
+        ImGui::SetCursorPos({ (column_start - 8), 342 });
         ImGui::SetWindowFontScale(1.f);
-        ImGui::BeginChild("##column1", { column_width, 205 }, false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
+        ImGui::BeginChild("##column1", { (column_width + 16), 205 }, false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
         ImGui::Checkbox(GetLang(LANG_SHOW_IN_MENU).c_str(), &rs_enable_inmenu);
         ImGui::Checkbox(GetLang(LANG_SHOW_IN_GAME).c_str(), &rs_enable_ingame);
         ImGui::Checkbox(GetLang(LANG_SHOW_IN_SCOREBOARD).c_str(), &rs_enable_inscoreboard);
@@ -748,7 +756,11 @@ void RocketStats::RenderSettings()
         ImGui::Checkbox(GetLang(LANG_PREVIEW_RANK).c_str(), &rs_preview_rank);
         ImGui::Checkbox(GetLang(LANG_ROMAN_NUMBERS).c_str(), &rs_roman_numbers);
         ImGui::Checkbox(GetLang(LANG_MMR_TO_MMRCHANGE).c_str(), &rs_replace_mmr);
+        ImGui::Checkbox(GetLang(LANG_MMR_TO_MMRCUMULCHANGE).c_str(), &rs_replace_mmr_cc);
         ImGui::Checkbox(GetLang(LANG_MMRCHANGE_TO_MMR).c_str(), &rs_replace_mmrc);
+        ImGui::Checkbox(GetLang(LANG_MMRCHANGE_TO_MMRCUMULCHANGE).c_str(), &rs_replace_mmrc_cc);
+        ImGui::Checkbox(GetLang(LANG_MMRCUMULCHANGE_TO_MMR).c_str(), &rs_replace_mmrcc);
+        ImGui::Checkbox(GetLang(LANG_MMRCUMULCHANGE_TO_MMRCHANGE).c_str(), &rs_replace_mmrcc_c);
         ImGui::EndChild();
 
         rs_select_all_file = (rs_file_games && rs_file_gm && rs_file_rank && rs_file_div &&
@@ -758,7 +770,7 @@ void RocketStats::RenderSettings()
             rs_file_death && rs_file_deathm && rs_file_deathc &&
             rs_file_boost);
         select_all = rs_select_all_file;
-        tpos = { (column_start + column_space + column_width - 0.5f), 320 };
+        tpos = { (column_start + column_space + (column_width + 16) - 0.5f), 320 };
         ImGui::SetCursorPos(tpos);
         ImGui::SetWindowFontScale(1.f);
         ImGui::PushStyleColor(ImGuiCol_FrameBg, { 0.3f, 0.3f, 0.3f, 1.f });
@@ -774,9 +786,9 @@ void RocketStats::RenderSettings()
         ImGui::SameLine();
         ImGui::SetCursorPosY(316);
         ImGui::TextColored(ImVec4{ 0.8f, 0.8f, 0.8f, 1.f }, GetLang(LANG_FILE_TITLE).c_str());
-        ImGui::SetCursorPos({ (column_start + column_space + column_width), 342 });
+        ImGui::SetCursorPos({ (column_start + column_space + (column_width + 16)), 342 });
         ImGui::SetWindowFontScale(1.f);
-        ImGui::BeginChild("##column2", { column_width, 205 }, false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
+        ImGui::BeginChild("##column2", { (column_width - 8), 205 }, false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
         if (!rs_in_file)
             ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.5f);
         ImGui::Checkbox(GetLang(LANG_GAMES).c_str(), &rs_file_games);
@@ -831,7 +843,7 @@ void RocketStats::RenderSettings()
             rs_hide_demo && rs_hide_demom && rs_hide_democ &&
             rs_hide_death && rs_hide_deathm && rs_hide_deathc);
         select_all = rs_select_all_hide;
-        tpos = { (column_start + (column_space * 2) + (column_width * 2)), 320 };
+        tpos = { (column_start + (column_space * 2) + ((column_width * 2) + 16)), 320 };
         ImGui::SetCursorPos(tpos);
         ImGui::SetWindowFontScale(1.f);
         ImGui::PushStyleColor(ImGuiCol_FrameBg, { 0.3f, 0.3f, 0.3f, 1.f });
@@ -847,9 +859,9 @@ void RocketStats::RenderSettings()
         ImGui::SameLine();
         ImGui::SetCursorPosY(316);
         ImGui::TextColored(ImVec4{ 0.8f, 0.8f, 0.8f, 1.f }, GetLang(LANG_HIDE_TITLE).c_str());
-        ImGui::SetCursorPos({ (column_start + (column_space * 2) + (column_width * 2)), 342 });
+        ImGui::SetCursorPos({ (column_start + (column_space * 2) + ((column_width * 2) + 16)), 342 });
         ImGui::SetWindowFontScale(1.f);
-        ImGui::BeginChild("##column3", { column_width, 205 }, false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
+        ImGui::BeginChild("##column3", { (column_width - 8), 205 }, false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
         ImGui::Checkbox(GetLang(LANG_GAMES).c_str(), &rs_hide_games);
         ImGui::Checkbox(GetLang(LANG_GAMEMODE).c_str(), &rs_hide_gm);
         ImGui::Checkbox(GetLang(LANG_RANK).c_str(), &rs_hide_rank);

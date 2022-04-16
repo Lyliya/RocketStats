@@ -241,26 +241,28 @@ void RocketStats::RefreshVars()
     SetCVar("rs_opacity", rs_opacity, true);
 
     SetCVar("rs_disp_overlay", rs_disp_overlay);
-    if (SetCVar("rs_enable_inmenu", rs_enable_inmenu))
-    {
-        if (!rs_enable_inmenu && !rs_enable_ingame && !rs_enable_inscoreboard)
-            rs_enable_ingame = true;
-    }
-    if (SetCVar("rs_enable_ingame", rs_enable_ingame))
-    {
-        if (!rs_enable_ingame && !rs_enable_inmenu && !rs_enable_inscoreboard)
-            rs_enable_inmenu = true;
-    }
-    if (SetCVar("rs_enable_inscoreboard", rs_enable_inscoreboard))
-    {
-        if (!rs_enable_ingame && !rs_enable_inmenu && !rs_enable_inscoreboard)
-            rs_enable_inmenu = true;
-    }
+    if (SetCVar("rs_enable_inmenu", rs_enable_inmenu) && !rs_enable_inmenu && !rs_enable_ingame && !rs_enable_inscoreboard)
+        rs_enable_ingame = true;
+    if (SetCVar("rs_enable_ingame", rs_enable_ingame) && !rs_enable_ingame && !rs_enable_inmenu && !rs_enable_inscoreboard)
+        rs_enable_inmenu = true;
+    if (SetCVar("rs_enable_inscoreboard", rs_enable_inscoreboard) && !rs_enable_ingame && !rs_enable_inmenu && !rs_enable_inscoreboard)
+        rs_enable_inmenu = true;
     SetCVar("rs_enable_float", rs_enable_float);
     SetCVar("rs_preview_rank", rs_preview_rank);
     SetCVar("rs_roman_numbers", rs_roman_numbers);
-    SetCVar("rs_replace_mmr", rs_replace_mmr);
-    SetCVar("rs_replace_mmrc", rs_replace_mmrc);
+
+    if (SetCVar("rs_replace_mmr", rs_replace_mmr) && rs_replace_mmr && rs_replace_mmr_cc)
+        rs_replace_mmr_cc = false;
+    if (SetCVar("rs_replace_mmr_cc", rs_replace_mmr_cc) && rs_replace_mmr_cc && rs_replace_mmr)
+        rs_replace_mmr = false;
+    if (SetCVar("rs_replace_mmrc", rs_replace_mmrc) && rs_replace_mmrc && rs_replace_mmrc_cc)
+        rs_replace_mmrc_cc = false;
+    if (SetCVar("rs_replace_mmrc_cc", rs_replace_mmrc_cc) && rs_replace_mmrc_cc && rs_replace_mmrc)
+        rs_replace_mmrc = false;
+    if (SetCVar("rs_replace_mmrcc", rs_replace_mmrcc) && rs_replace_mmrcc && rs_replace_mmrcc_c)
+        rs_replace_mmrcc_c = false;
+    if (SetCVar("rs_replace_mmrcc_c", rs_replace_mmrcc_c) && rs_replace_mmrcc_c && rs_replace_mmrcc)
+        rs_replace_mmrcc = false;
 
     SetCVar("rs_in_file", rs_in_file);
     SetCVar("rs_file_games", rs_file_games);
@@ -355,8 +357,16 @@ Element RocketStats::CalculateElement(json& element, Options& options, bool& che
                     std::string tkey = key;
                     if (tkey == "MMR" && rs_replace_mmr)
                         tkey = "MMRChange";
+                    else if (tkey == "MMR" && rs_replace_mmr_cc)
+                        tkey = "MMRCumulChange";
                     else if (tkey == "MMRChange" && rs_replace_mmrc)
                         tkey = "MMR";
+                    else if (tkey == "MMRChange" && rs_replace_mmrc_cc)
+                        tkey = "MMRCumulChange";
+                    else if (tkey == "MMRCumulChange" && rs_replace_mmrcc)
+                        tkey = "MMR";
+                    else if (tkey == "MMRCumulChange" && rs_replace_mmrcc_c)
+                        tkey = "MMRChange";
 
                     if (element.contains("sign") && element["sign"] == tkey && value != theme_hide_value)
                     {

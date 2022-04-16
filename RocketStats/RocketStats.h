@@ -328,8 +328,13 @@ public:
 	bool rs_enable_float = false;
 	bool rs_preview_rank = false;
 	bool rs_roman_numbers = true;
+
 	bool rs_replace_mmr = false;
+	bool rs_replace_mmr_cc = false;
 	bool rs_replace_mmrc = false;
+	bool rs_replace_mmrc_cc = false;
+	bool rs_replace_mmrcc = false;
+	bool rs_replace_mmrcc_c = false;
 
 	bool rs_in_file = true;
 	bool rs_select_all_file = true;

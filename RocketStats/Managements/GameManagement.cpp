@@ -40,6 +40,7 @@ void RocketStats::GameStart(std::string eventName)
 
 void RocketStats::GameEnd(std::string eventName)
 {
+    cvarManager->log("GameEnd => is_online_game:" + std::to_string(is_online_game) + " my_team_num:" + std::to_string(my_team_num));
     if (is_online_game && my_team_num != -1)
     {
         cvarManager->log("===== GameEnd =====");
@@ -58,6 +59,7 @@ void RocketStats::GameEnd(std::string eventName)
         ++stats[current.playlist].games;
         ++always_gm[current.playlist].games;
 
+        cvarManager->log("GameEnd => my_team_num:" + std::to_string(my_team_num) + " GetTeamNum:" + std::to_string(winningTeam.GetTeamNum()));
         if (my_team_num == winningTeam.GetTeamNum())
         {
             cvarManager->log("===== Game Won =====");
@@ -67,20 +69,19 @@ void RocketStats::GameEnd(std::string eventName)
             ++stats[current.playlist].win;
             ++always_gm[current.playlist].win;
 
+            cvarManager->log("GameEnd => streak:" + std::to_string(stats[current.playlist].streak));
             if (stats[current.playlist].streak < 0)
             {
-                always.streak = 1;
-                session.streak = 1;
-                stats[current.playlist].streak = 1;
-                always_gm[current.playlist].streak = 1;
+                always.streak = 0;
+                session.streak = 0;
+                stats[current.playlist].streak = 0;
+                always_gm[current.playlist].streak = 0;
             }
-            else
-            {
-                ++always.streak;
-                ++session.streak;
-                ++stats[current.playlist].streak;
-                ++always_gm[current.playlist].streak;
-            }
+
+            ++always.streak;
+            ++session.streak;
+            ++stats[current.playlist].streak;
+            ++always_gm[current.playlist].streak;
 
             SetRefresh(RefreshFlags_Refresh);
             WriteWin();
@@ -94,34 +95,32 @@ void RocketStats::GameEnd(std::string eventName)
             ++stats[current.playlist].loss;
             ++always_gm[current.playlist].loss;
 
+            cvarManager->log("GameEnd => streak:" + std::to_string(stats[current.playlist].streak));
             if (stats[current.playlist].streak > 0)
             {
-                always.streak = -1;
-                session.streak = -1;
-                stats[current.playlist].streak = -1;
-                always_gm[current.playlist].streak = -1;
+                always.streak = 0;
+                session.streak = 0;
+                stats[current.playlist].streak = 0;
+                always_gm[current.playlist].streak = 0;
             }
-            else
-            {
-                --always.streak;
-                --session.streak;
-                --stats[current.playlist].streak;
-                --always_gm[current.playlist].streak;
-            }
+
+            --always.streak;
+            --session.streak;
+            --stats[current.playlist].streak;
+            --always_gm[current.playlist].streak;
 
             SetRefresh(RefreshFlags_Refresh);
             WriteLoss();
         }
 
+        WriteGames();
         WriteStreak();
+        WriteBoost();
         ResetBasicStats();
         WriteConfig();
 
         // Reset myTeamNum security
         my_team_num = -1;
-
-        if (rs_in_file && rs_file_boost)
-            WriteInFile("RocketStats_BoostState.txt", std::to_string(-1));
 
         gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) { UpdateMMR(gameWrapper->GetUniqueID()); }, 3.0F);
 
@@ -134,6 +133,7 @@ void RocketStats::GameDestroyed(std::string eventName)
     cvarManager->log("===== GameDestroyed =====");
 
     // Check if Game Ended, if not, RAGE QUIT or disconnect
+    cvarManager->log("GameDestroyed => is_game_started:" + std::to_string(is_game_started) + " is_game_ended:" + std::to_string(is_game_ended));
     if (is_game_started == true && is_game_ended == false)
     {
         ++always.games;
@@ -146,21 +146,21 @@ void RocketStats::GameDestroyed(std::string eventName)
         ++stats[current.playlist].loss;
         ++always_gm[current.playlist].loss;
 
+        cvarManager->log("GameDestroyed => streak:" + std::to_string(stats[current.playlist].streak));
         if (stats[current.playlist].streak > 0)
         {
             always.streak = 0;
             session.streak = 0;
-            stats[current.playlist].streak = -1;
-            always_gm[current.playlist].streak = -1;
-        }
-        else
-        {
-            --always.streak;
-            --session.streak;
-            --stats[current.playlist].streak;
-            --always_gm[current.playlist].streak;
+            stats[current.playlist].streak = 0;
+            always_gm[current.playlist].streak = 0;
         }
 
+        --always.streak;
+        --session.streak;
+        --stats[current.playlist].streak;
+        --always_gm[current.playlist].streak;
+
+        WriteGames();
         WriteStreak();
         WriteLoss();
         ResetBasicStats();
@@ -169,8 +169,7 @@ void RocketStats::GameDestroyed(std::string eventName)
 
     is_game_ended = true;
     is_game_started = false;
-    if (rs_in_file && rs_file_boost)
-        WriteInFile("RocketStats_BoostState.txt", std::to_string(-1));
+    WriteBoost();
 
     SetRefresh(RefreshFlags_Refresh);
     cvarManager->log("===== !GameDestroyed =====");
