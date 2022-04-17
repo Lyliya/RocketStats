@@ -141,7 +141,7 @@ void RocketStats::UpdateFiles(bool force)
     WriteWinRatio(force);
     WriteDemo(force);
     WriteDeath(force);
-    WriteBoost(force);
+    WriteBoost(force, ((is_game_started && !is_game_ended) ? 0 : -1));
 }
 
 void RocketStats::ResetFiles()
@@ -704,8 +704,8 @@ void RocketStats::WriteDeath(bool force)
         WriteInFile("RocketStats_DeathCumul.txt", (rs_hide_deathc ? theme_hide_value : std::to_string(GetStats().deathCumul)));
 }
 
-void RocketStats::WriteBoost(bool force)
+void RocketStats::WriteBoost(bool force, int value)
 {
     if (force || (rs_in_file && rs_file_boost))
-        WriteInFile("RocketStats_BoostState.txt", std::to_string(is_offline_game ? 0 : -1));
+        WriteInFile("RocketStats_BoostState.txt", std::to_string(value));
 }

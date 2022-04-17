@@ -487,5 +487,5 @@ public:
 	void WriteWinRatio(bool force = false);
 	void WriteDemo(bool force = false);
 	void WriteDeath(bool force = false);
-	void WriteBoost(bool force = false);
+	void WriteBoost(bool force = false, int value = -1);
 };

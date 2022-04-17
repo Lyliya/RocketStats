@@ -3,7 +3,12 @@
 void RocketStats::GameStart(std::string eventName)
 {
     if (!is_online_game || is_game_started)
+    {
+        if (!is_game_started)
+            WriteBoost(false, 0);
+
         return;
+    }
 
     cvarManager->log("===== GameStart =====");
 
@@ -84,7 +89,6 @@ void RocketStats::GameEnd(std::string eventName)
             ++always_gm[current.playlist].streak;
 
             SetRefresh(RefreshFlags_Refresh);
-            WriteWin();
         }
         else
         {
@@ -110,14 +114,11 @@ void RocketStats::GameEnd(std::string eventName)
             --always_gm[current.playlist].streak;
 
             SetRefresh(RefreshFlags_Refresh);
-            WriteLoss();
         }
 
-        WriteGames();
-        WriteStreak();
-        WriteBoost();
         ResetBasicStats();
         WriteConfig();
+        UpdateFiles();
 
         // Reset myTeamNum security
         my_team_num = -1;
@@ -126,6 +127,8 @@ void RocketStats::GameEnd(std::string eventName)
 
         cvarManager->log("===== !GameEnd =====");
     }
+    else if (!is_game_started)
+        WriteBoost();
 }
 
 void RocketStats::GameDestroyed(std::string eventName)
@@ -134,7 +137,7 @@ void RocketStats::GameDestroyed(std::string eventName)
 
     // Check if Game Ended, if not, RAGE QUIT or disconnect
     cvarManager->log("GameDestroyed => is_game_started:" + std::to_string(is_game_started) + " is_game_ended:" + std::to_string(is_game_ended));
-    if (is_game_started == true && is_game_ended == false)
+    if (is_game_started && !is_game_ended)
     {
         ++always.games;
         ++session.games;
@@ -160,16 +163,13 @@ void RocketStats::GameDestroyed(std::string eventName)
         --stats[current.playlist].streak;
         --always_gm[current.playlist].streak;
 
-        WriteGames();
-        WriteStreak();
-        WriteLoss();
         ResetBasicStats();
         WriteConfig();
     }
 
     is_game_ended = true;
     is_game_started = false;
-    WriteBoost();
+    UpdateFiles();
 
     SetRefresh(RefreshFlags_Refresh);
     cvarManager->log("===== !GameDestroyed =====");
