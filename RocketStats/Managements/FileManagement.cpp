@@ -139,6 +139,7 @@ void RocketStats::UpdateFiles(bool force)
     WriteLoss(force);
     WriteStreak(force);
     WriteWinRatio(force);
+    WriteWinPercentage(force);
     WriteDemo(force);
     WriteDeath(force);
     WriteBoost(force, ((is_game_started && !is_game_ended) ? 0 : -1));
@@ -164,6 +165,7 @@ void RocketStats::ResetFiles()
     WriteInFile("RocketStats_Loss.txt", std::to_string(0));
     WriteInFile("RocketStats_Streak.txt", std::to_string(0));
     WriteInFile("RocketStats_WinRatio.txt", std::to_string(0));
+    WriteInFile("RocketStats_WinPercentage.txt", std::to_string(0));
     WriteInFile("RocketStats_Demolition.txt", std::to_string(0));
     WriteInFile("RocketStats_DemolitionMatch.txt", std::to_string(0));
     WriteInFile("RocketStats_DemolitionCumul.txt", std::to_string(0));
@@ -275,6 +277,8 @@ bool RocketStats::ReadConfig()
                             rs_file_streak = config["settings"]["files"]["streak"];
                         if (config["settings"]["files"]["winratio"].is_boolean())
                             rs_file_winratio = config["settings"]["files"]["winratio"];
+                        if (config["settings"]["files"]["winpercentage"].is_boolean())
+                            rs_file_winpercentage = config["settings"]["files"]["winpercentage"];
                         if (config["settings"]["files"]["demo"].is_boolean())
                             rs_file_demo = config["settings"]["files"]["demo"];
                         if (config["settings"]["files"]["demom"].is_boolean())
@@ -315,6 +319,8 @@ bool RocketStats::ReadConfig()
                             rs_hide_streak = config["settings"]["hides"]["streak"];
                         if (config["settings"]["hides"]["winratio"].is_boolean())
                             rs_hide_winratio = config["settings"]["hides"]["winratio"];
+                        if (config["settings"]["hides"]["winpercentage"].is_boolean())
+                            rs_hide_winpercentage = config["settings"]["hides"]["winpercentage"];
                         if (config["settings"]["hides"]["demo"].is_boolean())
                             rs_hide_demo = config["settings"]["hides"]["demo"];
                         if (config["settings"]["hides"]["demom"].is_boolean())
@@ -472,6 +478,7 @@ void RocketStats::WriteConfig()
     tmp["settings"]["files"]["loss"] = rs_file_loss;
     tmp["settings"]["files"]["streak"] = rs_file_streak;
     tmp["settings"]["files"]["winratio"] = rs_file_winratio;
+    tmp["settings"]["files"]["winpercentage"] = rs_file_winpercentage;
     tmp["settings"]["files"]["demo"] = rs_file_demo;
     tmp["settings"]["files"]["demom"] = rs_file_demom;
     tmp["settings"]["files"]["democ"] = rs_file_democ;
@@ -492,6 +499,7 @@ void RocketStats::WriteConfig()
     tmp["settings"]["hides"]["loss"] = rs_hide_loss;
     tmp["settings"]["hides"]["streak"] = rs_hide_streak;
     tmp["settings"]["hides"]["winratio"] = rs_hide_winratio;
+    tmp["settings"]["hides"]["winpercentage"] = rs_hide_winpercentage;
     tmp["settings"]["hides"]["demo"] = rs_hide_demo;
     tmp["settings"]["hides"]["demom"] = rs_hide_demom;
     tmp["settings"]["hides"]["democ"] = rs_hide_democ;
@@ -678,6 +686,28 @@ void RocketStats::WriteWinRatio(bool force)
     }
 
     WriteInFile("RocketStats_WinRatio.txt", tmp);
+}
+
+void RocketStats::WriteWinPercentage(bool force)
+{
+    if (!force && (!rs_in_file || !rs_file_winpercentage))
+        return;
+
+    std::string tmp = theme_hide_value;
+    if (!rs_hide_winpercentage)
+    {
+        Stats tstats = GetStats();
+
+        int total = tstats.win + tstats.loss;
+        if (total == 0) {
+            tmp = "NaN";
+        }
+        else {
+            tmp = Utils::FloatFixer((float)tstats.win / (float)total * 100.F, (rs_enable_float ? 2 : 0));
+        }
+    }
+
+    WriteInFile("RocketStats_WinPercentage.txt", tmp);
 }
 
 void RocketStats::WriteDemo(bool force)

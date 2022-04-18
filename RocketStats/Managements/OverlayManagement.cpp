@@ -276,6 +276,7 @@ void RocketStats::RefreshVars()
     SetCVar("rs_file_loss", rs_file_loss);
     SetCVar("rs_file_streak", rs_file_streak);
     SetCVar("rs_file_winratio", rs_file_winratio);
+    SetCVar("rs_file_winpercentage", rs_file_winpercentage);
     SetCVar("rs_file_demo", rs_file_demo);
     SetCVar("rs_file_demom", rs_file_demom);
     SetCVar("rs_file_democ", rs_file_democ);
@@ -295,6 +296,7 @@ void RocketStats::RefreshVars()
     SetCVar("rs_hide_loss", rs_hide_loss);
     SetCVar("rs_hide_streak", rs_hide_streak);
     SetCVar("rs_hide_winratio", rs_hide_winratio);
+    SetCVar("rs_hide_winpercentage", rs_hide_winpercentage);
     SetCVar("rs_hide_demo", rs_hide_demo);
     SetCVar("rs_hide_demom", rs_hide_demom);
     SetCVar("rs_hide_democ", rs_hide_democ);

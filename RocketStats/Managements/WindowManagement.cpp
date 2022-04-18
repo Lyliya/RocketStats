@@ -306,7 +306,9 @@ void RocketStats::RenderOverlay()
             theme_vars["Win"] = (rs_hide_win ? theme_hide_value : std::to_string(tstats.win));
             theme_vars["Loss"] = (rs_hide_loss ? theme_hide_value : std::to_string(tstats.loss));
             theme_vars["Streak"] = (rs_hide_streak ? theme_hide_value : std::to_string(tstats.streak));
-            theme_vars["WinRatio"] = (rs_hide_streak ? theme_hide_value : std::to_string(tstats.win - tstats.loss));
+            theme_vars["WinRatio"] = (rs_hide_winratio ? theme_hide_value : std::to_string(tstats.win - tstats.loss));
+            int total = tstats.win + tstats.loss;
+            theme_vars["WinPercentage"] = (rs_hide_winpercentage ? theme_hide_value : (total == 0 ? "NaN" : Utils::FloatFixer((float)tstats.win / (float)total * 100.F, floating_length)));
             theme_vars["Demolitions"] = (rs_hide_demo ? theme_hide_value : std::to_string(tstats.demo));
             theme_vars["DemolitionsMatch"] = (rs_hide_demom ? theme_hide_value : std::to_string(current.demo));
             theme_vars["DemolitionsCumul"] = (rs_hide_democ ? theme_hide_value : std::to_string(tstats.demoCumul));
@@ -765,7 +767,7 @@ void RocketStats::RenderSettings()
 
         rs_select_all_file = (rs_file_games && rs_file_gm && rs_file_rank && rs_file_div &&
             rs_file_mmr && rs_file_mmrc && rs_file_mmrcc &&
-            rs_file_win && rs_file_loss && rs_file_streak && rs_file_winratio &&
+            rs_file_win && rs_file_loss && rs_file_streak && rs_file_winratio && rs_file_winpercentage &&
             rs_file_demo && rs_file_demom && rs_file_democ &&
             rs_file_death && rs_file_deathm && rs_file_deathc &&
             rs_file_boost);
@@ -802,6 +804,7 @@ void RocketStats::RenderSettings()
         ImGui::Checkbox(GetLang(LANG_LOSSES).c_str(), &rs_file_loss);
         ImGui::Checkbox(GetLang(LANG_STREAKS).c_str(), &rs_file_streak);
         ImGui::Checkbox(GetLang(LANG_WINRATIO).c_str(), &rs_file_winratio);
+        ImGui::Checkbox(GetLang(LANG_WINPERCENTAGE).c_str(), &rs_file_winratio);
         ImGui::Checkbox(GetLang(LANG_DEMOLITIONS).c_str(), &rs_file_demo);
         ImGui::Checkbox(GetLang(LANG_DEMOLITIONSMATCH).c_str(), &rs_file_demom);
         ImGui::Checkbox(GetLang(LANG_DEMOLITIONSCUMUL).c_str(), &rs_file_democ);
@@ -828,6 +831,7 @@ void RocketStats::RenderSettings()
             rs_file_loss = rs_select_all_file;
             rs_file_streak = rs_select_all_file;
             rs_file_winratio = rs_select_all_file;
+            rs_file_winpercentage = rs_select_all_file;
             rs_file_demo = rs_select_all_file;
             rs_file_demom = rs_select_all_file;
             rs_file_democ = rs_select_all_file;
@@ -839,7 +843,7 @@ void RocketStats::RenderSettings()
 
         rs_select_all_hide = (rs_hide_games && rs_hide_gm && rs_hide_rank && rs_hide_div &&
             rs_hide_mmr && rs_hide_mmrc && rs_hide_mmrcc &&
-            rs_hide_win && rs_hide_loss && rs_hide_streak && rs_hide_winratio &&
+            rs_hide_win && rs_hide_loss && rs_hide_streak && rs_hide_winratio && rs_hide_winpercentage &&
             rs_hide_demo && rs_hide_demom && rs_hide_democ &&
             rs_hide_death && rs_hide_deathm && rs_hide_deathc);
         select_all = rs_select_all_hide;
@@ -873,6 +877,7 @@ void RocketStats::RenderSettings()
         ImGui::Checkbox(GetLang(LANG_LOSSES).c_str(), &rs_hide_loss);
         ImGui::Checkbox(GetLang(LANG_STREAKS).c_str(), &rs_hide_streak);
         ImGui::Checkbox(GetLang(LANG_WINRATIO).c_str(), &rs_hide_winratio);
+        ImGui::Checkbox(GetLang(LANG_WINPERCENTAGE).c_str(), &rs_hide_winpercentage);
         ImGui::Checkbox(GetLang(LANG_DEMOLITIONS).c_str(), &rs_hide_demo);
         ImGui::Checkbox(GetLang(LANG_DEMOLITIONSMATCH).c_str(), &rs_hide_demom);
         ImGui::Checkbox(GetLang(LANG_DEMOLITIONSCUMUL).c_str(), &rs_hide_democ);
@@ -896,6 +901,7 @@ void RocketStats::RenderSettings()
             rs_hide_loss = rs_select_all_hide;
             rs_hide_streak = rs_select_all_hide;
             rs_hide_winratio = rs_select_all_hide;
+            rs_hide_winpercentage = rs_select_all_hide;
             rs_hide_demo = rs_select_all_hide;
             rs_hide_demom = rs_select_all_hide;
             rs_hide_democ = rs_select_all_hide;
