@@ -26,7 +26,7 @@ void RocketStats::ChangeLang(int id)
     cvarManager->log("===== !ChangeLang =====");
 }
 
-std::string RocketStats::GetLang(unsigned int id)
+std::string RocketStats::GetLang(LangStringId id)
 {
     return rs_lang.at(id);
 }

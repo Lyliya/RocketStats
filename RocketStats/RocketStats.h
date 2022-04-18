@@ -462,7 +462,7 @@ public:
 
 	// LangManagement
 	void ChangeLang(int id = IDB_LANG_INT);
-	std::string GetLang(unsigned int id);
+	std::string GetLang(LangStringId id);
 
 	// FileManagement
 	std::string GetPath(std::string _path = "", bool root = false);

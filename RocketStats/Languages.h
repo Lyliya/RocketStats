@@ -1,132 +1,134 @@
 #pragma once
 
-#define LANG_ERROR                        0
-#define LANG_ERROR_RELOAD                 1
-#define LANG_DONATE                       2
-#define LANG_DOCUMENTATION                3
-#define LANG_DEVELOPERS                   4
+enum LangStringId {
+	LANG_ERROR,
+	LANG_ERROR_RELOAD,
+	LANG_DONATE,
+	LANG_DOCUMENTATION,
+	LANG_DEVELOPERS,
 
-#define LANG_MIGRATE_MESSAGE              5
-#define LANG_MIGRATE_BUTTON_MIGRATE       6
-#define LANG_MIGRATE_BUTTON_REMOVE        7
-#define LANG_MIGRATE_BUTTON_NOTHING       8
+	LANG_MIGRATE_MESSAGE,
+	LANG_MIGRATE_BUTTON_MIGRATE,
+	LANG_MIGRATE_BUTTON_REMOVE,
+	LANG_MIGRATE_BUTTON_NOTHING,
 
-#define LANG_RESET_TOOLTIP                9
-#define LANG_SCALE_TOOLTIP                10
-#define LANG_ROTATE_TOOLTIP               11
-#define LANG_OPACITY_TOOLTIP              12
-#define LANG_OVERLAY_TOOLTIP              13
-#define LANG_SELECT_ALL_TOOLTIP           14
+	LANG_RESET_TOOLTIP,
+	LANG_SCALE_TOOLTIP,
+	LANG_ROTATE_TOOLTIP,
+	LANG_OPACITY_TOOLTIP,
+	LANG_OVERLAY_TOOLTIP,
+	LANG_SELECT_ALL_TOOLTIP,
 
-#define LANG_TOGGLE_LOGO_HELP             15
-#define LANG_TOGGLE_MENU                  16
-#define LANG_TOGGLE_MENU_HELP             17
-#define LANG_TOGGLE_MENU_TOOLTIP          18
+	LANG_TOGGLE_LOGO_HELP,
+	LANG_TOGGLE_MENU,
+	LANG_TOGGLE_MENU_HELP,
+	LANG_TOGGLE_MENU_TOOLTIP,
 
-#define LANG_MODE                         19
-#define LANG_MODE_TOOLTIP                 20
-#define LANG_MODE_SESSION                 21
-#define LANG_MODE_GAMEMODE                22
-#define LANG_MODE_ALWAYS                  23
-#define LANG_MODE_ALWAYS_GAMEMODE         24
-#define LANG_THEME                        25
-#define LANG_THEME_TOOLTIP                26
-#define LANG_X                            27
-#define LANG_X_TOOLTIP                    28
-#define LANG_Y                            29
-#define LANG_Y_TOOLTIP                    30
-#define LANG_SCALE                        31
-#define LANG_ROTATE                       32
-#define LANG_OPACITY                      33
+	LANG_MODE,
+	LANG_MODE_TOOLTIP,
+	LANG_MODE_SESSION,
+	LANG_MODE_GAMEMODE,
+	LANG_MODE_ALWAYS,
+	LANG_MODE_ALWAYS_GAMEMODE,
+	LANG_THEME,
+	LANG_THEME_TOOLTIP,
+	LANG_X,
+	LANG_X_TOOLTIP,
+	LANG_Y,
+	LANG_Y_TOOLTIP,
+	LANG_SCALE,
+	LANG_ROTATE,
+	LANG_OPACITY,
 
-#define LANG_OVERLAY                      34
-#define LANG_OVERLAY_OBS                  35
-#define LANG_OVERLAY_MOVE                 36
+	LANG_OVERLAY,
+	LANG_OVERLAY_OBS,
+	LANG_OVERLAY_MOVE,
 
-#define LANG_OPEN_FOLDER                  37
-#define LANG_OPEN_FOLDER_TOOLTIP          38
-#define LANG_RELOAD_THEME                 39
-#define LANG_RELOAD_THEME_TOOLTIP         40
-#define LANG_RELOAD_THEME_A               41
-#define LANG_RELOAD_THEME_A_TOOLTIP       42
-#define LANG_RESET_STATS                  43
-#define LANG_RESET_STATS_TOOLTIP          44
+	LANG_OPEN_FOLDER,
+	LANG_OPEN_FOLDER_TOOLTIP,
+	LANG_RELOAD_THEME,
+	LANG_RELOAD_THEME_TOOLTIP,
+	LANG_RELOAD_THEME_A,
+	LANG_RELOAD_THEME_A_TOOLTIP,
+	LANG_RESET_STATS,
+	LANG_RESET_STATS_TOOLTIP,
 
-#define LANG_THEME_BY                     45
+	LANG_THEME_BY,
 
-#define LANG_SHOW_IN_MENU                 46
-#define LANG_SHOW_IN_GAME                 47
-#define LANG_SHOW_IN_SCOREBOARD           48
-#define LANG_FLOATING_POINT               49
-#define LANG_PREVIEW_RANK                 50
-#define LANG_ROMAN_NUMBERS                51
-#define LANG_MMR_TO_MMRCHANGE             52
-#define LANG_MMR_TO_MMRCUMULCHANGE        53
-#define LANG_MMRCHANGE_TO_MMR             54
-#define LANG_MMRCHANGE_TO_MMRCUMULCHANGE  55
-#define LANG_MMRCUMULCHANGE_TO_MMR        56
-#define LANG_MMRCUMULCHANGE_TO_MMRCHANGE  57
+	LANG_SHOW_IN_MENU,
+	LANG_SHOW_IN_GAME,
+	LANG_SHOW_IN_SCOREBOARD,
+	LANG_FLOATING_POINT,
+	LANG_PREVIEW_RANK,
+	LANG_ROMAN_NUMBERS,
+	LANG_MMR_TO_MMRCHANGE,
+	LANG_MMR_TO_MMRCUMULCHANGE,
+	LANG_MMRCHANGE_TO_MMR,
+	LANG_MMRCHANGE_TO_MMRCUMULCHANGE,
+	LANG_MMRCUMULCHANGE_TO_MMR,
+	LANG_MMRCUMULCHANGE_TO_MMRCHANGE,
 
-#define LANG_IN_FILE                      58
-#define LANG_IN_FILE_TOOLTIP              59
+	LANG_IN_FILE,
+	LANG_IN_FILE_TOOLTIP,
 
-#define LANG_GAMES                        60
-#define LANG_GAMEMODE                     61
-#define LANG_RANK                         62
-#define LANG_DIVISION                     63
-#define LANG_MMR                          64
-#define LANG_MMRCHANGE                    65
-#define LANG_MMRCUMULCHANGE               66
-#define LANG_WINS                         67
-#define LANG_LOSSES                       68
-#define LANG_STREAKS                      69
-#define LANG_WINRATIO                     70
-#define LANG_WINPERCENTAGE                71
-#define LANG_DEMOLITIONS                  72
-#define LANG_DEMOLITIONSMATCH             73
-#define LANG_DEMOLITIONSCUMUL             74
-#define LANG_DEATH                        75
-#define LANG_DEATHMATCH                   76
-#define LANG_DEATHCUMUL                   77
-#define LANG_BOOST                        78
+	LANG_GAMES,
+	LANG_GAMEMODE,
+	LANG_RANK,
+	LANG_DIVISION,
+	LANG_MMR,
+	LANG_MMRCHANGE,
+	LANG_MMRCUMULCHANGE,
+	LANG_WINS,
+	LANG_LOSSES,
+	LANG_STREAKS,
+	LANG_WINRATIO,
+	LANG_WINPERCENTAGE,
+	LANG_DEMOLITIONS,
+	LANG_DEMOLITIONSMATCH,
+	LANG_DEMOLITIONSCUMUL,
+	LANG_DEATH,
+	LANG_DEATHMATCH,
+	LANG_DEATHCUMUL,
+	LANG_BOOST,
 
-#define LANG_FILE_TITLE                   79
-#define LANG_FILE_GAMES                   80
-#define LANG_FILE_GAMEMODE                81
-#define LANG_FILE_RANK                    82
-#define LANG_FILE_DIVISION                83
-#define LANG_FILE_MMR                     84
-#define LANG_FILE_MMRCHANGE               85
-#define LANG_FILE_MMRCUMULCHANGE          86
-#define LANG_FILE_WINS                    87
-#define LANG_FILE_LOSSES                  88
-#define LANG_FILE_STREAKS                 89
-#define LANG_FILE_WINRATIO                90
-#define LANG_FILE_WINPERCENTAGE           91
-#define LANG_FILE_DEMOLITIONS             92
-#define LANG_FILE_DEMOLITIONSMATCH        93
-#define LANG_FILE_DEMOLITIONSCUMUL        94
-#define LANG_FILE_DEATH                   95
-#define LANG_FILE_DEATHMATCH              96
-#define LANG_FILE_DEATHCUMUL              97
-#define LANG_FILE_BOOST                   98
+	LANG_FILE_TITLE,
+	LANG_FILE_GAMES,
+	LANG_FILE_GAMEMODE,
+	LANG_FILE_RANK,
+	LANG_FILE_DIVISION,
+	LANG_FILE_MMR,
+	LANG_FILE_MMRCHANGE,
+	LANG_FILE_MMRCUMULCHANGE,
+	LANG_FILE_WINS,
+	LANG_FILE_LOSSES,
+	LANG_FILE_STREAKS,
+	LANG_FILE_WINRATIO,
+	LANG_FILE_WINPERCENTAGE,
+	LANG_FILE_DEMOLITIONS,
+	LANG_FILE_DEMOLITIONSMATCH,
+	LANG_FILE_DEMOLITIONSCUMUL,
+	LANG_FILE_DEATH,
+	LANG_FILE_DEATHMATCH,
+	LANG_FILE_DEATHCUMUL,
+	LANG_FILE_BOOST,
 
-#define LANG_HIDE_TITLE                   99
-#define LANG_HIDE_GAMES                   100
-#define LANG_HIDE_GAMEMODE                101
-#define LANG_HIDE_RANK                    102
-#define LANG_HIDE_DIVISION                103
-#define LANG_HIDE_MMR                     104
-#define LANG_HIDE_MMRCHANGE               105
-#define LANG_HIDE_MMRCUMULCHANGE          106
-#define LANG_HIDE_WINS                    107
-#define LANG_HIDE_LOSSES                  108
-#define LANG_HIDE_STREAKS                 109
-#define LANG_HIDE_WINRATIO                110
-#define LANG_HIDE_WINPERCENTAGE           111
-#define LANG_HIDE_DEMOLITIONS             112
-#define LANG_HIDE_DEMOLITIONSMATCH        113
-#define LANG_HIDE_DEMOLITIONSCUMUL        114
-#define LANG_HIDE_DEATH                   115
-#define LANG_HIDE_DEATHMATCH              116
-#define LANG_HIDE_DEATHCUMUL              117
+	LANG_HIDE_TITLE,
+	LANG_HIDE_GAMES,
+	LANG_HIDE_GAMEMODE,
+	LANG_HIDE_RANK,
+	LANG_HIDE_DIVISION,
+	LANG_HIDE_MMR,
+	LANG_HIDE_MMRCHANGE,
+	LANG_HIDE_MMRCUMULCHANGE,
+	LANG_HIDE_WINS,
+	LANG_HIDE_LOSSES,
+	LANG_HIDE_STREAKS,
+	LANG_HIDE_WINRATIO,
+	LANG_HIDE_WINPERCENTAGE,
+	LANG_HIDE_DEMOLITIONS,
+	LANG_HIDE_DEMOLITIONSMATCH,
+	LANG_HIDE_DEMOLITIONSCUMUL,
+	LANG_HIDE_DEATH,
+	LANG_HIDE_DEATHMATCH,
+	LANG_HIDE_DEATHCUMUL
+};
