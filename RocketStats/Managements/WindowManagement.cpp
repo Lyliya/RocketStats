@@ -270,6 +270,7 @@ void RocketStats::RenderOverlay()
             const size_t floating_length = (rs_enable_float ? 2 : 0);
             const int div_tnumber = (rs_preview_rank ? current.preview_division_number : current.division_number);
             const int rank_tnumber = (rs_preview_rank ? current.preview_rank_number : current.rank_number);
+            const int winloss_total = (tstats.win + tstats.loss);
 
             std::string div_name = theme_hide_value;
             std::string div_number = theme_hide_value;
@@ -307,8 +308,7 @@ void RocketStats::RenderOverlay()
             theme_vars["Loss"] = (rs_hide_loss ? theme_hide_value : std::to_string(tstats.loss));
             theme_vars["Streak"] = (rs_hide_streak ? theme_hide_value : std::to_string(tstats.streak));
             theme_vars["WinRatio"] = (rs_hide_winratio ? theme_hide_value : std::to_string(tstats.win - tstats.loss));
-            int total = tstats.win + tstats.loss;
-            theme_vars["WinPercentage"] = (rs_hide_winpercentage ? theme_hide_value : (total == 0 ? "N/A" : Utils::FloatFixer((float)tstats.win / (float)total * 100.F, floating_length)));
+            theme_vars["WinPercentage"] = (rs_hide_winpercentage ? theme_hide_value : (winloss_total ? Utils::FloatFixer((float(tstats.win) / float(winloss_total) * 100.f), floating_length) : "N/A"));
             theme_vars["Demolitions"] = (rs_hide_demo ? theme_hide_value : std::to_string(tstats.demo));
             theme_vars["DemolitionsMatch"] = (rs_hide_demom ? theme_hide_value : std::to_string(current.demo));
             theme_vars["DemolitionsCumul"] = (rs_hide_democ ? theme_hide_value : std::to_string(tstats.demoCumul));
@@ -354,7 +354,7 @@ void RocketStats::RenderOverlay()
         {
             ImDrawList* drawlist = ImGui::GetBackgroundDrawList();
 
-            if (!theme_refresh && rs_drawlist->VtxBuffer.Size)
+            if (!theme_refresh && rs_drawlist->VtxBuffer.Size && windows_count == ImGui::GetIO().MetricsRenderWindows)
             {
                 // Fill the DrawList with previously generated vertices
                 drawlist->CmdBuffer = rs_drawlist->CmdBuffer;
@@ -382,6 +382,9 @@ void RocketStats::RenderOverlay()
                 // Stores generated vertices for future frames
                 rs_drawlist->Clear();
                 rs_drawlist = drawlist->CloneOutput();
+
+                // Avoid conflicts between different plugins using ImGui
+                windows_count = ImGui::GetIO().MetricsRenderWindows;
             }
 
             // Displays a square and allows the movement of the overlay with the mouse

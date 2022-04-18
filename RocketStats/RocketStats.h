@@ -295,6 +295,7 @@ private:
 	};
 
 	// PluginWindow
+	int windows_count = -1;
 	bool mouse_state = false;
 	bool escape_state = false;
 	bool plugin_open = false;
