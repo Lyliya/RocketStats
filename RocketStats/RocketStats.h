@@ -28,28 +28,25 @@ using json = nlohmann::json;
 
 namespace fs = std::filesystem;
 
-enum ToggleFlags_ {
+enum ToggleFlags {
 	ToggleFlags_Toggle,
 	ToggleFlags_Show,
 	ToggleFlags_Hide
 };
-typedef int ToggleFlags;
 
-enum RefreshFlags_ {
+enum RefreshFlags {
 	RefreshFlags_Off,
 	RefreshFlags_Refresh,
 	RefreshFlags_RefreshAndImages
 };
-typedef int RefreshFlags;
 
-enum RecoveryFlags_ {
+enum RecoveryFlags {
 	RecoveryFlags_Off,
 	RecoveryFlags_Files,
 	RecoveryFlags_Welcome,
 	RecoveryFlags_Process,
 	RecoveryFlags_Finish
 };
-typedef int RecoveryFlags;
 
 struct Color {
 	bool enable = false;
