@@ -230,7 +230,8 @@ void RocketStats::RefreshVars()
         rs_opacity = cvar_opacity.GetMaximum();
 
     // Check for changes before modifying cvars
-    SetCVar("rs_mode", rs_mode);
+    if (SetCVar("rs_mode", rs_mode))
+        UpdateFiles();
     SetCVar("rs_theme", rs_theme);
 
     SetCVar("rs_x", rs_x, true);
