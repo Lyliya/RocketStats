@@ -389,6 +389,12 @@ void RocketStats::onInit()
 
     // Reset all files (and create them if they don't exist)
     ResetFiles();
+    RemoveFile("RocketStats_Demo.txt");
+    RemoveFile("RocketStats_DemoMatch.txt");
+    RemoveFile("RocketStats_DemoCumul.txt");
+    RemoveFile("RocketStats_Demolition.txt");
+    RemoveFile("RocketStats_DemolitionMatch.txt");
+    RemoveFile("RocketStats_DemolitionCumul.txt");
 
     // Can be used from the console or in bindings
     cvarManager->registerNotifier("rs_toggle_menu", [this](std::vector<std::string> params) {

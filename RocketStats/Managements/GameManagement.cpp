@@ -36,6 +36,7 @@ void RocketStats::GameStart(std::string eventName)
     is_game_started = true;
     is_game_ended = false;
 
+    ResetBasicStats();
     UpdateMMR(gameWrapper->GetUniqueID());
     WriteConfig();
     UpdateFiles();
@@ -116,7 +117,6 @@ void RocketStats::GameEnd(std::string eventName)
             SetRefresh(RefreshFlags_Refresh);
         }
 
-        ResetBasicStats();
         WriteConfig();
         UpdateFiles();
 
@@ -163,7 +163,6 @@ void RocketStats::GameDestroyed(std::string eventName)
         --stats[current.playlist].streak;
         --always_gm[current.playlist].streak;
 
-        ResetBasicStats();
         WriteConfig();
     }
 

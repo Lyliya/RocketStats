@@ -166,9 +166,9 @@ void RocketStats::ResetFiles()
     WriteInFile("RocketStats_Streak.txt", std::to_string(0));
     WriteInFile("RocketStats_WinRatio.txt", std::to_string(0));
     WriteInFile("RocketStats_WinPercentage.txt", "N/A");
-    WriteInFile("RocketStats_Demolition.txt", std::to_string(0));
-    WriteInFile("RocketStats_DemolitionMatch.txt", std::to_string(0));
-    WriteInFile("RocketStats_DemolitionCumul.txt", std::to_string(0));
+    WriteInFile("RocketStats_Demolitions.txt", std::to_string(0));
+    WriteInFile("RocketStats_DemolitionsMatch.txt", std::to_string(0));
+    WriteInFile("RocketStats_DemolitionsCumul.txt", std::to_string(0));
     WriteInFile("RocketStats_Death.txt", std::to_string(0));
     WriteInFile("RocketStats_DeathMatch.txt", std::to_string(0));
     WriteInFile("RocketStats_DeathCumul.txt", std::to_string(0));
@@ -713,13 +713,13 @@ void RocketStats::WriteWinPercentage(bool force)
 void RocketStats::WriteDemo(bool force)
 {
     if (force || (rs_in_file && rs_file_demo))
-        WriteInFile("RocketStats_Demo.txt", (rs_hide_demo ? theme_hide_value : std::to_string(GetStats().demo)));
+        WriteInFile("RocketStats_Demolitions.txt", (rs_hide_demo ? theme_hide_value : std::to_string(GetStats().demo)));
 
     if (force || (rs_in_file && rs_file_demom))
-        WriteInFile("RocketStats_DemoMatch.txt", (rs_hide_demom ? theme_hide_value : std::to_string(current.demo)));
+        WriteInFile("RocketStats_DemolitionsMatch.txt", (rs_hide_demom ? theme_hide_value : std::to_string(current.demo)));
 
     if (force || (rs_in_file && rs_file_democ))
-        WriteInFile("RocketStats_DemoCumul.txt", (rs_hide_democ ? theme_hide_value : std::to_string(GetStats().demoCumul)));
+        WriteInFile("RocketStats_DemolitionsCumul.txt", (rs_hide_democ ? theme_hide_value : std::to_string(GetStats().demoCumul)));
 }
 
 void RocketStats::WriteDeath(bool force)
