@@ -308,7 +308,7 @@ void RocketStats::RenderOverlay()
             theme_vars["Streak"] = (rs_hide_streak ? theme_hide_value : std::to_string(tstats.streak));
             theme_vars["WinRatio"] = (rs_hide_winratio ? theme_hide_value : std::to_string(tstats.win - tstats.loss));
             int total = tstats.win + tstats.loss;
-            theme_vars["WinPercentage"] = (rs_hide_winpercentage ? theme_hide_value : (total == 0 ? "NaN" : Utils::FloatFixer((float)tstats.win / (float)total * 100.F, floating_length)));
+            theme_vars["WinPercentage"] = (rs_hide_winpercentage ? theme_hide_value : (total == 0 ? "N/A" : Utils::FloatFixer((float)tstats.win / (float)total * 100.F, floating_length)));
             theme_vars["Demolitions"] = (rs_hide_demo ? theme_hide_value : std::to_string(tstats.demo));
             theme_vars["DemolitionsMatch"] = (rs_hide_demom ? theme_hide_value : std::to_string(current.demo));
             theme_vars["DemolitionsCumul"] = (rs_hide_democ ? theme_hide_value : std::to_string(tstats.demoCumul));

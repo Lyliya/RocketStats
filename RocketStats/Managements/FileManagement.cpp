@@ -165,7 +165,7 @@ void RocketStats::ResetFiles()
     WriteInFile("RocketStats_Loss.txt", std::to_string(0));
     WriteInFile("RocketStats_Streak.txt", std::to_string(0));
     WriteInFile("RocketStats_WinRatio.txt", std::to_string(0));
-    WriteInFile("RocketStats_WinPercentage.txt", std::to_string(0));
+    WriteInFile("RocketStats_WinPercentage.txt", "N/A");
     WriteInFile("RocketStats_Demolition.txt", std::to_string(0));
     WriteInFile("RocketStats_DemolitionMatch.txt", std::to_string(0));
     WriteInFile("RocketStats_DemolitionCumul.txt", std::to_string(0));
@@ -700,7 +700,7 @@ void RocketStats::WriteWinPercentage(bool force)
 
         int total = tstats.win + tstats.loss;
         if (total == 0) {
-            tmp = "NaN";
+            tmp = "N/A";
         }
         else {
             tmp = Utils::FloatFixer((float)tstats.win / (float)total * 100.F, (rs_enable_float ? 2 : 0));
