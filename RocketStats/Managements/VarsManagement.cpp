@@ -261,7 +261,7 @@ std::string RocketStats::VarWinPercentage(bool write, bool force, bool default_v
         int total = (tstats.win + tstats.loss);
 
         if (total)
-            tmp = Utils::FloatFixer((float(tstats.win) / float(total * 100.f)), (rs_enable_float ? 2 : 0));
+            tmp = Utils::FloatFixer((float(tstats.win) / float(total) * 100.f), (rs_enable_float ? 2 : 0));
         else
             tmp = "N/A";
     }
