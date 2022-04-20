@@ -267,54 +267,30 @@ void RocketStats::RenderOverlay()
             }
 
             // Creation of the different variables used in Text elements
-            const size_t floating_length = (rs_enable_float ? 2 : 0);
-            const int div_tnumber = (rs_preview_rank ? current.preview_division_number : current.division_number);
-            const int rank_tnumber = (rs_preview_rank ? current.preview_rank_number : current.rank_number);
-            const int winloss_total = (tstats.win + tstats.loss);
+            int number = 0;
 
-            std::string div_name = theme_hide_value;
-            std::string div_number = theme_hide_value;
-            std::string div_string = theme_hide_value;
-            if (!rs_hide_div)
-            {
-                div_number = (rs_roman_numbers ? GetRoman(div_tnumber) : std::to_string(div_tnumber));
-                div_string = AddRoman((rs_preview_rank ? current.preview_division : current.division), (rs_preview_rank ? current.preview_division_number : current.division_number));
-                div_name = (div_tnumber ? div_string.substr(0, (div_string.size() - (div_number.size() + 1))) : div_string);
-            }
-
-            std::string rank_name = theme_hide_value;
-            std::string rank_number = theme_hide_value;
-            std::string rank_string = theme_hide_value;
-            if (!rs_hide_rank)
-            {
-                rank_number = (rs_roman_numbers ? GetRoman(rank_tnumber) : std::to_string(rank_tnumber));
-                rank_string = AddRoman((rs_preview_rank ? current.preview_rank : current.rank), (rs_preview_rank ? current.preview_rank_number : current.rank_number));
-                rank_name = rank_string.substr(0, (rank_string.size() - (rank_number.size() + 1)));
-                rank_name = (rank_tnumber ? rank_string.substr(0, (rank_string.size() - (rank_number.size() + 1))) : rank_string);
-            }
-
-            theme_vars["Games"] = (rs_hide_games ? theme_hide_value : std::to_string(tstats.games));
-            theme_vars["GameMode"] = (rs_hide_gm ? theme_hide_value : GetPlaylistName(current.playlist));
-            theme_vars["Rank"] = rank_string;
-            theme_vars["RankName"] = rank_name;
-            theme_vars["RankNumber"] = rank_number;
-            theme_vars["Div"] = div_string;
-            theme_vars["DivName"] = div_name;
-            theme_vars["DivNumber"] = div_number;
-            theme_vars["MMR"] = (rs_hide_mmr ? theme_hide_value : Utils::FloatFixer(tstats.myMMR, floating_length)); // Utils::PointFixer(current.myMMR, 6, floating_length)
-            theme_vars["MMRChange"] = (rs_hide_mmrc ? theme_hide_value : Utils::FloatFixer(tstats.MMRChange, floating_length)); // Utils::PointFixer(current.MMRChange, 6, floating_length)
-            theme_vars["MMRCumulChange"] = (rs_hide_mmrcc ? theme_hide_value : Utils::FloatFixer(tstats.MMRCumulChange, floating_length)); // Utils::PointFixer(current.MMRCumulChange, 6, floating_length)
-            theme_vars["Win"] = (rs_hide_win ? theme_hide_value : std::to_string(tstats.win));
-            theme_vars["Loss"] = (rs_hide_loss ? theme_hide_value : std::to_string(tstats.loss));
-            theme_vars["Streak"] = (rs_hide_streak ? theme_hide_value : std::to_string(tstats.streak));
-            theme_vars["WinRatio"] = (rs_hide_winratio ? theme_hide_value : std::to_string(tstats.win - tstats.loss));
-            theme_vars["WinPercentage"] = (rs_hide_winpercentage ? theme_hide_value : (winloss_total ? Utils::FloatFixer((float(tstats.win) / float(winloss_total) * 100.f), floating_length) : "N/A"));
-            theme_vars["Demolitions"] = (rs_hide_demo ? theme_hide_value : std::to_string(tstats.demo));
-            theme_vars["DemolitionsMatch"] = (rs_hide_demom ? theme_hide_value : std::to_string(current.demo));
-            theme_vars["DemolitionsCumul"] = (rs_hide_democ ? theme_hide_value : std::to_string(tstats.demoCumul));
-            theme_vars["Death"] = (rs_hide_death ? theme_hide_value : std::to_string(tstats.death));
-            theme_vars["DeathMatch"] = (rs_hide_deathm ? theme_hide_value : std::to_string(current.death));
-            theme_vars["DeathCumul"] = (rs_hide_deathc ? theme_hide_value : std::to_string(tstats.deathCumul));
+            theme_vars["Games"] = VarGames();
+            theme_vars["GameMode"] = VarGameMode();
+            theme_vars["Rank"] = VarRank(false, false, false, &number);
+            theme_vars["RankName"] = SubVarRankName(theme_vars["Rank"], number);
+            theme_vars["RankNumber"] = SubVarRankNumber(theme_vars["Rank"], number);
+            theme_vars["Div"] = VarDiv();
+            theme_vars["DivName"] = SubVarDivName(theme_vars["Div"], number);
+            theme_vars["DivNumber"] = SubVarDivNumber(theme_vars["Div"], number);
+            theme_vars["MMR"] = VarMMR();
+            theme_vars["MMRChange"] = VarMMRChange();
+            theme_vars["MMRCumulChange"] = VarMMRCumulChange();
+            theme_vars["Win"] = VarWin();
+            theme_vars["Loss"] = VarLoss();
+            theme_vars["Streak"] = VarStreak();
+            theme_vars["WinRatio"] = VarWinRatio();
+            theme_vars["WinPercentage"] = VarWinPercentage();
+            theme_vars["Demolitions"] = VarDemolitions();
+            theme_vars["DemolitionsMatch"] = VarDemolitionsMatch();
+            theme_vars["DemolitionsCumul"] = VarDemolitionsCumul();
+            theme_vars["Death"] = VarDeath();
+            theme_vars["DeathMatch"] = VarDeathMatch();
+            theme_vars["DeathCumul"] = VarDeathCumul();
 
             Utils::ReplaceAll(theme_vars["Rank"], "_", " ");
 

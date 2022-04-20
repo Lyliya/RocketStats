@@ -5,7 +5,7 @@ void RocketStats::GameStart(std::string eventName)
     if (!is_online_game || is_game_started)
     {
         if (!is_game_started)
-            WriteBoost(false, 0);
+            VarBoost(true, false, false, false);
 
         return;
     }
@@ -128,7 +128,7 @@ void RocketStats::GameEnd(std::string eventName)
         cvarManager->log("===== !GameEnd =====");
     }
     else if (!is_game_started)
-        WriteBoost();
+        VarBoost(true, false, true);
 }
 
 void RocketStats::GameDestroyed(std::string eventName)

@@ -17,7 +17,7 @@ void RocketStats::OnBoostStart(std::string eventName)
         {
             is_boosting = true;
             //SetRefresh(RefreshFlags_Refresh);
-            WriteBoost(false, 1);
+            VarBoost(true, false, false, true);
         }
     }
 }
@@ -39,7 +39,7 @@ void RocketStats::OnBoostEnd(std::string eventName)
         {
             is_boosting = false;
             //SetRefresh(RefreshFlags_Refresh);
-            WriteBoost(false, 0);
+            VarBoost(true, false, false, false);
         }
     }
 }

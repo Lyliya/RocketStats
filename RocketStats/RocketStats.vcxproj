@@ -79,6 +79,7 @@ copy "$(SolutionDir)settings\$(ProjectName).set" "$(BAKKESMOD)\plugins\settings\
     <ClCompile Include="Managements\LangManagement.cpp" />
     <ClCompile Include="Managements\OverlayManagement.cpp" />
     <ClCompile Include="Managements\StatsManagement.cpp" />
+    <ClCompile Include="Managements\VarsManagement.cpp" />
     <ClCompile Include="Managements\WindowManagement.cpp" />
     <ClCompile Include="RocketStats.cpp" />
     <ClCompile Include="Utils.cpp" />

@@ -62,7 +62,7 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
             }
 
             SetRefresh(RefreshFlags_Refresh);
-            WriteDemo();
+            VarDemolitions(true);
         }
 
         bool death = isPrimaryPlayer(victim);
@@ -83,7 +83,7 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
             }
 
             SetRefresh(RefreshFlags_Refresh);
-            WriteDeath();
+            VarDeath(true);
         }
     }
 }
@@ -145,8 +145,8 @@ void RocketStats::MajRank(bool isRanked, float _currentMMR, SkillRank playerRank
         current.preview_division_number = current.division_number;
     }
 
-    WriteRank();
-    WriteDiv();
+    VarRank(true);
+    VarDiv(true);
 
     SetRefresh(RefreshFlags_Refresh);
 }
@@ -196,8 +196,8 @@ void RocketStats::UpdateMMR(UniqueIDWrapper id)
 
     MajRank(mmrw.IsRanked(current.playlist), stats[current.playlist].myMMR, playerRank);
     SessionStats();
-    WriteMMR();
-    WriteMMRChange();
+    VarMMR(true);
+    VarMMRChange(true);
 
     SetRefresh(RefreshFlags_Refresh);
     cvarManager->log("===== !UpdateMMR =====");

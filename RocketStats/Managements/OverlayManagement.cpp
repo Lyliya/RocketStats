@@ -373,7 +373,7 @@ Element RocketStats::CalculateElement(json& element, Options& options, bool& che
 
                     if (element.contains("sign") && element["sign"] == tkey && value != theme_hide_value)
                     {
-                        bool positive = (value.at(0) != '-');
+                        bool positive = (value.at(0) != '-' && value.at(0) != '0');
                         if (positive)
                             value = ("+" + value);
                     }
