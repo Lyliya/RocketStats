@@ -396,7 +396,7 @@ Element RocketStats::CalculateElement(json& element, Options& options, bool& che
                         bool positive = (value.at(0) != '-');
                         calculated.color.color = Utils::GetImColor({ float(positive ? 30 : 224), float(positive ? 224 : 24), float(positive ? 24 : 24) }, element_opacity);
                     }
-                    });
+                });
 
                 if (!calculated.value.size())
                     return calculated;
@@ -413,8 +413,6 @@ Element RocketStats::CalculateElement(json& element, Options& options, bool& che
                 }
 
                 int font_pos = -1;
-                ImVec2 string_size;
-                ImGui::SetWindowFontScale(1.f);
                 if (theme_render.fonts.size())
                 {
                     if (theme_render.fonts.at(0).isDefault)
@@ -434,6 +432,8 @@ Element RocketStats::CalculateElement(json& element, Options& options, bool& che
                     }
                 }
 
+                ImVec2 string_size;
+                ImGui::SetWindowFontScale(1.f);
                 if (font_pos >= 0)
                 {
                     calculated.font = theme_render.fonts.at(font_pos).name;
@@ -453,7 +453,7 @@ Element RocketStats::CalculateElement(json& element, Options& options, bool& che
                     if (element["align"] == "right")
                         element_pos.x -= string_size.x;
                     else if (element["align"] == "center")
-                        element_pos.x -= std::round(string_size.x / 2.f);
+                        element_pos.x -= (string_size.x / 2.f);
                 }
 
                 if (element.contains("valign") && element["valign"].is_string())
@@ -461,7 +461,7 @@ Element RocketStats::CalculateElement(json& element, Options& options, bool& che
                     if (element["valign"] == "bottom")
                         element_pos.y -= string_size.y;
                     else if (element["valign"] == "middle")
-                        element_pos.y -= std::round(string_size.y / 2.f);
+                        element_pos.y -= (string_size.y / 2.f);
                 }
             }
             else if (element["type"] == "line")
