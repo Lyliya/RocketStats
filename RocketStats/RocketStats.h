@@ -56,6 +56,7 @@ struct Color {
 struct Element {
 	std::string name = "Unknown";
 	std::string type;
+	std::string font;
 	std::string value;
 	std::vector<ImVec2> positions;
 	ImVec2 size;
@@ -91,13 +92,18 @@ struct Stats {
 	bool isInit = false;
 };
 
+struct ThemeFont {
+	int size = 0;
+	std::string name = "";
+	bool isDefault = false;
+};
+
 struct Theme {
 	std::string name = "Unknown";
 	std::string author = "Unknown";
 	std::string version = "v1.0.0";
 	std::string date = "";
-	int font_size = 0;
-	std::string font_name = "";
+	std::vector<ThemeFont> fonts = {};
 	std::vector<Element> elements;
 };
 

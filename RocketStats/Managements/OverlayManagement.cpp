@@ -43,8 +43,7 @@ bool RocketStats::ChangeTheme(int idx)
         theme_render.author,
         theme_render.version,
         theme_render.date,
-        theme_render.font_size,
-        theme_render.font_name
+        theme_render.fonts
     };
 
     try
@@ -80,27 +79,42 @@ bool RocketStats::ChangeTheme(int idx)
                     theme_render.date = date;
             }
 
-            // Add theme font to system
-            theme_render.font_name = "";
+            // Add default theme font to system
+            bool default_font = false;
             if (theme_config.contains("font") && theme_config["font"].is_array() && theme_config["font"].size() == 2)
             {
-                if (theme_config["font"][0].is_string() && theme_config["font"][1].is_number_unsigned())
+                if (!theme_config.contains("fonts") || !theme_config["fonts"].is_array())
+                    theme_config["fonts"] = json::array();
+
+                default_font = true;
+                theme_config["fonts"].insert(theme_config["fonts"].begin(), theme_config["font"]);
+            }
+
+            // Add theme fonts to system
+            theme_render.fonts = {};
+            if (theme_config.contains("fonts") && theme_config["fonts"].is_array())
+            {
+                for (int i = 0; i < theme_config["fonts"].size(); ++i)
                 {
-                    int font_size = theme_config["font"][1];
-                    std::string font_file = theme_config["font"][0];
-
-                    std::string font_prefix = "rs_";
-                    std::string font_path = ("RocketStats_themes/" + theme_render.name + "/fonts/" + font_file);
-                    std::string font_dest = ("../RocketStats/" + font_path);
-
-                    if (font_file.size() && font_size > 0 && ExistsPath(font_path))
+                    json font = theme_config["fonts"][i];
+                    if (font.size() == 2 && font[0].is_string() && font[1].is_number_unsigned())
                     {
-                        theme_render.font_size = font_size;
-                        theme_render.font_name = font_prefix + (font_file.substr(0, font_file.find_last_of('.'))) + "_" + std::to_string(font_size);
+                        int font_size = font[1];
+                        std::string font_file = font[0];
 
-                        GuiManagerWrapper gui = gameWrapper->GetGUIManager();
-                        gui.LoadFont(theme_render.font_name, font_dest, font_size);
-                        cvarManager->log("Load font: " + theme_render.font_name);
+                        std::string font_prefix = "rs_";
+                        std::string font_path = ("RocketStats_themes/" + theme_render.name + "/fonts/" + font_file);
+                        std::string font_dest = ("../RocketStats/" + font_path);
+
+                        if (font_file.size() && font_size > 0 && ExistsPath(font_path))
+                        {
+                            std::string font_name = Utils::tolower(font_prefix + (font_file.substr(0, font_file.find_last_of('.'))) + "_" + std::to_string(font_size));
+                            theme_render.fonts.push_back({ font_size, font_name, (!i && default_font) });
+
+                            GuiManagerWrapper gui = gameWrapper->GetGUIManager();
+                            gui.LoadFont(font_name, font_dest, font_size);
+                            cvarManager->log("Load font: " + font_name);
+                        }
                     }
                 }
             }
@@ -135,8 +149,7 @@ bool RocketStats::ChangeTheme(int idx)
         theme_render.author = old.author;
         theme_render.version = old.version;
         theme_render.date = old.date;
-        theme_render.font_size = old.font_size;
-        theme_render.font_name = old.font_name;
+        theme_render.fonts = old.fonts;
     }
 
     cvarManager->log("===== !ChangeTheme =====");
@@ -399,14 +412,35 @@ Element RocketStats::CalculateElement(json& element, Options& options, bool& che
                         calculated.value = Utils::capitalize(calculated.value);
                 }
 
+                int font_pos = -1;
                 ImVec2 string_size;
                 ImGui::SetWindowFontScale(1.f);
-                if (theme_render.font_name.size())
+                if (theme_render.fonts.size())
                 {
-                    calculated.scale *= theme_render.font_size;
+                    if (theme_render.fonts.at(0).isDefault)
+                        font_pos = 0;
+
+                    bool specific = (element.contains("font") && element["font"].is_string() && element["font"].size());
+                    if (specific)
+                    {
+                        for (int i = 0; i < theme_render.fonts.size(); ++i)
+                        {
+                            if (theme_render.fonts.at(i).name.substr(3, (theme_render.fonts.at(i).name.find_last_of('_') - 3)) == Utils::tolower(element["font"]))
+                            {
+                                font_pos = i;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (font_pos >= 0)
+                {
+                    calculated.font = theme_render.fonts.at(font_pos).name;
+                    calculated.scale *= theme_render.fonts.at(font_pos).size;
 
                     GuiManagerWrapper gui = gameWrapper->GetGUIManager();
-                    string_size = gui.GetFont(theme_render.font_name)->CalcTextSizeA(calculated.scale, FLT_MAX, 0.f, calculated.value.c_str());
+                    string_size = gui.GetFont(theme_render.fonts.at(font_pos).name)->CalcTextSizeA(calculated.scale, FLT_MAX, 0.f, calculated.value.c_str());
                 }
                 else
                 {
@@ -626,10 +660,10 @@ void RocketStats::RenderElement(ImDrawList* drawlist, Element& element)
         else if (element.type == "text")
         {
             ImGui::SetWindowFontScale(1);
-            if (theme_render.font_name.size())
+            if (theme_render.fonts.size() && (element.font.size() || theme_render.fonts.at(0).isDefault))
             {
                 GuiManagerWrapper gui = gameWrapper->GetGUIManager();
-                ImFont* font = gui.GetFont(theme_render.font_name);
+                ImFont* font = gui.GetFont(element.font.size() ? element.font : theme_render.fonts.at(0).name);
 
                 // Display text if font is loaded
                 if (font && font->IsLoaded())
