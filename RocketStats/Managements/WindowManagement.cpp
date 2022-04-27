@@ -274,7 +274,7 @@ void RocketStats::RenderOverlay()
             theme_vars["Rank"] = VarRank(false, false, false, &number);
             theme_vars["RankName"] = SubVarRankName(theme_vars["Rank"], number);
             theme_vars["RankNumber"] = SubVarRankNumber(theme_vars["Rank"], number);
-            theme_vars["Div"] = VarDiv();
+            theme_vars["Div"] = VarDiv(false, false, false, &number);
             theme_vars["DivName"] = SubVarDivName(theme_vars["Div"], number);
             theme_vars["DivNumber"] = SubVarDivNumber(theme_vars["Div"], number);
             theme_vars["MMR"] = VarMMR();

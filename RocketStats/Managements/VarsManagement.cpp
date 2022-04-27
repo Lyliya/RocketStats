@@ -55,7 +55,7 @@ std::string RocketStats::SubVarRankName(std::string value, int number, bool defa
         if (!default_value)
         {
             std::string stmp = (rs_roman_numbers ? GetRoman(number) : std::to_string(number));
-            tmp = (number ? tmp.substr(0, (tmp.size() - (stmp.size() + 1))) : t_current().rank);
+            tmp = (number ? value.substr(0, (value.size() - (stmp.size() + 1))) : t_current().rank);
         }
         else
             tmp = t_current().rank;
@@ -108,7 +108,7 @@ std::string RocketStats::SubVarDivName(std::string value, int number, bool defau
         if (!default_value)
         {
             std::string stmp = (rs_roman_numbers ? GetRoman(number) : std::to_string(number));
-            tmp = (number ? tmp.substr(0, (tmp.size() - (stmp.size() + 1))) : t_current().division);
+            tmp = (number ? value.substr(0, (value.size() - (stmp.size() + 1))) : t_current().division);
         }
         else
             tmp = t_current().division;
