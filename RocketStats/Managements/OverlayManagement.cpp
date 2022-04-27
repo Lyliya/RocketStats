@@ -335,16 +335,16 @@ Element RocketStats::CalculateElement(json& element, Options& options, bool& che
                 calculated.name = element["name"];
 
             if (element.contains("x"))
-                element_2d.x = int(float(element["x"].is_string() ? Utils::EvaluateExpression(element["x"], options.width, display_size) : int(element["x"])) * options.scale);
+                element_2d.x = (float(element["x"].is_string() ? Utils::EvaluateExpression(element["x"], options.width, display_size) : int(element["x"])) * options.scale);
 
             if (element.contains("y"))
-                element_2d.y = int(float(element["y"].is_string() ? Utils::EvaluateExpression(element["y"], options.height, display_size) : int(element["y"])) * options.scale);
+                element_2d.y = (float(element["y"].is_string() ? Utils::EvaluateExpression(element["y"], options.height, display_size) : int(element["y"])) * options.scale);
 
             if (element.contains("width"))
-                element_2d.width = int(float(element["width"].is_string() ? Utils::EvaluateExpression(element["width"], options.width, display_size) : int(element["width"])) * options.scale);
+                element_2d.width = (float(element["width"].is_string() ? Utils::EvaluateExpression(element["width"], options.width, display_size) : int(element["width"])) * options.scale);
 
             if (element.contains("height"))
-                element_2d.height = int(float(element["height"].is_string() ? Utils::EvaluateExpression(element["height"], options.height, display_size) : int(element["height"])) * options.scale);
+                element_2d.height = (float(element["height"].is_string() ? Utils::EvaluateExpression(element["height"], options.height, display_size) : int(element["height"])) * options.scale);
 
             ImVec2 element_pos = { float(options.x + element_2d.x), float(options.y + element_2d.y) };
             ImVec2 element_size = { float(element_2d.width), float(element_2d.height) };
@@ -476,7 +476,7 @@ Element RocketStats::CalculateElement(json& element, Options& options, bool& che
                 positions.push_back(ImVec2{
                     float(options.x) + (float(element["x2"].is_string() ? Utils::EvaluateExpression(element["x2"], options.width, display_size) : int(element["x2"])) * options.scale),
                     float(options.y) + (float(element["y2"].is_string() ? Utils::EvaluateExpression(element["y2"], options.height, display_size) : int(element["y2"])) * options.scale)
-                    });
+                });
             }
             else if (element["type"] == "rectangle")
             {
@@ -485,7 +485,7 @@ Element RocketStats::CalculateElement(json& element, Options& options, bool& che
                 positions.push_back(ImVec2{
                     element_pos.x + element_2d.width,
                     element_pos.y + element_2d.height
-                    });
+                });
             }
             else if (element["type"] == "triangle")
             {
@@ -495,11 +495,11 @@ Element RocketStats::CalculateElement(json& element, Options& options, bool& che
                 positions.push_back(ImVec2{
                     float(options.x) + (float(element["x2"].is_string() ? Utils::EvaluateExpression(element["x2"], options.width, display_size) : int(element["x2"])) * options.scale),
                     float(options.y) + (float(element["y2"].is_string() ? Utils::EvaluateExpression(element["y2"], options.height, display_size) : int(element["y2"])) * options.scale)
-                    });
+                });
                 positions.push_back(ImVec2{
                     float(options.x) + (float(element["x3"].is_string() ? Utils::EvaluateExpression(element["x3"], options.width, display_size) : int(element["x3"])) * options.scale),
                     float(options.y) + (float(element["y3"].is_string() ? Utils::EvaluateExpression(element["y3"], options.height, display_size) : int(element["y3"])) * options.scale)
-                    });
+                });
             }
             else if (element["type"] == "circle")
             {
@@ -527,7 +527,7 @@ Element RocketStats::CalculateElement(json& element, Options& options, bool& che
                     positions.push_back(ImVec2{
                         (element_pos.x + ((element_size.x * cos(radian_min)))),
                         (element_pos.y + ((element_size.x * sin(radian_min))))
-                        });
+                    });
                 }
             }
             else if (element["type"] == "image")
