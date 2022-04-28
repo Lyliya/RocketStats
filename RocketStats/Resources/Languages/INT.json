@@ -87,6 +87,12 @@
 	"Deaths",
 	"Match Deaths",
 	"Cumulative Deaths",
+	"Shots",
+	"Miscs",
+	"Assists",
+	"Goals",
+	"Saves",
+	"Dropshot",
 	"Boost",
 
 	"Write to file",
@@ -108,6 +114,12 @@
 	"Write Deaths in file",
 	"Write Match Deaths in file",
 	"Write Cumulative Deaths in file",
+	"Write Shots in file",
+	"Write Miscs in file",
+	"Write Assists in file",
+	"Write Goals in file",
+	"Write Saves in file",
+	"Write Dropshot in file",
 	"Write Boost in file",
 
 	"Hide value",
@@ -128,5 +140,11 @@
 	"Hide Cumulative Demolitions",
 	"Hide Deaths",
 	"Hide Match Deaths",
-	"Hide Cumulative Deaths"
+	"Hide Cumulative Deaths",
+	"Hide Shots",
+	"Hide Miscs",
+	"Hide Assists",
+	"Hide Goals",
+	"Hide Saves",
+	"Hide Dropshot"
 ]

@@ -219,6 +219,9 @@ TeamWrapper RocketStats::GetTeam(bool opposing)
             }
         }
     }
+
+    TeamWrapper team(NULL);
+    return team;
 }
 
 ImColor RocketStats::GetTeamColor(TeamWrapper team)

@@ -389,12 +389,6 @@ void RocketStats::onInit()
 
     // Reset all files (and create them if they don't exist)
     ResetFiles();
-    RemoveFile("RocketStats_Demo.txt");
-    RemoveFile("RocketStats_DemoMatch.txt");
-    RemoveFile("RocketStats_DemoCumul.txt");
-    RemoveFile("RocketStats_Demolition.txt");
-    RemoveFile("RocketStats_DemolitionMatch.txt");
-    RemoveFile("RocketStats_DemolitionCumul.txt");
 
     // Can be used from the console or in bindings
     cvarManager->registerNotifier("rs_toggle_menu", [this](std::vector<std::string> params) {
@@ -410,7 +404,8 @@ void RocketStats::onInit()
     gameWrapper->HookEvent("Function CarComponent_Boost_TA.Active.BeginState", std::bind(&RocketStats::OnBoostStart, this, std::placeholders::_1));
     gameWrapper->HookEvent("Function CarComponent_Boost_TA.Active.EndState", std::bind(&RocketStats::OnBoostEnd, this, std::placeholders::_1));
     gameWrapper->HookEvent("Function TAGame.GameEvent_TA.Destroyed", std::bind(&RocketStats::GameDestroyed, this, std::placeholders::_1));
-    gameWrapper->HookEvent("Function TAGame.GFxData_MainMenu_TA.OnEnteredMainMenu", std::bind([this]() { menu_stack = 0; is_in_menu = true; cvarManager->log("TAGame.GFxData_MainMenu_TA.OnEnteredMainMenu"); }));
+    gameWrapper->HookEvent("Function TAGame.GameEvent_Soccar_TA.TriggerGoalScoreEvent", std::bind(&RocketStats::onGoalScore, this, std::placeholders::_1));
+    gameWrapper->HookEvent("Function TAGame.GFxData_MainMenu_TA.OnEnteredMainMenu", std::bind([this]() { menu_stack = 0; is_in_menu = true; }));
     gameWrapper->HookEvent("Function TAGame.GFxData_MenuStack_TA.PushMenu", std::bind([this]() { ++menu_stack;  is_in_menu = true; }));
     gameWrapper->HookEvent("Function TAGame.GFxData_MenuStack_TA.PopMenu", std::bind([this]() { if (menu_stack) --menu_stack; is_in_menu = (menu_stack > 0); }));
     gameWrapper->HookEvent("Function TAGame.MenuSequence_TA.EnterSequence", std::bind([this]() { is_in_menu = true; }));
@@ -500,6 +495,12 @@ void RocketStats::onInit()
     cvarManager->registerCvar("rs_file_death", (rs_file_death ? "1" : "0"), GetLang(LANG_FILE_DEATH), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("rs_file_deathm", (rs_file_deathm ? "1" : "0"), GetLang(LANG_FILE_DEATHMATCH), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("rs_file_deathc", (rs_file_deathc ? "1" : "0"), GetLang(LANG_FILE_DEATHCUMUL), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_file_shots", (rs_file_shots ? "1" : "0"), GetLang(LANG_FILE_SHOTS), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_file_miscs", (rs_file_miscs ? "1" : "0"), GetLang(LANG_FILE_MISCS), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_file_assists", (rs_file_assists ? "1" : "0"), GetLang(LANG_FILE_ASSISTS), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_file_goals", (rs_file_goals ? "1" : "0"), GetLang(LANG_FILE_GOALS), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_file_saves", (rs_file_saves ? "1" : "0"), GetLang(LANG_FILE_SAVES), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_file_dropshot", (rs_file_dropshot ? "1" : "0"), GetLang(LANG_FILE_DROPSHOT), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("rs_file_boost", (rs_file_boost ? "1" : "0"), GetLang(LANG_FILE_BOOST), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
 
     cvarManager->registerCvar("rs_hide_games", (rs_hide_games ? "1" : "0"), GetLang(LANG_HIDE_GAMES), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
@@ -520,6 +521,13 @@ void RocketStats::onInit()
     cvarManager->registerCvar("rs_hide_death", (rs_hide_death ? "1" : "0"), GetLang(LANG_HIDE_DEATH), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("rs_hide_deathm", (rs_hide_deathm ? "1" : "0"), GetLang(LANG_HIDE_DEATHMATCH), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("rs_hide_deathc", (rs_hide_deathc ? "1" : "0"), GetLang(LANG_HIDE_DEATHCUMUL), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_hide_shots", (rs_hide_shots ? "1" : "0"), GetLang(LANG_HIDE_SHOTS), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_hide_miscs", (rs_hide_miscs ? "1" : "0"), GetLang(LANG_HIDE_MISCS), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_hide_assists", (rs_hide_assists ? "1" : "0"), GetLang(LANG_HIDE_ASSISTS), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_hide_goals", (rs_hide_goals ? "1" : "0"), GetLang(LANG_HIDE_GOALS), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_hide_saves", (rs_hide_saves ? "1" : "0"), GetLang(LANG_HIDE_SAVES), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_hide_dropshot", (rs_hide_dropshot ? "1" : "0"), GetLang(LANG_HIDE_DROPSHOT), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+
 
     gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
         // Displays the plugin shortly after initialization
