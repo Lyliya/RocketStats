@@ -163,7 +163,9 @@ bool RocketStats::GetCVar(const char* name, float& value)
 bool RocketStats::SetCVar(const char* name, int& value, bool save)
 {
     std::string key = (name + 3);
-    if (value != cvarManager->getCvar(name).getIntValue())
+    CVarWrapper cvar = cvarManager->getCvar(name);
+
+    if (!cvar.IsNull() && value != cvar.getIntValue())
     {
         cvarManager->log("SetCVar: " + std::string(name) + " " + std::to_string(value));
         cvarManager->getCvar(name).setValue(value);
@@ -185,10 +187,12 @@ bool RocketStats::SetCVar(const char* name, int& value, bool save)
 bool RocketStats::SetCVar(const char* name, bool& value, bool save)
 {
     std::string key = (name + 3);
-    if (value != cvarManager->getCvar(name).getBoolValue())
+    CVarWrapper cvar = cvarManager->getCvar(name);
+
+    if (!cvar.IsNull() && value != cvar.getBoolValue())
     {
         cvarManager->log("SetCVar: " + std::string(name) + " " + std::to_string(value));
-        cvarManager->getCvar(name).setValue(value);
+        cvar.setValue(value);
 
         if (save)
         {
@@ -208,10 +212,12 @@ bool RocketStats::SetCVar(const char* name, float& value, bool save)
 {
     std::string key = (name + 3);
     value = (std::round(value * 1000.f) / 1000.f);
-    if (value != cvarManager->getCvar(name).getFloatValue())
+    CVarWrapper cvar = cvarManager->getCvar(name);
+
+    if (!cvar.IsNull() && value != cvar.getFloatValue())
     {
         cvarManager->log("SetCVar: " + std::string(name) + " " + std::to_string(value));
-        cvarManager->getCvar(name).setValue(value);
+        cvar.setValue(value);
 
         if (save)
         {
@@ -501,6 +507,7 @@ void RocketStats::onInit()
     cvarManager->registerCvar("rs_file_goals", (rs_file_goals ? "1" : "0"), GetLang(LANG_FILE_GOALS), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("rs_file_saves", (rs_file_saves ? "1" : "0"), GetLang(LANG_FILE_SAVES), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("rs_file_dropshot", (rs_file_dropshot ? "1" : "0"), GetLang(LANG_FILE_DROPSHOT), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_file_knockout", (rs_file_knockout ? "1" : "0"), GetLang(LANG_FILE_KNOCKOUT), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("rs_file_boost", (rs_file_boost ? "1" : "0"), GetLang(LANG_FILE_BOOST), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
 
     cvarManager->registerCvar("rs_hide_games", (rs_hide_games ? "1" : "0"), GetLang(LANG_HIDE_GAMES), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
@@ -527,6 +534,7 @@ void RocketStats::onInit()
     cvarManager->registerCvar("rs_hide_goals", (rs_hide_goals ? "1" : "0"), GetLang(LANG_HIDE_GOALS), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("rs_hide_saves", (rs_hide_saves ? "1" : "0"), GetLang(LANG_HIDE_SAVES), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("rs_hide_dropshot", (rs_hide_dropshot ? "1" : "0"), GetLang(LANG_HIDE_DROPSHOT), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_file_knockout", (rs_file_knockout ? "1" : "0"), GetLang(LANG_HIDE_KNOCKOUT), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
 
 
     gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {

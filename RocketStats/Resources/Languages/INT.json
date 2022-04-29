@@ -93,6 +93,7 @@
 	"Goals",
 	"Saves",
 	"Dropshot",
+	"Knockout",
 	"Boost",
 
 	"Write to file",
@@ -120,6 +121,7 @@
 	"Write Goals in file",
 	"Write Saves in file",
 	"Write Dropshot in file",
+	"Write Knockout in file",
 	"Write Boost in file",
 
 	"Hide value",
@@ -146,5 +148,6 @@
 	"Hide Assists",
 	"Hide Goals",
 	"Hide Saves",
-	"Hide Dropshot"
+	"Hide Dropshot",
+	"Hide Knockout"
 ]

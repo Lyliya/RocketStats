@@ -293,60 +293,36 @@ void RocketStats::RenderOverlay()
             theme_vars["DeathCumul"] = VarDeathCumul();
 
             /// Shots
-            theme_vars["Shot"] = VarShotsShot();
-            theme_vars["CenterBall"] = VarShotsCenterBall();
-            theme_vars["ClearBall"] = VarShotsClearBall();
+            theme_vars["Center"] = VarShotsCenter();
+            theme_vars["Clear"] = VarShotsClear();
             theme_vars["FirstTouch"] = VarShotsFirstTouch();
             theme_vars["ShotOnGoal"] = VarShotsShotOnGoal();
+            theme_vars["AerialHit"] = VarShotsAerialHit();
             theme_vars["BicycleHit"] = VarShotsBicycleHit();
-            theme_vars["TeamShot"] = VarShotsTeamShot();
-            theme_vars["TeamCenterBall"] = VarShotsTeamCenterBall();
-            theme_vars["TeamClearBall"] = VarShotsTeamClearBall();
-            theme_vars["TeamFirstTouch"] = VarShotsTeamFirstTouch();
             theme_vars["TeamShotOnGoal"] = VarShotsTeamShotOnGoal();
             theme_vars["TeamBicycleHit"] = VarShotsTeamBicycleHit();
-            theme_vars["TotalShot"] = VarShotsTotalShot();
-            theme_vars["TotalCenterBall"] = VarShotsTotalCenterBall();
-            theme_vars["TotalClearBall"] = VarShotsTotalClearBall();
-            theme_vars["TotalFirstTouch"] = VarShotsTotalFirstTouch();
             theme_vars["TotalShotOnGoal"] = VarShotsTotalShotOnGoal();
             theme_vars["TotalBicycleHit"] = VarShotsTotalBicycleHit();
 
-            theme_vars["ShotMatch"] = VarShotsShotMatch();
-            theme_vars["CenterBallMatch"] = VarShotsCenterBallMatch();
-            theme_vars["ClearBallMatch"] = VarShotsClearBallMatch();
+            theme_vars["CenterMatch"] = VarShotsCenterMatch();
+            theme_vars["ClearMatch"] = VarShotsClearMatch();
             theme_vars["FirstTouchMatch"] = VarShotsFirstTouchMatch();
             theme_vars["ShotOnGoalMatch"] = VarShotsShotOnGoalMatch();
+            theme_vars["AerialHitMatch"] = VarShotsAerialHitMatch();
             theme_vars["BicycleHitMatch"] = VarShotsBicycleHitMatch();
-            theme_vars["TeamShotMatch"] = VarShotsTeamShotMatch();
-            theme_vars["TeamCenterBallMatch"] = VarShotsTeamCenterBallMatch();
-            theme_vars["TeamClearBallMatch"] = VarShotsTeamClearBallMatch();
-            theme_vars["TeamFirstTouchMatch"] = VarShotsTeamFirstTouchMatch();
             theme_vars["TeamShotOnGoalMatch"] = VarShotsTeamShotOnGoalMatch();
             theme_vars["TeamBicycleHitMatch"] = VarShotsTeamBicycleHitMatch();
-            theme_vars["TotalShotMatch"] = VarShotsTotalShotMatch();
-            theme_vars["TotalCenterBallMatch"] = VarShotsTotalCenterBallMatch();
-            theme_vars["TotalClearBallMatch"] = VarShotsTotalClearBallMatch();
-            theme_vars["TotalFirstTouchMatch"] = VarShotsTotalFirstTouchMatch();
             theme_vars["TotalShotOnGoalMatch"] = VarShotsTotalShotOnGoalMatch();
             theme_vars["TotalBicycleHitMatch"] = VarShotsTotalBicycleHitMatch();
 
-            theme_vars["ShotCumul"] = VarShotsShotCumul();
-            theme_vars["CenterBallCumul"] = VarShotsCenterBallCumul();
-            theme_vars["ClearBallCumul"] = VarShotsClearBallCumul();
+            theme_vars["CenterCumul"] = VarShotsCenterCumul();
+            theme_vars["ClearCumul"] = VarShotsClearCumul();
             theme_vars["FirstTouchCumul"] = VarShotsFirstTouchCumul();
             theme_vars["ShotOnGoalCumul"] = VarShotsShotOnGoalCumul();
+            theme_vars["AerialHitCumul"] = VarShotsAerialHitCumul();
             theme_vars["BicycleHitCumul"] = VarShotsBicycleHitCumul();
-            theme_vars["TeamShotCumul"] = VarShotsTeamShotCumul();
-            theme_vars["TeamCenterBallCumul"] = VarShotsTeamCenterBallCumul();
-            theme_vars["TeamClearBallCumul"] = VarShotsTeamClearBallCumul();
-            theme_vars["TeamFirstTouchCumul"] = VarShotsTeamFirstTouchCumul();
             theme_vars["TeamShotOnGoalCumul"] = VarShotsTeamShotOnGoalCumul();
             theme_vars["TeamBicycleHitCumul"] = VarShotsTeamBicycleHitCumul();
-            theme_vars["TotalShotCumul"] = VarShotsTotalShotCumul();
-            theme_vars["TotalCenterBallCumul"] = VarShotsTotalCenterBallCumul();
-            theme_vars["TotalClearBallCumul"] = VarShotsTotalClearBallCumul();
-            theme_vars["TotalFirstTouchCumul"] = VarShotsTotalFirstTouchCumul();
             theme_vars["TotalShotOnGoalCumul"] = VarShotsTotalShotOnGoalCumul();
             theme_vars["TotalBicycleHitCumul"] = VarShotsTotalBicycleHitCumul();
 
@@ -412,7 +388,6 @@ void RocketStats::RenderOverlay()
             theme_vars["TotalAssistCumul"] = VarAssistsTotalAssistCumul();
             theme_vars["TotalPlaymakerCumul"] = VarAssistsTotalPlaymakerCumul();
 
-
             /// Goals
             theme_vars["Goal"] = VarGoalsGoal();
             theme_vars["AerialGoal"] = VarGoalsAerialGoal();
@@ -421,7 +396,7 @@ void RocketStats::RenderOverlay()
             theme_vars["LongGoal"] = VarGoalsLongGoal();
             theme_vars["TurtleGoal"] = VarGoalsTurtleGoal();
             theme_vars["OvertimeGoal"] = VarGoalsOvertimeGoal();
-            theme_vars["SwishGoal"] = VarGoalsSwishGoal();
+            theme_vars["HoopsSwishGoal"] = VarGoalsHoopsSwishGoal();
             theme_vars["TeamGoal"] = VarGoalsTeamGoal();
             theme_vars["TeamAerialGoal"] = VarGoalsTeamAerialGoal();
             theme_vars["TeamBackwardsGoal"] = VarGoalsTeamBackwardsGoal();
@@ -429,7 +404,7 @@ void RocketStats::RenderOverlay()
             theme_vars["TeamLongGoal"] = VarGoalsTeamLongGoal();
             theme_vars["TeamTurtleGoal"] = VarGoalsTeamTurtleGoal();
             theme_vars["TeamOvertimeGoal"] = VarGoalsTeamOvertimeGoal();
-            theme_vars["TeamSwishGoal"] = VarGoalsTeamSwishGoal();
+            theme_vars["TeamHoopsSwishGoal"] = VarGoalsTeamHoopsSwishGoal();
             theme_vars["TotalGoal"] = VarGoalsTotalGoal();
             theme_vars["TotalAerialGoal"] = VarGoalsTotalAerialGoal();
             theme_vars["TotalBackwardsGoal"] = VarGoalsTotalBackwardsGoal();
@@ -437,7 +412,7 @@ void RocketStats::RenderOverlay()
             theme_vars["TotalLongGoal"] = VarGoalsTotalLongGoal();
             theme_vars["TotalTurtleGoal"] = VarGoalsTotalTurtleGoal();
             theme_vars["TotalOvertimeGoal"] = VarGoalsTotalOvertimeGoal();
-            theme_vars["TotalSwishGoal"] = VarGoalsTotalSwishGoal();
+            theme_vars["TotalHoopsSwishGoal"] = VarGoalsTotalHoopsSwishGoal();
 
             theme_vars["GoalMatch"] = VarGoalsGoalMatch();
             theme_vars["AerialGoalMatch"] = VarGoalsAerialGoalMatch();
@@ -446,7 +421,7 @@ void RocketStats::RenderOverlay()
             theme_vars["LongGoalMatch"] = VarGoalsLongGoalMatch();
             theme_vars["TurtleGoalMatch"] = VarGoalsTurtleGoalMatch();
             theme_vars["OvertimeGoalMatch"] = VarGoalsOvertimeGoalMatch();
-            theme_vars["SwishGoalMatch"] = VarGoalsSwishGoalMatch();
+            theme_vars["HoopsSwishGoalMatch"] = VarGoalsHoopsSwishGoalMatch();
             theme_vars["TeamGoalMatch"] = VarGoalsTeamGoalMatch();
             theme_vars["TeamAerialGoalMatch"] = VarGoalsTeamAerialGoalMatch();
             theme_vars["TeamBackwardsGoalMatch"] = VarGoalsTeamBackwardsGoalMatch();
@@ -454,7 +429,7 @@ void RocketStats::RenderOverlay()
             theme_vars["TeamLongGoalMatch"] = VarGoalsTeamLongGoalMatch();
             theme_vars["TeamTurtleGoalMatch"] = VarGoalsTeamTurtleGoalMatch();
             theme_vars["TeamOvertimeGoalMatch"] = VarGoalsTeamOvertimeGoalMatch();
-            theme_vars["TeamSwishGoalMatch"] = VarGoalsTeamSwishGoalMatch();
+            theme_vars["TeamHoopsSwishGoalMatch"] = VarGoalsTeamHoopsSwishGoalMatch();
             theme_vars["TotalGoalMatch"] = VarGoalsTotalGoalMatch();
             theme_vars["TotalAerialGoalMatch"] = VarGoalsTotalAerialGoalMatch();
             theme_vars["TotalBackwardsGoalMatch"] = VarGoalsTotalBackwardsGoalMatch();
@@ -462,7 +437,7 @@ void RocketStats::RenderOverlay()
             theme_vars["TotalLongGoalMatch"] = VarGoalsTotalLongGoalMatch();
             theme_vars["TotalTurtleGoalMatch"] = VarGoalsTotalTurtleGoalMatch();
             theme_vars["TotalOvertimeGoalMatch"] = VarGoalsTotalOvertimeGoalMatch();
-            theme_vars["TotalSwishGoalMatch"] = VarGoalsTotalSwishGoalMatch();
+            theme_vars["TotalHoopsSwishGoalMatch"] = VarGoalsTotalHoopsSwishGoalMatch();
 
             theme_vars["GoalCumul"] = VarGoalsGoalCumul();
             theme_vars["AerialGoalCumul"] = VarGoalsAerialGoalCumul();
@@ -471,7 +446,7 @@ void RocketStats::RenderOverlay()
             theme_vars["LongGoalCumul"] = VarGoalsLongGoalCumul();
             theme_vars["TurtleGoalCumul"] = VarGoalsTurtleGoalCumul();
             theme_vars["OvertimeGoalCumul"] = VarGoalsOvertimeGoalCumul();
-            theme_vars["SwishGoalCumul"] = VarGoalsSwishGoalCumul();
+            theme_vars["HoopsSwishGoalCumul"] = VarGoalsHoopsSwishGoalCumul();
             theme_vars["TeamGoalCumul"] = VarGoalsTeamGoalCumul();
             theme_vars["TeamAerialGoalCumul"] = VarGoalsTeamAerialGoalCumul();
             theme_vars["TeamBackwardsGoalCumul"] = VarGoalsTeamBackwardsGoalCumul();
@@ -479,7 +454,7 @@ void RocketStats::RenderOverlay()
             theme_vars["TeamLongGoalCumul"] = VarGoalsTeamLongGoalCumul();
             theme_vars["TeamTurtleGoalCumul"] = VarGoalsTeamTurtleGoalCumul();
             theme_vars["TeamOvertimeGoalCumul"] = VarGoalsTeamOvertimeGoalCumul();
-            theme_vars["TeamSwishGoalCumul"] = VarGoalsTeamSwishGoalCumul();
+            theme_vars["TeamHoopsSwishGoalCumul"] = VarGoalsTeamHoopsSwishGoalCumul();
             theme_vars["TotalGoalCumul"] = VarGoalsTotalGoalCumul();
             theme_vars["TotalAerialGoalCumul"] = VarGoalsTotalAerialGoalCumul();
             theme_vars["TotalBackwardsGoalCumul"] = VarGoalsTotalBackwardsGoalCumul();
@@ -487,7 +462,7 @@ void RocketStats::RenderOverlay()
             theme_vars["TotalLongGoalCumul"] = VarGoalsTotalLongGoalCumul();
             theme_vars["TotalTurtleGoalCumul"] = VarGoalsTotalTurtleGoalCumul();
             theme_vars["TotalOvertimeGoalCumul"] = VarGoalsTotalOvertimeGoalCumul();
-            theme_vars["TotalSwishGoalCumul"] = VarGoalsTotalSwishGoalCumul();
+            theme_vars["TotalHoopsSwishGoalCumul"] = VarGoalsTotalHoopsSwishGoalCumul();
 
             /// Saves
             theme_vars["Save"] = VarSavesSave();
@@ -521,26 +496,90 @@ void RocketStats::RenderOverlay()
             theme_vars["TotalSaviorCumul"] = VarSavesTotalSaviorCumul();
 
             /// Dropshot
-            theme_vars["Damage"] = VarDropshotDamage();
-            theme_vars["UltraDamage"] = VarDropshotUltraDamage();
-            theme_vars["TeamDamage"] = VarDropshotTeamDamage();
-            theme_vars["TeamUltraDamage"] = VarDropshotTeamUltraDamage();
-            theme_vars["TotalDamage"] = VarDropshotTotalDamage();
-            theme_vars["TotalUltraDamage"] = VarDropshotTotalUltraDamage();
+            theme_vars["BreakoutDamage"] = VarDropshotBreakoutDamage();
+            theme_vars["BreakoutDamageLarge"] = VarDropshotBreakoutDamageLarge();
+            theme_vars["TeamBreakoutDamage"] = VarDropshotTeamBreakoutDamage();
+            theme_vars["TeamBreakoutDamageLarge"] = VarDropshotTeamBreakoutDamageLarge();
+            theme_vars["TotalBreakoutDamage"] = VarDropshotTotalBreakoutDamage();
+            theme_vars["TotalBreakoutDamageLarge"] = VarDropshotTotalBreakoutDamageLarge();
 
-            theme_vars["DamageMatch"] = VarDropshotDamageMatch();
-            theme_vars["UltraDamageMatch"] = VarDropshotUltraDamageMatch();
-            theme_vars["TeamDamageMatch"] = VarDropshotTeamDamageMatch();
-            theme_vars["TeamUltraDamageMatch"] = VarDropshotTeamUltraDamageMatch();
-            theme_vars["TotalDamageMatch"] = VarDropshotTotalDamageMatch();
-            theme_vars["TotalUltraDamageMatch"] = VarDropshotTotalUltraDamageMatch();
+            theme_vars["BreakoutDamageMatch"] = VarDropshotBreakoutDamageMatch();
+            theme_vars["BreakoutDamageLargeMatch"] = VarDropshotBreakoutDamageLargeMatch();
+            theme_vars["TeamBreakoutDamageMatch"] = VarDropshotTeamBreakoutDamageMatch();
+            theme_vars["TeamBreakoutDamageLargeMatch"] = VarDropshotTeamBreakoutDamageLargeMatch();
+            theme_vars["TotalBreakoutDamageMatch"] = VarDropshotTotalBreakoutDamageMatch();
+            theme_vars["TotalBreakoutDamageLargeMatch"] = VarDropshotTotalBreakoutDamageLargeMatch();
 
-            theme_vars["DamageCumul"] = VarDropshotDamageCumul();
-            theme_vars["UltraDamageCumul"] = VarDropshotUltraDamageCumul();
-            theme_vars["TeamDamageCumul"] = VarDropshotTeamDamageCumul();
-            theme_vars["TeamUltraDamageCumul"] = VarDropshotTeamUltraDamageCumul();
-            theme_vars["TotalDamageCumul"] = VarDropshotTotalDamageCumul();
-            theme_vars["TotalUltraDamageCumul"] = VarDropshotTotalUltraDamageCumul();
+            theme_vars["BreakoutDamageCumul"] = VarDropshotBreakoutDamageCumul();
+            theme_vars["BreakoutDamageLargeCumul"] = VarDropshotBreakoutDamageLargeCumul();
+            theme_vars["TeamBreakoutDamageCumul"] = VarDropshotTeamBreakoutDamageCumul();
+            theme_vars["TeamBreakoutDamageLargeCumul"] = VarDropshotTeamBreakoutDamageLargeCumul();
+            theme_vars["TotalBreakoutDamageCumul"] = VarDropshotTotalBreakoutDamageCumul();
+            theme_vars["TotalBreakoutDamageLargeCumul"] = VarDropshotTotalBreakoutDamageLargeCumul();
+
+            /// Knockout
+            theme_vars["Knockout"] = VarKnockout();
+            theme_vars["KnockoutDeath"] = VarKnockoutDeath();
+            theme_vars["KnockoutThrown"] = VarKnockoutThrown();
+            theme_vars["KnockoutGrabbed"] = VarKnockoutGrabbed();
+            theme_vars["KnockoutDoubleKO"] = VarKnockoutDoubleKO();
+            theme_vars["KnockoutHeavyHit"] = VarKnockoutHeavyHit();
+            theme_vars["KnockoutHitTaken"] = VarKnockoutHitTaken();
+            theme_vars["KnockoutLightHit"] = VarKnockoutLightHit();
+            theme_vars["KnockoutBlockTaken"] = VarKnockoutBlockTaken();
+            theme_vars["KnockoutHeavyBlock"] = VarKnockoutHeavyBlock();
+            theme_vars["KnockoutTeam"] = VarKnockoutTeam();
+            theme_vars["KnockoutTeamDeath"] = VarKnockoutTeamDeath();
+            theme_vars["KnockoutTeamDoubleKO"] = VarKnockoutTeamDoubleKO();
+            theme_vars["KnockoutTeamHeavyHit"] = VarKnockoutTeamHeavyHit();
+            theme_vars["KnockoutTeamHeavyBlock"] = VarKnockoutTeamHeavyBlock();
+            theme_vars["KnockoutTotal"] = VarKnockoutTotal();
+            theme_vars["KnockoutTotalDeath"] = VarKnockoutTotalDeath();
+            theme_vars["KnockoutTotalDoubleKO"] = VarKnockoutTotalDoubleKO();
+            theme_vars["KnockoutTotalHeavyHit"] = VarKnockoutTotalHeavyHit();
+            theme_vars["KnockoutTotalHeavyBlock"] = VarKnockoutTotalHeavyBlock();
+
+            theme_vars["KnockoutMatch"] = VarKnockoutMatch();
+            theme_vars["KnockoutDeathMatch"] = VarKnockoutDeathMatch();
+            theme_vars["KnockoutThrownMatch"] = VarKnockoutThrownMatch();
+            theme_vars["KnockoutGrabbedMatch"] = VarKnockoutGrabbedMatch();
+            theme_vars["KnockoutDoubleKOMatch"] = VarKnockoutDoubleKOMatch();
+            theme_vars["KnockoutHeavyHitMatch"] = VarKnockoutHeavyHitMatch();
+            theme_vars["KnockoutHitTakenMatch"] = VarKnockoutHitTakenMatch();
+            theme_vars["KnockoutLightHitMatch"] = VarKnockoutLightHitMatch();
+            theme_vars["KnockoutBlockTakenMatch"] = VarKnockoutBlockTakenMatch();
+            theme_vars["KnockoutHeavyBlockMatch"] = VarKnockoutHeavyBlockMatch();
+            theme_vars["KnockoutTeamMatch"] = VarKnockoutTeamMatch();
+            theme_vars["KnockoutTeamDeathMatch"] = VarKnockoutTeamDeathMatch();
+            theme_vars["KnockoutTeamDoubleKOMatch"] = VarKnockoutTeamDoubleKOMatch();
+            theme_vars["KnockoutTeamHeavyHitMatch"] = VarKnockoutTeamHeavyHitMatch();
+            theme_vars["KnockoutTeamHeavyBlockMatch"] = VarKnockoutTeamHeavyBlockMatch();
+            theme_vars["KnockoutTotalMatch"] = VarKnockoutTotalMatch();
+            theme_vars["KnockoutTotalDeathMatch"] = VarKnockoutTotalDeathMatch();
+            theme_vars["KnockoutTotalDoubleKOMatch"] = VarKnockoutTotalDoubleKOMatch();
+            theme_vars["KnockoutTotalHeavyHitMatch"] = VarKnockoutTotalHeavyHitMatch();
+            theme_vars["KnockoutTotalHeavyBlockMatch"] = VarKnockoutTotalHeavyBlockMatch();
+
+            theme_vars["KnockoutCumul"] = VarKnockoutCumul();
+            theme_vars["KnockoutDeathCumul"] = VarKnockoutDeathCumul();
+            theme_vars["KnockoutThrownCumul"] = VarKnockoutThrownCumul();
+            theme_vars["KnockoutGrabbedCumul"] = VarKnockoutGrabbedCumul();
+            theme_vars["KnockoutDoubleKOCumul"] = VarKnockoutDoubleKOCumul();
+            theme_vars["KnockoutHeavyHitCumul"] = VarKnockoutHeavyHitCumul();
+            theme_vars["KnockoutHitTakenCumul"] = VarKnockoutHitTakenCumul();
+            theme_vars["KnockoutLightHitCumul"] = VarKnockoutLightHitCumul();
+            theme_vars["KnockoutBlockTakenCumul"] = VarKnockoutBlockTakenCumul();
+            theme_vars["KnockoutHeavyBlockCumul"] = VarKnockoutHeavyBlockCumul();
+            theme_vars["KnockoutTeamCumul"] = VarKnockoutTeamCumul();
+            theme_vars["KnockoutTeamDeathCumul"] = VarKnockoutTeamDeathCumul();
+            theme_vars["KnockoutTeamDoubleKOCumul"] = VarKnockoutTeamDoubleKOCumul();
+            theme_vars["KnockoutTeamHeavyHitCumul"] = VarKnockoutTeamHeavyHitCumul();
+            theme_vars["KnockoutTeamHeavyBlockCumul"] = VarKnockoutTeamHeavyBlockCumul();
+            theme_vars["KnockoutTotalCumul"] = VarKnockoutTotalCumul();
+            theme_vars["KnockoutTotalDeathCumul"] = VarKnockoutTotalDeathCumul();
+            theme_vars["KnockoutTotalDoubleKOCumul"] = VarKnockoutTotalDoubleKOCumul();
+            theme_vars["KnockoutTotalHeavyHitCumul"] = VarKnockoutTotalHeavyHitCumul();
+            theme_vars["KnockoutTotalHeavyBlockCumul"] = VarKnockoutTotalHeavyBlockCumul();
 
             // Replace underscores with spaces
             Utils::ReplaceAll(theme_vars["Rank"], "_", " ");
@@ -589,7 +628,7 @@ void RocketStats::RenderOverlay()
                 drawlist->VtxBuffer = rs_drawlist->VtxBuffer;
 
                 drawlist->Flags = rs_drawlist->Flags;
-                drawlist->_VtxCurrentIdx = drawlist->VtxBuffer.Size;
+                drawlist->_VtxCurrentIdx = (unsigned int)drawlist->VtxBuffer.Size;
                 drawlist->_VtxWritePtr = drawlist->VtxBuffer.end();
                 drawlist->_IdxWritePtr = drawlist->IdxBuffer.end();
             }
@@ -1000,7 +1039,7 @@ void RocketStats::RenderSettings()
             rs_file_win && rs_file_loss && rs_file_streak && rs_file_winratio && rs_file_winpercentage &&
             rs_file_demo && rs_file_demom && rs_file_democ &&
             rs_file_death && rs_file_deathm && rs_file_deathc &&
-            rs_file_shots && rs_file_miscs && rs_file_assists && rs_file_goals && rs_file_saves && rs_file_dropshot &&
+            rs_file_shots && rs_file_miscs && rs_file_assists && rs_file_goals && rs_file_saves && rs_file_dropshot && rs_file_knockout &&
             rs_file_boost);
         select_all = rs_select_all_file;
         tpos = { (column_start + column_space + (column_width + 16) - 0.5f), 320 };
@@ -1048,6 +1087,7 @@ void RocketStats::RenderSettings()
         ImGui::Checkbox(GetLang(LANG_GOALS).c_str(), &rs_file_goals);
         ImGui::Checkbox(GetLang(LANG_SAVES).c_str(), &rs_file_saves);
         ImGui::Checkbox(GetLang(LANG_DROPSHOT).c_str(), &rs_file_dropshot);
+        ImGui::Checkbox(GetLang(LANG_KNOCKOUT).c_str(), &rs_file_knockout);
         ImGui::Checkbox(GetLang(LANG_BOOST).c_str(), &rs_file_boost);
         if (!rs_in_file)
             ImGui::PopStyleVar();
@@ -1081,6 +1121,7 @@ void RocketStats::RenderSettings()
             rs_file_goals = rs_select_all_file;
             rs_file_saves = rs_select_all_file;
             rs_file_dropshot = rs_select_all_file;
+            rs_file_knockout = rs_select_all_file;
             rs_file_boost = rs_select_all_file;
         }
 
@@ -1088,7 +1129,7 @@ void RocketStats::RenderSettings()
             rs_hide_mmr && rs_hide_mmrc && rs_hide_mmrcc &&
             rs_hide_win && rs_hide_loss && rs_hide_streak && rs_hide_winratio && rs_hide_winpercentage &&
             rs_hide_demo && rs_hide_demom && rs_hide_democ &&
-            rs_hide_shots && rs_hide_miscs && rs_hide_assists && rs_hide_goals && rs_hide_saves && rs_hide_dropshot &&
+            rs_hide_shots && rs_hide_miscs && rs_hide_assists && rs_hide_goals && rs_hide_saves && rs_hide_dropshot && rs_hide_knockout &&
             rs_hide_death && rs_hide_deathm && rs_hide_deathc);
         select_all = rs_select_all_hide;
         tpos = { (column_start + (column_space * 2) + ((column_width * 2) + 16)), 320 };
@@ -1134,6 +1175,7 @@ void RocketStats::RenderSettings()
         ImGui::Checkbox(GetLang(LANG_GOALS).c_str(), &rs_hide_goals);
         ImGui::Checkbox(GetLang(LANG_SAVES).c_str(), &rs_hide_saves);
         ImGui::Checkbox(GetLang(LANG_DROPSHOT).c_str(), &rs_hide_dropshot);
+        ImGui::Checkbox(GetLang(LANG_KNOCKOUT).c_str(), &rs_hide_knockout);
         ImGui::EndChild();
 
         if (select_all != rs_select_all_hide)
@@ -1164,6 +1206,7 @@ void RocketStats::RenderSettings()
             rs_hide_goals = rs_select_all_hide;
             rs_hide_saves = rs_select_all_hide;
             rs_hide_dropshot = rs_select_all_hide;
+            rs_hide_knockout = rs_select_all_hide;
         }
 
         /* Variable to use to animate images

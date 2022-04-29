@@ -91,41 +91,29 @@ struct Stats {
 	int deathCumul = 0;
 
 	/// Shots
-	int Shot = 0;
-	int CenterBall = 0;
-	int ClearBall = 0;
+	int Center = 0;
+	int Clear = 0;
 	int FirstTouch = 0;
 	int ShotOnGoal = 0;
+	int AerialHit = 0;
 	int BicycleHit = 0;
-	int TeamShot = 0;
-	int TeamCenterBall = 0;
-	int TeamClearBall = 0;
-	int TeamFirstTouch = 0;
+	int TeamClear = 0;
 	int TeamShotOnGoal = 0;
 	int TeamBicycleHit = 0;
-	int TotalShot = 0;
-	int TotalCenterBall = 0;
-	int TotalClearBall = 0;
-	int TotalFirstTouch = 0;
+	int TotalClear = 0;
 	int TotalShotOnGoal = 0;
 	int TotalBicycleHit = 0;
 
-	int ShotCumul = 0;
-	int CenterBallCumul = 0;
-	int ClearBallCumul = 0;
+	int CenterCumul = 0;
+	int ClearCumul = 0;
 	int FirstTouchCumul = 0;
 	int ShotOnGoalCumul = 0;
+	int AerialHitCumul = 0;
 	int BicycleHitCumul = 0;
-	int TeamShotCumul = 0;
-	int TeamCenterBallCumul = 0;
-	int TeamClearBallCumul = 0;
-	int TeamFirstTouchCumul = 0;
+	int TeamClearCumul = 0;
 	int TeamShotOnGoalCumul = 0;
 	int TeamBicycleHitCumul = 0;
-	int TotalShotCumul = 0;
-	int TotalCenterBallCumul = 0;
-	int TotalClearBallCumul = 0;
-	int TotalFirstTouchCumul = 0;
+	int TotalClearCumul = 0;
 	int TotalShotOnGoalCumul = 0;
 	int TotalBicycleHitCumul = 0;
 
@@ -173,13 +161,14 @@ struct Stats {
 
 	/// Goals
 	int Goal = 0;
+	int OwnGoal = 0;
 	int AerialGoal = 0;
 	int BackwardsGoal = 0;
 	int BicycleGoal = 0;
 	int LongGoal = 0;
 	int TurtleGoal = 0;
 	int OvertimeGoal = 0;
-	int SwishGoal = 0;
+	int HoopsSwishGoal = 0;
 	int PoolShot = 0;
 	int TeamGoal = 0;
 	int TeamAerialGoal = 0;
@@ -188,7 +177,7 @@ struct Stats {
 	int TeamLongGoal = 0;
 	int TeamTurtleGoal = 0;
 	int TeamOvertimeGoal = 0;
-	int TeamSwishGoal = 0;
+	int TeamHoopsSwishGoal = 0;
 	int TeamPoolShot = 0;
 	int TotalGoal = 0;
 	int TotalAerialGoal = 0;
@@ -197,17 +186,18 @@ struct Stats {
 	int TotalLongGoal = 0;
 	int TotalTurtleGoal = 0;
 	int TotalOvertimeGoal = 0;
-	int TotalSwishGoal = 0;
+	int TotalHoopsSwishGoal = 0;
 	int TotalPoolShot = 0;
 
 	int GoalCumul = 0;
+	int OwnGoalCumul = 0;
 	int AerialGoalCumul = 0;
 	int BackwardsGoalCumul = 0;
 	int BicycleGoalCumul = 0;
 	int LongGoalCumul = 0;
 	int TurtleGoalCumul = 0;
 	int OvertimeGoalCumul = 0;
-	int SwishGoalCumul = 0;
+	int HoopsSwishGoalCumul = 0;
 	int PoolShotCumul = 0;
 	int TeamGoalCumul = 0;
 	int TeamAerialGoalCumul = 0;
@@ -216,7 +206,7 @@ struct Stats {
 	int TeamLongGoalCumul = 0;
 	int TeamTurtleGoalCumul = 0;
 	int TeamOvertimeGoalCumul = 0;
-	int TeamSwishGoalCumul = 0;
+	int TeamHoopsSwishGoalCumul = 0;
 	int TeamPoolShotCumul = 0;
 	int TotalGoalCumul = 0;
 	int TotalAerialGoalCumul = 0;
@@ -225,7 +215,7 @@ struct Stats {
 	int TotalLongGoalCumul = 0;
 	int TotalTurtleGoalCumul = 0;
 	int TotalOvertimeGoalCumul = 0;
-	int TotalSwishGoalCumul = 0;
+	int TotalHoopsSwishGoalCumul = 0;
 	int TotalPoolShotCumul = 0;
 
 	/// Saves
@@ -250,19 +240,83 @@ struct Stats {
 	int TotalSaviorCumul = 0;
 
 	/// Dropshot
-	int Damage = 0;
-	int UltraDamage = 0;
-	int TeamDamage = 0;
-	int TeamUltraDamage = 0;
-	int TotalDamage = 0;
-	int TotalUltraDamage = 0;
+	int BreakoutDamage = 0;
+	int BreakoutDamageLarge = 0;
+	int TeamBreakoutDamage = 0;
+	int TeamBreakoutDamageLarge = 0;
+	int TotalBreakoutDamage = 0;
+	int TotalBreakoutDamageLarge = 0;
 
-	int DamageCumul = 0;
-	int UltraDamageCumul = 0;
-	int TeamDamageCumul = 0;
-	int TeamUltraDamageCumul = 0;
-	int TotalDamageCumul = 0;
-	int TotalUltraDamageCumul = 0;
+	int BreakoutDamageCumul = 0;
+	int BreakoutDamageLargeCumul = 0;
+	int TeamBreakoutDamageCumul = 0;
+	int TeamBreakoutDamageLargeCumul = 0;
+	int TotalBreakoutDamageCumul = 0;
+	int TotalBreakoutDamageLargeCumul = 0;
+
+	/// Knockout
+	int Knockout = 0;
+	int KnockoutDeath = 0;
+	int KnockoutThrown = 0;
+	int KnockoutGrabbed = 0;
+	int KnockoutDoubleKO = 0;
+	int KnockoutHeavyHit = 0;
+	int KnockoutHitTaken = 0;
+	int KnockoutLightHit = 0;
+	int KnockoutBlockTaken = 0;
+	int KnockoutHeavyBlock = 0;
+	int KnockoutTeam = 0;
+	int KnockoutTeamDeath = 0;
+	int KnockoutTeamDoubleKO = 0;
+	int KnockoutTeamHeavyHit = 0;
+	int KnockoutTeamHeavyBlock = 0;
+	int KnockoutTotal = 0;
+	int KnockoutTotalDeath = 0;
+	int KnockoutTotalDoubleKO = 0;
+	int KnockoutTotalHeavyHit = 0;
+	int KnockoutTotalHeavyBlock = 0;
+
+	int KnockoutMatch = 0;
+	int KnockoutDeathMatch = 0;
+	int KnockoutThrownMatch = 0;
+	int KnockoutGrabbedMatch = 0;
+	int KnockoutDoubleKOMatch = 0;
+	int KnockoutHeavyHitMatch = 0;
+	int KnockoutHitTakenMatch = 0;
+	int KnockoutLightHitMatch = 0;
+	int KnockoutBlockTakenMatch = 0;
+	int KnockoutHeavyBlockMatch = 0;
+	int KnockoutTeamMatch = 0;
+	int KnockoutTeamDeathMatch = 0;
+	int KnockoutTeamDoubleKOMatch = 0;
+	int KnockoutTeamHeavyHitMatch = 0;
+	int KnockoutTeamHeavyBlockMatch = 0;
+	int KnockoutTotalMatch = 0;
+	int KnockoutTotalDeathMatch = 0;
+	int KnockoutTotalDoubleKOMatch = 0;
+	int KnockoutTotalHeavyHitMatch = 0;
+	int KnockoutTotalHeavyBlockMatch = 0;
+
+	int KnockoutCumul = 0;
+	int KnockoutDeathCumul = 0;
+	int KnockoutThrownCumul = 0;
+	int KnockoutGrabbedCumul = 0;
+	int KnockoutDoubleKOCumul = 0;
+	int KnockoutHeavyHitCumul = 0;
+	int KnockoutHitTakenCumul = 0;
+	int KnockoutLightHitCumul = 0;
+	int KnockoutBlockTakenCumul = 0;
+	int KnockoutHeavyBlockCumul = 0;
+	int KnockoutTeamCumul = 0;
+	int KnockoutTeamDeathCumul = 0;
+	int KnockoutTeamDoubleKOCumul = 0;
+	int KnockoutTeamHeavyHitCumul = 0;
+	int KnockoutTeamHeavyBlockCumul = 0;
+	int KnockoutTotalDeathCumul = 0;
+	int KnockoutTotalDoubleKOCumul = 0;
+	int KnockoutTotalHeavyHitCumul = 0;
+	int KnockoutTotalCumul = 0;
+	int KnockoutTotalHeavyBlockCumul = 0;
 
 	bool isInit = false;
 };
@@ -367,9 +421,7 @@ private:
 	int my_team_num = -1;
 
 	typedef struct s_current {
-		int demo = 0;
 		int tier = 0;
-		int death = 0;
 		int playlist = 0;
 		bool ranked = false;
 		std::string rank = "norank";
@@ -381,107 +433,7 @@ private:
 		int preview_rank_number = 0;
 		int preview_division_number = 0;
 
-		/// Shots
-		int Shot = 0;
-		int CenterBall = 0;
-		int ClearBall = 0;
-		int FirstTouch = 0;
-		int ShotOnGoal = 0;
-		int BicycleHit = 0;
-
-		int TeamShot = 0;
-		int TeamCenterBall = 0;
-		int TeamClearBall = 0;
-		int TeamFirstTouch = 0;
-		int TeamShotOnGoal = 0;
-		int TeamBicycleHit = 0;
-
-		int TotalShot = 0;
-		int TotalCenterBall = 0;
-		int TotalClearBall = 0;
-		int TotalFirstTouch = 0;
-		int TotalShotOnGoal = 0;
-		int TotalBicycleHit = 0;
-
-		/// Miscs
-		int HatTrick = 0;
-		int LowFive = 0;
-		int HighFive = 0;
-		int MVP = 0;
-
-		int TeamHatTrick = 0;
-		int TeamLowFive = 0;
-		int TeamHighFive = 0;
-		int TeamMVP = 0;
-
-		int TotalHatTrick = 0;
-		int TotalLowFive = 0;
-		int TotalHighFive = 0;
-		int TotalMVP = 0;
-
-		/// Assists
-		int Assist = 0;
-		int Playmaker = 0;
-
-		int TeamAssist = 0;
-		int TeamPlaymaker = 0;
-
-		int TotalAssist = 0;
-		int TotalPlaymaker = 0;
-
-		/// Goals
-		int Goal = 0;
-		int AerialGoal = 0;
-		int BackwardsGoal = 0;
-		int BicycleGoal = 0;
-		int LongGoal = 0;
-		int TurtleGoal = 0;
-		int OvertimeGoal = 0;
-		int SwishGoal = 0;
-		int PoolShot = 0;
-
-		int TeamGoal = 0;
-		int TeamAerialGoal = 0;
-		int TeamBackwardsGoal = 0;
-		int TeamBicycleGoal = 0;
-		int TeamLongGoal = 0;
-		int TeamTurtleGoal = 0;
-		int TeamOvertimeGoal = 0;
-		int TeamSwishGoal = 0;
-		int TeamPoolShot = 0;
-
-		int TotalGoal = 0;
-		int TotalAerialGoal = 0;
-		int TotalBackwardsGoal = 0;
-		int TotalBicycleGoal = 0;
-		int TotalLongGoal = 0;
-		int TotalTurtleGoal = 0;
-		int TotalOvertimeGoal = 0;
-		int TotalSwishGoal = 0;
-		int TotalPoolShot = 0;
-
-		/// Saves
-		int Save = 0;
-		int EpicSave = 0;
-		int Savior = 0;
-
-		int TeamSave = 0;
-		int TeamEpicSave = 0;
-		int TeamSavior = 0;
-
-		int TotalSave = 0;
-		int TotalEpicSave = 0;
-		int TotalSavior = 0;
-
-		/// Dropshot
-		int Damage = 0;
-		int UltraDamage = 0;
-
-		int TeamDamage = 0;
-		int TeamUltraDamage = 0;
-
-		int TotalDamage = 0;
-		int TotalUltraDamage = 0;
+		Stats stats = {};
 	} t_current;
 
 	t_current current;
@@ -644,6 +596,7 @@ public:
 	bool rs_file_goals = true;
 	bool rs_file_saves = true;
 	bool rs_file_dropshot = true;
+	bool rs_file_knockout = true;
 	bool rs_file_boost = true;
 
 	bool rs_select_all_hide = true;
@@ -671,6 +624,7 @@ public:
 	bool rs_hide_goals = false;
 	bool rs_hide_saves = false;
 	bool rs_hide_dropshot = false;
+	bool rs_hide_knockout = false;
 
 	float rs_x = 0.7f;
 	float rs_y = 0.575f;
@@ -800,67 +754,43 @@ public:
 
 	/// Shots
 	void AllShots(bool force = false, bool default_value = false);
-	void AllShotsShot(bool force = false, bool default_value = false);
-	void AllShotsCenterBall(bool force = false, bool default_value = false);
-	void AllShotsClearBall(bool force = false, bool default_value = false);
+	void AllShotsCenter(bool force = false, bool default_value = false);
+	void AllShotsClear(bool force = false, bool default_value = false);
 	void AllShotsFirstTouch(bool force = false, bool default_value = false);
 	void AllShotsShotOnGoal(bool force = false, bool default_value = false);
+	void AllShotsAerialHit(bool force = false, bool default_value = false);
 	void AllShotsBicycleHit(bool force = false, bool default_value = false);
 
-	std::string VarShotsShot(bool write = false, bool force = false, bool default_value = false);
-	std::string VarShotsCenterBall(bool write = false, bool force = false, bool default_value = false);
-	std::string VarShotsClearBall(bool write = false, bool force = false, bool default_value = false);
+	std::string VarShotsCenter(bool write = false, bool force = false, bool default_value = false);
+	std::string VarShotsClear(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsFirstTouch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsShotOnGoal(bool write = false, bool force = false, bool default_value = false);
+	std::string VarShotsAerialHit(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsBicycleHit(bool write = false, bool force = false, bool default_value = false);
-	std::string VarShotsTeamShot(bool write = false, bool force = false, bool default_value = false);
-	std::string VarShotsTeamCenterBall(bool write = false, bool force = false, bool default_value = false);
-	std::string VarShotsTeamClearBall(bool write = false, bool force = false, bool default_value = false);
-	std::string VarShotsTeamFirstTouch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsTeamShotOnGoal(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsTeamBicycleHit(bool write = false, bool force = false, bool default_value = false);
-	std::string VarShotsTotalShot(bool write = false, bool force = false, bool default_value = false);
-	std::string VarShotsTotalCenterBall(bool write = false, bool force = false, bool default_value = false);
-	std::string VarShotsTotalClearBall(bool write = false, bool force = false, bool default_value = false);
-	std::string VarShotsTotalFirstTouch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsTotalShotOnGoal(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsTotalBicycleHit(bool write = false, bool force = false, bool default_value = false);
 
-	std::string VarShotsShotMatch(bool write = false, bool force = false, bool default_value = false);
-	std::string VarShotsCenterBallMatch(bool write = false, bool force = false, bool default_value = false);
-	std::string VarShotsClearBallMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarShotsCenterMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarShotsClearMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsFirstTouchMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsShotOnGoalMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarShotsAerialHitMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsBicycleHitMatch(bool write = false, bool force = false, bool default_value = false);
-	std::string VarShotsTeamShotMatch(bool write = false, bool force = false, bool default_value = false);
-	std::string VarShotsTeamCenterBallMatch(bool write = false, bool force = false, bool default_value = false);
-	std::string VarShotsTeamClearBallMatch(bool write = false, bool force = false, bool default_value = false);
-	std::string VarShotsTeamFirstTouchMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsTeamShotOnGoalMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsTeamBicycleHitMatch(bool write = false, bool force = false, bool default_value = false);
-	std::string VarShotsTotalShotMatch(bool write = false, bool force = false, bool default_value = false);
-	std::string VarShotsTotalCenterBallMatch(bool write = false, bool force = false, bool default_value = false);
-	std::string VarShotsTotalClearBallMatch(bool write = false, bool force = false, bool default_value = false);
-	std::string VarShotsTotalFirstTouchMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsTotalShotOnGoalMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsTotalBicycleHitMatch(bool write = false, bool force = false, bool default_value = false);
 
-	std::string VarShotsShotCumul(bool write = false, bool force = false, bool default_value = false);
-	std::string VarShotsCenterBallCumul(bool write = false, bool force = false, bool default_value = false);
-	std::string VarShotsClearBallCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarShotsCenterCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarShotsClearCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsFirstTouchCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsShotOnGoalCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarShotsAerialHitCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsBicycleHitCumul(bool write = false, bool force = false, bool default_value = false);
-	std::string VarShotsTeamShotCumul(bool write = false, bool force = false, bool default_value = false);
-	std::string VarShotsTeamCenterBallCumul(bool write = false, bool force = false, bool default_value = false);
-	std::string VarShotsTeamClearBallCumul(bool write = false, bool force = false, bool default_value = false);
-	std::string VarShotsTeamFirstTouchCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsTeamShotOnGoalCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsTeamBicycleHitCumul(bool write = false, bool force = false, bool default_value = false);
-	std::string VarShotsTotalShotCumul(bool write = false, bool force = false, bool default_value = false);
-	std::string VarShotsTotalCenterBallCumul(bool write = false, bool force = false, bool default_value = false);
-	std::string VarShotsTotalClearBallCumul(bool write = false, bool force = false, bool default_value = false);
-	std::string VarShotsTotalFirstTouchCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsTotalShotOnGoalCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsTotalBicycleHitCumul(bool write = false, bool force = false, bool default_value = false);
 
@@ -939,23 +869,25 @@ public:
 	/// Goals
 	void AllGoals(bool force = false, bool default_value = false);
 	void AllGoalsGoal(bool force = false, bool default_value = false);
+	void AllGoalsOwnGoal(bool force = false, bool default_value = false);
 	void AllGoalsAerialGoal(bool force = false, bool default_value = false);
 	void AllGoalsBackwardsGoal(bool force = false, bool default_value = false);
 	void AllGoalsBicycleGoal(bool force = false, bool default_value = false);
 	void AllGoalsLongGoal(bool force = false, bool default_value = false);
 	void AllGoalsTurtleGoal(bool force = false, bool default_value = false);
 	void AllGoalsOvertimeGoal(bool force = false, bool default_value = false);
-	void AllGoalsSwishGoal(bool force = false, bool default_value = false);
+	void AllGoalsHoopsSwishGoal(bool force = false, bool default_value = false);
 	void AllGoalsPoolShot(bool force = false, bool default_value = false);
 
 	std::string VarGoalsGoal(bool write = false, bool force = false, bool default_value = false);
+	std::string VarGoalsOwnGoal(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsAerialGoal(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsBackwardsGoal(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsBicycleGoal(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsLongGoal(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTurtleGoal(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsOvertimeGoal(bool write = false, bool force = false, bool default_value = false);
-	std::string VarGoalsSwishGoal(bool write = false, bool force = false, bool default_value = false);
+	std::string VarGoalsHoopsSwishGoal(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsPoolShot(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTeamGoal(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTeamAerialGoal(bool write = false, bool force = false, bool default_value = false);
@@ -964,7 +896,7 @@ public:
 	std::string VarGoalsTeamLongGoal(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTeamTurtleGoal(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTeamOvertimeGoal(bool write = false, bool force = false, bool default_value = false);
-	std::string VarGoalsTeamSwishGoal(bool write = false, bool force = false, bool default_value = false);
+	std::string VarGoalsTeamHoopsSwishGoal(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTeamPoolShot(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTotalGoal(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTotalAerialGoal(bool write = false, bool force = false, bool default_value = false);
@@ -973,17 +905,18 @@ public:
 	std::string VarGoalsTotalLongGoal(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTotalTurtleGoal(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTotalOvertimeGoal(bool write = false, bool force = false, bool default_value = false);
-	std::string VarGoalsTotalSwishGoal(bool write = false, bool force = false, bool default_value = false);
+	std::string VarGoalsTotalHoopsSwishGoal(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTotalPoolShot(bool write = false, bool force = false, bool default_value = false);
 
 	std::string VarGoalsGoalMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarGoalsOwnGoalMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsAerialGoalMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsBackwardsGoalMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsBicycleGoalMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsLongGoalMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTurtleGoalMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsOvertimeGoalMatch(bool write = false, bool force = false, bool default_value = false);
-	std::string VarGoalsSwishGoalMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarGoalsHoopsSwishGoalMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsPoolShotMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTeamGoalMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTeamAerialGoalMatch(bool write = false, bool force = false, bool default_value = false);
@@ -992,7 +925,7 @@ public:
 	std::string VarGoalsTeamLongGoalMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTeamTurtleGoalMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTeamOvertimeGoalMatch(bool write = false, bool force = false, bool default_value = false);
-	std::string VarGoalsTeamSwishGoalMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarGoalsTeamHoopsSwishGoalMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTeamPoolShotMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTotalGoalMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTotalAerialGoalMatch(bool write = false, bool force = false, bool default_value = false);
@@ -1001,17 +934,18 @@ public:
 	std::string VarGoalsTotalLongGoalMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTotalTurtleGoalMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTotalOvertimeGoalMatch(bool write = false, bool force = false, bool default_value = false);
-	std::string VarGoalsTotalSwishGoalMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarGoalsTotalHoopsSwishGoalMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTotalPoolShotMatch(bool write = false, bool force = false, bool default_value = false);
 
 	std::string VarGoalsGoalCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarGoalsOwnGoalCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsAerialGoalCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsBackwardsGoalCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsBicycleGoalCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsLongGoalCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTurtleGoalCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsOvertimeGoalCumul(bool write = false, bool force = false, bool default_value = false);
-	std::string VarGoalsSwishGoalCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarGoalsHoopsSwishGoalCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsPoolShotCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTeamGoalCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTeamAerialGoalCumul(bool write = false, bool force = false, bool default_value = false);
@@ -1020,7 +954,7 @@ public:
 	std::string VarGoalsTeamLongGoalCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTeamTurtleGoalCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTeamOvertimeGoalCumul(bool write = false, bool force = false, bool default_value = false);
-	std::string VarGoalsTeamSwishGoalCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarGoalsTeamHoopsSwishGoalCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTeamPoolShotCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTotalGoalCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTotalAerialGoalCumul(bool write = false, bool force = false, bool default_value = false);
@@ -1029,7 +963,7 @@ public:
 	std::string VarGoalsTotalLongGoalCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTotalTurtleGoalCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTotalOvertimeGoalCumul(bool write = false, bool force = false, bool default_value = false);
-	std::string VarGoalsTotalSwishGoalCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarGoalsTotalHoopsSwishGoalCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTotalPoolShotCumul(bool write = false, bool force = false, bool default_value = false);
 
 	/// Saves
@@ -1070,29 +1004,105 @@ public:
 
 	/// Dropshot
 	void AllDropshot(bool force = false, bool default_value = false);
-	void AllDropshotDamage(bool force = false, bool default_value = false);
-	void AllDropshotUltraDamage(bool force = false, bool default_value = false);
+	void AllDropshotBreakoutDamage(bool force = false, bool default_value = false);
+	void AllDropshotBreakoutDamageLarge(bool force = false, bool default_value = false);
 
-	std::string VarDropshotDamage(bool write = false, bool force = false, bool default_value = false);
-	std::string VarDropshotUltraDamage(bool write = false, bool force = false, bool default_value = false);
-	std::string VarDropshotTeamDamage(bool write = false, bool force = false, bool default_value = false);
-	std::string VarDropshotTeamUltraDamage(bool write = false, bool force = false, bool default_value = false);
-	std::string VarDropshotTotalDamage(bool write = false, bool force = false, bool default_value = false);
-	std::string VarDropshotTotalUltraDamage(bool write = false, bool force = false, bool default_value = false);
+	std::string VarDropshotBreakoutDamage(bool write = false, bool force = false, bool default_value = false);
+	std::string VarDropshotBreakoutDamageLarge(bool write = false, bool force = false, bool default_value = false);
+	std::string VarDropshotTeamBreakoutDamage(bool write = false, bool force = false, bool default_value = false);
+	std::string VarDropshotTeamBreakoutDamageLarge(bool write = false, bool force = false, bool default_value = false);
+	std::string VarDropshotTotalBreakoutDamage(bool write = false, bool force = false, bool default_value = false);
+	std::string VarDropshotTotalBreakoutDamageLarge(bool write = false, bool force = false, bool default_value = false);
 
-	std::string VarDropshotDamageMatch(bool write = false, bool force = false, bool default_value = false);
-	std::string VarDropshotUltraDamageMatch(bool write = false, bool force = false, bool default_value = false);
-	std::string VarDropshotTeamDamageMatch(bool write = false, bool force = false, bool default_value = false);
-	std::string VarDropshotTeamUltraDamageMatch(bool write = false, bool force = false, bool default_value = false);
-	std::string VarDropshotTotalDamageMatch(bool write = false, bool force = false, bool default_value = false);
-	std::string VarDropshotTotalUltraDamageMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarDropshotBreakoutDamageMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarDropshotBreakoutDamageLargeMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarDropshotTeamBreakoutDamageMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarDropshotTeamBreakoutDamageLargeMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarDropshotTotalBreakoutDamageMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarDropshotTotalBreakoutDamageLargeMatch(bool write = false, bool force = false, bool default_value = false);
 
-	std::string VarDropshotDamageCumul(bool write = false, bool force = false, bool default_value = false);
-	std::string VarDropshotUltraDamageCumul(bool write = false, bool force = false, bool default_value = false);
-	std::string VarDropshotTeamDamageCumul(bool write = false, bool force = false, bool default_value = false);
-	std::string VarDropshotTeamUltraDamageCumul(bool write = false, bool force = false, bool default_value = false);
-	std::string VarDropshotTotalDamageCumul(bool write = false, bool force = false, bool default_value = false);
-	std::string VarDropshotTotalUltraDamageCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarDropshotBreakoutDamageCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarDropshotBreakoutDamageLargeCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarDropshotTeamBreakoutDamageCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarDropshotTeamBreakoutDamageLargeCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarDropshotTotalBreakoutDamageCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarDropshotTotalBreakoutDamageLargeCumul(bool write = false, bool force = false, bool default_value = false);
+
+	/// Knockout
+	void AllKnockout(bool force = false, bool default_value = false);
+	void AllKnockoutBase(bool force = false, bool default_value = false);
+	void AllKnockoutDeath(bool force = false, bool default_value = false);
+	void AllKnockoutThrown(bool force = false, bool default_value = false);
+	void AllKnockoutGrabbed(bool force = false, bool default_value = false);
+	void AllKnockoutDoubleKO(bool force = false, bool default_value = false);
+	void AllKnockoutHeavyHit(bool force = false, bool default_value = false);
+	void AllKnockoutHitTaken(bool force = false, bool default_value = false);
+	void AllKnockoutLightHit(bool force = false, bool default_value = false);
+	void AllKnockoutBlockTaken(bool force = false, bool default_value = false);
+	void AllKnockoutHeavyBlock(bool force = false, bool default_value = false);
+
+	std::string VarKnockout(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutDeath(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutThrown(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutGrabbed(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutDoubleKO(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutHeavyHit(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutHitTaken(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutLightHit(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutBlockTaken(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutHeavyBlock(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutTeam(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutTeamDeath(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutTeamDoubleKO(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutTeamHeavyHit(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutTeamHeavyBlock(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutTotal(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutTotalDeath(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutTotalDoubleKO(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutTotalHeavyHit(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutTotalHeavyBlock(bool write = false, bool force = false, bool default_value = false);
+
+	std::string VarKnockoutMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutDeathMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutThrownMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutGrabbedMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutDoubleKOMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutHeavyHitMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutHitTakenMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutLightHitMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutBlockTakenMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutHeavyBlockMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutTeamMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutTeamDeathMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutTeamDoubleKOMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutTeamHeavyHitMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutTeamHeavyBlockMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutTotalMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutTotalDeathMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutTotalDoubleKOMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutTotalHeavyHitMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutTotalHeavyBlockMatch(bool write = false, bool force = false, bool default_value = false);
+
+	std::string VarKnockoutCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutDeathCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutThrownCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutGrabbedCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutDoubleKOCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutHeavyHitCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutHitTakenCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutLightHitCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutBlockTakenCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutHeavyBlockCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutTeamCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutTeamDeathCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutTeamDoubleKOCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutTeamHeavyHitCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutTeamHeavyBlockCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutTotalCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutTotalDeathCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutTotalDoubleKOCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutTotalHeavyHitCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarKnockoutTotalHeavyBlockCumul(bool write = false, bool force = false, bool default_value = false);
 
 	/// Other
 	std::string VarBoost(bool write = false, bool force = false, bool default_value = false, bool enabled = false);

@@ -56,8 +56,8 @@ bool RocketStats::ChangeTheme(int idx)
 
         // Read the JSON file including the settings of the chosen theme
         theme_config = ReadJSON("RocketStats_themes/" + theme.name + "/config.json");
-        if (!theme_config.is_null())
-            cvarManager->log(nlohmann::to_string(theme_config));
+        //if (!theme_config.is_null())
+        //    cvarManager->log(nlohmann::to_string(theme_config));
 
         if (theme_config.is_object())
         {
@@ -304,6 +304,7 @@ void RocketStats::RefreshVars()
     SetCVar("rs_file_goals", rs_file_goals);
     SetCVar("rs_file_saves", rs_file_saves);
     SetCVar("rs_file_dropshot", rs_file_dropshot);
+    SetCVar("rs_file_knockout", rs_file_knockout);
     SetCVar("rs_file_boost", rs_file_boost);
 
     SetCVar("rs_hide_games", rs_hide_games);
@@ -330,6 +331,7 @@ void RocketStats::RefreshVars()
     SetCVar("rs_hide_goals", rs_hide_goals);
     SetCVar("rs_hide_saves", rs_hide_saves);
     SetCVar("rs_hide_dropshot", rs_hide_dropshot);
+    SetCVar("rs_hide_knockout", rs_hide_knockout);
 }
 
 Element RocketStats::CalculateElement(json& element, Options& options, bool& check)

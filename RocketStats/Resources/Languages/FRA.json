@@ -93,6 +93,7 @@
 	"Buts",
 	"Buts sauvés",
 	"Dropshot",
+	"Knockout",
 	"Boost",
 
 	"Écrire en fichier",
@@ -120,6 +121,7 @@
 	"Écrire les Buts en fichier",
 	"Écrire les Buts sauvés en fichier",
 	"Écrire les Dommages en dropshot en fichier",
+	"Écrire les Knockout en fichier",
 	"Écrire le Boost en fichier",
 
 	"Masquer la valeur",
@@ -146,5 +148,6 @@
 	"Masque les Assistances",
 	"Masque les Buts",
 	"Masque les Buts sauvés",
-	"Masque les Dommages en dropshot"
+	"Masque les Dommages en dropshot",
+	"Masque les Knockout"
 ]
