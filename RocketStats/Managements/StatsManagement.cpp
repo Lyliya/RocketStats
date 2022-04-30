@@ -28,7 +28,27 @@ void RocketStats::onStatEvent(ServerWrapper caller, void* params)
 
     bool refresh = true;
     std::string name = event.GetEventName();
-    if (name == "Center")
+    if (name == "Clear")
+    {
+        ++always.Clear;
+        ++current.stats.Clear;
+        ++session.Clear;
+        ++stats[current.playlist].Clear;
+        ++always_gm[current.playlist].Clear;
+
+        ++always.ClearCumul;
+        ++current.stats.ClearCumul;
+        ++session.ClearCumul;
+
+        for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
+        {
+            ++stats[it->first].ClearCumul;
+            ++always_gm[it->first].ClearCumul;
+        }
+
+        AllShotsClear(true);
+    }
+    else if (name == "Center")
     {
         ++always.Center;
         ++current.stats.Center;
@@ -47,28 +67,6 @@ void RocketStats::onStatEvent(ServerWrapper caller, void* params)
         }
 
         AllShotsCenter(true);
-    }
-    else if (name == "Clear")
-    {
-        cvarManager->log(" --> Clear PLAYER");
-
-        ++always.Clear;
-        ++current.stats.Clear;
-        ++session.Clear;
-        ++stats[current.playlist].Clear;
-        ++always_gm[current.playlist].Clear;
-
-        ++always.ClearCumul;
-        ++current.stats.ClearCumul;
-        ++session.ClearCumul;
-
-        for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
-        {
-            ++stats[it->first].ClearCumul;
-            ++always_gm[it->first].ClearCumul;
-        }
-
-        AllShotsClear(true);
     }
     else if (name == "FirstTouch")
     {
@@ -232,7 +230,7 @@ void RocketStats::onStatEvent(ServerWrapper caller, void* params)
     }
     else
     {
-        if (name == "Shot" || name == "Goal" || name == "LongGoal" || name == "HatTrick" || name == "BackwardsGoal" || name == "HoopsSwishGoal" || name == "BreakoutDamage" || name == "BreakoutDamageLarge")
+        if (name == "Shot" || name == "Goal" || name == "LongGoal" || name == "HatTrick" || name == "BackwardsGoal" || name == "HoopsSwishGoal" || name == "BreakoutDamage" || name == "BreakoutDamageLarge" || name == "OvertimeGoal" || name == "Playmaker" || name == "AerialGoal" || name == "Assist" || name == "Save" || name == "EpicSave" || name == "Savior" || name == "MVP" || name == "BicycleHit" || name == "" || name == "" || name == "" || name == "")
             return;
 
         refresh = false;
@@ -255,7 +253,7 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
 
     bool me = isPrimaryPlayer(receiver);
     std::string name = event.GetEventName();
-    if (name == "Demolish" && receiver && victim)
+    if (name == "Demolish" && !receiver.IsNull() && !victim.IsNull())
     {
         bool demo = isPrimaryPlayer(receiver);
         if (demo && current.playlist)
@@ -306,36 +304,7 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     else
     {
         bool refresh = true;
-        if (name == "Shot")
-        {
-            ++always.TotalShotOnGoal;
-            ++current.stats.TotalShotOnGoal;
-            ++session.TotalShotOnGoal;
-            ++stats[current.playlist].TotalShotOnGoal;
-            ++always_gm[current.playlist].TotalShotOnGoal;
-
-            ++(me ? always.ShotOnGoal : always.TeamShotOnGoal);
-            ++(me ? current.stats.ShotOnGoal : current.stats.TeamShotOnGoal);
-            ++(me ? session.ShotOnGoal : session.TeamShotOnGoal);
-            ++(me ? stats[current.playlist].ShotOnGoal : stats[current.playlist].TeamShotOnGoal);
-            ++(me ? always_gm[current.playlist].ShotOnGoal : always_gm[current.playlist].TeamShotOnGoal);
-
-            ++always.TotalShotOnGoalCumul;
-            ++current.stats.TotalShotOnGoalCumul;
-            ++session.TotalShotOnGoalCumul;
-
-            for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
-            {
-                ++stats[it->first].TotalShotOnGoalCumul;
-                ++always_gm[it->first].TotalShotOnGoalCumul;
-
-                ++(me ? stats[it->first].ShotOnGoalCumul : stats[it->first].TeamShotOnGoalCumul);
-                ++(me ? always_gm[it->first].ShotOnGoalCumul : always_gm[it->first].TeamShotOnGoalCumul);
-            }
-
-            AllShotsShotOnGoal(true);
-        }
-        else if (name == "BicycleHit")
+        if (name == "BicycleHit")
         {
             ++always.TotalBicycleHit;
             ++current.stats.TotalBicycleHit;
@@ -364,10 +333,37 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
 
             AllShotsBicycleHit(true);
         }
+        else if (name == "Shot")
+        {
+            ++always.TotalShotOnGoal;
+            ++current.stats.TotalShotOnGoal;
+            ++session.TotalShotOnGoal;
+            ++stats[current.playlist].TotalShotOnGoal;
+            ++always_gm[current.playlist].TotalShotOnGoal;
+
+            ++(me ? always.ShotOnGoal : always.TeamShotOnGoal);
+            ++(me ? current.stats.ShotOnGoal : current.stats.TeamShotOnGoal);
+            ++(me ? session.ShotOnGoal : session.TeamShotOnGoal);
+            ++(me ? stats[current.playlist].ShotOnGoal : stats[current.playlist].TeamShotOnGoal);
+            ++(me ? always_gm[current.playlist].ShotOnGoal : always_gm[current.playlist].TeamShotOnGoal);
+
+            ++always.TotalShotOnGoalCumul;
+            ++current.stats.TotalShotOnGoalCumul;
+            ++session.TotalShotOnGoalCumul;
+
+            for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
+            {
+                ++stats[it->first].TotalShotOnGoalCumul;
+                ++always_gm[it->first].TotalShotOnGoalCumul;
+
+                ++(me ? stats[it->first].ShotOnGoalCumul : stats[it->first].TeamShotOnGoalCumul);
+                ++(me ? always_gm[it->first].ShotOnGoalCumul : always_gm[it->first].TeamShotOnGoalCumul);
+            }
+
+            AllShotsShotOnGoal(true);
+        }
         else if (name == "Assist")
         {
-            cvarManager->log(" --> Assist " + std::string(me ? "PLAYER" : "TEAM"));
-
             ++always.TotalAssist;
             ++current.stats.TotalAssist;
             ++session.TotalAssist;
@@ -393,38 +389,7 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
                 ++(me ? always_gm[it->first].AssistCumul : always_gm[it->first].TeamAssistCumul);
             }
 
-            AllAssistsAssist(true);
-        }
-        else if (name == "Playmaker")
-        {
-            cvarManager->log(" --> Playmaker " + std::string(me ? "PLAYER" : "TEAM"));
-
-            ++always.TotalPlaymaker;
-            ++current.stats.TotalPlaymaker;
-            ++session.TotalPlaymaker;
-            ++stats[current.playlist].TotalPlaymaker;
-            ++always_gm[current.playlist].TotalPlaymaker;
-
-            ++(me ? always.Playmaker : always.TeamPlaymaker);
-            ++(me ? current.stats.Playmaker : current.stats.TeamPlaymaker);
-            ++(me ? session.Playmaker : session.TeamPlaymaker);
-            ++(me ? stats[current.playlist].Playmaker : stats[current.playlist].TeamPlaymaker);
-            ++(me ? always_gm[current.playlist].Playmaker : always_gm[current.playlist].TeamPlaymaker);
-
-            ++always.TotalPlaymakerCumul;
-            ++current.stats.TotalPlaymakerCumul;
-            ++session.TotalPlaymakerCumul;
-
-            for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
-            {
-                ++stats[it->first].TotalPlaymakerCumul;
-                ++always_gm[it->first].TotalPlaymakerCumul;
-
-                ++(me ? stats[it->first].PlaymakerCumul : stats[it->first].TeamPlaymakerCumul);
-                ++(me ? always_gm[it->first].PlaymakerCumul : always_gm[it->first].TeamPlaymakerCumul);
-            }
-
-            AllAssistsPlaymaker(true);
+            AllShotsAssist(true);
         }
         else if (name == "Goal")
         {
@@ -457,8 +422,6 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
         }
         else if (name == "AerialGoal")
         {
-            cvarManager->log(" --> AerialGoal " + std::string(me ? "PLAYER" : "TEAM"));
-
             ++always.TotalAerialGoal;
             ++current.stats.TotalAerialGoal;
             ++session.TotalAerialGoal;
@@ -608,8 +571,6 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
         }
         else if (name == "OvertimeGoal")
         {
-            cvarManager->log(" --> OvertimeGoal " + std::string(me ? "PLAYER" : "TEAM"));
-
             ++always.TotalOvertimeGoal;
             ++current.stats.TotalOvertimeGoal;
             ++session.TotalOvertimeGoal;
@@ -788,130 +749,6 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
 
             AllMiscsHighFive(true);
         }
-        else if (name == "MVP")
-        {
-            cvarManager->log(" --> MVP " + std::string(me ? "PLAYER" : "TEAM"));
-
-            ++always.TotalMVP;
-            ++current.stats.TotalMVP;
-            ++session.TotalMVP;
-            ++stats[current.playlist].TotalMVP;
-            ++always_gm[current.playlist].TotalMVP;
-
-            ++(me ? always.MVP : always.TeamMVP);
-            ++(me ? current.stats.MVP : current.stats.TeamMVP);
-            ++(me ? session.MVP : session.TeamMVP);
-            ++(me ? stats[current.playlist].MVP : stats[current.playlist].TeamMVP);
-            ++(me ? always_gm[current.playlist].MVP : always_gm[current.playlist].TeamMVP);
-
-            ++always.TotalMVPCumul;
-            ++current.stats.TotalMVPCumul;
-            ++session.TotalMVPCumul;
-
-            for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
-            {
-                ++stats[it->first].TotalMVPCumul;
-                ++always_gm[it->first].TotalMVPCumul;
-
-                ++(me ? stats[it->first].MVPCumul : stats[it->first].TeamMVPCumul);
-                ++(me ? always_gm[it->first].MVPCumul : always_gm[it->first].TeamMVPCumul);
-            }
-
-            AllMiscsMVP(true);
-        }
-        else if (name == "Save")
-        {
-            cvarManager->log(" --> Save " + std::string(me ? "PLAYER" : "TEAM"));
-
-            ++always.TotalSave;
-            ++current.stats.TotalSave;
-            ++session.TotalSave;
-            ++stats[current.playlist].TotalSave;
-            ++always_gm[current.playlist].TotalSave;
-
-            ++(me ? always.Save : always.TeamSave);
-            ++(me ? current.stats.Save : current.stats.TeamSave);
-            ++(me ? session.Save : session.TeamSave);
-            ++(me ? stats[current.playlist].Save : stats[current.playlist].TeamSave);
-            ++(me ? always_gm[current.playlist].Save : always_gm[current.playlist].TeamSave);
-
-            ++always.TotalSaveCumul;
-            ++current.stats.TotalSaveCumul;
-            ++session.TotalSaveCumul;
-
-            for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
-            {
-                ++stats[it->first].TotalSaveCumul;
-                ++always_gm[it->first].TotalSaveCumul;
-
-                ++(me ? stats[it->first].SaveCumul : stats[it->first].TeamSaveCumul);
-                ++(me ? always_gm[it->first].SaveCumul : always_gm[it->first].TeamSaveCumul);
-            }
-
-            AllSavesSave(true);
-        }
-        else if (name == "EpicSave")
-        {
-            cvarManager->log(" --> EpicSave " + std::string(me ? "PLAYER" : "TEAM"));
-
-            ++always.TotalEpicSave;
-            ++current.stats.TotalEpicSave;
-            ++session.TotalEpicSave;
-            ++stats[current.playlist].TotalEpicSave;
-            ++always_gm[current.playlist].TotalEpicSave;
-
-            ++(me ? always.EpicSave : always.TeamEpicSave);
-            ++(me ? current.stats.EpicSave : current.stats.TeamEpicSave);
-            ++(me ? session.EpicSave : session.TeamEpicSave);
-            ++(me ? stats[current.playlist].EpicSave : stats[current.playlist].TeamEpicSave);
-            ++(me ? always_gm[current.playlist].EpicSave : always_gm[current.playlist].TeamEpicSave);
-
-            ++always.TotalEpicSaveCumul;
-            ++current.stats.TotalEpicSaveCumul;
-            ++session.TotalEpicSaveCumul;
-
-            for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
-            {
-                ++stats[it->first].TotalEpicSaveCumul;
-                ++always_gm[it->first].TotalEpicSaveCumul;
-
-                ++(me ? stats[it->first].EpicSaveCumul : stats[it->first].TeamEpicSaveCumul);
-                ++(me ? always_gm[it->first].EpicSaveCumul : always_gm[it->first].TeamEpicSaveCumul);
-            }
-
-            AllSavesEpicSave(true);
-        }
-        else if (name == "Savior")
-        {
-            cvarManager->log(" --> Savior " + std::string(me ? "PLAYER" : "TEAM"));
-
-            ++always.TotalSavior;
-            ++current.stats.TotalSavior;
-            ++session.TotalSavior;
-            ++stats[current.playlist].TotalSavior;
-            ++always_gm[current.playlist].TotalSavior;
-
-            ++(me ? always.Savior : always.TeamSavior);
-            ++(me ? current.stats.Savior : current.stats.TeamSavior);
-            ++(me ? session.Savior : session.TeamSavior);
-            ++(me ? stats[current.playlist].Savior : stats[current.playlist].TeamSavior);
-            ++(me ? always_gm[current.playlist].Savior : always_gm[current.playlist].TeamSavior);
-
-            ++always.TotalSaviorCumul;
-            ++current.stats.TotalSaviorCumul;
-            ++session.TotalSaviorCumul;
-
-            for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
-            {
-                ++stats[it->first].TotalSaviorCumul;
-                ++always_gm[it->first].TotalSaviorCumul;
-
-                ++(me ? stats[it->first].SaviorCumul : stats[it->first].TeamSaviorCumul);
-                ++(me ? always_gm[it->first].SaviorCumul : always_gm[it->first].TeamSaviorCumul);
-            }
-
-            AllSavesSavior(true);
-        }
         else if (name == "BreakoutDamage")
         {
             ++always.TotalBreakoutDamage;
@@ -969,6 +806,248 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
             }
 
             AllDropshotBreakoutDamageLarge(true);
+        }
+        else if (name == "KO_Death")
+        {
+            cvarManager->log(" --> KnockoutDeath " + std::string(me ? "PLAYER" : "TEAM"));
+
+            ++always.KnockoutTotalDeath;
+            ++current.stats.KnockoutTotalDeath;
+            ++session.KnockoutTotalDeath;
+            ++stats[current.playlist].KnockoutTotalDeath;
+            ++always_gm[current.playlist].KnockoutTotalDeath;
+
+            ++(me ? always.KnockoutDeath : always.KnockoutTeamDeath);
+            ++(me ? current.stats.KnockoutDeath : current.stats.KnockoutTeamDeath);
+            ++(me ? session.KnockoutDeath : session.KnockoutTeamDeath);
+            ++(me ? stats[current.playlist].KnockoutDeath : stats[current.playlist].KnockoutTeamDeath);
+            ++(me ? always_gm[current.playlist].KnockoutDeath : always_gm[current.playlist].KnockoutTeamDeath);
+
+            ++always.KnockoutTotalDeathCumul;
+            ++current.stats.KnockoutTotalDeathCumul;
+            ++session.KnockoutTotalDeathCumul;
+
+            for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
+            {
+                ++stats[it->first].KnockoutTotalDeathCumul;
+                ++always_gm[it->first].KnockoutTotalDeathCumul;
+
+                ++(me ? stats[it->first].KnockoutDeathCumul : stats[it->first].KnockoutTeamDeathCumul);
+                ++(me ? always_gm[it->first].KnockoutDeathCumul : always_gm[it->first].KnockoutTeamDeathCumul);
+            }
+
+            AllKnockoutDeath(true);
+        }
+        else if (name == "KO_DoubleKO")
+        {
+            cvarManager->log(" --> KnockoutDoubleKO " + std::string(me ? "PLAYER" : "TEAM"));
+
+            ++always.KnockoutTotalDoubleKO;
+            ++current.stats.KnockoutTotalDoubleKO;
+            ++session.KnockoutTotalDoubleKO;
+            ++stats[current.playlist].KnockoutTotalDoubleKO;
+            ++always_gm[current.playlist].KnockoutTotalDoubleKO;
+
+            ++(me ? always.KnockoutDoubleKO : always.KnockoutTeamDoubleKO);
+            ++(me ? current.stats.KnockoutDoubleKO : current.stats.KnockoutTeamDoubleKO);
+            ++(me ? session.KnockoutDoubleKO : session.KnockoutTeamDoubleKO);
+            ++(me ? stats[current.playlist].KnockoutDoubleKO : stats[current.playlist].KnockoutTeamDoubleKO);
+            ++(me ? always_gm[current.playlist].KnockoutDoubleKO : always_gm[current.playlist].KnockoutTeamDoubleKO);
+
+            ++always.KnockoutTotalDoubleKOCumul;
+            ++current.stats.KnockoutTotalDoubleKOCumul;
+            ++session.KnockoutTotalDoubleKOCumul;
+
+            for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
+            {
+                ++stats[it->first].KnockoutTotalDoubleKOCumul;
+                ++always_gm[it->first].KnockoutTotalDoubleKOCumul;
+
+                ++(me ? stats[it->first].KnockoutDoubleKOCumul : stats[it->first].KnockoutTeamDoubleKOCumul);
+                ++(me ? always_gm[it->first].KnockoutDoubleKOCumul : always_gm[it->first].KnockoutTeamDoubleKOCumul);
+            }
+
+            AllKnockoutDoubleKO(true);
+        }
+        else if (name == "KO_HeavyHit")
+        {
+            cvarManager->log(" --> KnockoutHeavyHit " + std::string(me ? "PLAYER" : "TEAM"));
+
+            ++always.KnockoutTotalHeavyHit;
+            ++current.stats.KnockoutTotalHeavyHit;
+            ++session.KnockoutTotalHeavyHit;
+            ++stats[current.playlist].KnockoutTotalHeavyHit;
+            ++always_gm[current.playlist].KnockoutTotalHeavyHit;
+
+            ++(me ? always.KnockoutHeavyHit : always.KnockoutTeamHeavyHit);
+            ++(me ? current.stats.KnockoutHeavyHit : current.stats.KnockoutTeamHeavyHit);
+            ++(me ? session.KnockoutHeavyHit : session.KnockoutTeamHeavyHit);
+            ++(me ? stats[current.playlist].KnockoutHeavyHit : stats[current.playlist].KnockoutTeamHeavyHit);
+            ++(me ? always_gm[current.playlist].KnockoutHeavyHit : always_gm[current.playlist].KnockoutTeamHeavyHit);
+
+            ++always.KnockoutTotalHeavyHitCumul;
+            ++current.stats.KnockoutTotalHeavyHitCumul;
+            ++session.KnockoutTotalHeavyHitCumul;
+
+            for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
+            {
+                ++stats[it->first].KnockoutTotalHeavyHitCumul;
+                ++always_gm[it->first].KnockoutTotalHeavyHitCumul;
+
+                ++(me ? stats[it->first].KnockoutHeavyHitCumul : stats[it->first].KnockoutTeamHeavyHitCumul);
+                ++(me ? always_gm[it->first].KnockoutHeavyHitCumul : always_gm[it->first].KnockoutTeamHeavyHitCumul);
+            }
+
+            AllKnockoutHeavyHit(true);
+        }
+        else if (name == "KO_Knockout")
+        {
+            cvarManager->log(" --> Knockout " + std::string(me ? "PLAYER" : "TEAM"));
+
+            ++always.KnockoutTotal;
+            ++current.stats.KnockoutTotal;
+            ++session.KnockoutTotal;
+            ++stats[current.playlist].KnockoutTotal;
+            ++always_gm[current.playlist].KnockoutTotal;
+
+            ++(me ? always.Knockout : always.KnockoutTeam);
+            ++(me ? current.stats.Knockout : current.stats.KnockoutTeam);
+            ++(me ? session.Knockout : session.KnockoutTeam);
+            ++(me ? stats[current.playlist].Knockout : stats[current.playlist].KnockoutTeam);
+            ++(me ? always_gm[current.playlist].Knockout : always_gm[current.playlist].KnockoutTeam);
+
+            ++always.KnockoutTotalCumul;
+            ++current.stats.KnockoutTotalCumul;
+            ++session.KnockoutTotalCumul;
+
+            for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
+            {
+                ++stats[it->first].KnockoutTotalCumul;
+                ++always_gm[it->first].KnockoutTotalCumul;
+
+                ++(me ? stats[it->first].KnockoutCumul : stats[it->first].KnockoutTeamCumul);
+                ++(me ? always_gm[it->first].KnockoutCumul : always_gm[it->first].KnockoutTeamCumul);
+            }
+
+            AllKnockoutBase(true);
+        }
+        else if (name == "KO_HeavyBlock")
+        {
+            cvarManager->log(" --> KnockoutHeavyBlock " + std::string(me ? "PLAYER" : "TEAM"));
+
+            ++always.KnockoutTotalHeavyBlock;
+            ++current.stats.KnockoutTotalHeavyBlock;
+            ++session.KnockoutTotalHeavyBlock;
+            ++stats[current.playlist].KnockoutTotalHeavyBlock;
+            ++always_gm[current.playlist].KnockoutTotalHeavyBlock;
+
+            ++(me ? always.KnockoutHeavyBlock : always.KnockoutTeamHeavyBlock);
+            ++(me ? current.stats.KnockoutHeavyBlock : current.stats.KnockoutTeamHeavyBlock);
+            ++(me ? session.KnockoutHeavyBlock : session.KnockoutTeamHeavyBlock);
+            ++(me ? stats[current.playlist].KnockoutHeavyBlock : stats[current.playlist].KnockoutTeamHeavyBlock);
+            ++(me ? always_gm[current.playlist].KnockoutHeavyBlock : always_gm[current.playlist].KnockoutTeamHeavyBlock);
+
+            ++always.KnockoutTotalHeavyBlockCumul;
+            ++current.stats.KnockoutTotalHeavyBlockCumul;
+            ++session.KnockoutTotalHeavyBlockCumul;
+
+            for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
+            {
+                ++stats[it->first].KnockoutTotalHeavyBlockCumul;
+                ++always_gm[it->first].KnockoutTotalHeavyBlockCumul;
+
+                ++(me ? stats[it->first].KnockoutHeavyBlockCumul : stats[it->first].KnockoutTeamHeavyBlockCumul);
+                ++(me ? always_gm[it->first].KnockoutHeavyBlockCumul : always_gm[it->first].KnockoutTeamHeavyBlockCumul);
+            }
+
+            AllKnockoutHeavyBlock(true);
+        }
+        else if (name == "MVP")
+        {
+            ++always.TotalMVP;
+            ++current.stats.TotalMVP;
+            ++session.TotalMVP;
+            ++stats[current.playlist].TotalMVP;
+            ++always_gm[current.playlist].TotalMVP;
+
+            ++(me ? always.MVP : always.TeamMVP);
+            ++(me ? current.stats.MVP : current.stats.TeamMVP);
+            ++(me ? session.MVP : session.TeamMVP);
+            ++(me ? stats[current.playlist].MVP : stats[current.playlist].TeamMVP);
+            ++(me ? always_gm[current.playlist].MVP : always_gm[current.playlist].TeamMVP);
+
+            ++always.TotalMVPCumul;
+            ++current.stats.TotalMVPCumul;
+            ++session.TotalMVPCumul;
+
+            for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
+            {
+                ++stats[it->first].TotalMVPCumul;
+                ++always_gm[it->first].TotalMVPCumul;
+
+                ++(me ? stats[it->first].MVPCumul : stats[it->first].TeamMVPCumul);
+                ++(me ? always_gm[it->first].MVPCumul : always_gm[it->first].TeamMVPCumul);
+            }
+
+            AllCertificationsMVP(true);
+        }
+        else if (name == "Savior")
+        {
+            ++always.TotalSavior;
+            ++current.stats.TotalSavior;
+            ++session.TotalSavior;
+            ++stats[current.playlist].TotalSavior;
+            ++always_gm[current.playlist].TotalSavior;
+
+            ++(me ? always.Savior : always.TeamSavior);
+            ++(me ? current.stats.Savior : current.stats.TeamSavior);
+            ++(me ? session.Savior : session.TeamSavior);
+            ++(me ? stats[current.playlist].Savior : stats[current.playlist].TeamSavior);
+            ++(me ? always_gm[current.playlist].Savior : always_gm[current.playlist].TeamSavior);
+
+            ++always.TotalSaviorCumul;
+            ++current.stats.TotalSaviorCumul;
+            ++session.TotalSaviorCumul;
+
+            for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
+            {
+                ++stats[it->first].TotalSaviorCumul;
+                ++always_gm[it->first].TotalSaviorCumul;
+
+                ++(me ? stats[it->first].SaviorCumul : stats[it->first].TeamSaviorCumul);
+                ++(me ? always_gm[it->first].SaviorCumul : always_gm[it->first].TeamSaviorCumul);
+            }
+
+            AllCertificationsSavior(true);
+        }
+        else if (name == "Playmaker")
+        {
+            ++always.TotalPlaymaker;
+            ++current.stats.TotalPlaymaker;
+            ++session.TotalPlaymaker;
+            ++stats[current.playlist].TotalPlaymaker;
+            ++always_gm[current.playlist].TotalPlaymaker;
+
+            ++(me ? always.Playmaker : always.TeamPlaymaker);
+            ++(me ? current.stats.Playmaker : current.stats.TeamPlaymaker);
+            ++(me ? session.Playmaker : session.TeamPlaymaker);
+            ++(me ? stats[current.playlist].Playmaker : stats[current.playlist].TeamPlaymaker);
+            ++(me ? always_gm[current.playlist].Playmaker : always_gm[current.playlist].TeamPlaymaker);
+
+            ++always.TotalPlaymakerCumul;
+            ++current.stats.TotalPlaymakerCumul;
+            ++session.TotalPlaymakerCumul;
+
+            for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
+            {
+                ++stats[it->first].TotalPlaymakerCumul;
+                ++always_gm[it->first].TotalPlaymakerCumul;
+
+                ++(me ? stats[it->first].PlaymakerCumul : stats[it->first].TeamPlaymakerCumul);
+                ++(me ? always_gm[it->first].PlaymakerCumul : always_gm[it->first].TeamPlaymakerCumul);
+            }
+
+            AllCertificationsPlaymaker(true);
         }
         else
         {
@@ -1136,80 +1215,56 @@ void RocketStats::SessionStats()
         tmp.death += stats[it->first].death;
 
         /// Shots
-        tmp.Center += stats[it->first].Center;
         tmp.Clear += stats[it->first].Clear;
-        tmp.FirstTouch += stats[it->first].FirstTouch;
-        tmp.ShotOnGoal += stats[it->first].ShotOnGoal;
+        tmp.Assist += stats[it->first].Assist;
+        tmp.Center += stats[it->first].Center;
         tmp.AerialHit += stats[it->first].AerialHit;
         tmp.BicycleHit += stats[it->first].BicycleHit;
-        tmp.TeamClear += stats[it->first].TeamClear;
-        tmp.TeamShotOnGoal += stats[it->first].TeamShotOnGoal;
-        tmp.TeamBicycleHit += stats[it->first].TeamBicycleHit;
-        tmp.TotalClear += stats[it->first].TotalClear;
-        tmp.TotalShotOnGoal += stats[it->first].TotalShotOnGoal;
-        tmp.TotalBicycleHit += stats[it->first].TotalBicycleHit;
-
-        /// Miscs
-        tmp.HatTrick += stats[it->first].HatTrick;
-        tmp.LowFive += stats[it->first].LowFive;
-        tmp.HighFive += stats[it->first].HighFive;
-        tmp.MVP += stats[it->first].MVP;
-        tmp.TeamHatTrick += stats[it->first].TeamHatTrick;
-        tmp.TeamLowFive += stats[it->first].TeamLowFive;
-        tmp.TeamHighFive += stats[it->first].TeamHighFive;
-        tmp.TeamMVP += stats[it->first].TeamMVP;
-        tmp.TotalHatTrick += stats[it->first].TotalHatTrick;
-        tmp.TotalLowFive += stats[it->first].TotalLowFive;
-        tmp.TotalHighFive += stats[it->first].TotalHighFive;
-        tmp.TotalMVP += stats[it->first].TotalMVP;
-
-        /// Assists
-        tmp.Assist += stats[it->first].Assist;
-        tmp.Playmaker += stats[it->first].Playmaker;
+        tmp.FirstTouch += stats[it->first].FirstTouch;
+        tmp.ShotOnGoal += stats[it->first].ShotOnGoal;
         tmp.TeamAssist += stats[it->first].TeamAssist;
-        tmp.TeamPlaymaker += stats[it->first].TeamPlaymaker;
+        tmp.TeamBicycleHit += stats[it->first].TeamBicycleHit;
+        tmp.TeamShotOnGoal += stats[it->first].TeamShotOnGoal;
         tmp.TotalAssist += stats[it->first].TotalAssist;
-        tmp.TotalPlaymaker += stats[it->first].TotalPlaymaker;
-
-        /// Goals
-        tmp.Goal += stats[it->first].Goal;
-        tmp.AerialGoal += stats[it->first].AerialGoal;
-        tmp.BackwardsGoal += stats[it->first].BackwardsGoal;
-        tmp.BicycleGoal += stats[it->first].BicycleGoal;
-        tmp.LongGoal += stats[it->first].LongGoal;
-        tmp.TurtleGoal += stats[it->first].TurtleGoal;
-        tmp.OvertimeGoal += stats[it->first].OvertimeGoal;
-        tmp.HoopsSwishGoal += stats[it->first].HoopsSwishGoal;
-        tmp.PoolShot += stats[it->first].PoolShot;
-        tmp.TeamGoal += stats[it->first].TeamGoal;
-        tmp.TeamAerialGoal += stats[it->first].TeamAerialGoal;
-        tmp.TeamBackwardsGoal += stats[it->first].TeamBackwardsGoal;
-        tmp.TeamBicycleGoal += stats[it->first].TeamBicycleGoal;
-        tmp.TeamLongGoal += stats[it->first].TeamLongGoal;
-        tmp.TeamTurtleGoal += stats[it->first].TeamTurtleGoal;
-        tmp.TeamOvertimeGoal += stats[it->first].TeamOvertimeGoal;
-        tmp.TeamHoopsSwishGoal += stats[it->first].TeamHoopsSwishGoal;
-        tmp.TeamPoolShot += stats[it->first].TeamPoolShot;
-        tmp.TotalGoal += stats[it->first].TotalGoal;
-        tmp.TotalAerialGoal += stats[it->first].TotalAerialGoal;
-        tmp.TotalBackwardsGoal += stats[it->first].TotalBackwardsGoal;
-        tmp.TotalBicycleGoal += stats[it->first].TotalBicycleGoal;
-        tmp.TotalLongGoal += stats[it->first].TotalLongGoal;
-        tmp.TotalTurtleGoal += stats[it->first].TotalTurtleGoal;
-        tmp.TotalOvertimeGoal += stats[it->first].TotalOvertimeGoal;
-        tmp.TotalHoopsSwishGoal += stats[it->first].TotalHoopsSwishGoal;
-        tmp.TotalPoolShot += stats[it->first].TotalPoolShot;
+        tmp.TotalBicycleHit += stats[it->first].TotalBicycleHit;
+        tmp.TotalShotOnGoal += stats[it->first].TotalShotOnGoal;
 
         /// Saves
         tmp.Save += stats[it->first].Save;
         tmp.EpicSave += stats[it->first].EpicSave;
-        tmp.Savior += stats[it->first].Savior;
         tmp.TeamSave += stats[it->first].TeamSave;
         tmp.TeamEpicSave += stats[it->first].TeamEpicSave;
-        tmp.TeamSavior += stats[it->first].TeamSavior;
         tmp.TotalSave += stats[it->first].TotalSave;
         tmp.TotalEpicSave += stats[it->first].TotalEpicSave;
-        tmp.TotalSavior += stats[it->first].TotalSavior;
+
+        /// Goals
+        tmp.Goal += stats[it->first].Goal;
+        tmp.LongGoal += stats[it->first].LongGoal;
+        tmp.PoolShot += stats[it->first].PoolShot;
+        tmp.AerialGoal += stats[it->first].AerialGoal;
+        tmp.TurtleGoal += stats[it->first].TurtleGoal;
+        tmp.BicycleGoal += stats[it->first].BicycleGoal;
+        tmp.OvertimeGoal += stats[it->first].OvertimeGoal;
+        tmp.BackwardsGoal += stats[it->first].BackwardsGoal;
+        tmp.HoopsSwishGoal += stats[it->first].HoopsSwishGoal;
+        tmp.TeamGoal += stats[it->first].TeamGoal;
+        tmp.TeamLongGoal += stats[it->first].TeamLongGoal;
+        tmp.TeamPoolShot += stats[it->first].TeamPoolShot;
+        tmp.TeamAerialGoal += stats[it->first].TeamAerialGoal;
+        tmp.TeamTurtleGoal += stats[it->first].TeamTurtleGoal;
+        tmp.TeamBicycleGoal += stats[it->first].TeamBicycleGoal;
+        tmp.TeamOvertimeGoal += stats[it->first].TeamOvertimeGoal;
+        tmp.TeamBackwardsGoal += stats[it->first].TeamBackwardsGoal;
+        tmp.TeamHoopsSwishGoal += stats[it->first].TeamHoopsSwishGoal;
+        tmp.TotalGoal += stats[it->first].TotalGoal;
+        tmp.TotalLongGoal += stats[it->first].TotalLongGoal;
+        tmp.TotalPoolShot += stats[it->first].TotalPoolShot;
+        tmp.TotalAerialGoal += stats[it->first].TotalAerialGoal;
+        tmp.TotalTurtleGoal += stats[it->first].TotalTurtleGoal;
+        tmp.TotalBicycleGoal += stats[it->first].TotalBicycleGoal;
+        tmp.TotalOvertimeGoal += stats[it->first].TotalOvertimeGoal;
+        tmp.TotalBackwardsGoal += stats[it->first].TotalBackwardsGoal;
+        tmp.TotalHoopsSwishGoal += stats[it->first].TotalHoopsSwishGoal;
 
         /// Dropshot
         tmp.BreakoutDamage += stats[it->first].BreakoutDamage;
@@ -1240,6 +1295,28 @@ void RocketStats::SessionStats()
         tmp.KnockoutTotalDoubleKO += stats[it->first].KnockoutTotalDoubleKO;
         tmp.KnockoutTotalHeavyHit += stats[it->first].KnockoutTotalHeavyHit;
         tmp.KnockoutTotalHeavyBlock += stats[it->first].KnockoutTotalHeavyBlock;
+
+        /// Miscs
+        tmp.LowFive += stats[it->first].LowFive;
+        tmp.HatTrick += stats[it->first].HatTrick;
+        tmp.HighFive += stats[it->first].HighFive;
+        tmp.TeamLowFive += stats[it->first].TeamLowFive;
+        tmp.TeamHatTrick += stats[it->first].TeamHatTrick;
+        tmp.TeamHighFive += stats[it->first].TeamHighFive;
+        tmp.TotalLowFive += stats[it->first].TotalLowFive;
+        tmp.TotalHatTrick += stats[it->first].TotalHatTrick;
+        tmp.TotalHighFive += stats[it->first].TotalHighFive;
+
+        /// Certifications
+        tmp.MVP += stats[it->first].MVP;
+        tmp.Savior += stats[it->first].Savior;
+        tmp.Playmaker += stats[it->first].Playmaker;
+        tmp.TeamMVP += stats[it->first].TeamMVP;
+        tmp.TeamSavior += stats[it->first].TeamSavior;
+        tmp.TeamPlaymaker += stats[it->first].TeamPlaymaker;
+        tmp.TotalMVP += stats[it->first].TotalMVP;
+        tmp.TotalSavior += stats[it->first].TotalSavior;
+        tmp.TotalPlaymaker += stats[it->first].TotalPlaymaker;
     }
 
     session.games = tmp.games;
@@ -1253,40 +1330,27 @@ void RocketStats::SessionStats()
     session.deathCumul = tmp.death;
 
     /// Shots
-    session.CenterCumul = tmp.Center;
     session.ClearCumul = tmp.Clear;
+    session.CenterCumul = tmp.Center;
+    session.AssistCumul = tmp.Assist;
     session.FirstTouchCumul = tmp.FirstTouch;
     session.ShotOnGoalCumul = tmp.ShotOnGoal;
     session.AerialHitCumul = tmp.AerialHit;
     session.BicycleHitCumul = tmp.BicycleHit;
-    session.TeamClearCumul = tmp.TeamClear;
+    session.TeamAssistCumul = tmp.TeamAssist;
     session.TeamShotOnGoalCumul = tmp.TeamShotOnGoal;
     session.TeamBicycleHitCumul = tmp.TeamBicycleHit;
-    session.TotalClearCumul = tmp.TotalClear;
+    session.TotalAssistCumul = tmp.TotalAssist;
     session.TotalShotOnGoalCumul = tmp.TotalShotOnGoal;
     session.TotalBicycleHitCumul = tmp.TotalBicycleHit;
 
-    /// Miscs
-    session.HatTrickCumul = tmp.HatTrick;
-    session.LowFiveCumul = tmp.LowFive;
-    session.HighFiveCumul = tmp.HighFive;
-    session.MVPCumul = tmp.MVP;
-    session.TeamHatTrickCumul = tmp.TeamHatTrick;
-    session.TeamLowFiveCumul = tmp.TeamLowFive;
-    session.TeamHighFiveCumul = tmp.TeamHighFive;
-    session.TeamMVPCumul = tmp.TeamMVP;
-    session.TotalHatTrickCumul = tmp.TotalHatTrick;
-    session.TotalLowFiveCumul = tmp.TotalLowFive;
-    session.TotalHighFiveCumul = tmp.TotalHighFive;
-    session.TotalMVPCumul = tmp.TotalMVP;
-
-    /// Assists
-    session.AssistCumul = tmp.Assist;
-    session.PlaymakerCumul = tmp.Playmaker;
-    session.TeamAssistCumul = tmp.TeamAssist;
-    session.TeamPlaymakerCumul = tmp.TeamPlaymaker;
-    session.TotalAssistCumul = tmp.TotalAssist;
-    session.TotalPlaymakerCumul = tmp.TotalPlaymaker;
+    /// Saves
+    session.SaveCumul = tmp.Save;
+    session.EpicSaveCumul = tmp.EpicSave;
+    session.TeamSaveCumul = tmp.TeamSave;
+    session.TeamEpicSaveCumul = tmp.TeamEpicSave;
+    session.TotalSaveCumul = tmp.TotalSave;
+    session.TotalEpicSaveCumul = tmp.TotalEpicSave;
 
     /// Goals
     session.GoalCumul = tmp.Goal;
@@ -1317,17 +1381,6 @@ void RocketStats::SessionStats()
     session.TotalHoopsSwishGoalCumul = tmp.TotalHoopsSwishGoal;
     session.TotalPoolShotCumul = tmp.TotalPoolShot;
 
-    /// Saves
-    session.SaveCumul = tmp.Save;
-    session.EpicSaveCumul = tmp.EpicSave;
-    session.SaviorCumul = tmp.Savior;
-    session.TeamSaveCumul = tmp.TeamSave;
-    session.TeamEpicSaveCumul = tmp.TeamEpicSave;
-    session.TeamSaviorCumul = tmp.TeamSavior;
-    session.TotalSaveCumul = tmp.TotalSave;
-    session.TotalEpicSaveCumul = tmp.TotalEpicSave;
-    session.TotalSaviorCumul = tmp.TotalSavior;
-
     /// Dropshot
     session.BreakoutDamageCumul = tmp.BreakoutDamage;
     session.BreakoutDamageLargeCumul = tmp.BreakoutDamageLarge;
@@ -1357,6 +1410,28 @@ void RocketStats::SessionStats()
     tmp.KnockoutTotalHeavyHitCumul += tmp.KnockoutTotalHeavyHit;
     tmp.KnockoutTotalCumul += tmp.KnockoutTotal;
     tmp.KnockoutTotalHeavyBlockCumul += tmp.KnockoutTotalHeavyBlock;
+
+    /// Miscs
+    session.LowFiveCumul = tmp.LowFive;
+    session.HatTrickCumul = tmp.HatTrick;
+    session.HighFiveCumul = tmp.HighFive;
+    session.TeamLowFiveCumul = tmp.TeamLowFive;
+    session.TeamHatTrickCumul = tmp.TeamHatTrick;
+    session.TeamHighFiveCumul = tmp.TeamHighFive;
+    session.TotalLowFiveCumul = tmp.TotalLowFive;
+    session.TotalHatTrickCumul = tmp.TotalHatTrick;
+    session.TotalHighFiveCumul = tmp.TotalHighFive;
+
+    /// Certifications
+    session.MVPCumul = tmp.MVP;
+    session.SaviorCumul = tmp.Savior;
+    session.PlaymakerCumul = tmp.Playmaker;
+    session.TeamMVPCumul = tmp.TeamMVP;
+    session.TeamSaviorCumul = tmp.TeamSavior;
+    session.TeamPlaymakerCumul = tmp.TeamPlaymaker;
+    session.TotalMVPCumul = tmp.TotalMVP;
+    session.TotalSaviorCumul = tmp.TotalSavior;
+    session.TotalPlaymakerCumul = tmp.TotalPlaymaker;
 
     session.isInit = true;
 

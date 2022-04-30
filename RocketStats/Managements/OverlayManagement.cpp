@@ -299,12 +299,12 @@ void RocketStats::RefreshVars()
     SetCVar("rs_file_deathm", rs_file_deathm);
     SetCVar("rs_file_deathc", rs_file_deathc);
     SetCVar("rs_file_shots", rs_file_shots);
-    SetCVar("rs_file_miscs", rs_file_miscs);
-    SetCVar("rs_file_assists", rs_file_assists);
-    SetCVar("rs_file_goals", rs_file_goals);
     SetCVar("rs_file_saves", rs_file_saves);
+    SetCVar("rs_file_goals", rs_file_goals);
     SetCVar("rs_file_dropshot", rs_file_dropshot);
     SetCVar("rs_file_knockout", rs_file_knockout);
+    SetCVar("rs_file_miscs", rs_file_miscs);
+    SetCVar("rs_file_certifications", rs_file_certifications);
     SetCVar("rs_file_boost", rs_file_boost);
 
     SetCVar("rs_hide_games", rs_hide_games);
@@ -326,12 +326,12 @@ void RocketStats::RefreshVars()
     SetCVar("rs_hide_deathm", rs_hide_deathm);
     SetCVar("rs_hide_deathc", rs_hide_deathc);
     SetCVar("rs_hide_shots", rs_hide_shots);
-    SetCVar("rs_hide_miscs", rs_hide_miscs);
-    SetCVar("rs_hide_assists", rs_hide_assists);
-    SetCVar("rs_hide_goals", rs_hide_goals);
     SetCVar("rs_hide_saves", rs_hide_saves);
+    SetCVar("rs_hide_goals", rs_hide_goals);
     SetCVar("rs_hide_dropshot", rs_hide_dropshot);
     SetCVar("rs_hide_knockout", rs_hide_knockout);
+    SetCVar("rs_hide_miscs", rs_hide_miscs);
+    SetCVar("rs_hide_certifications", rs_hide_certifications);
 }
 
 Element RocketStats::CalculateElement(json& element, Options& options, bool& check)

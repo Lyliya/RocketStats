@@ -149,12 +149,12 @@ void RocketStats::UpdateFiles(bool force)
     VarDeathCumul(true, force);
 
     AllShots(force);
-    AllMiscs(force);
-    AllAssists(force);
-    AllGoals(force);
     AllSaves(force);
+    AllGoals(force);
     AllDropshot(force);
     AllKnockout(force);
+    AllMiscs(force);
+    AllCertifications(force);
 
     VarBoost(true, force, (!is_game_started || is_game_ended), false);
 }
@@ -184,12 +184,12 @@ void RocketStats::ResetFiles()
     VarDeathCumul(true, true, true);
 
     AllShots(true, true);
-    AllMiscs(true, true);
-    AllAssists(true, true);
-    AllGoals(true, true);
     AllSaves(true, true);
+    AllGoals(true, true);
     AllDropshot(true, true);
     AllKnockout(true, true);
+    AllMiscs(true, true);
+    AllCertifications(true, true);
 
     VarBoost(true, true, true);
 }
@@ -311,20 +311,20 @@ bool RocketStats::ReadConfig()
                             rs_file_deathc = config["settings"]["files"]["deathc"];
                         if (config["settings"]["files"]["shots"].is_boolean())
                             rs_file_shots = config["settings"]["files"]["shots"];
-                        if (config["settings"]["files"]["miscs"].is_boolean())
-                            rs_file_miscs = config["settings"]["files"]["miscs"];
-                        if (config["settings"]["files"]["assists"].is_boolean())
-                            rs_file_assists = config["settings"]["files"]["assists"];
-                        if (config["settings"]["files"]["goals"].is_boolean())
-                            rs_file_goals = config["settings"]["files"]["goals"];
                         if (config["settings"]["files"]["saves"].is_boolean())
                             rs_file_saves = config["settings"]["files"]["saves"];
+                        if (config["settings"]["files"]["goals"].is_boolean())
+                            rs_file_goals = config["settings"]["files"]["goals"];
                         if (config["settings"]["files"]["dropshot"].is_boolean())
                             rs_file_dropshot = config["settings"]["files"]["dropshot"];
                         if (config["settings"]["files"]["knockout"].is_boolean())
                             rs_file_knockout = config["settings"]["files"]["knockout"];
                         if (config["settings"]["files"]["boost"].is_boolean())
                             rs_file_boost = config["settings"]["files"]["boost"];
+                        if (config["settings"]["files"]["miscs"].is_boolean())
+                            rs_file_miscs = config["settings"]["files"]["miscs"];
+                        if (config["settings"]["files"]["certifications"].is_boolean())
+                            rs_file_certifications = config["settings"]["files"]["certifications"];
                     }
 
                     if (config["settings"]["hides"].is_object() && !config["settings"]["hides"].is_null())
@@ -367,18 +367,18 @@ bool RocketStats::ReadConfig()
                             rs_hide_deathc = config["settings"]["hides"]["deathc"];
                         if (config["settings"]["hides"]["shots"].is_boolean())
                             rs_hide_shots = config["settings"]["hides"]["shots"];
-                        if (config["settings"]["hides"]["miscs"].is_boolean())
-                            rs_hide_miscs = config["settings"]["hides"]["miscs"];
-                        if (config["settings"]["hides"]["assists"].is_boolean())
-                            rs_hide_assists = config["settings"]["hides"]["assists"];
-                        if (config["settings"]["hides"]["goals"].is_boolean())
-                            rs_hide_goals = config["settings"]["hides"]["goals"];
                         if (config["settings"]["hides"]["saves"].is_boolean())
                             rs_hide_saves = config["settings"]["hides"]["saves"];
+                        if (config["settings"]["hides"]["goals"].is_boolean())
+                            rs_hide_goals = config["settings"]["hides"]["goals"];
                         if (config["settings"]["hides"]["dropshot"].is_boolean())
                             rs_hide_dropshot = config["settings"]["hides"]["dropshot"];
                         if (config["settings"]["hides"]["knockout"].is_boolean())
                             rs_hide_knockout = config["settings"]["hides"]["knockout"];
+                        if (config["settings"]["hides"]["miscs"].is_boolean())
+                            rs_hide_miscs = config["settings"]["hides"]["miscs"];
+                        if (config["settings"]["hides"]["certifications"].is_boolean())
+                            rs_hide_certifications = config["settings"]["hides"]["certifications"];
 
                         cvarManager->log("Config: hides loaded");
                     }
@@ -408,133 +408,86 @@ bool RocketStats::ReadConfig()
                         always.deathCumul = int(config["always"]["DeathCumul"]);
 
                     /// Shots
-                    if (config["always"]["Center"].is_number_unsigned())
-                        always.Center = int(config["always"]["Center"]);
                     if (config["always"]["Clear"].is_number_unsigned())
                         always.Clear = int(config["always"]["Clear"]);
-                    if (config["always"]["FirstTouch"].is_number_unsigned())
-                        always.FirstTouch = int(config["always"]["FirstTouch"]);
-                    if (config["always"]["ShotOnGoal"].is_number_unsigned())
-                        always.ShotOnGoal = int(config["always"]["ShotOnGoal"]);
+                    if (config["always"]["Assist"].is_number_unsigned())
+                        always.Assist = int(config["always"]["Assist"]);
+                    if (config["always"]["Center"].is_number_unsigned())
+                        always.Center = int(config["always"]["Center"]);
                     if (config["always"]["AerialHit"].is_number_unsigned())
                         always.AerialHit = int(config["always"]["AerialHit"]);
                     if (config["always"]["BicycleHit"].is_number_unsigned())
                         always.BicycleHit = int(config["always"]["BicycleHit"]);
-                    if (config["always"]["TeamClear"].is_number_unsigned())
-                        always.TeamClear = int(config["always"]["TeamClear"]);
-                    if (config["always"]["TeamShotOnGoal"].is_number_unsigned())
-                        always.TeamShotOnGoal = int(config["always"]["TeamShotOnGoal"]);
+                    if (config["always"]["FirstTouch"].is_number_unsigned())
+                        always.FirstTouch = int(config["always"]["FirstTouch"]);
+                    if (config["always"]["ShotOnGoal"].is_number_unsigned())
+                        always.ShotOnGoal = int(config["always"]["ShotOnGoal"]);
+                    if (config["always"]["TeamAssist"].is_number_unsigned())
+                        always.TeamAssist = int(config["always"]["TeamAssist"]);
                     if (config["always"]["TeamBicycleHit"].is_number_unsigned())
                         always.TeamBicycleHit = int(config["always"]["TeamBicycleHit"]);
-                    if (config["always"]["TotalClear"].is_number_unsigned())
-                        always.TotalClear = int(config["always"]["TotalClear"]);
-                    if (config["always"]["TotalShotOnGoal"].is_number_unsigned())
-                        always.TotalShotOnGoal = int(config["always"]["TotalShotOnGoal"]);
+                    if (config["always"]["TeamShotOnGoal"].is_number_unsigned())
+                        always.TeamShotOnGoal = int(config["always"]["TeamShotOnGoal"]);
+                    if (config["always"]["TotalAssist"].is_number_unsigned())
+                        always.TotalAssist = int(config["always"]["TotalAssist"]);
                     if (config["always"]["TotalBicycleHit"].is_number_unsigned())
                         always.TotalBicycleHit = int(config["always"]["TotalBicycleHit"]);
+                    if (config["always"]["TotalShotOnGoal"].is_number_unsigned())
+                        always.TotalShotOnGoal = int(config["always"]["TotalShotOnGoal"]);
 
-                    if (config["always"]["CenterCumul"].is_number_unsigned())
-                        always.CenterCumul = int(config["always"]["CenterCumul"]);
                     if (config["always"]["ClearCumul"].is_number_unsigned())
                         always.ClearCumul = int(config["always"]["ClearCumul"]);
-                    if (config["always"]["FirstTouchCumul"].is_number_unsigned())
-                        always.FirstTouchCumul = int(config["always"]["FirstTouchCumul"]);
-                    if (config["always"]["ShotOnGoalCumul"].is_number_unsigned())
-                        always.ShotOnGoalCumul = int(config["always"]["ShotOnGoalCumul"]);
+                    if (config["always"]["AssistCumul"].is_number_unsigned())
+                        always.AssistCumul = int(config["always"]["AssistCumul"]);
+                    if (config["always"]["CenterCumul"].is_number_unsigned())
+                        always.CenterCumul = int(config["always"]["CenterCumul"]);
                     if (config["always"]["AerialHitCumul"].is_number_unsigned())
                         always.AerialHitCumul = int(config["always"]["AerialHitCumul"]);
                     if (config["always"]["BicycleHitCumul"].is_number_unsigned())
                         always.BicycleHitCumul = int(config["always"]["BicycleHitCumul"]);
-                    if (config["always"]["TeamClearCumul"].is_number_unsigned())
-                        always.TeamClearCumul = int(config["always"]["TeamClearCumul"]);
-                    if (config["always"]["TeamShotOnGoalCumul"].is_number_unsigned())
-                        always.TeamShotOnGoalCumul = int(config["always"]["TeamShotOnGoalCumul"]);
-                    if (config["always"]["TeamBicycleHitCumul"].is_number_unsigned())
-                        always.TeamBicycleHitCumul = int(config["always"]["TeamBicycleHitCumul"]);
-                    if (config["always"]["TotalClearCumul"].is_number_unsigned())
-                        always.TotalClearCumul = int(config["always"]["TotalClearCumul"]);
-                    if (config["always"]["TotalShotOnGoalCumul"].is_number_unsigned())
-                        always.TotalShotOnGoalCumul = int(config["always"]["TotalShotOnGoalCumul"]);
-                    if (config["always"]["TotalBicycleHitCumul"].is_number_unsigned())
-                        always.TotalBicycleHitCumul = int(config["always"]["TotalBicycleHitCumul"]);
-
-                    /// Miscs
-                    if (config["always"]["HatTrick"].is_number_unsigned())
-                        always.HatTrick = int(config["always"]["HatTrick"]);
-                    if (config["always"]["LowFive"].is_number_unsigned())
-                        always.LowFive = int(config["always"]["LowFive"]);
-                    if (config["always"]["HighFive"].is_number_unsigned())
-                        always.HighFive = int(config["always"]["HighFive"]);
-                    if (config["always"]["MVP"].is_number_unsigned())
-                        always.MVP = int(config["always"]["MVP"]);
-                    if (config["always"]["TeamHatTrick"].is_number_unsigned())
-                        always.TeamHatTrick = int(config["always"]["TeamHatTrick"]);
-                    if (config["always"]["TeamLowFive"].is_number_unsigned())
-                        always.TeamLowFive = int(config["always"]["TeamLowFive"]);
-                    if (config["always"]["TeamHighFive"].is_number_unsigned())
-                        always.TeamHighFive = int(config["always"]["TeamHighFive"]);
-                    if (config["always"]["TeamMVP"].is_number_unsigned())
-                        always.TeamMVP = int(config["always"]["TeamMVP"]);
-                    if (config["always"]["TotalHatTrick"].is_number_unsigned())
-                        always.TotalHatTrick = int(config["always"]["TotalHatTrick"]);
-                    if (config["always"]["TotalLowFive"].is_number_unsigned())
-                        always.TotalLowFive = int(config["always"]["TotalLowFive"]);
-                    if (config["always"]["TotalHighFive"].is_number_unsigned())
-                        always.TotalHighFive = int(config["always"]["TotalHighFive"]);
-                    if (config["always"]["TotalMVP"].is_number_unsigned())
-                        always.TotalMVP = int(config["always"]["TotalMVP"]);
-
-                    if (config["always"]["HatTrickCumul"].is_number_unsigned())
-                        always.HatTrickCumul = int(config["always"]["HatTrickCumul"]);
-                    if (config["always"]["LowFiveCumul"].is_number_unsigned())
-                        always.LowFiveCumul = int(config["always"]["LowFiveCumul"]);
-                    if (config["always"]["HighFiveCumul"].is_number_unsigned())
-                        always.HighFiveCumul = int(config["always"]["HighFiveCumul"]);
-                    if (config["always"]["MVPCumul"].is_number_unsigned())
-                        always.MVPCumul = int(config["always"]["MVPCumul"]);
-                    if (config["always"]["TeamHatTrickCumul"].is_number_unsigned())
-                        always.TeamHatTrickCumul = int(config["always"]["TeamHatTrickCumul"]);
-                    if (config["always"]["TeamLowFiveCumul"].is_number_unsigned())
-                        always.TeamLowFiveCumul = int(config["always"]["TeamLowFiveCumul"]);
-                    if (config["always"]["TeamHighFiveCumul"].is_number_unsigned())
-                        always.TeamHighFiveCumul = int(config["always"]["TeamHighFiveCumul"]);
-                    if (config["always"]["TeamMVPCumul"].is_number_unsigned())
-                        always.TeamMVPCumul = int(config["always"]["TeamMVPCumul"]);
-                    if (config["always"]["TotalHatTrickCumul"].is_number_unsigned())
-                        always.TotalHatTrickCumul = int(config["always"]["TotalHatTrickCumul"]);
-                    if (config["always"]["TotalLowFiveCumul"].is_number_unsigned())
-                        always.TotalLowFiveCumul = int(config["always"]["TotalLowFiveCumul"]);
-                    if (config["always"]["TotalHighFiveCumul"].is_number_unsigned())
-                        always.TotalHighFiveCumul = int(config["always"]["TotalHighFiveCumul"]);
-                    if (config["always"]["TotalMVPCumul"].is_number_unsigned())
-                        always.TotalMVPCumul = int(config["always"]["TotalMVPCumul"]);
-
-                    /// Assists
-                    if (config["always"]["Assist"].is_number_unsigned())
-                        always.Assist = int(config["always"]["Assist"]);
-                    if (config["always"]["Playmaker"].is_number_unsigned())
-                        always.Playmaker = int(config["always"]["Playmaker"]);
-                    if (config["always"]["TeamAssist"].is_number_unsigned())
-                        always.TeamAssist = int(config["always"]["TeamAssist"]);
-                    if (config["always"]["TeamPlaymaker"].is_number_unsigned())
-                        always.TeamPlaymaker = int(config["always"]["TeamPlaymaker"]);
-                    if (config["always"]["TotalAssist"].is_number_unsigned())
-                        always.TotalAssist = int(config["always"]["TotalAssist"]);
-                    if (config["always"]["TotalPlaymaker"].is_number_unsigned())
-                        always.TotalPlaymaker = int(config["always"]["TotalPlaymaker"]);
-
-                    if (config["always"]["AssistCumul"].is_number_unsigned())
-                        always.AssistCumul = int(config["always"]["AssistCumul"]);
-                    if (config["always"]["PlaymakerCumul"].is_number_unsigned())
-                        always.PlaymakerCumul = int(config["always"]["PlaymakerCumul"]);
+                    if (config["always"]["FirstTouchCumul"].is_number_unsigned())
+                        always.FirstTouchCumul = int(config["always"]["FirstTouchCumul"]);
+                    if (config["always"]["ShotOnGoalCumul"].is_number_unsigned())
+                        always.ShotOnGoalCumul = int(config["always"]["ShotOnGoalCumul"]);
                     if (config["always"]["TeamAssistCumul"].is_number_unsigned())
                         always.TeamAssistCumul = int(config["always"]["TeamAssistCumul"]);
-                    if (config["always"]["TeamPlaymakerCumul"].is_number_unsigned())
-                        always.TeamPlaymakerCumul = int(config["always"]["TeamPlaymakerCumul"]);
+                    if (config["always"]["TeamBicycleHitCumul"].is_number_unsigned())
+                        always.TeamBicycleHitCumul = int(config["always"]["TeamBicycleHitCumul"]);
+                    if (config["always"]["TeamShotOnGoalCumul"].is_number_unsigned())
+                        always.TeamShotOnGoalCumul = int(config["always"]["TeamShotOnGoalCumul"]);
                     if (config["always"]["TotalAssistCumul"].is_number_unsigned())
                         always.TotalAssistCumul = int(config["always"]["TotalAssistCumul"]);
-                    if (config["always"]["TotalPlaymakerCumul"].is_number_unsigned())
-                        always.TotalPlaymakerCumul = int(config["always"]["TotalPlaymakerCumul"]);
+                    if (config["always"]["TotalBicycleHitCumul"].is_number_unsigned())
+                        always.TotalBicycleHitCumul = int(config["always"]["TotalBicycleHitCumul"]);
+                    if (config["always"]["TotalShotOnGoalCumul"].is_number_unsigned())
+                        always.TotalShotOnGoalCumul = int(config["always"]["TotalShotOnGoalCumul"]);
+
+                    /// Saves
+                    if (config["always"]["Save"].is_number_unsigned())
+                        always.Save = int(config["always"]["Save"]);
+                    if (config["always"]["EpicSave"].is_number_unsigned())
+                        always.EpicSave = int(config["always"]["EpicSave"]);
+                    if (config["always"]["TeamSave"].is_number_unsigned())
+                        always.TeamSave = int(config["always"]["TeamSave"]);
+                    if (config["always"]["TeamEpicSave"].is_number_unsigned())
+                        always.TeamEpicSave = int(config["always"]["TeamEpicSave"]);
+                    if (config["always"]["TotalSave"].is_number_unsigned())
+                        always.TotalSave = int(config["always"]["TotalSave"]);
+                    if (config["always"]["TotalEpicSave"].is_number_unsigned())
+                        always.TotalEpicSave = int(config["always"]["TotalEpicSave"]);
+
+                    if (config["always"]["SaveCumul"].is_number_unsigned())
+                        always.SaveCumul = int(config["always"]["SaveCumul"]);
+                    if (config["always"]["EpicSaveCumul"].is_number_unsigned())
+                        always.EpicSaveCumul = int(config["always"]["EpicSaveCumul"]);
+                    if (config["always"]["TeamSaveCumul"].is_number_unsigned())
+                        always.TeamSaveCumul = int(config["always"]["TeamSaveCumul"]);
+                    if (config["always"]["TeamEpicSaveCumul"].is_number_unsigned())
+                        always.TeamEpicSaveCumul = int(config["always"]["TeamEpicSaveCumul"]);
+                    if (config["always"]["TotalSaveCumul"].is_number_unsigned())
+                        always.TotalSaveCumul = int(config["always"]["TotalSaveCumul"]);
+                    if (config["always"]["TotalEpicSaveCumul"].is_number_unsigned())
+                        always.TotalEpicSaveCumul = int(config["always"]["TotalEpicSaveCumul"]);
 
                     /// Goals
                     if (config["always"]["Goal"].is_number_unsigned())
@@ -634,45 +587,6 @@ bool RocketStats::ReadConfig()
                         always.TotalOvertimeGoalCumul = int(config["always"]["TotalOvertimeGoalCumul"]);
                     if (config["always"]["TotalHoopsSwishGoalCumul"].is_number_unsigned())
                         always.TotalHoopsSwishGoalCumul = int(config["always"]["TotalHoopsSwishGoalCumul"]);
-
-                    /// Saves
-                    if (config["always"]["Save"].is_number_unsigned())
-                        always.Save = int(config["always"]["Save"]);
-                    if (config["always"]["EpicSave"].is_number_unsigned())
-                        always.EpicSave = int(config["always"]["EpicSave"]);
-                    if (config["always"]["Savior"].is_number_unsigned())
-                        always.Savior = int(config["always"]["Savior"]);
-                    if (config["always"]["TeamSave"].is_number_unsigned())
-                        always.TeamSave = int(config["always"]["TeamSave"]);
-                    if (config["always"]["TeamEpicSave"].is_number_unsigned())
-                        always.TeamEpicSave = int(config["always"]["TeamEpicSave"]);
-                    if (config["always"]["TeamSavior"].is_number_unsigned())
-                        always.TeamSavior = int(config["always"]["TeamSavior"]);
-                    if (config["always"]["TotalSave"].is_number_unsigned())
-                        always.TotalSave = int(config["always"]["TotalSave"]);
-                    if (config["always"]["TotalEpicSave"].is_number_unsigned())
-                        always.TotalEpicSave = int(config["always"]["TotalEpicSave"]);
-                    if (config["always"]["TotalSavior"].is_number_unsigned())
-                        always.TotalSavior = int(config["always"]["TotalSavior"]);
-
-                    if (config["always"]["SaveCumul"].is_number_unsigned())
-                        always.SaveCumul = int(config["always"]["SaveCumul"]);
-                    if (config["always"]["EpicSaveCumul"].is_number_unsigned())
-                        always.EpicSaveCumul = int(config["always"]["EpicSaveCumul"]);
-                    if (config["always"]["SaviorCumul"].is_number_unsigned())
-                        always.SaviorCumul = int(config["always"]["SaviorCumul"]);
-                    if (config["always"]["TeamSaveCumul"].is_number_unsigned())
-                        always.TeamSaveCumul = int(config["always"]["TeamSaveCumul"]);
-                    if (config["always"]["TeamEpicSaveCumul"].is_number_unsigned())
-                        always.TeamEpicSaveCumul = int(config["always"]["TeamEpicSaveCumul"]);
-                    if (config["always"]["TeamSaviorCumul"].is_number_unsigned())
-                        always.TeamSaviorCumul = int(config["always"]["TeamSaviorCumul"]);
-                    if (config["always"]["TotalSaveCumul"].is_number_unsigned())
-                        always.TotalSaveCumul = int(config["always"]["TotalSaveCumul"]);
-                    if (config["always"]["TotalEpicSaveCumul"].is_number_unsigned())
-                        always.TotalEpicSaveCumul = int(config["always"]["TotalEpicSaveCumul"]);
-                    if (config["always"]["TotalSaviorCumul"].is_number_unsigned())
-                        always.TotalSaviorCumul = int(config["always"]["TotalSaviorCumul"]);
 
                     /// Dropshot
                     if (config["always"]["BreakoutDamage"].is_number_unsigned())
@@ -825,6 +739,84 @@ bool RocketStats::ReadConfig()
                     if (config["always"]["KnockoutTotalHeavyBlockCumul"].is_number_unsigned())
                         always.KnockoutTotalHeavyBlockCumul = int(config["always"]["KnockoutTotalHeavyBlockCumul"]);
 
+                    /// Miscs
+                    if (config["always"]["LowFive"].is_number_unsigned())
+                        always.LowFive = int(config["always"]["LowFive"]);
+                    if (config["always"]["HatTrick"].is_number_unsigned())
+                        always.HatTrick = int(config["always"]["HatTrick"]);
+                    if (config["always"]["HighFive"].is_number_unsigned())
+                        always.HighFive = int(config["always"]["HighFive"]);
+                    if (config["always"]["TeamLowFive"].is_number_unsigned())
+                        always.TeamLowFive = int(config["always"]["TeamLowFive"]);
+                    if (config["always"]["TeamHatTrick"].is_number_unsigned())
+                        always.TeamHatTrick = int(config["always"]["TeamHatTrick"]);
+                    if (config["always"]["TeamHighFive"].is_number_unsigned())
+                        always.TeamHighFive = int(config["always"]["TeamHighFive"]);
+                    if (config["always"]["TotalLowFive"].is_number_unsigned())
+                        always.TotalLowFive = int(config["always"]["TotalLowFive"]);
+                    if (config["always"]["TotalHatTrick"].is_number_unsigned())
+                        always.TotalHatTrick = int(config["always"]["TotalHatTrick"]);
+                    if (config["always"]["TotalHighFive"].is_number_unsigned())
+                        always.TotalHighFive = int(config["always"]["TotalHighFive"]);
+
+                    if (config["always"]["LowFiveCumul"].is_number_unsigned())
+                        always.LowFiveCumul = int(config["always"]["LowFiveCumul"]);
+                    if (config["always"]["HatTrickCumul"].is_number_unsigned())
+                        always.HatTrickCumul = int(config["always"]["HatTrickCumul"]);
+                    if (config["always"]["HighFiveCumul"].is_number_unsigned())
+                        always.HighFiveCumul = int(config["always"]["HighFiveCumul"]);
+                    if (config["always"]["TeamLowFiveCumul"].is_number_unsigned())
+                        always.TeamLowFiveCumul = int(config["always"]["TeamLowFiveCumul"]);
+                    if (config["always"]["TeamHatTrickCumul"].is_number_unsigned())
+                        always.TeamHatTrickCumul = int(config["always"]["TeamHatTrickCumul"]);
+                    if (config["always"]["TeamHighFiveCumul"].is_number_unsigned())
+                        always.TeamHighFiveCumul = int(config["always"]["TeamHighFiveCumul"]);
+                    if (config["always"]["TotalLowFiveCumul"].is_number_unsigned())
+                        always.TotalLowFiveCumul = int(config["always"]["TotalLowFiveCumul"]);
+                    if (config["always"]["TotalHatTrickCumul"].is_number_unsigned())
+                        always.TotalHatTrickCumul = int(config["always"]["TotalHatTrickCumul"]);
+                    if (config["always"]["TotalHighFiveCumul"].is_number_unsigned())
+                        always.TotalHighFiveCumul = int(config["always"]["TotalHighFiveCumul"]);
+
+                    /// Certifications
+                    if (config["always"]["MVP"].is_number_unsigned())
+                        always.MVP = int(config["always"]["MVP"]);
+                    if (config["always"]["Savior"].is_number_unsigned())
+                        always.Savior = int(config["always"]["Savior"]);
+                    if (config["always"]["Playmaker"].is_number_unsigned())
+                        always.Playmaker = int(config["always"]["Playmaker"]);
+                    if (config["always"]["TeamMVP"].is_number_unsigned())
+                        always.TeamMVP = int(config["always"]["TeamMVP"]);
+                    if (config["always"]["TeamSavior"].is_number_unsigned())
+                        always.TeamSavior = int(config["always"]["TeamSavior"]);
+                    if (config["always"]["TeamPlaymaker"].is_number_unsigned())
+                        always.TeamPlaymaker = int(config["always"]["TeamPlaymaker"]);
+                    if (config["always"]["TotalMVP"].is_number_unsigned())
+                        always.TotalMVP = int(config["always"]["TotalMVP"]);
+                    if (config["always"]["TotalSavior"].is_number_unsigned())
+                        always.TotalSavior = int(config["always"]["TotalSavior"]);
+                    if (config["always"]["TotalPlaymaker"].is_number_unsigned())
+                        always.TotalPlaymaker = int(config["always"]["TotalPlaymaker"]);
+
+                    if (config["always"]["SaviorCumul"].is_number_unsigned())
+                        always.SaviorCumul = int(config["always"]["SaviorCumul"]);
+                    if (config["always"]["MVPCumul"].is_number_unsigned())
+                        always.MVPCumul = int(config["always"]["MVPCumul"]);
+                    if (config["always"]["PlaymakerCumul"].is_number_unsigned())
+                        always.PlaymakerCumul = int(config["always"]["PlaymakerCumul"]);
+                    if (config["always"]["TeamMVPCumul"].is_number_unsigned())
+                        always.TeamMVPCumul = int(config["always"]["TeamMVPCumul"]);
+                    if (config["always"]["TeamSaviorCumul"].is_number_unsigned())
+                        always.TeamSaviorCumul = int(config["always"]["TeamSaviorCumul"]);
+                    if (config["always"]["TeamPlaymakerCumul"].is_number_unsigned())
+                        always.TeamPlaymakerCumul = int(config["always"]["TeamPlaymakerCumul"]);
+                    if (config["always"]["TotalMVPCumul"].is_number_unsigned())
+                        always.TotalMVPCumul = int(config["always"]["TotalMVPCumul"]);
+                    if (config["always"]["TotalSaviorCumul"].is_number_unsigned())
+                        always.TotalSaviorCumul = int(config["always"]["TotalSaviorCumul"]);
+                    if (config["always"]["TotalPlaymakerCumul"].is_number_unsigned())
+                        always.TotalPlaymakerCumul = int(config["always"]["TotalPlaymakerCumul"]);
+
                     cvarManager->log("Config: stats loaded");
                     always.isInit = true;
                 }
@@ -870,14 +862,10 @@ bool RocketStats::ReadConfig()
                                 always_gm[i].AerialHit = int(config["always_gm"][i]["AerialHit"]);
                             if (config["always_gm"][i]["BicycleHit"].is_number_unsigned())
                                 always_gm[i].BicycleHit = int(config["always_gm"][i]["BicycleHit"]);
-                            if (config["always_gm"][i]["TeamClear"].is_number_unsigned())
-                                always_gm[i].TeamClear = int(config["always_gm"][i]["TeamClear"]);
                             if (config["always_gm"][i]["TeamShotOnGoal"].is_number_unsigned())
                                 always_gm[i].TeamShotOnGoal = int(config["always_gm"][i]["TeamShotOnGoal"]);
                             if (config["always_gm"][i]["TeamBicycleHit"].is_number_unsigned())
                                 always_gm[i].TeamBicycleHit = int(config["always_gm"][i]["TeamBicycleHit"]);
-                            if (config["always_gm"][i]["TotalClear"].is_number_unsigned())
-                                always_gm[i].TotalClear = int(config["always_gm"][i]["TotalClear"]);
                             if (config["always_gm"][i]["TotalShotOnGoal"].is_number_unsigned())
                                 always_gm[i].TotalShotOnGoal = int(config["always_gm"][i]["TotalShotOnGoal"]);
                             if (config["always_gm"][i]["TotalBicycleHit"].is_number_unsigned())
@@ -895,69 +883,14 @@ bool RocketStats::ReadConfig()
                                 always_gm[i].AerialHitCumul = int(config["always_gm"][i]["AerialHitCumul"]);
                             if (config["always_gm"][i]["BicycleHitCumul"].is_number_unsigned())
                                 always_gm[i].BicycleHitCumul = int(config["always_gm"][i]["BicycleHitCumul"]);
-                            if (config["always_gm"][i]["TeamClearCumul"].is_number_unsigned())
-                                always_gm[i].TeamClearCumul = int(config["always_gm"][i]["TeamClearCumul"]);
                             if (config["always_gm"][i]["TeamShotOnGoalCumul"].is_number_unsigned())
                                 always_gm[i].TeamShotOnGoalCumul = int(config["always_gm"][i]["TeamShotOnGoalCumul"]);
                             if (config["always_gm"][i]["TeamBicycleHitCumul"].is_number_unsigned())
                                 always_gm[i].TeamBicycleHitCumul = int(config["always_gm"][i]["TeamBicycleHitCumul"]);
-                            if (config["always_gm"][i]["TotalClearCumul"].is_number_unsigned())
-                                always_gm[i].TotalClearCumul = int(config["always_gm"][i]["TotalClearCumul"]);
                             if (config["always_gm"][i]["TotalShotOnGoalCumul"].is_number_unsigned())
                                 always_gm[i].TotalShotOnGoalCumul = int(config["always_gm"][i]["TotalShotOnGoalCumul"]);
                             if (config["always_gm"][i]["TotalBicycleHitCumul"].is_number_unsigned())
                                 always_gm[i].TotalBicycleHitCumul = int(config["always_gm"][i]["TotalBicycleHitCumul"]);
-
-                            /// Miscs
-                            if (config["always_gm"][i]["HatTrick"].is_number_unsigned())
-                                always_gm[i].HatTrick = int(config["always_gm"][i]["HatTrick"]);
-                            if (config["always_gm"][i]["LowFive"].is_number_unsigned())
-                                always_gm[i].LowFive = int(config["always_gm"][i]["LowFive"]);
-                            if (config["always_gm"][i]["HighFive"].is_number_unsigned())
-                                always_gm[i].HighFive = int(config["always_gm"][i]["HighFive"]);
-                            if (config["always_gm"][i]["MVP"].is_number_unsigned())
-                                always_gm[i].MVP = int(config["always_gm"][i]["MVP"]);
-                            if (config["always_gm"][i]["TeamHatTrick"].is_number_unsigned())
-                                always_gm[i].TeamHatTrick = int(config["always_gm"][i]["TeamHatTrick"]);
-                            if (config["always_gm"][i]["TeamLowFive"].is_number_unsigned())
-                                always_gm[i].TeamLowFive = int(config["always_gm"][i]["TeamLowFive"]);
-                            if (config["always_gm"][i]["TeamHighFive"].is_number_unsigned())
-                                always_gm[i].TeamHighFive = int(config["always_gm"][i]["TeamHighFive"]);
-                            if (config["always_gm"][i]["TeamMVP"].is_number_unsigned())
-                                always_gm[i].TeamMVP = int(config["always_gm"][i]["TeamMVP"]);
-                            if (config["always_gm"][i]["TotalHatTrick"].is_number_unsigned())
-                                always_gm[i].TotalHatTrick = int(config["always_gm"][i]["TotalHatTrick"]);
-                            if (config["always_gm"][i]["TotalLowFive"].is_number_unsigned())
-                                always_gm[i].TotalLowFive = int(config["always_gm"][i]["TotalLowFive"]);
-                            if (config["always_gm"][i]["TotalHighFive"].is_number_unsigned())
-                                always_gm[i].TotalHighFive = int(config["always_gm"][i]["TotalHighFive"]);
-                            if (config["always_gm"][i]["TotalMVP"].is_number_unsigned())
-                                always_gm[i].TotalMVP = int(config["always_gm"][i]["TotalMVP"]);
-
-                            if (config["always_gm"][i]["HatTrickCumul"].is_number_unsigned())
-                                always_gm[i].HatTrickCumul = int(config["always_gm"][i]["HatTrickCumul"]);
-                            if (config["always_gm"][i]["LowFiveCumul"].is_number_unsigned())
-                                always_gm[i].LowFiveCumul = int(config["always_gm"][i]["LowFiveCumul"]);
-                            if (config["always_gm"][i]["HighFiveCumul"].is_number_unsigned())
-                                always_gm[i].HighFiveCumul = int(config["always_gm"][i]["HighFiveCumul"]);
-                            if (config["always_gm"][i]["MVPCumul"].is_number_unsigned())
-                                always_gm[i].MVPCumul = int(config["always_gm"][i]["MVPCumul"]);
-                            if (config["always_gm"][i]["TeamHatTrickCumul"].is_number_unsigned())
-                                always_gm[i].TeamHatTrickCumul = int(config["always_gm"][i]["TeamHatTrickCumul"]);
-                            if (config["always_gm"][i]["TeamLowFiveCumul"].is_number_unsigned())
-                                always_gm[i].TeamLowFiveCumul = int(config["always_gm"][i]["TeamLowFiveCumul"]);
-                            if (config["always_gm"][i]["TeamHighFiveCumul"].is_number_unsigned())
-                                always_gm[i].TeamHighFiveCumul = int(config["always_gm"][i]["TeamHighFiveCumul"]);
-                            if (config["always_gm"][i]["TeamMVPCumul"].is_number_unsigned())
-                                always_gm[i].TeamMVPCumul = int(config["always_gm"][i]["TeamMVPCumul"]);
-                            if (config["always_gm"][i]["TotalHatTrickCumul"].is_number_unsigned())
-                                always_gm[i].TotalHatTrickCumul = int(config["always_gm"][i]["TotalHatTrickCumul"]);
-                            if (config["always_gm"][i]["TotalLowFiveCumul"].is_number_unsigned())
-                                always_gm[i].TotalLowFiveCumul = int(config["always_gm"][i]["TotalLowFiveCumul"]);
-                            if (config["always_gm"][i]["TotalHighFiveCumul"].is_number_unsigned())
-                                always_gm[i].TotalHighFiveCumul = int(config["always_gm"][i]["TotalHighFiveCumul"]);
-                            if (config["always_gm"][i]["TotalMVPCumul"].is_number_unsigned())
-                                always_gm[i].TotalMVPCumul = int(config["always_gm"][i]["TotalMVPCumul"]);
 
                             /// Assists
                             if (config["always_gm"][i]["Assist"].is_number_unsigned())
@@ -985,6 +918,45 @@ bool RocketStats::ReadConfig()
                                 always_gm[i].TotalAssistCumul = int(config["always_gm"][i]["TotalAssistCumul"]);
                             if (config["always_gm"][i]["TotalPlaymakerCumul"].is_number_unsigned())
                                 always_gm[i].TotalPlaymakerCumul = int(config["always_gm"][i]["TotalPlaymakerCumul"]);
+
+                            /// Saves
+                            if (config["always_gm"][i]["Save"].is_number_unsigned())
+                                always_gm[i].Save = int(config["always_gm"][i]["Save"]);
+                            if (config["always_gm"][i]["EpicSave"].is_number_unsigned())
+                                always_gm[i].EpicSave = int(config["always_gm"][i]["EpicSave"]);
+                            if (config["always_gm"][i]["Savior"].is_number_unsigned())
+                                always_gm[i].Savior = int(config["always_gm"][i]["Savior"]);
+                            if (config["always_gm"][i]["TeamSave"].is_number_unsigned())
+                                always_gm[i].TeamSave = int(config["always_gm"][i]["TeamSave"]);
+                            if (config["always_gm"][i]["TeamEpicSave"].is_number_unsigned())
+                                always_gm[i].TeamEpicSave = int(config["always_gm"][i]["TeamEpicSave"]);
+                            if (config["always_gm"][i]["TeamSavior"].is_number_unsigned())
+                                always_gm[i].TeamSavior = int(config["always_gm"][i]["TeamSavior"]);
+                            if (config["always_gm"][i]["TotalSave"].is_number_unsigned())
+                                always_gm[i].TotalSave = int(config["always_gm"][i]["TotalSave"]);
+                            if (config["always_gm"][i]["TotalEpicSave"].is_number_unsigned())
+                                always_gm[i].TotalEpicSave = int(config["always_gm"][i]["TotalEpicSave"]);
+                            if (config["always_gm"][i]["TotalSavior"].is_number_unsigned())
+                                always_gm[i].TotalSavior = int(config["always_gm"][i]["TotalSavior"]);
+
+                            if (config["always_gm"][i]["SaveCumul"].is_number_unsigned())
+                                always_gm[i].SaveCumul = int(config["always_gm"][i]["SaveCumul"]);
+                            if (config["always_gm"][i]["EpicSaveCumul"].is_number_unsigned())
+                                always_gm[i].EpicSaveCumul = int(config["always_gm"][i]["EpicSaveCumul"]);
+                            if (config["always_gm"][i]["SaviorCumul"].is_number_unsigned())
+                                always_gm[i].SaviorCumul = int(config["always_gm"][i]["SaviorCumul"]);
+                            if (config["always_gm"][i]["TeamSaveCumul"].is_number_unsigned())
+                                always_gm[i].TeamSaveCumul = int(config["always_gm"][i]["TeamSaveCumul"]);
+                            if (config["always_gm"][i]["TeamEpicSaveCumul"].is_number_unsigned())
+                                always_gm[i].TeamEpicSaveCumul = int(config["always_gm"][i]["TeamEpicSaveCumul"]);
+                            if (config["always_gm"][i]["TeamSaviorCumul"].is_number_unsigned())
+                                always_gm[i].TeamSaviorCumul = int(config["always_gm"][i]["TeamSaviorCumul"]);
+                            if (config["always_gm"][i]["TotalSaveCumul"].is_number_unsigned())
+                                always_gm[i].TotalSaveCumul = int(config["always_gm"][i]["TotalSaveCumul"]);
+                            if (config["always_gm"][i]["TotalEpicSaveCumul"].is_number_unsigned())
+                                always_gm[i].TotalEpicSaveCumul = int(config["always_gm"][i]["TotalEpicSaveCumul"]);
+                            if (config["always_gm"][i]["TotalSaviorCumul"].is_number_unsigned())
+                                always_gm[i].TotalSaviorCumul = int(config["always_gm"][i]["TotalSaviorCumul"]);
 
                             /// Goals
                             if (config["always_gm"][i]["Goal"].is_number_unsigned())
@@ -1084,45 +1056,6 @@ bool RocketStats::ReadConfig()
                                 always_gm[i].TotalOvertimeGoalCumul = int(config["always_gm"][i]["TotalOvertimeGoalCumul"]);
                             if (config["always_gm"][i]["TotalHoopsSwishGoalCumul"].is_number_unsigned())
                                 always_gm[i].TotalHoopsSwishGoalCumul = int(config["always_gm"][i]["TotalHoopsSwishGoalCumul"]);
-
-                            /// Saves
-                            if (config["always_gm"][i]["Save"].is_number_unsigned())
-                                always_gm[i].Save = int(config["always_gm"][i]["Save"]);
-                            if (config["always_gm"][i]["EpicSave"].is_number_unsigned())
-                                always_gm[i].EpicSave = int(config["always_gm"][i]["EpicSave"]);
-                            if (config["always_gm"][i]["Savior"].is_number_unsigned())
-                                always_gm[i].Savior = int(config["always_gm"][i]["Savior"]);
-                            if (config["always_gm"][i]["TeamSave"].is_number_unsigned())
-                                always_gm[i].TeamSave = int(config["always_gm"][i]["TeamSave"]);
-                            if (config["always_gm"][i]["TeamEpicSave"].is_number_unsigned())
-                                always_gm[i].TeamEpicSave = int(config["always_gm"][i]["TeamEpicSave"]);
-                            if (config["always_gm"][i]["TeamSavior"].is_number_unsigned())
-                                always_gm[i].TeamSavior = int(config["always_gm"][i]["TeamSavior"]);
-                            if (config["always_gm"][i]["TotalSave"].is_number_unsigned())
-                                always_gm[i].TotalSave = int(config["always_gm"][i]["TotalSave"]);
-                            if (config["always_gm"][i]["TotalEpicSave"].is_number_unsigned())
-                                always_gm[i].TotalEpicSave = int(config["always_gm"][i]["TotalEpicSave"]);
-                            if (config["always_gm"][i]["TotalSavior"].is_number_unsigned())
-                                always_gm[i].TotalSavior = int(config["always_gm"][i]["TotalSavior"]);
-
-                            if (config["always_gm"][i]["SaveCumul"].is_number_unsigned())
-                                always_gm[i].SaveCumul = int(config["always_gm"][i]["SaveCumul"]);
-                            if (config["always_gm"][i]["EpicSaveCumul"].is_number_unsigned())
-                                always_gm[i].EpicSaveCumul = int(config["always_gm"][i]["EpicSaveCumul"]);
-                            if (config["always_gm"][i]["SaviorCumul"].is_number_unsigned())
-                                always_gm[i].SaviorCumul = int(config["always_gm"][i]["SaviorCumul"]);
-                            if (config["always_gm"][i]["TeamSaveCumul"].is_number_unsigned())
-                                always_gm[i].TeamSaveCumul = int(config["always_gm"][i]["TeamSaveCumul"]);
-                            if (config["always_gm"][i]["TeamEpicSaveCumul"].is_number_unsigned())
-                                always_gm[i].TeamEpicSaveCumul = int(config["always_gm"][i]["TeamEpicSaveCumul"]);
-                            if (config["always_gm"][i]["TeamSaviorCumul"].is_number_unsigned())
-                                always_gm[i].TeamSaviorCumul = int(config["always_gm"][i]["TeamSaviorCumul"]);
-                            if (config["always_gm"][i]["TotalSaveCumul"].is_number_unsigned())
-                                always_gm[i].TotalSaveCumul = int(config["always_gm"][i]["TotalSaveCumul"]);
-                            if (config["always_gm"][i]["TotalEpicSaveCumul"].is_number_unsigned())
-                                always_gm[i].TotalEpicSaveCumul = int(config["always_gm"][i]["TotalEpicSaveCumul"]);
-                            if (config["always_gm"][i]["TotalSaviorCumul"].is_number_unsigned())
-                                always_gm[i].TotalSaviorCumul = int(config["always_gm"][i]["TotalSaviorCumul"]);
 
                             /// Dropshot
                             if (config["always_gm"][i]["BreakoutDamage"].is_number_unsigned())
@@ -1275,6 +1208,57 @@ bool RocketStats::ReadConfig()
                             if (config["always_gm"][i]["KnockoutTotalHeavyBlockCumul"].is_number_unsigned())
                                 always_gm[i].KnockoutTotalHeavyBlockCumul = int(config["always_gm"][i]["KnockoutTotalHeavyBlockCumul"]);
 
+                            /// Miscs
+                            if (config["always_gm"][i]["HatTrick"].is_number_unsigned())
+                                always_gm[i].HatTrick = int(config["always_gm"][i]["HatTrick"]);
+                            if (config["always_gm"][i]["LowFive"].is_number_unsigned())
+                                always_gm[i].LowFive = int(config["always_gm"][i]["LowFive"]);
+                            if (config["always_gm"][i]["HighFive"].is_number_unsigned())
+                                always_gm[i].HighFive = int(config["always_gm"][i]["HighFive"]);
+                            if (config["always_gm"][i]["MVP"].is_number_unsigned())
+                                always_gm[i].MVP = int(config["always_gm"][i]["MVP"]);
+                            if (config["always_gm"][i]["TeamHatTrick"].is_number_unsigned())
+                                always_gm[i].TeamHatTrick = int(config["always_gm"][i]["TeamHatTrick"]);
+                            if (config["always_gm"][i]["TeamLowFive"].is_number_unsigned())
+                                always_gm[i].TeamLowFive = int(config["always_gm"][i]["TeamLowFive"]);
+                            if (config["always_gm"][i]["TeamHighFive"].is_number_unsigned())
+                                always_gm[i].TeamHighFive = int(config["always_gm"][i]["TeamHighFive"]);
+                            if (config["always_gm"][i]["TeamMVP"].is_number_unsigned())
+                                always_gm[i].TeamMVP = int(config["always_gm"][i]["TeamMVP"]);
+                            if (config["always_gm"][i]["TotalHatTrick"].is_number_unsigned())
+                                always_gm[i].TotalHatTrick = int(config["always_gm"][i]["TotalHatTrick"]);
+                            if (config["always_gm"][i]["TotalLowFive"].is_number_unsigned())
+                                always_gm[i].TotalLowFive = int(config["always_gm"][i]["TotalLowFive"]);
+                            if (config["always_gm"][i]["TotalHighFive"].is_number_unsigned())
+                                always_gm[i].TotalHighFive = int(config["always_gm"][i]["TotalHighFive"]);
+                            if (config["always_gm"][i]["TotalMVP"].is_number_unsigned())
+                                always_gm[i].TotalMVP = int(config["always_gm"][i]["TotalMVP"]);
+
+                            if (config["always_gm"][i]["HatTrickCumul"].is_number_unsigned())
+                                always_gm[i].HatTrickCumul = int(config["always_gm"][i]["HatTrickCumul"]);
+                            if (config["always_gm"][i]["LowFiveCumul"].is_number_unsigned())
+                                always_gm[i].LowFiveCumul = int(config["always_gm"][i]["LowFiveCumul"]);
+                            if (config["always_gm"][i]["HighFiveCumul"].is_number_unsigned())
+                                always_gm[i].HighFiveCumul = int(config["always_gm"][i]["HighFiveCumul"]);
+                            if (config["always_gm"][i]["MVPCumul"].is_number_unsigned())
+                                always_gm[i].MVPCumul = int(config["always_gm"][i]["MVPCumul"]);
+                            if (config["always_gm"][i]["TeamHatTrickCumul"].is_number_unsigned())
+                                always_gm[i].TeamHatTrickCumul = int(config["always_gm"][i]["TeamHatTrickCumul"]);
+                            if (config["always_gm"][i]["TeamLowFiveCumul"].is_number_unsigned())
+                                always_gm[i].TeamLowFiveCumul = int(config["always_gm"][i]["TeamLowFiveCumul"]);
+                            if (config["always_gm"][i]["TeamHighFiveCumul"].is_number_unsigned())
+                                always_gm[i].TeamHighFiveCumul = int(config["always_gm"][i]["TeamHighFiveCumul"]);
+                            if (config["always_gm"][i]["TeamMVPCumul"].is_number_unsigned())
+                                always_gm[i].TeamMVPCumul = int(config["always_gm"][i]["TeamMVPCumul"]);
+                            if (config["always_gm"][i]["TotalHatTrickCumul"].is_number_unsigned())
+                                always_gm[i].TotalHatTrickCumul = int(config["always_gm"][i]["TotalHatTrickCumul"]);
+                            if (config["always_gm"][i]["TotalLowFiveCumul"].is_number_unsigned())
+                                always_gm[i].TotalLowFiveCumul = int(config["always_gm"][i]["TotalLowFiveCumul"]);
+                            if (config["always_gm"][i]["TotalHighFiveCumul"].is_number_unsigned())
+                                always_gm[i].TotalHighFiveCumul = int(config["always_gm"][i]["TotalHighFiveCumul"]);
+                            if (config["always_gm"][i]["TotalMVPCumul"].is_number_unsigned())
+                                always_gm[i].TotalMVPCumul = int(config["always_gm"][i]["TotalMVPCumul"]);
+
                             always_gm[i].isInit = true;
                         }
                     }
@@ -1352,12 +1336,12 @@ void RocketStats::WriteConfig()
     tmp["settings"]["files"]["deathm"] = rs_file_deathm;
     tmp["settings"]["files"]["deathc"] = rs_file_deathc;
     tmp["settings"]["files"]["shots"] = rs_file_shots;
-    tmp["settings"]["files"]["miscs"] = rs_file_miscs;
-    tmp["settings"]["files"]["assists"] = rs_file_assists;
-    tmp["settings"]["files"]["goals"] = rs_file_goals;
     tmp["settings"]["files"]["saves"] = rs_file_saves;
+    tmp["settings"]["files"]["goals"] = rs_file_goals;
     tmp["settings"]["files"]["dropshot"] = rs_file_dropshot;
     tmp["settings"]["files"]["knockout"] = rs_file_knockout;
+    tmp["settings"]["files"]["miscs"] = rs_file_miscs;
+    tmp["settings"]["files"]["certifications"] = rs_file_certifications;
     tmp["settings"]["files"]["boost"] = rs_file_boost;
 
     tmp["settings"]["hides"] = json::object();
@@ -1380,12 +1364,12 @@ void RocketStats::WriteConfig()
     tmp["settings"]["hides"]["deathm"] = rs_hide_deathm;
     tmp["settings"]["hides"]["deathc"] = rs_hide_deathc;
     tmp["settings"]["hides"]["shots"] = rs_hide_shots;
-    tmp["settings"]["hides"]["miscs"] = rs_hide_miscs;
-    tmp["settings"]["hides"]["assists"] = rs_hide_assists;
-    tmp["settings"]["hides"]["goals"] = rs_hide_goals;
     tmp["settings"]["hides"]["saves"] = rs_hide_saves;
+    tmp["settings"]["hides"]["goals"] = rs_hide_goals;
     tmp["settings"]["hides"]["dropshot"] = rs_hide_dropshot;
     tmp["settings"]["hides"]["knockout"] = rs_hide_knockout;
+    tmp["settings"]["hides"]["miscs"] = rs_hide_miscs;
+    tmp["settings"]["hides"]["certifications"] = rs_hide_certifications;
 
     tmp["always"] = json::object();
     tmp["always"]["Games"] = always.games;
@@ -1405,10 +1389,8 @@ void RocketStats::WriteConfig()
     tmp["always"]["ShotOnGoal"] = always.ShotOnGoal;
     tmp["always"]["AerialHit"] = always.AerialHit;
     tmp["always"]["BicycleHit"] = always.BicycleHit;
-    tmp["always"]["TeamClear"] = always.TeamClear;
     tmp["always"]["TeamShotOnGoal"] = always.TeamShotOnGoal;
     tmp["always"]["TeamBicycleHit"] = always.TeamBicycleHit;
-    tmp["always"]["TotalClear"] = always.TotalClear;
     tmp["always"]["TotalShotOnGoal"] = always.TotalShotOnGoal;
     tmp["always"]["TotalBicycleHit"] = always.TotalBicycleHit;
 
@@ -1418,39 +1400,10 @@ void RocketStats::WriteConfig()
     tmp["always"]["ShotOnGoalCumul"] = always.ShotOnGoalCumul;
     tmp["always"]["AerialHitCumul"] = always.AerialHitCumul;
     tmp["always"]["BicycleHitCumul"] = always.BicycleHitCumul;
-    tmp["always"]["TeamClearCumul"] = always.TeamClearCumul;
     tmp["always"]["TeamShotOnGoalCumul"] = always.TeamShotOnGoalCumul;
     tmp["always"]["TeamBicycleHitCumul"] = always.TeamBicycleHitCumul;
-    tmp["always"]["TotalClearCumul"] = always.TotalClearCumul;
     tmp["always"]["TotalShotOnGoalCumul"] = always.TotalShotOnGoalCumul;
     tmp["always"]["TotalBicycleHitCumul"] = always.TotalBicycleHitCumul;
-
-    /// Miscs
-    tmp["always"]["HatTrick"] = always.HatTrick;
-    tmp["always"]["LowFive"] = always.LowFive;
-    tmp["always"]["HighFive"] = always.HighFive;
-    tmp["always"]["MVP"] = always.MVP;
-    tmp["always"]["TeamHatTrick"] = always.TeamHatTrick;
-    tmp["always"]["TeamLowFive"] = always.TeamLowFive;
-    tmp["always"]["TeamHighFive"] = always.TeamHighFive;
-    tmp["always"]["TeamMVP"] = always.TeamMVP;
-    tmp["always"]["TotalHatTrick"] = always.TotalHatTrick;
-    tmp["always"]["TotalLowFive"] = always.TotalLowFive;
-    tmp["always"]["TotalHighFive"] = always.TotalHighFive;
-    tmp["always"]["TotalMVP"] = always.TotalMVP;
-
-    tmp["always"]["HatTrickCumul"] = always.HatTrickCumul;
-    tmp["always"]["LowFiveCumul"] = always.LowFiveCumul;
-    tmp["always"]["HighFiveCumul"] = always.HighFiveCumul;
-    tmp["always"]["MVPCumul"] = always.MVPCumul;
-    tmp["always"]["TeamHatTrickCumul"] = always.TeamHatTrickCumul;
-    tmp["always"]["TeamLowFiveCumul"] = always.TeamLowFiveCumul;
-    tmp["always"]["TeamHighFiveCumul"] = always.TeamHighFiveCumul;
-    tmp["always"]["TeamMVPCumul"] = always.TeamMVPCumul;
-    tmp["always"]["TotalHatTrickCumul"] = always.TotalHatTrickCumul;
-    tmp["always"]["TotalLowFiveCumul"] = always.TotalLowFiveCumul;
-    tmp["always"]["TotalHighFiveCumul"] = always.TotalHighFiveCumul;
-    tmp["always"]["TotalMVPCumul"] = always.TotalMVPCumul;
 
     /// Assists
     tmp["always"]["Assist"] = always.Assist;
@@ -1466,6 +1419,27 @@ void RocketStats::WriteConfig()
     tmp["always"]["TeamPlaymakerCumul"] = always.TeamPlaymakerCumul;
     tmp["always"]["TotalAssistCumul"] = always.TotalAssistCumul;
     tmp["always"]["TotalPlaymakerCumul"] = always.TotalPlaymakerCumul;
+
+    /// Saves
+    tmp["always"]["Save"] = always.Save;
+    tmp["always"]["EpicSave"] = always.EpicSave;
+    tmp["always"]["Savior"] = always.Savior;
+    tmp["always"]["TeamSave"] = always.TeamSave;
+    tmp["always"]["TeamEpicSave"] = always.TeamEpicSave;
+    tmp["always"]["TeamSavior"] = always.TeamSavior;
+    tmp["always"]["TotalSave"] = always.TotalSave;
+    tmp["always"]["TotalEpicSave"] = always.TotalEpicSave;
+    tmp["always"]["TotalSavior"] = always.TotalSavior;
+
+    tmp["always"]["SaveCumul"] = always.SaveCumul;
+    tmp["always"]["EpicSaveCumul"] = always.EpicSaveCumul;
+    tmp["always"]["SaviorCumul"] = always.SaviorCumul;
+    tmp["always"]["TeamSaveCumul"] = always.TeamSaveCumul;
+    tmp["always"]["TeamEpicSaveCumul"] = always.TeamEpicSaveCumul;
+    tmp["always"]["TeamSaviorCumul"] = always.TeamSaviorCumul;
+    tmp["always"]["TotalSaveCumul"] = always.TotalSaveCumul;
+    tmp["always"]["TotalEpicSaveCumul"] = always.TotalEpicSaveCumul;
+    tmp["always"]["TotalSaviorCumul"] = always.TotalSaviorCumul;
 
     /// Goals
     tmp["always"]["Goal"] = always.Goal;
@@ -1517,27 +1491,6 @@ void RocketStats::WriteConfig()
     tmp["always"]["TotalTurtleGoalCumul"] = always.TotalTurtleGoalCumul;
     tmp["always"]["TotalOvertimeGoalCumul"] = always.TotalOvertimeGoalCumul;
     tmp["always"]["TotalHoopsSwishGoalCumul"] = always.TotalHoopsSwishGoalCumul;
-
-    /// Saves
-    tmp["always"]["Save"] = always.Save;
-    tmp["always"]["EpicSave"] = always.EpicSave;
-    tmp["always"]["Savior"] = always.Savior;
-    tmp["always"]["TeamSave"] = always.TeamSave;
-    tmp["always"]["TeamEpicSave"] = always.TeamEpicSave;
-    tmp["always"]["TeamSavior"] = always.TeamSavior;
-    tmp["always"]["TotalSave"] = always.TotalSave;
-    tmp["always"]["TotalEpicSave"] = always.TotalEpicSave;
-    tmp["always"]["TotalSavior"] = always.TotalSavior;
-
-    tmp["always"]["SaveCumul"] = always.SaveCumul;
-    tmp["always"]["EpicSaveCumul"] = always.EpicSaveCumul;
-    tmp["always"]["SaviorCumul"] = always.SaviorCumul;
-    tmp["always"]["TeamSaveCumul"] = always.TeamSaveCumul;
-    tmp["always"]["TeamEpicSaveCumul"] = always.TeamEpicSaveCumul;
-    tmp["always"]["TeamSaviorCumul"] = always.TeamSaviorCumul;
-    tmp["always"]["TotalSaveCumul"] = always.TotalSaveCumul;
-    tmp["always"]["TotalEpicSaveCumul"] = always.TotalEpicSaveCumul;
-    tmp["always"]["TotalSaviorCumul"] = always.TotalSaviorCumul;
 
     /// Dropshot
     tmp["always"]["BreakoutDamage"] = always.BreakoutDamage;
@@ -1618,6 +1571,33 @@ void RocketStats::WriteConfig()
     tmp["always"]["KnockoutTotalHeavyHitCumul"] = always.KnockoutTotalHeavyHitCumul;
     tmp["always"]["KnockoutTotalHeavyBlockCumul"] = always.KnockoutTotalHeavyBlockCumul;
 
+    /// Miscs
+    tmp["always"]["HatTrick"] = always.HatTrick;
+    tmp["always"]["LowFive"] = always.LowFive;
+    tmp["always"]["HighFive"] = always.HighFive;
+    tmp["always"]["MVP"] = always.MVP;
+    tmp["always"]["TeamHatTrick"] = always.TeamHatTrick;
+    tmp["always"]["TeamLowFive"] = always.TeamLowFive;
+    tmp["always"]["TeamHighFive"] = always.TeamHighFive;
+    tmp["always"]["TeamMVP"] = always.TeamMVP;
+    tmp["always"]["TotalHatTrick"] = always.TotalHatTrick;
+    tmp["always"]["TotalLowFive"] = always.TotalLowFive;
+    tmp["always"]["TotalHighFive"] = always.TotalHighFive;
+    tmp["always"]["TotalMVP"] = always.TotalMVP;
+
+    tmp["always"]["HatTrickCumul"] = always.HatTrickCumul;
+    tmp["always"]["LowFiveCumul"] = always.LowFiveCumul;
+    tmp["always"]["HighFiveCumul"] = always.HighFiveCumul;
+    tmp["always"]["MVPCumul"] = always.MVPCumul;
+    tmp["always"]["TeamHatTrickCumul"] = always.TeamHatTrickCumul;
+    tmp["always"]["TeamLowFiveCumul"] = always.TeamLowFiveCumul;
+    tmp["always"]["TeamHighFiveCumul"] = always.TeamHighFiveCumul;
+    tmp["always"]["TeamMVPCumul"] = always.TeamMVPCumul;
+    tmp["always"]["TotalHatTrickCumul"] = always.TotalHatTrickCumul;
+    tmp["always"]["TotalLowFiveCumul"] = always.TotalLowFiveCumul;
+    tmp["always"]["TotalHighFiveCumul"] = always.TotalHighFiveCumul;
+    tmp["always"]["TotalMVPCumul"] = always.TotalMVPCumul;
+
     tmp["always_gm_idx"] = current.playlist;
     tmp["always_gm"] = json::array();
     for (int i = 0; i < always_gm.size(); ++i)
@@ -1640,10 +1620,8 @@ void RocketStats::WriteConfig()
         tmp["always_gm"][i]["ShotOnGoal"] = always_gm[i].ShotOnGoal;
         tmp["always_gm"][i]["AerialHit"] = always_gm[i].AerialHit;
         tmp["always_gm"][i]["BicycleHit"] = always_gm[i].BicycleHit;
-        tmp["always_gm"][i]["TeamClear"] = always_gm[i].TeamClear;
         tmp["always_gm"][i]["TeamShotOnGoal"] = always_gm[i].TeamShotOnGoal;
         tmp["always_gm"][i]["TeamBicycleHit"] = always_gm[i].TeamBicycleHit;
-        tmp["always_gm"][i]["TotalClear"] = always_gm[i].TotalClear;
         tmp["always_gm"][i]["TotalShotOnGoal"] = always_gm[i].TotalShotOnGoal;
         tmp["always_gm"][i]["TotalBicycleHit"] = always_gm[i].TotalBicycleHit;
 
@@ -1653,39 +1631,10 @@ void RocketStats::WriteConfig()
         tmp["always_gm"][i]["ShotOnGoalCumul"] = always_gm[i].ShotOnGoalCumul;
         tmp["always_gm"][i]["AerialHitCumul"] = always_gm[i].AerialHitCumul;
         tmp["always_gm"][i]["BicycleHitCumul"] = always_gm[i].BicycleHitCumul;
-        tmp["always_gm"][i]["TeamClearCumul"] = always_gm[i].TeamClearCumul;
         tmp["always_gm"][i]["TeamShotOnGoalCumul"] = always_gm[i].TeamShotOnGoalCumul;
         tmp["always_gm"][i]["TeamBicycleHitCumul"] = always_gm[i].TeamBicycleHitCumul;
-        tmp["always_gm"][i]["TotalClearCumul"] = always_gm[i].TotalClearCumul;
         tmp["always_gm"][i]["TotalShotOnGoalCumul"] = always_gm[i].TotalShotOnGoalCumul;
         tmp["always_gm"][i]["TotalBicycleHitCumul"] = always_gm[i].TotalBicycleHitCumul;
-
-        /// Miscs
-        tmp["always_gm"][i]["HatTrick"] = always_gm[i].HatTrick;
-        tmp["always_gm"][i]["LowFive"] = always_gm[i].LowFive;
-        tmp["always_gm"][i]["HighFive"] = always_gm[i].HighFive;
-        tmp["always_gm"][i]["MVP"] = always_gm[i].MVP;
-        tmp["always_gm"][i]["TeamHatTrick"] = always_gm[i].TeamHatTrick;
-        tmp["always_gm"][i]["TeamLowFive"] = always_gm[i].TeamLowFive;
-        tmp["always_gm"][i]["TeamHighFive"] = always_gm[i].TeamHighFive;
-        tmp["always_gm"][i]["TeamMVP"] = always_gm[i].TeamMVP;
-        tmp["always_gm"][i]["TotalHatTrick"] = always_gm[i].TotalHatTrick;
-        tmp["always_gm"][i]["TotalLowFive"] = always_gm[i].TotalLowFive;
-        tmp["always_gm"][i]["TotalHighFive"] = always_gm[i].TotalHighFive;
-        tmp["always_gm"][i]["TotalMVP"] = always_gm[i].TotalMVP;
-
-        tmp["always_gm"][i]["HatTrickCumul"] = always_gm[i].HatTrickCumul;
-        tmp["always_gm"][i]["LowFiveCumul"] = always_gm[i].LowFiveCumul;
-        tmp["always_gm"][i]["HighFiveCumul"] = always_gm[i].HighFiveCumul;
-        tmp["always_gm"][i]["MVPCumul"] = always_gm[i].MVPCumul;
-        tmp["always_gm"][i]["TeamHatTrickCumul"] = always_gm[i].TeamHatTrickCumul;
-        tmp["always_gm"][i]["TeamLowFiveCumul"] = always_gm[i].TeamLowFiveCumul;
-        tmp["always_gm"][i]["TeamHighFiveCumul"] = always_gm[i].TeamHighFiveCumul;
-        tmp["always_gm"][i]["TeamMVPCumul"] = always_gm[i].TeamMVPCumul;
-        tmp["always_gm"][i]["TotalHatTrickCumul"] = always_gm[i].TotalHatTrickCumul;
-        tmp["always_gm"][i]["TotalLowFiveCumul"] = always_gm[i].TotalLowFiveCumul;
-        tmp["always_gm"][i]["TotalHighFiveCumul"] = always_gm[i].TotalHighFiveCumul;
-        tmp["always_gm"][i]["TotalMVPCumul"] = always_gm[i].TotalMVPCumul;
 
         /// Assists
         tmp["always_gm"][i]["Assist"] = always_gm[i].Assist;
@@ -1701,6 +1650,27 @@ void RocketStats::WriteConfig()
         tmp["always_gm"][i]["TeamPlaymakerCumul"] = always_gm[i].TeamPlaymakerCumul;
         tmp["always_gm"][i]["TotalAssistCumul"] = always_gm[i].TotalAssistCumul;
         tmp["always_gm"][i]["TotalPlaymakerCumul"] = always_gm[i].TotalPlaymakerCumul;
+
+        /// Saves
+        tmp["always_gm"][i]["Save"] = always_gm[i].Save;
+        tmp["always_gm"][i]["EpicSave"] = always_gm[i].EpicSave;
+        tmp["always_gm"][i]["Savior"] = always_gm[i].Savior;
+        tmp["always_gm"][i]["TeamSave"] = always_gm[i].TeamSave;
+        tmp["always_gm"][i]["TeamEpicSave"] = always_gm[i].TeamEpicSave;
+        tmp["always_gm"][i]["TeamSavior"] = always_gm[i].TeamSavior;
+        tmp["always_gm"][i]["TotalSave"] = always_gm[i].TotalSave;
+        tmp["always_gm"][i]["TotalEpicSave"] = always_gm[i].TotalEpicSave;
+        tmp["always_gm"][i]["TotalSavior"] = always_gm[i].TotalSavior;
+
+        tmp["always_gm"][i]["SaveCumul"] = always_gm[i].SaveCumul;
+        tmp["always_gm"][i]["EpicSaveCumul"] = always_gm[i].EpicSaveCumul;
+        tmp["always_gm"][i]["SaviorCumul"] = always_gm[i].SaviorCumul;
+        tmp["always_gm"][i]["TeamSaveCumul"] = always_gm[i].TeamSaveCumul;
+        tmp["always_gm"][i]["TeamEpicSaveCumul"] = always_gm[i].TeamEpicSaveCumul;
+        tmp["always_gm"][i]["TeamSaviorCumul"] = always_gm[i].TeamSaviorCumul;
+        tmp["always_gm"][i]["TotalSaveCumul"] = always_gm[i].TotalSaveCumul;
+        tmp["always_gm"][i]["TotalEpicSaveCumul"] = always_gm[i].TotalEpicSaveCumul;
+        tmp["always_gm"][i]["TotalSaviorCumul"] = always_gm[i].TotalSaviorCumul;
 
         /// Goals
         tmp["always_gm"][i]["Goal"] = always_gm[i].Goal;
@@ -1752,27 +1722,6 @@ void RocketStats::WriteConfig()
         tmp["always_gm"][i]["TotalTurtleGoalCumul"] = always_gm[i].TotalTurtleGoalCumul;
         tmp["always_gm"][i]["TotalOvertimeGoalCumul"] = always_gm[i].TotalOvertimeGoalCumul;
         tmp["always_gm"][i]["TotalHoopsSwishGoalCumul"] = always_gm[i].TotalHoopsSwishGoalCumul;
-
-        /// Saves
-        tmp["always_gm"][i]["Save"] = always_gm[i].Save;
-        tmp["always_gm"][i]["EpicSave"] = always_gm[i].EpicSave;
-        tmp["always_gm"][i]["Savior"] = always_gm[i].Savior;
-        tmp["always_gm"][i]["TeamSave"] = always_gm[i].TeamSave;
-        tmp["always_gm"][i]["TeamEpicSave"] = always_gm[i].TeamEpicSave;
-        tmp["always_gm"][i]["TeamSavior"] = always_gm[i].TeamSavior;
-        tmp["always_gm"][i]["TotalSave"] = always_gm[i].TotalSave;
-        tmp["always_gm"][i]["TotalEpicSave"] = always_gm[i].TotalEpicSave;
-        tmp["always_gm"][i]["TotalSavior"] = always_gm[i].TotalSavior;
-
-        tmp["always_gm"][i]["SaveCumul"] = always_gm[i].SaveCumul;
-        tmp["always_gm"][i]["EpicSaveCumul"] = always_gm[i].EpicSaveCumul;
-        tmp["always_gm"][i]["SaviorCumul"] = always_gm[i].SaviorCumul;
-        tmp["always_gm"][i]["TeamSaveCumul"] = always_gm[i].TeamSaveCumul;
-        tmp["always_gm"][i]["TeamEpicSaveCumul"] = always_gm[i].TeamEpicSaveCumul;
-        tmp["always_gm"][i]["TeamSaviorCumul"] = always_gm[i].TeamSaviorCumul;
-        tmp["always_gm"][i]["TotalSaveCumul"] = always_gm[i].TotalSaveCumul;
-        tmp["always_gm"][i]["TotalEpicSaveCumul"] = always_gm[i].TotalEpicSaveCumul;
-        tmp["always_gm"][i]["TotalSaviorCumul"] = always_gm[i].TotalSaviorCumul;
 
         /// Dropshot
         tmp["always_gm"][i]["BreakoutDamage"] = always_gm[i].BreakoutDamage;
@@ -1852,6 +1801,33 @@ void RocketStats::WriteConfig()
         tmp["always_gm"][i]["KnockoutTotalDoubleKOCumul"] = always_gm[i].KnockoutTotalDoubleKOCumul;
         tmp["always_gm"][i]["KnockoutTotalHeavyHitCumul"] = always_gm[i].KnockoutTotalHeavyHitCumul;
         tmp["always_gm"][i]["KnockoutTotalHeavyBlockCumul"] = always_gm[i].KnockoutTotalHeavyBlockCumul;
+
+        /// Miscs
+        tmp["always_gm"][i]["HatTrick"] = always_gm[i].HatTrick;
+        tmp["always_gm"][i]["LowFive"] = always_gm[i].LowFive;
+        tmp["always_gm"][i]["HighFive"] = always_gm[i].HighFive;
+        tmp["always_gm"][i]["MVP"] = always_gm[i].MVP;
+        tmp["always_gm"][i]["TeamHatTrick"] = always_gm[i].TeamHatTrick;
+        tmp["always_gm"][i]["TeamLowFive"] = always_gm[i].TeamLowFive;
+        tmp["always_gm"][i]["TeamHighFive"] = always_gm[i].TeamHighFive;
+        tmp["always_gm"][i]["TeamMVP"] = always_gm[i].TeamMVP;
+        tmp["always_gm"][i]["TotalHatTrick"] = always_gm[i].TotalHatTrick;
+        tmp["always_gm"][i]["TotalLowFive"] = always_gm[i].TotalLowFive;
+        tmp["always_gm"][i]["TotalHighFive"] = always_gm[i].TotalHighFive;
+        tmp["always_gm"][i]["TotalMVP"] = always_gm[i].TotalMVP;
+
+        tmp["always_gm"][i]["HatTrickCumul"] = always_gm[i].HatTrickCumul;
+        tmp["always_gm"][i]["LowFiveCumul"] = always_gm[i].LowFiveCumul;
+        tmp["always_gm"][i]["HighFiveCumul"] = always_gm[i].HighFiveCumul;
+        tmp["always_gm"][i]["MVPCumul"] = always_gm[i].MVPCumul;
+        tmp["always_gm"][i]["TeamHatTrickCumul"] = always_gm[i].TeamHatTrickCumul;
+        tmp["always_gm"][i]["TeamLowFiveCumul"] = always_gm[i].TeamLowFiveCumul;
+        tmp["always_gm"][i]["TeamHighFiveCumul"] = always_gm[i].TeamHighFiveCumul;
+        tmp["always_gm"][i]["TeamMVPCumul"] = always_gm[i].TeamMVPCumul;
+        tmp["always_gm"][i]["TotalHatTrickCumul"] = always_gm[i].TotalHatTrickCumul;
+        tmp["always_gm"][i]["TotalLowFiveCumul"] = always_gm[i].TotalLowFiveCumul;
+        tmp["always_gm"][i]["TotalHighFiveCumul"] = always_gm[i].TotalHighFiveCumul;
+        tmp["always_gm"][i]["TotalMVPCumul"] = always_gm[i].TotalMVPCumul;
     }
 
     WriteInFile("data/rocketstats.json", tmp.dump(2), true); // Save plugin settings in JSON format
