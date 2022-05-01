@@ -228,6 +228,66 @@ void RocketStats::onStatEvent(ServerWrapper caller, void* params)
 
         AllKnockoutBlockTaken(true);
     }
+    else if (name == "KO_LightBlock")
+    {
+        ++always.KnockoutLightBlock;
+        ++current.stats.KnockoutLightBlock;
+        ++session.KnockoutLightBlock;
+        ++stats[current.playlist].KnockoutLightBlock;
+        ++always_gm[current.playlist].KnockoutLightBlock;
+
+        ++always.KnockoutLightBlockCumul;
+        ++current.stats.KnockoutLightBlockCumul;
+        ++session.KnockoutLightBlockCumul;
+
+        for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
+        {
+            ++stats[it->first].KnockoutLightBlockCumul;
+            ++always_gm[it->first].KnockoutLightBlockCumul;
+        }
+
+        AllKnockoutLightBlock(true);
+    }
+    else if (name == "KO_PlayerThrown")
+    {
+        ++always.KnockoutPlayerThrown;
+        ++current.stats.KnockoutPlayerThrown;
+        ++session.KnockoutPlayerThrown;
+        ++stats[current.playlist].KnockoutPlayerThrown;
+        ++always_gm[current.playlist].KnockoutPlayerThrown;
+
+        ++always.KnockoutPlayerThrownCumul;
+        ++current.stats.KnockoutPlayerThrownCumul;
+        ++session.KnockoutPlayerThrownCumul;
+
+        for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
+        {
+            ++stats[it->first].KnockoutPlayerThrownCumul;
+            ++always_gm[it->first].KnockoutPlayerThrownCumul;
+        }
+
+        AllKnockoutPlayerThrown(true);
+    }
+    else if (name == "KO_PlayerGrabbed")
+    {
+        ++always.KnockoutPlayerGrabbed;
+        ++current.stats.KnockoutPlayerGrabbed;
+        ++session.KnockoutPlayerGrabbed;
+        ++stats[current.playlist].KnockoutPlayerGrabbed;
+        ++always_gm[current.playlist].KnockoutPlayerGrabbed;
+
+        ++always.KnockoutPlayerGrabbedCumul;
+        ++current.stats.KnockoutPlayerGrabbedCumul;
+        ++session.KnockoutPlayerGrabbedCumul;
+
+        for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
+        {
+            ++stats[it->first].KnockoutPlayerGrabbedCumul;
+            ++always_gm[it->first].KnockoutPlayerGrabbedCumul;
+        }
+
+        AllKnockoutPlayerGrabbed(true);
+    }
     else
     {
         if (name == "Shot" || name == "Goal" || name == "LongGoal" || name == "HatTrick" || name == "BackwardsGoal" || name == "HoopsSwishGoal" || name == "BreakoutDamage" || name == "BreakoutDamageLarge" || name == "OvertimeGoal" || name == "Playmaker" || name == "AerialGoal" || name == "Assist" || name == "Save" || name == "EpicSave" || name == "Savior" || name == "MVP" || name == "BicycleHit" || name == "" || name == "" || name == "" || name == "")
@@ -807,6 +867,37 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
 
             AllDropshotBreakoutDamageLarge(true);
         }
+        else if (name == "KO_Knockout")
+        {
+            cvarManager->log(" --> Knockout " + std::string(me ? "PLAYER" : "TEAM"));
+
+            ++always.KnockoutTotal;
+            ++current.stats.KnockoutTotal;
+            ++session.KnockoutTotal;
+            ++stats[current.playlist].KnockoutTotal;
+            ++always_gm[current.playlist].KnockoutTotal;
+
+            ++(me ? always.Knockout : always.KnockoutTeam);
+            ++(me ? current.stats.Knockout : current.stats.KnockoutTeam);
+            ++(me ? session.Knockout : session.KnockoutTeam);
+            ++(me ? stats[current.playlist].Knockout : stats[current.playlist].KnockoutTeam);
+            ++(me ? always_gm[current.playlist].Knockout : always_gm[current.playlist].KnockoutTeam);
+
+            ++always.KnockoutTotalCumul;
+            ++current.stats.KnockoutTotalCumul;
+            ++session.KnockoutTotalCumul;
+
+            for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
+            {
+                ++stats[it->first].KnockoutTotalCumul;
+                ++always_gm[it->first].KnockoutTotalCumul;
+
+                ++(me ? stats[it->first].KnockoutCumul : stats[it->first].KnockoutTeamCumul);
+                ++(me ? always_gm[it->first].KnockoutCumul : always_gm[it->first].KnockoutTeamCumul);
+            }
+
+            AllKnockoutBase(true);
+        }
         else if (name == "KO_Death")
         {
             cvarManager->log(" --> KnockoutDeath " + std::string(me ? "PLAYER" : "TEAM"));
@@ -837,6 +928,37 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
             }
 
             AllKnockoutDeath(true);
+        }
+        else if (name == "KO_KnockoutAssist")
+        {
+            cvarManager->log(" --> KnockoutAssist " + std::string(me ? "PLAYER" : "TEAM"));
+
+            ++always.KnockoutTotalAssist;
+            ++current.stats.KnockoutTotalAssist;
+            ++session.KnockoutTotalAssist;
+            ++stats[current.playlist].KnockoutTotalAssist;
+            ++always_gm[current.playlist].KnockoutTotalAssist;
+
+            ++(me ? always.KnockoutAssist : always.KnockoutTeamAssist);
+            ++(me ? current.stats.KnockoutAssist : current.stats.KnockoutTeamAssist);
+            ++(me ? session.KnockoutAssist : session.KnockoutTeamAssist);
+            ++(me ? stats[current.playlist].KnockoutAssist : stats[current.playlist].KnockoutTeamAssist);
+            ++(me ? always_gm[current.playlist].KnockoutAssist : always_gm[current.playlist].KnockoutTeamAssist);
+
+            ++always.KnockoutTotalAssistCumul;
+            ++current.stats.KnockoutTotalAssistCumul;
+            ++session.KnockoutTotalAssistCumul;
+
+            for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
+            {
+                ++stats[it->first].KnockoutTotalAssistCumul;
+                ++always_gm[it->first].KnockoutTotalAssistCumul;
+
+                ++(me ? stats[it->first].KnockoutAssistCumul : stats[it->first].KnockoutTeamAssistCumul);
+                ++(me ? always_gm[it->first].KnockoutAssistCumul : always_gm[it->first].KnockoutTeamAssistCumul);
+            }
+
+            AllKnockoutAssist(true);
         }
         else if (name == "KO_DoubleKO")
         {
@@ -900,36 +1022,36 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
 
             AllKnockoutHeavyHit(true);
         }
-        else if (name == "KO_Knockout")
+        else if (name == "KO_TripleKO")
         {
-            cvarManager->log(" --> Knockout " + std::string(me ? "PLAYER" : "TEAM"));
+            cvarManager->log(" --> KnockoutTripleKO " + std::string(me ? "PLAYER" : "TEAM"));
 
-            ++always.KnockoutTotal;
-            ++current.stats.KnockoutTotal;
-            ++session.KnockoutTotal;
-            ++stats[current.playlist].KnockoutTotal;
-            ++always_gm[current.playlist].KnockoutTotal;
+            ++always.KnockoutTotalTripleKO;
+            ++current.stats.KnockoutTotalTripleKO;
+            ++session.KnockoutTotalTripleKO;
+            ++stats[current.playlist].KnockoutTotalTripleKO;
+            ++always_gm[current.playlist].KnockoutTotalTripleKO;
 
-            ++(me ? always.Knockout : always.KnockoutTeam);
-            ++(me ? current.stats.Knockout : current.stats.KnockoutTeam);
-            ++(me ? session.Knockout : session.KnockoutTeam);
-            ++(me ? stats[current.playlist].Knockout : stats[current.playlist].KnockoutTeam);
-            ++(me ? always_gm[current.playlist].Knockout : always_gm[current.playlist].KnockoutTeam);
+            ++(me ? always.KnockoutTripleKO : always.KnockoutTeamTripleKO);
+            ++(me ? current.stats.KnockoutTripleKO : current.stats.KnockoutTeamTripleKO);
+            ++(me ? session.KnockoutTripleKO : session.KnockoutTeamTripleKO);
+            ++(me ? stats[current.playlist].KnockoutTripleKO : stats[current.playlist].KnockoutTeamTripleKO);
+            ++(me ? always_gm[current.playlist].KnockoutTripleKO : always_gm[current.playlist].KnockoutTeamTripleKO);
 
-            ++always.KnockoutTotalCumul;
-            ++current.stats.KnockoutTotalCumul;
-            ++session.KnockoutTotalCumul;
+            ++always.KnockoutTotalTripleKOCumul;
+            ++current.stats.KnockoutTotalTripleKOCumul;
+            ++session.KnockoutTotalTripleKOCumul;
 
             for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
             {
-                ++stats[it->first].KnockoutTotalCumul;
-                ++always_gm[it->first].KnockoutTotalCumul;
+                ++stats[it->first].KnockoutTotalTripleKOCumul;
+                ++always_gm[it->first].KnockoutTotalTripleKOCumul;
 
-                ++(me ? stats[it->first].KnockoutCumul : stats[it->first].KnockoutTeamCumul);
-                ++(me ? always_gm[it->first].KnockoutCumul : always_gm[it->first].KnockoutTeamCumul);
+                ++(me ? stats[it->first].KnockoutTripleKOCumul : stats[it->first].KnockoutTeamTripleKOCumul);
+                ++(me ? always_gm[it->first].KnockoutTripleKOCumul : always_gm[it->first].KnockoutTeamTripleKOCumul);
             }
 
-            AllKnockoutBase(true);
+            AllKnockoutTripleKO(true);
         }
         else if (name == "KO_HeavyBlock")
         {
@@ -961,6 +1083,68 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
             }
 
             AllKnockoutHeavyBlock(true);
+        }
+        else if (name == "KO_AerialHeavyHit")
+        {
+            cvarManager->log(" --> KnockoutAerialHeavyHit " + std::string(me ? "PLAYER" : "TEAM"));
+
+            ++always.KnockoutTotalAerialHeavyHit;
+            ++current.stats.KnockoutTotalAerialHeavyHit;
+            ++session.KnockoutTotalAerialHeavyHit;
+            ++stats[current.playlist].KnockoutTotalAerialHeavyHit;
+            ++always_gm[current.playlist].KnockoutTotalAerialHeavyHit;
+
+            ++(me ? always.KnockoutAerialHeavyHit : always.KnockoutTeamAerialHeavyHit);
+            ++(me ? current.stats.KnockoutAerialHeavyHit : current.stats.KnockoutTeamAerialHeavyHit);
+            ++(me ? session.KnockoutAerialHeavyHit : session.KnockoutTeamAerialHeavyHit);
+            ++(me ? stats[current.playlist].KnockoutAerialHeavyHit : stats[current.playlist].KnockoutTeamAerialHeavyHit);
+            ++(me ? always_gm[current.playlist].KnockoutAerialHeavyHit : always_gm[current.playlist].KnockoutTeamAerialHeavyHit);
+
+            ++always.KnockoutTotalAerialHeavyHitCumul;
+            ++current.stats.KnockoutTotalAerialHeavyHitCumul;
+            ++session.KnockoutTotalAerialHeavyHitCumul;
+
+            for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
+            {
+                ++stats[it->first].KnockoutTotalAerialHeavyHitCumul;
+                ++always_gm[it->first].KnockoutTotalAerialHeavyHitCumul;
+
+                ++(me ? stats[it->first].KnockoutAerialHeavyHitCumul : stats[it->first].KnockoutTeamAerialHeavyHitCumul);
+                ++(me ? always_gm[it->first].KnockoutAerialHeavyHitCumul : always_gm[it->first].KnockoutTeamAerialHeavyHitCumul);
+            }
+
+            AllKnockoutAerialHeavyHit(true);
+        }
+        else if (name == "KO_AerialLightHit")
+        {
+            cvarManager->log(" --> KnockoutAerialLightHit " + std::string(me ? "PLAYER" : "TEAM"));
+
+            ++always.KnockoutTotalAerialLightHit;
+            ++current.stats.KnockoutTotalAerialLightHit;
+            ++session.KnockoutTotalAerialLightHit;
+            ++stats[current.playlist].KnockoutTotalAerialLightHit;
+            ++always_gm[current.playlist].KnockoutTotalAerialLightHit;
+
+            ++(me ? always.KnockoutAerialLightHit : always.KnockoutTeamAerialLightHit);
+            ++(me ? current.stats.KnockoutAerialLightHit : current.stats.KnockoutTeamAerialLightHit);
+            ++(me ? session.KnockoutAerialLightHit : session.KnockoutTeamAerialLightHit);
+            ++(me ? stats[current.playlist].KnockoutAerialLightHit : stats[current.playlist].KnockoutTeamAerialLightHit);
+            ++(me ? always_gm[current.playlist].KnockoutAerialLightHit : always_gm[current.playlist].KnockoutTeamAerialLightHit);
+
+            ++always.KnockoutTotalAerialLightHitCumul;
+            ++current.stats.KnockoutTotalAerialLightHitCumul;
+            ++session.KnockoutTotalAerialLightHitCumul;
+
+            for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
+            {
+                ++stats[it->first].KnockoutTotalAerialLightHitCumul;
+                ++always_gm[it->first].KnockoutTotalAerialLightHitCumul;
+
+                ++(me ? stats[it->first].KnockoutAerialLightHitCumul : stats[it->first].KnockoutTeamAerialLightHitCumul);
+                ++(me ? always_gm[it->first].KnockoutAerialLightHitCumul : always_gm[it->first].KnockoutTeamAerialLightHitCumul);
+            }
+
+            AllKnockoutAerialLightHit(true);
         }
         else if (name == "MVP")
         {
@@ -1277,24 +1461,37 @@ void RocketStats::SessionStats()
         /// Knockout
         tmp.Knockout += stats[it->first].Knockout;
         tmp.KnockoutDeath += stats[it->first].KnockoutDeath;
+        tmp.KnockoutAssist += stats[it->first].KnockoutAssist;
         tmp.KnockoutThrown += stats[it->first].KnockoutThrown;
         tmp.KnockoutGrabbed += stats[it->first].KnockoutGrabbed;
         tmp.KnockoutDoubleKO += stats[it->first].KnockoutDoubleKO;
         tmp.KnockoutHeavyHit += stats[it->first].KnockoutHeavyHit;
         tmp.KnockoutHitTaken += stats[it->first].KnockoutHitTaken;
         tmp.KnockoutLightHit += stats[it->first].KnockoutLightHit;
+        tmp.KnockoutTripleKO += stats[it->first].KnockoutTripleKO;
         tmp.KnockoutBlockTaken += stats[it->first].KnockoutBlockTaken;
         tmp.KnockoutHeavyBlock += stats[it->first].KnockoutHeavyBlock;
+        tmp.KnockoutLightBlock += stats[it->first].KnockoutLightBlock;
+        tmp.KnockoutPlayerThrown += stats[it->first].KnockoutPlayerThrown;
+        tmp.KnockoutPlayerGrabbed += stats[it->first].KnockoutPlayerGrabbed;
+        tmp.KnockoutAerialHeavyHit += stats[it->first].KnockoutAerialHeavyHit;
+        tmp.KnockoutAerialLightHit += stats[it->first].KnockoutAerialLightHit;
         tmp.KnockoutTeam += stats[it->first].KnockoutTeam;
         tmp.KnockoutTeamDeath += stats[it->first].KnockoutTeamDeath;
         tmp.KnockoutTeamDoubleKO += stats[it->first].KnockoutTeamDoubleKO;
         tmp.KnockoutTeamHeavyHit += stats[it->first].KnockoutTeamHeavyHit;
+        tmp.KnockoutTeamTripleKO += stats[it->first].KnockoutTeamTripleKO;
         tmp.KnockoutTeamHeavyBlock += stats[it->first].KnockoutTeamHeavyBlock;
+        tmp.KnockoutTeamAerialHeavyHit += stats[it->first].KnockoutTeamAerialHeavyHit;
+        tmp.KnockoutTeamAerialLightHit += stats[it->first].KnockoutTeamAerialLightHit;
         tmp.KnockoutTotal += stats[it->first].KnockoutTotal;
         tmp.KnockoutTotalDeath += stats[it->first].KnockoutTotalDeath;
         tmp.KnockoutTotalDoubleKO += stats[it->first].KnockoutTotalDoubleKO;
         tmp.KnockoutTotalHeavyHit += stats[it->first].KnockoutTotalHeavyHit;
+        tmp.KnockoutTotalTripleKO += stats[it->first].KnockoutTotalTripleKO;
         tmp.KnockoutTotalHeavyBlock += stats[it->first].KnockoutTotalHeavyBlock;
+        tmp.KnockoutTotalAerialHeavyHit += stats[it->first].KnockoutTotalAerialHeavyHit;
+        tmp.KnockoutTotalAerialLightHit += stats[it->first].KnockoutTotalAerialLightHit;
 
         /// Miscs
         tmp.LowFive += stats[it->first].LowFive;
@@ -1390,26 +1587,39 @@ void RocketStats::SessionStats()
     session.TotalBreakoutDamageLargeCumul = tmp.TotalBreakoutDamageLarge;
 
     /// Knockout
-    tmp.KnockoutCumul += tmp.Knockout;
-    tmp.KnockoutDeathCumul += tmp.KnockoutDeath;
-    tmp.KnockoutThrownCumul += tmp.KnockoutThrown;
-    tmp.KnockoutGrabbedCumul += tmp.KnockoutGrabbed;
-    tmp.KnockoutDoubleKOCumul += tmp.KnockoutDoubleKO;
-    tmp.KnockoutHeavyHitCumul += tmp.KnockoutHeavyHit;
-    tmp.KnockoutHitTakenCumul += tmp.KnockoutHitTaken;
-    tmp.KnockoutLightHitCumul += tmp.KnockoutLightHit;
-    tmp.KnockoutBlockTakenCumul += tmp.KnockoutBlockTaken;
-    tmp.KnockoutHeavyBlockCumul += tmp.KnockoutHeavyBlock;
-    tmp.KnockoutTeamCumul += tmp.KnockoutTeam;
-    tmp.KnockoutTeamDeathCumul += tmp.KnockoutTeamDeath;
-    tmp.KnockoutTeamDoubleKOCumul += tmp.KnockoutTeamDoubleKO;
-    tmp.KnockoutTeamHeavyHitCumul += tmp.KnockoutTeamHeavyHit;
-    tmp.KnockoutTeamHeavyBlockCumul += tmp.KnockoutTeamHeavyBlock;
-    tmp.KnockoutTotalDeathCumul += tmp.KnockoutTotalDeath;
-    tmp.KnockoutTotalDoubleKOCumul += tmp.KnockoutTotalDoubleKO;
-    tmp.KnockoutTotalHeavyHitCumul += tmp.KnockoutTotalHeavyHit;
-    tmp.KnockoutTotalCumul += tmp.KnockoutTotal;
-    tmp.KnockoutTotalHeavyBlockCumul += tmp.KnockoutTotalHeavyBlock;
+    tmp.KnockoutCumul = tmp.Knockout;
+    tmp.KnockoutDeathCumul = tmp.KnockoutDeath;
+    tmp.KnockoutAssistCumul = tmp.KnockoutAssist;
+    tmp.KnockoutThrownCumul = tmp.KnockoutThrown;
+    tmp.KnockoutGrabbedCumul = tmp.KnockoutGrabbed;
+    tmp.KnockoutDoubleKOCumul = tmp.KnockoutDoubleKO;
+    tmp.KnockoutHeavyHitCumul = tmp.KnockoutHeavyHit;
+    tmp.KnockoutHitTakenCumul = tmp.KnockoutHitTaken;
+    tmp.KnockoutLightHitCumul = tmp.KnockoutLightHit;
+    tmp.KnockoutTripleKOCumul = tmp.KnockoutTripleKO;
+    tmp.KnockoutBlockTakenCumul = tmp.KnockoutBlockTaken;
+    tmp.KnockoutHeavyBlockCumul = tmp.KnockoutHeavyBlock;
+    tmp.KnockoutLightBlockCumul = tmp.KnockoutLightBlock;
+    tmp.KnockoutPlayerThrownCumul = tmp.KnockoutPlayerThrown;
+    tmp.KnockoutPlayerGrabbedCumul = tmp.KnockoutPlayerGrabbed;
+    tmp.KnockoutAerialHeavyHitCumul = tmp.KnockoutAerialHeavyHit;
+    tmp.KnockoutAerialLightHitCumul = tmp.KnockoutAerialLightHit;
+    tmp.KnockoutTeamCumul = tmp.KnockoutTeam;
+    tmp.KnockoutTeamDeathCumul = tmp.KnockoutTeamDeath;
+    tmp.KnockoutTeamDoubleKOCumul = tmp.KnockoutTeamDoubleKO;
+    tmp.KnockoutTeamHeavyHitCumul = tmp.KnockoutTeamHeavyHit;
+    tmp.KnockoutTeamTripleKOCumul = tmp.KnockoutTeamTripleKO;
+    tmp.KnockoutTeamHeavyBlockCumul = tmp.KnockoutTeamHeavyBlock;
+    tmp.KnockoutTeamAerialHeavyHitCumul = tmp.KnockoutTeamAerialHeavyHit;
+    tmp.KnockoutTeamAerialLightHitCumul = tmp.KnockoutTeamAerialLightHit;
+    tmp.KnockoutTotalCumul = tmp.KnockoutTotal;
+    tmp.KnockoutTotalDeathCumul = tmp.KnockoutTotalDeath;
+    tmp.KnockoutTotalDoubleKOCumul = tmp.KnockoutTotalDoubleKO;
+    tmp.KnockoutTotalHeavyHitCumul = tmp.KnockoutTotalHeavyHit;
+    tmp.KnockoutTotalTripleKOCumul = tmp.KnockoutTotalTripleKO;
+    tmp.KnockoutTotalHeavyBlockCumul = tmp.KnockoutTotalHeavyBlock;
+    tmp.KnockoutTotalAerialHeavyHitCumul = tmp.KnockoutTotalAerialHeavyHit;
+    tmp.KnockoutTotalAerialLightHitCumul = tmp.KnockoutTotalAerialLightHit;
 
     /// Miscs
     session.LowFiveCumul = tmp.LowFive;

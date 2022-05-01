@@ -2285,9 +2285,21 @@ void RocketStats::AllKnockout(bool force, bool default_value)
 {
     AllKnockoutBase(force, default_value);
     AllKnockoutDeath(force, default_value);
+    AllKnockoutAssist(force, default_value);
     AllKnockoutThrown(force, default_value);
     AllKnockoutGrabbed(force, default_value);
+    AllKnockoutDoubleKO(force, default_value);
+    AllKnockoutHeavyHit(force, default_value);
     AllKnockoutHitTaken(force, default_value);
+    AllKnockoutLightHit(force, default_value);
+    AllKnockoutTripleKO(force, default_value);
+    AllKnockoutBlockTaken(force, default_value);
+    AllKnockoutHeavyBlock(force, default_value);
+    AllKnockoutLightBlock(force, default_value);
+    AllKnockoutPlayerThrown(force, default_value);
+    AllKnockoutPlayerGrabbed(force, default_value);
+    AllKnockoutAerialHeavyHit(force, default_value);
+    AllKnockoutAerialLightHit(force, default_value);
 }
 
 void RocketStats::AllKnockoutBase(bool force, bool default_value)
@@ -2318,6 +2330,21 @@ void RocketStats::AllKnockoutDeath(bool force, bool default_value)
     VarKnockoutDeathCumul(true, force, default_value);
     VarKnockoutTeamDeathCumul(true, force, default_value);
     VarKnockoutTotalDeathCumul(true, force, default_value);
+}
+
+void RocketStats::AllKnockoutAssist(bool force, bool default_value)
+{
+    VarKnockoutAssist(true, force, default_value);
+    VarKnockoutTeamAssist(true, force, default_value);
+    VarKnockoutTotalAssist(true, force, default_value);
+
+    VarKnockoutAssistMatch(true, force, default_value);
+    VarKnockoutTeamAssistMatch(true, force, default_value);
+    VarKnockoutTotalAssistMatch(true, force, default_value);
+
+    VarKnockoutAssistCumul(true, force, default_value);
+    VarKnockoutTeamAssistCumul(true, force, default_value);
+    VarKnockoutTotalAssistCumul(true, force, default_value);
 }
 
 void RocketStats::AllKnockoutThrown(bool force, bool default_value)
@@ -2378,6 +2405,21 @@ void RocketStats::AllKnockoutLightHit(bool force, bool default_value)
     VarKnockoutLightHitCumul(true, force, default_value);
 }
 
+void RocketStats::AllKnockoutTripleKO(bool force, bool default_value)
+{
+    VarKnockoutTripleKO(true, force, default_value);
+    VarKnockoutTeamTripleKO(true, force, default_value);
+    VarKnockoutTotalTripleKO(true, force, default_value);
+
+    VarKnockoutTripleKOMatch(true, force, default_value);
+    VarKnockoutTeamTripleKOMatch(true, force, default_value);
+    VarKnockoutTotalTripleKOMatch(true, force, default_value);
+
+    VarKnockoutTripleKOCumul(true, force, default_value);
+    VarKnockoutTeamTripleKOCumul(true, force, default_value);
+    VarKnockoutTotalTripleKOCumul(true, force, default_value);
+}
+
 void RocketStats::AllKnockoutBlockTaken(bool force, bool default_value)
 {
     VarKnockoutBlockTaken(true, force, default_value);
@@ -2400,6 +2442,57 @@ void RocketStats::AllKnockoutHeavyBlock(bool force, bool default_value)
     VarKnockoutTotalHeavyBlockCumul(true, force, default_value);
 }
 
+void RocketStats::AllKnockoutLightBlock(bool force, bool default_value)
+{
+    VarKnockoutLightBlock(true, force, default_value);
+    VarKnockoutLightBlockMatch(true, force, default_value);
+    VarKnockoutLightBlockCumul(true, force, default_value);
+}
+
+void RocketStats::AllKnockoutPlayerThrown(bool force, bool default_value)
+{
+    VarKnockoutPlayerThrown(true, force, default_value);
+    VarKnockoutPlayerThrownMatch(true, force, default_value);
+    VarKnockoutPlayerThrownCumul(true, force, default_value);
+}
+
+void RocketStats::AllKnockoutPlayerGrabbed(bool force, bool default_value)
+{
+    VarKnockoutPlayerGrabbed(true, force, default_value);
+    VarKnockoutPlayerGrabbedMatch(true, force, default_value);
+    VarKnockoutPlayerGrabbedCumul(true, force, default_value);
+}
+
+void RocketStats::AllKnockoutAerialHeavyHit(bool force, bool default_value)
+{
+    VarKnockoutAerialHeavyHit(true, force, default_value);
+    VarKnockoutTeamAerialHeavyHit(true, force, default_value);
+    VarKnockoutTotalAerialHeavyHit(true, force, default_value);
+
+    VarKnockoutAerialHeavyHitMatch(true, force, default_value);
+    VarKnockoutTeamAerialHeavyHitMatch(true, force, default_value);
+    VarKnockoutTotalAerialHeavyHitMatch(true, force, default_value);
+
+    VarKnockoutAerialHeavyHitCumul(true, force, default_value);
+    VarKnockoutTeamAerialHeavyHitCumul(true, force, default_value);
+    VarKnockoutTotalAerialHeavyHitCumul(true, force, default_value);
+}
+
+void RocketStats::AllKnockoutAerialLightHit(bool force, bool default_value)
+{
+    VarKnockoutAerialLightHit(true, force, default_value);
+    VarKnockoutTeamAerialLightHit(true, force, default_value);
+    VarKnockoutTotalAerialLightHit(true, force, default_value);
+
+    VarKnockoutAerialLightHitMatch(true, force, default_value);
+    VarKnockoutTeamAerialLightHitMatch(true, force, default_value);
+    VarKnockoutTotalAerialLightHitMatch(true, force, default_value);
+
+    VarKnockoutAerialLightHitCumul(true, force, default_value);
+    VarKnockoutTeamAerialLightHitCumul(true, force, default_value);
+    VarKnockoutTotalAerialLightHitCumul(true, force, default_value);
+}
+
 
 std::string RocketStats::VarKnockout(bool write, bool force, bool default_value)
 {
@@ -2417,6 +2510,16 @@ std::string RocketStats::VarKnockoutDeath(bool write, bool force, bool default_v
 
     if (write && (force || (rs_in_file && rs_file_knockout)))
         WriteInFile("RocketStats_KnockoutDeath.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarKnockoutAssist(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutAssist)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutAssist.txt", tmp);
 
     return tmp;
 }
@@ -2481,6 +2584,16 @@ std::string RocketStats::VarKnockoutLightHit(bool write, bool force, bool defaul
     return tmp;
 }
 
+std::string RocketStats::VarKnockoutTripleKO(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutTripleKO)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutTripleKO.txt", tmp);
+
+    return tmp;
+}
+
 std::string RocketStats::VarKnockoutBlockTaken(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutBlockTaken)));
@@ -2501,6 +2614,57 @@ std::string RocketStats::VarKnockoutHeavyBlock(bool write, bool force, bool defa
     return tmp;
 }
 
+std::string RocketStats::VarKnockoutLightBlock(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutLightBlock)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutLightBlock.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarKnockoutPlayerThrown(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutPlayerThrown)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutPlayerThrown.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarKnockoutPlayerGrabbed(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutPlayerGrabbed)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutPlayerGrabbed.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarKnockoutAerialHeavyHit(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutAerialHeavyHit)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutAerialHeavyHit.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarKnockoutAerialLightHit(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutAerialLightHit)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutAerialLightHit.txt", tmp);
+
+    return tmp;
+}
+
+
 std::string RocketStats::VarKnockoutTeam(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutTeam)));
@@ -2517,6 +2681,16 @@ std::string RocketStats::VarKnockoutTeamDeath(bool write, bool force, bool defau
 
     if (write && (force || (rs_in_file && rs_file_knockout)))
         WriteInFile("RocketStats_KnockoutTeamDeath.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarKnockoutTeamAssist(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutTeamAssist)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutTeamAssist.txt", tmp);
 
     return tmp;
 }
@@ -2541,6 +2715,16 @@ std::string RocketStats::VarKnockoutTeamHeavyHit(bool write, bool force, bool de
     return tmp;
 }
 
+std::string RocketStats::VarKnockoutTeamTripleKO(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutTeamTripleKO)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutTeamTripleKO.txt", tmp);
+
+    return tmp;
+}
+
 std::string RocketStats::VarKnockoutTeamHeavyBlock(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutTeamHeavyBlock)));
@@ -2550,6 +2734,27 @@ std::string RocketStats::VarKnockoutTeamHeavyBlock(bool write, bool force, bool 
 
     return tmp;
 }
+
+std::string RocketStats::VarKnockoutTeamAerialHeavyHit(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutTeamAerialHeavyHit)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutTeamAerialHeavyHit.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarKnockoutTeamAerialLightHit(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutTeamAerialLightHit)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutTeamAerialLightHit.txt", tmp);
+
+    return tmp;
+}
+
 
 std::string RocketStats::VarKnockoutTotal(bool write, bool force, bool default_value)
 {
@@ -2567,6 +2772,16 @@ std::string RocketStats::VarKnockoutTotalDeath(bool write, bool force, bool defa
 
     if (write && (force || (rs_in_file && rs_file_knockout)))
         WriteInFile("RocketStats_KnockoutTotalDeath.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarKnockoutTotalAssist(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutTotalAssist)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutTotalAssist.txt", tmp);
 
     return tmp;
 }
@@ -2591,12 +2806,42 @@ std::string RocketStats::VarKnockoutTotalHeavyHit(bool write, bool force, bool d
     return tmp;
 }
 
+std::string RocketStats::VarKnockoutTotalTripleKO(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutTotalTripleKO)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutTotalTripleKO.txt", tmp);
+
+    return tmp;
+}
+
 std::string RocketStats::VarKnockoutTotalHeavyBlock(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutTotalHeavyBlock)));
 
     if (write && (force || (rs_in_file && rs_file_knockout)))
         WriteInFile("RocketStats_KnockoutTotalHeavyBlock.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarKnockoutTotalAerialHeavyHit(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutTotalAerialHeavyHit)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutTotalAerialHeavyHit.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarKnockoutTotalAerialLightHit(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutTotalAerialLightHit)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutTotalAerialLightHit.txt", tmp);
 
     return tmp;
 }
@@ -2618,6 +2863,16 @@ std::string RocketStats::VarKnockoutDeathMatch(bool write, bool force, bool defa
 
     if (write && (force || (rs_in_file && rs_file_knockout)))
         WriteInFile("RocketStats_KnockoutDeathMatch.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarKnockoutAssistMatch(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.KnockoutAssist)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutAssistMatch.txt", tmp);
 
     return tmp;
 }
@@ -2682,6 +2937,16 @@ std::string RocketStats::VarKnockoutLightHitMatch(bool write, bool force, bool d
     return tmp;
 }
 
+std::string RocketStats::VarKnockoutTripleKOMatch(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.KnockoutTripleKO)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutTripleKOMatch.txt", tmp);
+
+    return tmp;
+}
+
 std::string RocketStats::VarKnockoutBlockTakenMatch(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.KnockoutBlockTaken)));
@@ -2698,6 +2963,56 @@ std::string RocketStats::VarKnockoutHeavyBlockMatch(bool write, bool force, bool
 
     if (write && (force || (rs_in_file && rs_file_knockout)))
         WriteInFile("RocketStats_KnockoutHeavyBlockMatch.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarKnockoutLightBlockMatch(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.KnockoutLightBlock)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutLightBlockMatch.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarKnockoutPlayerThrownMatch(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.KnockoutPlayerThrown)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutPlayerThrownMatch.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarKnockoutPlayerGrabbedMatch(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.KnockoutPlayerGrabbed)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutPlayerGrabbedMatch.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarKnockoutAerialHeavyHitMatch(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.KnockoutAerialHeavyHit)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutAerialHeavyHitMatch.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarKnockoutAerialLightHitMatch(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.KnockoutAerialLightHit)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutAerialLightHitMatch.txt", tmp);
 
     return tmp;
 }
@@ -2723,6 +3038,15 @@ std::string RocketStats::VarKnockoutTeamDeathMatch(bool write, bool force, bool 
     return tmp;
 }
 
+std::string RocketStats::VarKnockoutTeamAssistMatch(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.KnockoutTeamAssist)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutTeamAssistMatch.txt", tmp);
+
+    return tmp;
+}
 
 std::string RocketStats::VarKnockoutTeamDoubleKOMatch(bool write, bool force, bool default_value)
 {
@@ -2744,6 +3068,15 @@ std::string RocketStats::VarKnockoutTeamHeavyHitMatch(bool write, bool force, bo
     return tmp;
 }
 
+std::string RocketStats::VarKnockoutTeamTripleKOMatch(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.KnockoutTeamTripleKO)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutTeamTripleKOMatch.txt", tmp);
+
+    return tmp;
+}
 
 std::string RocketStats::VarKnockoutTeamHeavyBlockMatch(bool write, bool force, bool default_value)
 {
@@ -2751,6 +3084,26 @@ std::string RocketStats::VarKnockoutTeamHeavyBlockMatch(bool write, bool force, 
 
     if (write && (force || (rs_in_file && rs_file_knockout)))
         WriteInFile("RocketStats_KnockoutTeamHeavyBlockMatch.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarKnockoutTeamAerialHeavyHitMatch(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.KnockoutTeamAerialHeavyHit)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutTeamAerialHeavyHitMatch.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarKnockoutTeamAerialLightHitMatch(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.KnockoutTeamAerialLightHit)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutTeamAerialLightHitMatch.txt", tmp);
 
     return tmp;
 }
@@ -2776,6 +3129,15 @@ std::string RocketStats::VarKnockoutTotalDeathMatch(bool write, bool force, bool
     return tmp;
 }
 
+std::string RocketStats::VarKnockoutTotalAssistMatch(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.KnockoutTotalAssist)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutTotalAssistMatch.txt", tmp);
+
+    return tmp;
+}
 
 std::string RocketStats::VarKnockoutTotalDoubleKOMatch(bool write, bool force, bool default_value)
 {
@@ -2797,6 +3159,15 @@ std::string RocketStats::VarKnockoutTotalHeavyHitMatch(bool write, bool force, b
     return tmp;
 }
 
+std::string RocketStats::VarKnockoutTotalTripleKOMatch(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.KnockoutTotalTripleKO)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutTotalTripleKOMatch.txt", tmp);
+
+    return tmp;
+}
 
 std::string RocketStats::VarKnockoutTotalHeavyBlockMatch(bool write, bool force, bool default_value)
 {
@@ -2804,6 +3175,26 @@ std::string RocketStats::VarKnockoutTotalHeavyBlockMatch(bool write, bool force,
 
     if (write && (force || (rs_in_file && rs_file_knockout)))
         WriteInFile("RocketStats_KnockoutTotalHeavyBlockMatch.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarKnockoutTotalAerialHeavyHitMatch(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.KnockoutTotalAerialHeavyHit)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutTotalAerialHeavyHitMatch.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarKnockoutTotalAerialLightHitMatch(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.KnockoutTotalAerialLightHit)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutTotalAerialLightHitMatch.txt", tmp);
 
     return tmp;
 }
@@ -2825,6 +3216,16 @@ std::string RocketStats::VarKnockoutDeathCumul(bool write, bool force, bool defa
 
     if (write && (force || (rs_in_file && rs_file_knockout)))
         WriteInFile("RocketStats_KnockoutDeathCumul.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarKnockoutAssistCumul(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutAssistCumul)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutAssistCumul.txt", tmp);
 
     return tmp;
 }
@@ -2889,6 +3290,16 @@ std::string RocketStats::VarKnockoutLightHitCumul(bool write, bool force, bool d
     return tmp;
 }
 
+std::string RocketStats::VarKnockoutTripleKOCumul(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutTripleKOCumul)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutTripleKOCumul.txt", tmp);
+
+    return tmp;
+}
+
 std::string RocketStats::VarKnockoutBlockTakenCumul(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutBlockTakenCumul)));
@@ -2905,6 +3316,56 @@ std::string RocketStats::VarKnockoutHeavyBlockCumul(bool write, bool force, bool
 
     if (write && (force || (rs_in_file && rs_file_knockout)))
         WriteInFile("RocketStats_KnockoutHeavyBlockCumul.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarKnockoutLightBlockCumul(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutLightBlockCumul)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutLightBlockCumul.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarKnockoutPlayerThrownCumul(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutPlayerThrownCumul)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutPlayerThrownCumul.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarKnockoutPlayerGrabbedCumul(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutPlayerGrabbedCumul)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutPlayerGrabbedCumul.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarKnockoutAerialHeavyHitCumul(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutAerialHeavyHitCumul)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutAerialHeavyHitCumul.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarKnockoutAerialLightHitCumul(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutAerialLightHitCumul)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutAerialLightHitCumul.txt", tmp);
 
     return tmp;
 }
@@ -2930,6 +3391,16 @@ std::string RocketStats::VarKnockoutTeamDeathCumul(bool write, bool force, bool 
     return tmp;
 }
 
+std::string RocketStats::VarKnockoutTeamAssistCumul(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutTeamAssistCumul)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutTeamAssistCumul.txt", tmp);
+
+    return tmp;
+}
+
 std::string RocketStats::VarKnockoutTeamDoubleKOCumul(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutTeamDoubleKOCumul)));
@@ -2950,12 +3421,42 @@ std::string RocketStats::VarKnockoutTeamHeavyHitCumul(bool write, bool force, bo
     return tmp;
 }
 
+std::string RocketStats::VarKnockoutTeamTripleKOCumul(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutTeamTripleKOCumul)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutTeamTripleKOCumul.txt", tmp);
+
+    return tmp;
+}
+
 std::string RocketStats::VarKnockoutTeamHeavyBlockCumul(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutTeamHeavyBlockCumul)));
 
     if (write && (force || (rs_in_file && rs_file_knockout)))
         WriteInFile("RocketStats_KnockoutTeamHeavyBlockCumul.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarKnockoutTeamAerialHeavyHitCumul(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutTeamAerialHeavyHitCumul)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutTeamAerialHeavyHitCumul.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarKnockoutTeamAerialLightHitCumul(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutTeamAerialLightHitCumul)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutTeamAerialLightHitCumul.txt", tmp);
 
     return tmp;
 }
@@ -2981,6 +3482,16 @@ std::string RocketStats::VarKnockoutTotalDeathCumul(bool write, bool force, bool
     return tmp;
 }
 
+std::string RocketStats::VarKnockoutTotalAssistCumul(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutTotalAssistCumul)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutTotalAssistCumul.txt", tmp);
+
+    return tmp;
+}
+
 std::string RocketStats::VarKnockoutTotalDoubleKOCumul(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutTotalDoubleKOCumul)));
@@ -3001,12 +3512,42 @@ std::string RocketStats::VarKnockoutTotalHeavyHitCumul(bool write, bool force, b
     return tmp;
 }
 
+std::string RocketStats::VarKnockoutTotalTripleKOCumul(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutTotalTripleKOCumul)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutTotalTripleKOCumul.txt", tmp);
+
+    return tmp;
+}
+
 std::string RocketStats::VarKnockoutTotalHeavyBlockCumul(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutTotalHeavyBlockCumul)));
 
     if (write && (force || (rs_in_file && rs_file_knockout)))
         WriteInFile("RocketStats_KnockoutTotalHeavyBlockCumul.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarKnockoutTotalAerialHeavyHitCumul(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutTotalAerialHeavyHitCumul)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutTotalAerialHeavyHitCumul.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarKnockoutTotalAerialLightHitCumul(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutTotalAerialLightHitCumul)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutTotalAerialLightHitCumul.txt", tmp);
 
     return tmp;
 }
