@@ -80,6 +80,14 @@ copy "$(SolutionDir)settings\$(ProjectName).set" "$(BAKKESMOD)\plugins\settings\
     <ClCompile Include="Managements\OverlayManagement.cpp" />
     <ClCompile Include="Managements\StatsManagement.cpp" />
     <ClCompile Include="Managements\VarsManagement.cpp" />
+    <ClCompile Include="Managements\Vars\Certifications.cpp" />
+    <ClCompile Include="Managements\Vars\Dropshot.cpp" />
+    <ClCompile Include="Managements\Vars\Goals.cpp" />
+    <ClCompile Include="Managements\Vars\Knockout.cpp" />
+    <ClCompile Include="Managements\Vars\Miscs.cpp" />
+    <ClCompile Include="Managements\Vars\Other.cpp" />
+    <ClCompile Include="Managements\Vars\Saves.cpp" />
+    <ClCompile Include="Managements\Vars\Shots.cpp" />
     <ClCompile Include="Managements\WindowManagement.cpp" />
     <ClCompile Include="RocketStats.cpp" />
     <ClCompile Include="Utils.cpp" />

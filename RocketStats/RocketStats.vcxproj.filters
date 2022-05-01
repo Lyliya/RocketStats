@@ -27,6 +27,9 @@
     <Filter Include="Resources\Welcome">
       <UniqueIdentifier>{af49430e-9522-4446-986c-d6659148a85b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\Managements\Vars">
+      <UniqueIdentifier>{5fb33d6a-520f-4e0c-8195-05efe7d2aa45}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RocketStats.h">
@@ -108,6 +111,30 @@
     </ClCompile>
     <ClCompile Include="Managements\VarsManagement.cpp">
       <Filter>Sources\Managements</Filter>
+    </ClCompile>
+    <ClCompile Include="Managements\Vars\Certifications.cpp">
+      <Filter>Sources\Managements\Vars</Filter>
+    </ClCompile>
+    <ClCompile Include="Managements\Vars\Dropshot.cpp">
+      <Filter>Sources\Managements\Vars</Filter>
+    </ClCompile>
+    <ClCompile Include="Managements\Vars\Goals.cpp">
+      <Filter>Sources\Managements\Vars</Filter>
+    </ClCompile>
+    <ClCompile Include="Managements\Vars\Knockout.cpp">
+      <Filter>Sources\Managements\Vars</Filter>
+    </ClCompile>
+    <ClCompile Include="Managements\Vars\Miscs.cpp">
+      <Filter>Sources\Managements\Vars</Filter>
+    </ClCompile>
+    <ClCompile Include="Managements\Vars\Other.cpp">
+      <Filter>Sources\Managements\Vars</Filter>
+    </ClCompile>
+    <ClCompile Include="Managements\Vars\Saves.cpp">
+      <Filter>Sources\Managements\Vars</Filter>
+    </ClCompile>
+    <ClCompile Include="Managements\Vars\Shots.cpp">
+      <Filter>Sources\Managements\Vars</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
