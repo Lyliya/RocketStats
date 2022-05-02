@@ -1,5 +1,139 @@
 #include "../RocketStats.h"
 
+void RocketStats::ReadMiscs(Stats& stat, json& config)
+{
+    if (config["LowFive"].is_number_unsigned())
+        stat.LowFive = int(config["LowFive"]);
+    if (config["HatTrick"].is_number_unsigned())
+        stat.HatTrick = int(config["HatTrick"]);
+    if (config["HighFive"].is_number_unsigned())
+        stat.HighFive = int(config["HighFive"]);
+    if (config["TeamLowFive"].is_number_unsigned())
+        stat.TeamLowFive = int(config["TeamLowFive"]);
+    if (config["TeamHatTrick"].is_number_unsigned())
+        stat.TeamHatTrick = int(config["TeamHatTrick"]);
+    if (config["TeamHighFive"].is_number_unsigned())
+        stat.TeamHighFive = int(config["TeamHighFive"]);
+    if (config["TotalLowFive"].is_number_unsigned())
+        stat.TotalLowFive = int(config["TotalLowFive"]);
+    if (config["TotalHatTrick"].is_number_unsigned())
+        stat.TotalHatTrick = int(config["TotalHatTrick"]);
+    if (config["TotalHighFive"].is_number_unsigned())
+        stat.TotalHighFive = int(config["TotalHighFive"]);
+
+    if (config["LowFiveCumul"].is_number_unsigned())
+        stat.LowFiveCumul = int(config["LowFiveCumul"]);
+    if (config["HatTrickCumul"].is_number_unsigned())
+        stat.HatTrickCumul = int(config["HatTrickCumul"]);
+    if (config["HighFiveCumul"].is_number_unsigned())
+        stat.HighFiveCumul = int(config["HighFiveCumul"]);
+    if (config["TeamLowFiveCumul"].is_number_unsigned())
+        stat.TeamLowFiveCumul = int(config["TeamLowFiveCumul"]);
+    if (config["TeamHatTrickCumul"].is_number_unsigned())
+        stat.TeamHatTrickCumul = int(config["TeamHatTrickCumul"]);
+    if (config["TeamHighFiveCumul"].is_number_unsigned())
+        stat.TeamHighFiveCumul = int(config["TeamHighFiveCumul"]);
+    if (config["TotalLowFiveCumul"].is_number_unsigned())
+        stat.TotalLowFiveCumul = int(config["TotalLowFiveCumul"]);
+    if (config["TotalHatTrickCumul"].is_number_unsigned())
+        stat.TotalHatTrickCumul = int(config["TotalHatTrickCumul"]);
+    if (config["TotalHighFiveCumul"].is_number_unsigned())
+        stat.TotalHighFiveCumul = int(config["TotalHighFiveCumul"]);
+}
+
+void RocketStats::WriteMiscs(Stats& stat, json& config)
+{
+    config["HatTrick"] = stat.HatTrick;
+    config["LowFive"] = stat.LowFive;
+    config["HighFive"] = stat.HighFive;
+    config["MVP"] = stat.MVP;
+    config["TeamHatTrick"] = stat.TeamHatTrick;
+    config["TeamLowFive"] = stat.TeamLowFive;
+    config["TeamHighFive"] = stat.TeamHighFive;
+    config["TeamMVP"] = stat.TeamMVP;
+    config["TotalHatTrick"] = stat.TotalHatTrick;
+    config["TotalLowFive"] = stat.TotalLowFive;
+    config["TotalHighFive"] = stat.TotalHighFive;
+    config["TotalMVP"] = stat.TotalMVP;
+
+    config["HatTrickCumul"] = stat.HatTrickCumul;
+    config["LowFiveCumul"] = stat.LowFiveCumul;
+    config["HighFiveCumul"] = stat.HighFiveCumul;
+    config["MVPCumul"] = stat.MVPCumul;
+    config["TeamHatTrickCumul"] = stat.TeamHatTrickCumul;
+    config["TeamLowFiveCumul"] = stat.TeamLowFiveCumul;
+    config["TeamHighFiveCumul"] = stat.TeamHighFiveCumul;
+    config["TeamMVPCumul"] = stat.TeamMVPCumul;
+    config["TotalHatTrickCumul"] = stat.TotalHatTrickCumul;
+    config["TotalLowFiveCumul"] = stat.TotalLowFiveCumul;
+    config["TotalHighFiveCumul"] = stat.TotalHighFiveCumul;
+    config["TotalMVPCumul"] = stat.TotalMVPCumul;
+}
+
+void RocketStats::ReplaceMiscs(std::map<std::string, std::string>& vars)
+{
+    /// Base
+    vars["HatTrick"] = VarMiscsHatTrick();
+    vars["LowFive"] = VarMiscsLowFive();
+    vars["HighFive"] = VarMiscsHighFive();
+    vars["TeamHatTrick"] = VarMiscsTeamHatTrick();
+    vars["TeamLowFive"] = VarMiscsTeamLowFive();
+    vars["TeamHighFive"] = VarMiscsTeamHighFive();
+    vars["TotalHatTrick"] = VarMiscsTotalHatTrick();
+    vars["TotalLowFive"] = VarMiscsTotalLowFive();
+    vars["TotalHighFive"] = VarMiscsTotalHighFive();
+
+    /// Match
+    vars["HatTrickMatch"] = VarMiscsHatTrickMatch();
+    vars["LowFiveMatch"] = VarMiscsLowFiveMatch();
+    vars["HighFiveMatch"] = VarMiscsHighFiveMatch();
+    vars["TeamHatTrickMatch"] = VarMiscsTeamHatTrickMatch();
+    vars["TeamLowFiveMatch"] = VarMiscsTeamLowFiveMatch();
+    vars["TeamHighFiveMatch"] = VarMiscsTeamHighFiveMatch();
+    vars["TotalHatTrickMatch"] = VarMiscsTotalHatTrickMatch();
+    vars["TotalLowFiveMatch"] = VarMiscsTotalLowFiveMatch();
+    vars["TotalHighFiveMatch"] = VarMiscsTotalHighFiveMatch();
+
+    /// Cumul
+    vars["HatTrickCumul"] = VarMiscsHatTrickCumul();
+    vars["LowFiveCumul"] = VarMiscsLowFiveCumul();
+    vars["HighFiveCumul"] = VarMiscsHighFiveCumul();
+    vars["TeamHatTrickCumul"] = VarMiscsTeamHatTrickCumul();
+    vars["TeamLowFiveCumul"] = VarMiscsTeamLowFiveCumul();
+    vars["TeamHighFiveCumul"] = VarMiscsTeamHighFiveCumul();
+    vars["TotalHatTrickCumul"] = VarMiscsTotalHatTrickCumul();
+    vars["TotalLowFiveCumul"] = VarMiscsTotalLowFiveCumul();
+    vars["TotalHighFiveCumul"] = VarMiscsTotalHighFiveCumul();
+}
+
+void RocketStats::SessionMiscs(Stats& stat, int index, bool playlists)
+{
+    if (playlists)
+    {
+        stat.LowFive += stats[index].LowFive;
+        stat.HatTrick += stats[index].HatTrick;
+        stat.HighFive += stats[index].HighFive;
+        stat.TeamLowFive += stats[index].TeamLowFive;
+        stat.TeamHatTrick += stats[index].TeamHatTrick;
+        stat.TeamHighFive += stats[index].TeamHighFive;
+        stat.TotalLowFive += stats[index].TotalLowFive;
+        stat.TotalHatTrick += stats[index].TotalHatTrick;
+        stat.TotalHighFive += stats[index].TotalHighFive;
+    }
+    else
+    {
+        session.LowFiveCumul = stat.LowFive;
+        session.HatTrickCumul = stat.HatTrick;
+        session.HighFiveCumul = stat.HighFive;
+        session.TeamLowFiveCumul = stat.TeamLowFive;
+        session.TeamHatTrickCumul = stat.TeamHatTrick;
+        session.TeamHighFiveCumul = stat.TeamHighFive;
+        session.TotalLowFiveCumul = stat.TotalLowFive;
+        session.TotalHatTrickCumul = stat.TotalHatTrick;
+        session.TotalHighFiveCumul = stat.TotalHighFive;
+    }
+}
+
 #pragma region Base
 std::string RocketStats::VarMiscsLowFive(bool write, bool force, bool default_value)
 {

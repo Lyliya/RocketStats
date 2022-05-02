@@ -1,5 +1,106 @@
 #include "../RocketStats.h"
 
+void RocketStats::ReadSaves(Stats& stat, json& config)
+{
+    if (config["Save"].is_number_unsigned())
+        stat.Save = int(config["Save"]);
+    if (config["EpicSave"].is_number_unsigned())
+        stat.EpicSave = int(config["EpicSave"]);
+    if (config["TeamSave"].is_number_unsigned())
+        stat.TeamSave = int(config["TeamSave"]);
+    if (config["TeamEpicSave"].is_number_unsigned())
+        stat.TeamEpicSave = int(config["TeamEpicSave"]);
+    if (config["TotalSave"].is_number_unsigned())
+        stat.TotalSave = int(config["TotalSave"]);
+    if (config["TotalEpicSave"].is_number_unsigned())
+        stat.TotalEpicSave = int(config["TotalEpicSave"]);
+
+    if (config["SaveCumul"].is_number_unsigned())
+        stat.SaveCumul = int(config["SaveCumul"]);
+    if (config["EpicSaveCumul"].is_number_unsigned())
+        stat.EpicSaveCumul = int(config["EpicSaveCumul"]);
+    if (config["TeamSaveCumul"].is_number_unsigned())
+        stat.TeamSaveCumul = int(config["TeamSaveCumul"]);
+    if (config["TeamEpicSaveCumul"].is_number_unsigned())
+        stat.TeamEpicSaveCumul = int(config["TeamEpicSaveCumul"]);
+    if (config["TotalSaveCumul"].is_number_unsigned())
+        stat.TotalSaveCumul = int(config["TotalSaveCumul"]);
+    if (config["TotalEpicSaveCumul"].is_number_unsigned())
+        stat.TotalEpicSaveCumul = int(config["TotalEpicSaveCumul"]);
+}
+
+void RocketStats::WriteSaves(Stats& stat, json& config)
+{
+    config["Save"] = stat.Save;
+    config["EpicSave"] = stat.EpicSave;
+    config["Savior"] = stat.Savior;
+    config["TeamSave"] = stat.TeamSave;
+    config["TeamEpicSave"] = stat.TeamEpicSave;
+    config["TeamSavior"] = stat.TeamSavior;
+    config["TotalSave"] = stat.TotalSave;
+    config["TotalEpicSave"] = stat.TotalEpicSave;
+    config["TotalSavior"] = stat.TotalSavior;
+
+    config["SaveCumul"] = stat.SaveCumul;
+    config["EpicSaveCumul"] = stat.EpicSaveCumul;
+    config["SaviorCumul"] = stat.SaviorCumul;
+    config["TeamSaveCumul"] = stat.TeamSaveCumul;
+    config["TeamEpicSaveCumul"] = stat.TeamEpicSaveCumul;
+    config["TeamSaviorCumul"] = stat.TeamSaviorCumul;
+    config["TotalSaveCumul"] = stat.TotalSaveCumul;
+    config["TotalEpicSaveCumul"] = stat.TotalEpicSaveCumul;
+    config["TotalSaviorCumul"] = stat.TotalSaviorCumul;
+}
+
+void RocketStats::ReplaceSaves(std::map<std::string, std::string>& vars)
+{
+    /// Base
+    vars["Save"] = VarSavesSave();
+    vars["EpicSave"] = VarSavesEpicSave();
+    vars["TeamSave"] = VarSavesTeamSave();
+    vars["TeamEpicSave"] = VarSavesTeamEpicSave();
+    vars["TotalSave"] = VarSavesTotalSave();
+    vars["TotalEpicSave"] = VarSavesTotalEpicSave();
+
+    /// Match
+    vars["SaveMatch"] = VarSavesSaveMatch();
+    vars["EpicSaveMatch"] = VarSavesEpicSaveMatch();
+    vars["TeamSaveMatch"] = VarSavesTeamSaveMatch();
+    vars["TeamEpicSaveMatch"] = VarSavesTeamEpicSaveMatch();
+    vars["TotalSaveMatch"] = VarSavesTotalSaveMatch();
+    vars["TotalEpicSaveMatch"] = VarSavesTotalEpicSaveMatch();
+
+    /// Cumul
+    vars["SaveCumul"] = VarSavesSaveCumul();
+    vars["EpicSaveCumul"] = VarSavesEpicSaveCumul();
+    vars["TeamSaveCumul"] = VarSavesTeamSaveCumul();
+    vars["TeamEpicSaveCumul"] = VarSavesTeamEpicSaveCumul();
+    vars["TotalSaveCumul"] = VarSavesTotalSaveCumul();
+    vars["TotalEpicSaveCumul"] = VarSavesTotalEpicSaveCumul();
+}
+
+void RocketStats::SessionSaves(Stats& stat, int index, bool playlists)
+{
+    if (playlists)
+    {
+        stat.Save += stats[index].Save;
+        stat.EpicSave += stats[index].EpicSave;
+        stat.TeamSave += stats[index].TeamSave;
+        stat.TeamEpicSave += stats[index].TeamEpicSave;
+        stat.TotalSave += stats[index].TotalSave;
+        stat.TotalEpicSave += stats[index].TotalEpicSave;
+    }
+    else
+    {
+        session.SaveCumul = stat.Save;
+        session.EpicSaveCumul = stat.EpicSave;
+        session.TeamSaveCumul = stat.TeamSave;
+        session.TeamEpicSaveCumul = stat.TeamEpicSave;
+        session.TotalSaveCumul = stat.TotalSave;
+        session.TotalEpicSaveCumul = stat.TotalEpicSave;
+    }
+}
+
 #pragma region Base
 std::string RocketStats::VarSavesSave(bool write, bool force, bool default_value)
 {

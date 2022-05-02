@@ -1,5 +1,133 @@
 #include "../RocketStats.h"
 
+void RocketStats::ReadCertifications(Stats& stat, json& config)
+{
+    if (config["MVP"].is_number_unsigned())
+        stat.MVP = int(config["MVP"]);
+    if (config["Savior"].is_number_unsigned())
+        stat.Savior = int(config["Savior"]);
+    if (config["Playmaker"].is_number_unsigned())
+        stat.Playmaker = int(config["Playmaker"]);
+    if (config["TeamMVP"].is_number_unsigned())
+        stat.TeamMVP = int(config["TeamMVP"]);
+    if (config["TeamSavior"].is_number_unsigned())
+        stat.TeamSavior = int(config["TeamSavior"]);
+    if (config["TeamPlaymaker"].is_number_unsigned())
+        stat.TeamPlaymaker = int(config["TeamPlaymaker"]);
+    if (config["TotalMVP"].is_number_unsigned())
+        stat.TotalMVP = int(config["TotalMVP"]);
+    if (config["TotalSavior"].is_number_unsigned())
+        stat.TotalSavior = int(config["TotalSavior"]);
+    if (config["TotalPlaymaker"].is_number_unsigned())
+        stat.TotalPlaymaker = int(config["TotalPlaymaker"]);
+
+    if (config["SaviorCumul"].is_number_unsigned())
+        stat.SaviorCumul = int(config["SaviorCumul"]);
+    if (config["MVPCumul"].is_number_unsigned())
+        stat.MVPCumul = int(config["MVPCumul"]);
+    if (config["PlaymakerCumul"].is_number_unsigned())
+        stat.PlaymakerCumul = int(config["PlaymakerCumul"]);
+    if (config["TeamMVPCumul"].is_number_unsigned())
+        stat.TeamMVPCumul = int(config["TeamMVPCumul"]);
+    if (config["TeamSaviorCumul"].is_number_unsigned())
+        stat.TeamSaviorCumul = int(config["TeamSaviorCumul"]);
+    if (config["TeamPlaymakerCumul"].is_number_unsigned())
+        stat.TeamPlaymakerCumul = int(config["TeamPlaymakerCumul"]);
+    if (config["TotalMVPCumul"].is_number_unsigned())
+        stat.TotalMVPCumul = int(config["TotalMVPCumul"]);
+    if (config["TotalSaviorCumul"].is_number_unsigned())
+        stat.TotalSaviorCumul = int(config["TotalSaviorCumul"]);
+    if (config["TotalPlaymakerCumul"].is_number_unsigned())
+        stat.TotalPlaymakerCumul = int(config["TotalPlaymakerCumul"]);
+}
+
+void RocketStats::WriteCertifications(Stats& stat, json& config)
+{
+    config["MVP"] = stat.MVP;
+    config["Savior"] = stat.Savior;
+    config["Playmaker"] = stat.Playmaker;
+    config["TeamMVP"] = stat.TeamMVP;
+    config["TeamSavior"] = stat.TeamSavior;
+    config["TeamPlaymaker"] = stat.TeamPlaymaker;
+    config["TotalMVP"] = stat.TotalMVP;
+    config["TotalSavior"] = stat.TotalSavior;
+    config["TotalPlaymaker"] = stat.TotalPlaymaker;
+
+    config["SaviorCumul"] = stat.SaviorCumul;
+    config["MVPCumul"] = stat.MVPCumul;
+    config["PlaymakerCumul"] = stat.PlaymakerCumul;
+    config["TeamMVPCumul"] = stat.TeamMVPCumul;
+    config["TeamSaviorCumul"] = stat.TeamSaviorCumul;
+    config["TeamPlaymakerCumul"] = stat.TeamPlaymakerCumul;
+    config["TotalMVPCumul"] = stat.TotalMVPCumul;
+    config["TotalSaviorCumul"] = stat.TotalSaviorCumul;
+    config["TotalPlaymakerCumul"] = stat.TotalPlaymakerCumul;
+}
+
+void RocketStats::ReplaceCertifications(std::map<std::string, std::string>& vars)
+{
+    /// Base
+    vars["MVP"] = VarCertificationsMVP();
+    vars["Savior"] = VarCertificationsSavior();
+    vars["Playmaker"] = VarCertificationsPlaymaker();
+    vars["TeamMVP"] = VarCertificationsTeamMVP();
+    vars["TeamSavior"] = VarCertificationsTeamSavior();
+    vars["TeamPlaymaker"] = VarCertificationsTeamPlaymaker();
+    vars["TotalMVP"] = VarCertificationsTotalMVP();
+    vars["TotalSavior"] = VarCertificationsTotalSavior();
+    vars["TotalPlaymaker"] = VarCertificationsTotalPlaymaker();
+
+    /// Match
+    vars["MVPMatch"] = VarCertificationsMVPMatch();
+    vars["SaviorMatch"] = VarCertificationsSaviorMatch();
+    vars["PlaymakerMatch"] = VarCertificationsPlaymakerMatch();
+    vars["TeamMVPMatch"] = VarCertificationsTeamMVPMatch();
+    vars["TeamSaviorMatch"] = VarCertificationsTeamSaviorMatch();
+    vars["TeamPlaymakerMatch"] = VarCertificationsTeamPlaymakerMatch();
+    vars["TotalMVPMatch"] = VarCertificationsTotalMVPMatch();
+    vars["TotalSaviorMatch"] = VarCertificationsTotalSaviorMatch();
+    vars["TotalPlaymakerMatch"] = VarCertificationsTotalPlaymakerMatch();
+
+    /// Cumul
+    vars["MVPCumul"] = VarCertificationsMVPCumul();
+    vars["SaviorCumul"] = VarCertificationsSaviorCumul();
+    vars["PlaymakerCumul"] = VarCertificationsPlaymakerCumul();
+    vars["TeamMVPCumul"] = VarCertificationsTeamMVPCumul();
+    vars["TeamSaviorCumul"] = VarCertificationsTeamSaviorCumul();
+    vars["TeamPlaymakerCumul"] = VarCertificationsTeamPlaymakerCumul();
+    vars["TotalMVPCumul"] = VarCertificationsTotalMVPCumul();
+    vars["TotalSaviorCumul"] = VarCertificationsTotalSaviorCumul();
+    vars["TotalPlaymakerCumul"] = VarCertificationsTotalPlaymakerCumul();
+}
+
+void RocketStats::SessionCertifications(Stats& stat, int index, bool playlists)
+{
+    if (playlists)
+    {
+        stat.MVP += stats[index].MVP;
+        stat.Savior += stats[index].Savior;
+        stat.Playmaker += stats[index].Playmaker;
+        stat.TeamMVP += stats[index].TeamMVP;
+        stat.TeamSavior += stats[index].TeamSavior;
+        stat.TeamPlaymaker += stats[index].TeamPlaymaker;
+        stat.TotalMVP += stats[index].TotalMVP;
+        stat.TotalSavior += stats[index].TotalSavior;
+        stat.TotalPlaymaker += stats[index].TotalPlaymaker;
+    }
+    else
+    {
+        session.MVPCumul = stat.MVP;
+        session.SaviorCumul = stat.Savior;
+        session.PlaymakerCumul = stat.Playmaker;
+        session.TeamMVPCumul = stat.TeamMVP;
+        session.TeamSaviorCumul = stat.TeamSavior;
+        session.TeamPlaymakerCumul = stat.TeamPlaymaker;
+        session.TotalMVPCumul = stat.TotalMVP;
+        session.TotalSaviorCumul = stat.TotalSavior;
+        session.TotalPlaymakerCumul = stat.TotalPlaymaker;
+    }
+}
+
 #pragma region Base
 std::string RocketStats::VarCertificationsMVP(bool write, bool force, bool default_value)
 {

@@ -1,5 +1,122 @@
 #include "../RocketStats.h"
 
+void RocketStats::ReadOther(Stats& stat, json& config)
+{
+    cvarManager->log("ReadOther: " + nlohmann::to_string(config));
+    if (config["Games"].is_number_unsigned())
+        stat.games = int(config["Games"]);
+    if (config["MMRCumulChange"].is_number())
+        stat.MMRCumulChange = float(config["MMRCumulChange"]);
+    if (config["Win"].is_number_unsigned())
+        stat.win = int(config["Win"]);
+    if (config["Loss"].is_number_unsigned())
+        stat.loss = int(config["Loss"]);
+    if (config["Streak"].is_number_unsigned() || config["Streak"].is_number_integer())
+        stat.streak = int(config["Streak"]);
+    if (config["Demo"].is_number_unsigned())
+        stat.demo = int(config["Demo"]);
+    if (config["Death"].is_number_unsigned())
+        stat.death = int(config["Death"]);
+
+    if (config["DemoCumul"].is_number_unsigned())
+        stat.demoCumul = int(config["DemoCumul"]);
+    if (config["DeathCumul"].is_number_unsigned())
+        stat.deathCumul = int(config["DeathCumul"]);
+}
+
+void RocketStats::WriteOther(Stats& stat, json& config)
+{
+    config["Games"] = stat.games;
+    config["MMRCumulChange"] = stat.MMRCumulChange;
+    config["Win"] = stat.win;
+    config["Loss"] = stat.loss;
+    config["Streak"] = stat.streak;
+    config["Demo"] = stat.demo;
+    config["DemoCumul"] = stat.demoCumul;
+    config["Death"] = stat.death;
+    config["DeathCumul"] = stat.deathCumul;
+}
+
+void RocketStats::ReplaceOther(std::map<std::string, std::string>& vars)
+{
+    // Creation of the different variables used in Text elements
+    int number = 0;
+
+    /// Base
+    vars["Games"] = VarGames();
+    vars["GameMode"] = VarGameMode();
+    vars["Rank"] = VarRank(false, false, false, &number);
+    vars["RankName"] = SubVarRankName(theme_vars["Rank"], number);
+    vars["RankNumber"] = SubVarRankNumber(theme_vars["Rank"], number);
+    vars["Div"] = VarDiv(false, false, false, &number);
+    vars["DivName"] = SubVarDivName(theme_vars["Div"], number);
+    vars["DivNumber"] = SubVarDivNumber(theme_vars["Div"], number);
+    vars["MMR"] = VarMMR();
+    vars["MMRChange"] = VarMMRChange();
+    vars["MMRCumulChange"] = VarMMRCumulChange();
+    vars["Win"] = VarWin();
+    vars["Loss"] = VarLoss();
+    vars["Streak"] = VarStreak();
+    vars["WinRatio"] = VarWinRatio();
+    vars["WinPercentage"] = VarWinPercentage();
+    vars["Demolitions"] = VarDemolitions();
+    vars["Death"] = VarDeath();
+
+    /// Match
+    vars["DemolitionsMatch"] = VarDemolitionsMatch();
+    vars["DeathMatch"] = VarDeathMatch();
+
+    /// Cumul
+    vars["DemolitionsCumul"] = VarDemolitionsCumul();
+    vars["DeathCumul"] = VarDeathCumul();
+
+    // Replace underscores with spaces
+    Utils::ReplaceAll(vars["Rank"], "_", " ");
+
+    // Replaces the MMR with another MMR
+    std::string mmr = vars["MMR"];
+    std::string mmrc = vars["MMRChange"];
+    std::string mmrcc = vars["MMRCumulChange"];
+
+    if (rs_replace_mmr)
+        vars["MMR"] = mmrc;
+    else if (rs_replace_mmr_cc)
+        vars["MMR"] = mmrcc;
+    if (rs_replace_mmrc)
+        vars["MMRChange"] = mmr;
+    else if (rs_replace_mmrc_cc)
+        vars["MMRChange"] = mmrcc;
+    if (rs_replace_mmrcc)
+        vars["MMRCumulChange"] = mmr;
+    else if (rs_replace_mmrcc_c)
+        vars["MMRCumulChange"] = mmrc;
+}
+
+void RocketStats::SessionOther(Stats& stat, int index, bool playlists)
+{
+    if (playlists)
+    {
+        stat.games += stats[index].games;
+        stat.MMRCumulChange += stats[index].MMRChange;
+        stat.win += stats[index].win;
+        stat.loss += stats[index].loss;
+        stat.demo += stats[index].demo;
+        stat.death += stats[index].death;
+    }
+    else
+    {
+        session.games = stat.games;
+        session.myMMR = stats[current.playlist].myMMR;
+        session.MMRChange = stats[current.playlist].MMRChange;
+        session.win = stat.win;
+        session.loss = stat.loss;
+        session.demo = stat.demo;
+        session.demoCumul = stat.demo;
+        session.death = stat.death;
+        session.deathCumul = stat.death;
+    }
+}
+
 #pragma region Base
 std::string RocketStats::VarGames(bool write, bool force, bool default_value)
 {

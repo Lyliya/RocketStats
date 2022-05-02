@@ -1,5 +1,313 @@
 #include "../RocketStats.h"
 
+void RocketStats::ReadGoals(Stats& stat, json& config)
+{
+    if (config["Goal"].is_number_unsigned())
+        stat.Goal = int(config["Goal"]);
+    if (config["AerialGoal"].is_number_unsigned())
+        stat.AerialGoal = int(config["AerialGoal"]);
+    if (config["BackwardsGoal"].is_number_unsigned())
+        stat.BackwardsGoal = int(config["BackwardsGoal"]);
+    if (config["BicycleGoal"].is_number_unsigned())
+        stat.BicycleGoal = int(config["BicycleGoal"]);
+    if (config["LongGoal"].is_number_unsigned())
+        stat.LongGoal = int(config["LongGoal"]);
+    if (config["TurtleGoal"].is_number_unsigned())
+        stat.TurtleGoal = int(config["TurtleGoal"]);
+    if (config["OvertimeGoal"].is_number_unsigned())
+        stat.OvertimeGoal = int(config["OvertimeGoal"]);
+    if (config["HoopsSwishGoal"].is_number_unsigned())
+        stat.HoopsSwishGoal = int(config["HoopsSwishGoal"]);
+    if (config["TeamGoal"].is_number_unsigned())
+        stat.TeamGoal = int(config["TeamGoal"]);
+    if (config["TeamAerialGoal"].is_number_unsigned())
+        stat.TeamAerialGoal = int(config["TeamAerialGoal"]);
+    if (config["TeamBackwardsGoal"].is_number_unsigned())
+        stat.TeamBackwardsGoal = int(config["TeamBackwardsGoal"]);
+    if (config["TeamBicycleGoal"].is_number_unsigned())
+        stat.TeamBicycleGoal = int(config["TeamBicycleGoal"]);
+    if (config["TeamLongGoal"].is_number_unsigned())
+        stat.TeamLongGoal = int(config["TeamLongGoal"]);
+    if (config["TeamTurtleGoal"].is_number_unsigned())
+        stat.TeamTurtleGoal = int(config["TeamTurtleGoal"]);
+    if (config["TeamOvertimeGoal"].is_number_unsigned())
+        stat.TeamOvertimeGoal = int(config["TeamOvertimeGoal"]);
+    if (config["TeamHoopsSwishGoal"].is_number_unsigned())
+        stat.TeamHoopsSwishGoal = int(config["TeamHoopsSwishGoal"]);
+    if (config["TotalGoal"].is_number_unsigned())
+        stat.TotalGoal = int(config["TotalGoal"]);
+    if (config["TotalAerialGoal"].is_number_unsigned())
+        stat.TotalAerialGoal = int(config["TotalAerialGoal"]);
+    if (config["TotalBackwardsGoal"].is_number_unsigned())
+        stat.TotalBackwardsGoal = int(config["TotalBackwardsGoal"]);
+    if (config["TotalBicycleGoal"].is_number_unsigned())
+        stat.TotalBicycleGoal = int(config["TotalBicycleGoal"]);
+    if (config["TotalLongGoal"].is_number_unsigned())
+        stat.TotalLongGoal = int(config["TotalLongGoal"]);
+    if (config["TotalTurtleGoal"].is_number_unsigned())
+        stat.TotalTurtleGoal = int(config["TotalTurtleGoal"]);
+    if (config["TotalOvertimeGoal"].is_number_unsigned())
+        stat.TotalOvertimeGoal = int(config["TotalOvertimeGoal"]);
+    if (config["TotalHoopsSwishGoal"].is_number_unsigned())
+        stat.TotalHoopsSwishGoal = int(config["TotalHoopsSwishGoal"]);
+
+    if (config["GoalCumul"].is_number_unsigned())
+        stat.GoalCumul = int(config["GoalCumul"]);
+    if (config["AerialGoalCumul"].is_number_unsigned())
+        stat.AerialGoalCumul = int(config["AerialGoalCumul"]);
+    if (config["BackwardsGoalCumul"].is_number_unsigned())
+        stat.BackwardsGoalCumul = int(config["BackwardsGoalCumul"]);
+    if (config["BicycleGoalCumul"].is_number_unsigned())
+        stat.BicycleGoalCumul = int(config["BicycleGoalCumul"]);
+    if (config["LongGoalCumul"].is_number_unsigned())
+        stat.LongGoalCumul = int(config["LongGoalCumul"]);
+    if (config["TurtleGoalCumul"].is_number_unsigned())
+        stat.TurtleGoalCumul = int(config["TurtleGoalCumul"]);
+    if (config["OvertimeGoalCumul"].is_number_unsigned())
+        stat.OvertimeGoalCumul = int(config["OvertimeGoalCumul"]);
+    if (config["HoopsSwishGoalCumul"].is_number_unsigned())
+        stat.HoopsSwishGoalCumul = int(config["HoopsSwishGoalCumul"]);
+    if (config["TeamGoalCumul"].is_number_unsigned())
+        stat.TeamGoalCumul = int(config["TeamGoalCumul"]);
+    if (config["TeamAerialGoalCumul"].is_number_unsigned())
+        stat.TeamAerialGoalCumul = int(config["TeamAerialGoalCumul"]);
+    if (config["TeamBackwardsGoalCumul"].is_number_unsigned())
+        stat.TeamBackwardsGoalCumul = int(config["TeamBackwardsGoalCumul"]);
+    if (config["TeamBicycleGoalCumul"].is_number_unsigned())
+        stat.TeamBicycleGoalCumul = int(config["TeamBicycleGoalCumul"]);
+    if (config["TeamLongGoalCumul"].is_number_unsigned())
+        stat.TeamLongGoalCumul = int(config["TeamLongGoalCumul"]);
+    if (config["TeamTurtleGoalCumul"].is_number_unsigned())
+        stat.TeamTurtleGoalCumul = int(config["TeamTurtleGoalCumul"]);
+    if (config["TeamOvertimeGoalCumul"].is_number_unsigned())
+        stat.TeamOvertimeGoalCumul = int(config["TeamOvertimeGoalCumul"]);
+    if (config["TeamHoopsSwishGoalCumul"].is_number_unsigned())
+        stat.TeamHoopsSwishGoalCumul = int(config["TeamHoopsSwishGoalCumul"]);
+    if (config["TotalGoalCumul"].is_number_unsigned())
+        stat.TotalGoalCumul = int(config["TotalGoalCumul"]);
+    if (config["TotalAerialGoalCumul"].is_number_unsigned())
+        stat.TotalAerialGoalCumul = int(config["TotalAerialGoalCumul"]);
+    if (config["TotalBackwardsGoalCumul"].is_number_unsigned())
+        stat.TotalBackwardsGoalCumul = int(config["TotalBackwardsGoalCumul"]);
+    if (config["TotalBicycleGoalCumul"].is_number_unsigned())
+        stat.TotalBicycleGoalCumul = int(config["TotalBicycleGoalCumul"]);
+    if (config["TotalLongGoalCumul"].is_number_unsigned())
+        stat.TotalLongGoalCumul = int(config["TotalLongGoalCumul"]);
+    if (config["TotalTurtleGoalCumul"].is_number_unsigned())
+        stat.TotalTurtleGoalCumul = int(config["TotalTurtleGoalCumul"]);
+    if (config["TotalOvertimeGoalCumul"].is_number_unsigned())
+        stat.TotalOvertimeGoalCumul = int(config["TotalOvertimeGoalCumul"]);
+    if (config["TotalHoopsSwishGoalCumul"].is_number_unsigned())
+        stat.TotalHoopsSwishGoalCumul = int(config["TotalHoopsSwishGoalCumul"]);
+}
+
+void RocketStats::WriteGoals(Stats& stat, json& config)
+{
+    config["Goal"] = stat.Goal;
+    config["AerialGoal"] = stat.AerialGoal;
+    config["BackwardsGoal"] = stat.BackwardsGoal;
+    config["BicycleGoal"] = stat.BicycleGoal;
+    config["LongGoal"] = stat.LongGoal;
+    config["TurtleGoal"] = stat.TurtleGoal;
+    config["OvertimeGoal"] = stat.OvertimeGoal;
+    config["HoopsSwishGoal"] = stat.HoopsSwishGoal;
+    config["TeamGoal"] = stat.TeamGoal;
+    config["TeamAerialGoal"] = stat.TeamAerialGoal;
+    config["TeamBackwardsGoal"] = stat.TeamBackwardsGoal;
+    config["TeamBicycleGoal"] = stat.TeamBicycleGoal;
+    config["TeamLongGoal"] = stat.TeamLongGoal;
+    config["TeamTurtleGoal"] = stat.TeamTurtleGoal;
+    config["TeamOvertimeGoal"] = stat.TeamOvertimeGoal;
+    config["TeamHoopsSwishGoal"] = stat.TeamHoopsSwishGoal;
+    config["TotalGoal"] = stat.TotalGoal;
+    config["TotalAerialGoal"] = stat.TotalAerialGoal;
+    config["TotalBackwardsGoal"] = stat.TotalBackwardsGoal;
+    config["TotalBicycleGoal"] = stat.TotalBicycleGoal;
+    config["TotalLongGoal"] = stat.TotalLongGoal;
+    config["TotalTurtleGoal"] = stat.TotalTurtleGoal;
+    config["TotalOvertimeGoal"] = stat.TotalOvertimeGoal;
+    config["TotalHoopsSwishGoal"] = stat.TotalHoopsSwishGoal;
+
+    config["GoalCumul"] = stat.GoalCumul;
+    config["AerialGoalCumul"] = stat.AerialGoalCumul;
+    config["BackwardsGoalCumul"] = stat.BackwardsGoalCumul;
+    config["BicycleGoalCumul"] = stat.BicycleGoalCumul;
+    config["LongGoalCumul"] = stat.LongGoalCumul;
+    config["TurtleGoalCumul"] = stat.TurtleGoalCumul;
+    config["OvertimeGoalCumul"] = stat.OvertimeGoalCumul;
+    config["HoopsSwishGoalCumul"] = stat.HoopsSwishGoalCumul;
+    config["TeamGoalCumul"] = stat.TeamGoalCumul;
+    config["TeamAerialGoalCumul"] = stat.TeamAerialGoalCumul;
+    config["TeamBackwardsGoalCumul"] = stat.TeamBackwardsGoalCumul;
+    config["TeamBicycleGoalCumul"] = stat.TeamBicycleGoalCumul;
+    config["TeamLongGoalCumul"] = stat.TeamLongGoalCumul;
+    config["TeamTurtleGoalCumul"] = stat.TeamTurtleGoalCumul;
+    config["TeamOvertimeGoalCumul"] = stat.TeamOvertimeGoalCumul;
+    config["TeamHoopsSwishGoalCumul"] = stat.TeamHoopsSwishGoalCumul;
+    config["TotalGoalCumul"] = stat.TotalGoalCumul;
+    config["TotalAerialGoalCumul"] = stat.TotalAerialGoalCumul;
+    config["TotalBackwardsGoalCumul"] = stat.TotalBackwardsGoalCumul;
+    config["TotalBicycleGoalCumul"] = stat.TotalBicycleGoalCumul;
+    config["TotalLongGoalCumul"] = stat.TotalLongGoalCumul;
+    config["TotalTurtleGoalCumul"] = stat.TotalTurtleGoalCumul;
+    config["TotalOvertimeGoalCumul"] = stat.TotalOvertimeGoalCumul;
+    config["TotalHoopsSwishGoalCumul"] = stat.TotalHoopsSwishGoalCumul;
+}
+
+void RocketStats::ReplaceGoals(std::map<std::string, std::string>& vars)
+{
+    /// Base
+    vars["Goal"] = VarGoalsGoal();
+    vars["LongGoal"] = VarGoalsLongGoal();
+    vars["PoolShot"] = VarGoalsPoolShot();
+    vars["AerialGoal"] = VarGoalsAerialGoal();
+    vars["TurtleGoal"] = VarGoalsTurtleGoal();
+    vars["BicycleGoal"] = VarGoalsBicycleGoal();
+    vars["OvertimeGoal"] = VarGoalsOvertimeGoal();
+    vars["BackwardsGoal"] = VarGoalsBackwardsGoal();
+    vars["HoopsSwishGoal"] = VarGoalsHoopsSwishGoal();
+    vars["TeamGoal"] = VarGoalsTeamGoal();
+    vars["TeamLongGoal"] = VarGoalsTeamLongGoal();
+    vars["TeamPoolShot"] = VarGoalsTeamPoolShot();
+    vars["TeamAerialGoal"] = VarGoalsTeamAerialGoal();
+    vars["TeamTurtleGoal"] = VarGoalsTeamTurtleGoal();
+    vars["TeamBicycleGoal"] = VarGoalsTeamBicycleGoal();
+    vars["TeamOvertimeGoal"] = VarGoalsTeamOvertimeGoal();
+    vars["TeamBackwardsGoal"] = VarGoalsTeamBackwardsGoal();
+    vars["TeamHoopsSwishGoal"] = VarGoalsTeamHoopsSwishGoal();
+    vars["TotalGoal"] = VarGoalsTotalGoal();
+    vars["TotalLongGoal"] = VarGoalsTotalLongGoal();
+    vars["TotalPoolShot"] = VarGoalsTotalPoolShot();
+    vars["TotalAerialGoal"] = VarGoalsTotalAerialGoal();
+    vars["TotalTurtleGoal"] = VarGoalsTotalTurtleGoal();
+    vars["TotalBicycleGoal"] = VarGoalsTotalBicycleGoal();
+    vars["TotalOvertimeGoal"] = VarGoalsTotalOvertimeGoal();
+    vars["TotalBackwardsGoal"] = VarGoalsTotalBackwardsGoal();
+    vars["TotalHoopsSwishGoal"] = VarGoalsTotalHoopsSwishGoal();
+
+    /// Match
+    vars["GoalMatch"] = VarGoalsGoalMatch();
+    vars["AerialGoalMatch"] = VarGoalsAerialGoalMatch();
+    vars["BackwardsGoalMatch"] = VarGoalsBackwardsGoalMatch();
+    vars["BicycleGoalMatch"] = VarGoalsBicycleGoalMatch();
+    vars["LongGoalMatch"] = VarGoalsLongGoalMatch();
+    vars["PoolShotMatch"] = VarGoalsPoolShotMatch();
+    vars["TurtleGoalMatch"] = VarGoalsTurtleGoalMatch();
+    vars["OvertimeGoalMatch"] = VarGoalsOvertimeGoalMatch();
+    vars["HoopsSwishGoalMatch"] = VarGoalsHoopsSwishGoalMatch();
+    vars["TeamGoalMatch"] = VarGoalsTeamGoalMatch();
+    vars["TeamAerialGoalMatch"] = VarGoalsTeamAerialGoalMatch();
+    vars["TeamBackwardsGoalMatch"] = VarGoalsTeamBackwardsGoalMatch();
+    vars["TeamBicycleGoalMatch"] = VarGoalsTeamBicycleGoalMatch();
+    vars["TeamLongGoalMatch"] = VarGoalsTeamLongGoalMatch();
+    vars["TeamPoolShotMatch"] = VarGoalsTeamPoolShotMatch();
+    vars["TeamTurtleGoalMatch"] = VarGoalsTeamTurtleGoalMatch();
+    vars["TeamOvertimeGoalMatch"] = VarGoalsTeamOvertimeGoalMatch();
+    vars["TeamHoopsSwishGoalMatch"] = VarGoalsTeamHoopsSwishGoalMatch();
+    vars["TotalGoalMatch"] = VarGoalsTotalGoalMatch();
+    vars["TotalAerialGoalMatch"] = VarGoalsTotalAerialGoalMatch();
+    vars["TotalBackwardsGoalMatch"] = VarGoalsTotalBackwardsGoalMatch();
+    vars["TotalBicycleGoalMatch"] = VarGoalsTotalBicycleGoalMatch();
+    vars["TotalLongGoalMatch"] = VarGoalsTotalLongGoalMatch();
+    vars["TotalPoolShotMatch"] = VarGoalsTotalPoolShotMatch();
+    vars["TotalTurtleGoalMatch"] = VarGoalsTotalTurtleGoalMatch();
+    vars["TotalOvertimeGoalMatch"] = VarGoalsTotalOvertimeGoalMatch();
+    vars["TotalHoopsSwishGoalMatch"] = VarGoalsTotalHoopsSwishGoalMatch();
+
+    /// Cumul
+    vars["GoalCumul"] = VarGoalsGoalCumul();
+    vars["LongGoalCumul"] = VarGoalsLongGoalCumul();
+    vars["PoolShotCumul"] = VarGoalsPoolShotCumul();
+    vars["AerialGoalCumul"] = VarGoalsAerialGoalCumul();
+    vars["TurtleGoalCumul"] = VarGoalsTurtleGoalCumul();
+    vars["BicycleGoalCumul"] = VarGoalsBicycleGoalCumul();
+    vars["OvertimeGoalCumul"] = VarGoalsOvertimeGoalCumul();
+    vars["BackwardsGoalCumul"] = VarGoalsBackwardsGoalCumul();
+    vars["HoopsSwishGoalCumul"] = VarGoalsHoopsSwishGoalCumul();
+    vars["TeamGoalCumul"] = VarGoalsTeamGoalCumul();
+    vars["TeamLongGoalCumul"] = VarGoalsTeamLongGoalCumul();
+    vars["TeamPoolShotCumul"] = VarGoalsTeamPoolShotCumul();
+    vars["TeamAerialGoalCumul"] = VarGoalsTeamAerialGoalCumul();
+    vars["TeamTurtleGoalCumul"] = VarGoalsTeamTurtleGoalCumul();
+    vars["TeamBicycleGoalCumul"] = VarGoalsTeamBicycleGoalCumul();
+    vars["TeamOvertimeGoalCumul"] = VarGoalsTeamOvertimeGoalCumul();
+    vars["TeamBackwardsGoalCumul"] = VarGoalsTeamBackwardsGoalCumul();
+    vars["TeamHoopsSwishGoalCumul"] = VarGoalsTeamHoopsSwishGoalCumul();
+    vars["TotalGoalCumul"] = VarGoalsTotalGoalCumul();
+    vars["TotalLongGoalCumul"] = VarGoalsTotalLongGoalCumul();
+    vars["TotalPoolShotCumul"] = VarGoalsTotalPoolShotCumul();
+    vars["TotalAerialGoalCumul"] = VarGoalsTotalAerialGoalCumul();
+    vars["TotalTurtleGoalCumul"] = VarGoalsTotalTurtleGoalCumul();
+    vars["TotalBicycleGoalCumul"] = VarGoalsTotalBicycleGoalCumul();
+    vars["TotalOvertimeGoalCumul"] = VarGoalsTotalOvertimeGoalCumul();
+    vars["TotalBackwardsGoalCumul"] = VarGoalsTotalBackwardsGoalCumul();
+    vars["TotalHoopsSwishGoalCumul"] = VarGoalsTotalHoopsSwishGoalCumul();
+}
+
+void RocketStats::SessionGoals(Stats& stat, int index, bool playlists)
+{
+    if (playlists)
+    {
+        stat.Goal += stats[index].Goal;
+        stat.LongGoal += stats[index].LongGoal;
+        stat.PoolShot += stats[index].PoolShot;
+        stat.AerialGoal += stats[index].AerialGoal;
+        stat.TurtleGoal += stats[index].TurtleGoal;
+        stat.BicycleGoal += stats[index].BicycleGoal;
+        stat.OvertimeGoal += stats[index].OvertimeGoal;
+        stat.BackwardsGoal += stats[index].BackwardsGoal;
+        stat.HoopsSwishGoal += stats[index].HoopsSwishGoal;
+        stat.TeamGoal += stats[index].TeamGoal;
+        stat.TeamLongGoal += stats[index].TeamLongGoal;
+        stat.TeamPoolShot += stats[index].TeamPoolShot;
+        stat.TeamAerialGoal += stats[index].TeamAerialGoal;
+        stat.TeamTurtleGoal += stats[index].TeamTurtleGoal;
+        stat.TeamBicycleGoal += stats[index].TeamBicycleGoal;
+        stat.TeamOvertimeGoal += stats[index].TeamOvertimeGoal;
+        stat.TeamBackwardsGoal += stats[index].TeamBackwardsGoal;
+        stat.TeamHoopsSwishGoal += stats[index].TeamHoopsSwishGoal;
+        stat.TotalGoal += stats[index].TotalGoal;
+        stat.TotalLongGoal += stats[index].TotalLongGoal;
+        stat.TotalPoolShot += stats[index].TotalPoolShot;
+        stat.TotalAerialGoal += stats[index].TotalAerialGoal;
+        stat.TotalTurtleGoal += stats[index].TotalTurtleGoal;
+        stat.TotalBicycleGoal += stats[index].TotalBicycleGoal;
+        stat.TotalOvertimeGoal += stats[index].TotalOvertimeGoal;
+        stat.TotalBackwardsGoal += stats[index].TotalBackwardsGoal;
+        stat.TotalHoopsSwishGoal += stats[index].TotalHoopsSwishGoal;
+    }
+    else
+    {
+        session.GoalCumul = stat.Goal;
+        session.AerialGoalCumul = stat.AerialGoal;
+        session.BackwardsGoalCumul = stat.BackwardsGoal;
+        session.BicycleGoalCumul = stat.BicycleGoal;
+        session.LongGoalCumul = stat.LongGoal;
+        session.TurtleGoalCumul = stat.TurtleGoal;
+        session.OvertimeGoalCumul = stat.OvertimeGoal;
+        session.HoopsSwishGoalCumul = stat.HoopsSwishGoal;
+        session.PoolShotCumul = stat.PoolShot;
+        session.TeamGoalCumul = stat.TeamGoal;
+        session.TeamAerialGoalCumul = stat.TeamAerialGoal;
+        session.TeamBackwardsGoalCumul = stat.TeamBackwardsGoal;
+        session.TeamBicycleGoalCumul = stat.TeamBicycleGoal;
+        session.TeamLongGoalCumul = stat.TeamLongGoal;
+        session.TeamTurtleGoalCumul = stat.TeamTurtleGoal;
+        session.TeamOvertimeGoalCumul = stat.TeamOvertimeGoal;
+        session.TeamHoopsSwishGoalCumul = stat.TeamHoopsSwishGoal;
+        session.TeamPoolShotCumul = stat.TeamPoolShot;
+        session.TotalGoalCumul = stat.TotalGoal;
+        session.TotalAerialGoalCumul = stat.TotalAerialGoal;
+        session.TotalBackwardsGoalCumul = stat.TotalBackwardsGoal;
+        session.TotalBicycleGoalCumul = stat.TotalBicycleGoal;
+        session.TotalLongGoalCumul = stat.TotalLongGoal;
+        session.TotalTurtleGoalCumul = stat.TotalTurtleGoal;
+        session.TotalOvertimeGoalCumul = stat.TotalOvertimeGoal;
+        session.TotalHoopsSwishGoalCumul = stat.TotalHoopsSwishGoal;
+        session.TotalPoolShotCumul = stat.TotalPoolShot;
+    }
+}
+
 #pragma region Base
 std::string RocketStats::VarGoalsGoal(bool write, bool force, bool default_value)
 {

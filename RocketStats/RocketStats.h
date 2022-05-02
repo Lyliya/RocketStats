@@ -751,7 +751,18 @@ public:
 	void WriteConfig();
 
 	// VarManagement
-	/// Base
+	void VarsRead(Stats& stat, json& config);
+	void VarsWrite(Stats& stat, json& config);
+	void VarsReplace(std::map<std::string, std::string>& vars);
+	void VarsSession(Stats& stat, int index = 0, bool playlists = false);
+
+#pragma region Other
+	void ReadOther(Stats& stat, json& config);
+	void WriteOther(Stats& stat, json& config);
+	void ReplaceOther(std::map<std::string, std::string>& vars);
+	void SessionOther(Stats& stat, int index = 0, bool playlists = false);
+	void AllOther(bool force = false, bool default_value = false);
+
 	std::string VarGames(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGameMode(bool write = false, bool force = false, bool default_value = false);
 	std::string VarRank(bool write = false, bool force = false, bool default_value = false, int* number = nullptr);
@@ -769,13 +780,21 @@ public:
 	std::string VarWinRatio(bool write = false, bool force = false, bool default_value = false);
 	std::string VarWinPercentage(bool write = false, bool force = false, bool default_value = false);
 	std::string VarDemolitions(bool write = false, bool force = false, bool default_value = false);
-	std::string VarDemolitionsMatch(bool write = false, bool force = false, bool default_value = false);
-	std::string VarDemolitionsCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarDeath(bool write = false, bool force = false, bool default_value = false);
-	std::string VarDeathMatch(bool write = false, bool force = false, bool default_value = false);
-	std::string VarDeathCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarBoost(bool write = false, bool force = false, bool default_value = false, bool enabled = false);
 
-	/// Shots
+	std::string VarDemolitionsMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarDeathMatch(bool write = false, bool force = false, bool default_value = false);
+
+	std::string VarDemolitionsCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarDeathCumul(bool write = false, bool force = false, bool default_value = false);
+#pragma endregion
+
+#pragma region Shots
+	void ReadShots(Stats& stat, json& config);
+	void WriteShots(Stats& stat, json& config);
+	void ReplaceShots(std::map<std::string, std::string>& vars);
+	void SessionShots(Stats& stat, int index = 0, bool playlists = false);
 	void AllShots(bool force = false, bool default_value = false);
 	void AllShotsClear(bool force = false, bool default_value = false);
 	void AllShotsAssist(bool force = false, bool default_value = false);
@@ -826,8 +845,13 @@ public:
 	std::string VarShotsTotalAssistCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsTotalBicycleHitCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsTotalShotOnGoalCumul(bool write = false, bool force = false, bool default_value = false);
+#pragma endregion
 
-	/// Saves
+#pragma region Saves
+	void ReadSaves(Stats& stat, json& config);
+	void WriteSaves(Stats& stat, json& config);
+	void ReplaceSaves(std::map<std::string, std::string>& vars);
+	void SessionSaves(Stats& stat, int index = 0, bool playlists = false);
 	void AllSaves(bool force = false, bool default_value = false);
 	void AllSavesSave(bool force = false, bool default_value = false);
 	void AllSavesEpicSave(bool force = false, bool default_value = false);
@@ -852,8 +876,13 @@ public:
 	std::string VarSavesTeamEpicSaveCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarSavesTotalSaveCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarSavesTotalEpicSaveCumul(bool write = false, bool force = false, bool default_value = false);
+#pragma endregion
 
-	/// Goals
+#pragma region Goals
+	void ReadGoals(Stats& stat, json& config);
+	void WriteGoals(Stats& stat, json& config);
+	void ReplaceGoals(std::map<std::string, std::string>& vars);
+	void SessionGoals(Stats& stat, int index = 0, bool playlists = false);
 	void AllGoals(bool force = false, bool default_value = false);
 	void AllGoalsGoal(bool force = false, bool default_value = false);
 	void AllGoalsOwnGoal(bool force = false, bool default_value = false);
@@ -952,8 +981,13 @@ public:
 	std::string VarGoalsTotalOvertimeGoalCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTotalBackwardsGoalCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarGoalsTotalHoopsSwishGoalCumul(bool write = false, bool force = false, bool default_value = false);
+#pragma endregion
 
-	/// Dropshot
+#pragma region Dropshot
+	void ReadDropshot(Stats& stat, json& config);
+	void WriteDropshot(Stats& stat, json& config);
+	void ReplaceDropshot(std::map<std::string, std::string>& vars);
+	void SessionDropshot(Stats& stat, int index = 0, bool playlists = false);
 	void AllDropshot(bool force = false, bool default_value = false);
 	void AllDropshotBreakoutDamage(bool force = false, bool default_value = false);
 	void AllDropshotBreakoutDamageLarge(bool force = false, bool default_value = false);
@@ -978,8 +1012,13 @@ public:
 	std::string VarDropshotTeamBreakoutDamageLargeCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarDropshotTotalBreakoutDamageCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarDropshotTotalBreakoutDamageLargeCumul(bool write = false, bool force = false, bool default_value = false);
+#pragma endregion
 
-	/// Knockout
+#pragma region Knockout
+	void ReadKnockout(Stats& stat, json& config);
+	void WriteKnockout(Stats& stat, json& config);
+	void ReplaceKnockout(std::map<std::string, std::string>& vars);
+	void SessionKnockout(Stats& stat, int index = 0, bool playlists = false);
 	void AllKnockout(bool force = false, bool default_value = false);
 	void AllKnockoutBase(bool force = false, bool default_value = false);
 	void AllKnockoutDeath(bool force = false, bool default_value = false);
@@ -1106,8 +1145,13 @@ public:
 	std::string VarKnockoutTotalHeavyBlockCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarKnockoutTotalAerialHeavyHitCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarKnockoutTotalAerialLightHitCumul(bool write = false, bool force = false, bool default_value = false);
+#pragma endregion
 
-	/// Miscs
+#pragma region Miscs
+	void ReadMiscs(Stats& stat, json& config);
+	void WriteMiscs(Stats& stat, json& config);
+	void ReplaceMiscs(std::map<std::string, std::string>& vars);
+	void SessionMiscs(Stats& stat, int index = 0, bool playlists = false);
 	void AllMiscs(bool force = false, bool default_value = false);
 	void AllMiscsLowFive(bool force = false, bool default_value = false);
 	void AllMiscsHatTrick(bool force = false, bool default_value = false);
@@ -1142,8 +1186,13 @@ public:
 	std::string VarMiscsTotalLowFiveCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsTotalHatTrickCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsTotalHighFiveCumul(bool write = false, bool force = false, bool default_value = false);
+#pragma endregion
 
-	/// Certifications
+#pragma region Certifications
+	void ReadCertifications(Stats& stat, json& config);
+	void WriteCertifications(Stats& stat, json& config);
+	void ReplaceCertifications(std::map<std::string, std::string>& vars);
+	void SessionCertifications(Stats& stat, int index = 0, bool playlists = false);
 	void AllCertifications(bool force = false, bool default_value = false);
 	void AllCertificationsMVP(bool force = false, bool default_value = false);
 	void AllCertificationsSavior(bool force = false, bool default_value = false);
@@ -1202,7 +1251,5 @@ public:
 	std::string VarCertificationsTotalMVPCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarCertificationsTotalSaviorCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarCertificationsTotalPlaymakerCumul(bool write = false, bool force = false, bool default_value = false);
-
-	/// Other
-	std::string VarBoost(bool write = false, bool force = false, bool default_value = false, bool enabled = false);
+#pragma endregion
 };

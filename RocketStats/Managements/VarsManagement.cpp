@@ -1,5 +1,80 @@
 #include "../RocketStats.h"
 
+void RocketStats::VarsReplace(std::map<std::string, std::string>& vars)
+{
+    ReplaceOther(vars);
+    ReplaceShots(vars);
+    ReplaceSaves(vars);
+    ReplaceGoals(vars);
+    ReplaceDropshot(vars);
+    ReplaceKnockout(vars);
+    ReplaceMiscs(vars);
+    ReplaceCertifications(vars);
+}
+
+void RocketStats::VarsSession(Stats& stat, int index, bool playlists)
+{
+    SessionOther(stat, index, playlists);
+    SessionShots(stat, index, playlists);
+    SessionSaves(stat, index, playlists);
+    SessionGoals(stat, index, playlists);
+    SessionDropshot(stat, index, playlists);
+    SessionKnockout(stat, index, playlists);
+    SessionMiscs(stat, index, playlists);
+    SessionCertifications(stat, index, playlists);
+}
+
+void RocketStats::VarsRead(Stats& stat, json& config)
+{
+    ReadOther(stat, config);
+    ReadShots(stat, config);
+    ReadSaves(stat, config);
+    ReadGoals(stat, config);
+    ReadDropshot(stat, config);
+    ReadKnockout(stat, config);
+    ReadMiscs(stat, config);
+    ReadCertifications(stat, config);
+}
+
+void RocketStats::VarsWrite(Stats& stat, json& config)
+{
+    WriteOther(stat, config);
+    WriteShots(stat, config);
+    WriteSaves(stat, config);
+    WriteGoals(stat, config);
+    WriteDropshot(stat, config);
+    WriteKnockout(stat, config);
+    WriteMiscs(stat, config);
+    WriteCertifications(stat, config);
+}
+
+#pragma region Other
+void RocketStats::AllOther(bool force, bool default_value)
+{
+    VarGames(true, force, default_value);
+    VarGameMode(true, force, default_value);
+    VarRank(true, force, default_value);
+    VarDiv(true, force, default_value);
+    VarMMR(true, force, default_value);
+    VarMMRChange(true, force, default_value);
+    VarMMRCumulChange(true, force, default_value);
+    VarWin(true, force, default_value);
+    VarLoss(true, force, default_value);
+    VarStreak(true, force, default_value);
+    VarWinRatio(true, force, default_value);
+    VarWinPercentage(true, force, default_value);
+    VarDemolitions(true, force, default_value);
+    VarDeath(true, force, default_value);
+    VarBoost(true, force, (!is_game_started || is_game_ended), false);
+
+    VarDemolitionsMatch(true, force, default_value);
+    VarDeathMatch(true, force, default_value);
+
+    VarDemolitionsCumul(true, force, default_value);
+    VarDeathCumul(true, force, default_value);
+}
+#pragma endregion
+
 #pragma region Shots
 void RocketStats::AllShots(bool force, bool default_value)
 {

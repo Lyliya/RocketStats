@@ -1,5 +1,100 @@
 #include "../RocketStats.h"
 
+void RocketStats::ReadDropshot(Stats& stat, json& config)
+{
+    if (config["BreakoutDamage"].is_number_unsigned())
+        stat.BreakoutDamage = int(config["BreakoutDamage"]);
+    if (config["BreakoutDamageLarge"].is_number_unsigned())
+        stat.BreakoutDamageLarge = int(config["BreakoutDamageLarge"]);
+    if (config["TeamBreakoutDamage"].is_number_unsigned())
+        stat.TeamBreakoutDamage = int(config["TeamBreakoutDamage"]);
+    if (config["TeamBreakoutDamageLarge"].is_number_unsigned())
+        stat.TeamBreakoutDamageLarge = int(config["TeamBreakoutDamageLarge"]);
+    if (config["TotalBreakoutDamage"].is_number_unsigned())
+        stat.TotalBreakoutDamage = int(config["TotalBreakoutDamage"]);
+    if (config["TotalBreakoutDamageLarge"].is_number_unsigned())
+        stat.TotalBreakoutDamageLarge = int(config["TotalBreakoutDamageLarge"]);
+
+    if (config["BreakoutDamageCumul"].is_number_unsigned())
+        stat.BreakoutDamageCumul = int(config["BreakoutDamageCumul"]);
+    if (config["BreakoutDamageLargeCumul"].is_number_unsigned())
+        stat.BreakoutDamageLargeCumul = int(config["BreakoutDamageLargeCumul"]);
+    if (config["TeamBreakoutDamageCumul"].is_number_unsigned())
+        stat.TeamBreakoutDamageCumul = int(config["TeamBreakoutDamageCumul"]);
+    if (config["TeamBreakoutDamageLargeCumul"].is_number_unsigned())
+        stat.TeamBreakoutDamageLargeCumul = int(config["TeamBreakoutDamageLargeCumul"]);
+    if (config["TotalBreakoutDamageCumul"].is_number_unsigned())
+        stat.TotalBreakoutDamageCumul = int(config["TotalBreakoutDamageCumul"]);
+    if (config["TotalBreakoutDamageLargeCumul"].is_number_unsigned())
+        stat.TotalBreakoutDamageLargeCumul = int(config["TotalBreakoutDamageLargeCumul"]);
+}
+
+void RocketStats::WriteDropshot(Stats& stat, json& config)
+{
+    config["BreakoutDamage"] = stat.BreakoutDamage;
+    config["BreakoutDamageLarge"] = stat.BreakoutDamageLarge;
+    config["TeamBreakoutDamage"] = stat.TeamBreakoutDamage;
+    config["TeamBreakoutDamageLarge"] = stat.TeamBreakoutDamageLarge;
+    config["TotalBreakoutDamage"] = stat.TotalBreakoutDamage;
+    config["TotalBreakoutDamageLarge"] = stat.TotalBreakoutDamageLarge;
+
+    config["BreakoutDamageCumul"] = stat.BreakoutDamageCumul;
+    config["BreakoutDamageLargeCumul"] = stat.BreakoutDamageLargeCumul;
+    config["TeamBreakoutDamageCumul"] = stat.TeamBreakoutDamageCumul;
+    config["TeamBreakoutDamageLargeCumul"] = stat.TeamBreakoutDamageLargeCumul;
+    config["TotalBreakoutDamageCumul"] = stat.TotalBreakoutDamageCumul;
+    config["TotalBreakoutDamageLargeCumul"] = stat.TotalBreakoutDamageLargeCumul;
+}
+
+void RocketStats::ReplaceDropshot(std::map<std::string, std::string>& vars)
+{
+    /// Base
+    vars["BreakoutDamage"] = VarDropshotBreakoutDamage();
+    vars["BreakoutDamageLarge"] = VarDropshotBreakoutDamageLarge();
+    vars["TeamBreakoutDamage"] = VarDropshotTeamBreakoutDamage();
+    vars["TeamBreakoutDamageLarge"] = VarDropshotTeamBreakoutDamageLarge();
+    vars["TotalBreakoutDamage"] = VarDropshotTotalBreakoutDamage();
+    vars["TotalBreakoutDamageLarge"] = VarDropshotTotalBreakoutDamageLarge();
+
+    /// Match
+    vars["BreakoutDamageMatch"] = VarDropshotBreakoutDamageMatch();
+    vars["BreakoutDamageLargeMatch"] = VarDropshotBreakoutDamageLargeMatch();
+    vars["TeamBreakoutDamageMatch"] = VarDropshotTeamBreakoutDamageMatch();
+    vars["TeamBreakoutDamageLargeMatch"] = VarDropshotTeamBreakoutDamageLargeMatch();
+    vars["TotalBreakoutDamageMatch"] = VarDropshotTotalBreakoutDamageMatch();
+    vars["TotalBreakoutDamageLargeMatch"] = VarDropshotTotalBreakoutDamageLargeMatch();
+
+    /// Cumul
+    vars["BreakoutDamageCumul"] = VarDropshotBreakoutDamageCumul();
+    vars["BreakoutDamageLargeCumul"] = VarDropshotBreakoutDamageLargeCumul();
+    vars["TeamBreakoutDamageCumul"] = VarDropshotTeamBreakoutDamageCumul();
+    vars["TeamBreakoutDamageLargeCumul"] = VarDropshotTeamBreakoutDamageLargeCumul();
+    vars["TotalBreakoutDamageCumul"] = VarDropshotTotalBreakoutDamageCumul();
+    vars["TotalBreakoutDamageLargeCumul"] = VarDropshotTotalBreakoutDamageLargeCumul();
+}
+
+void RocketStats::SessionDropshot(Stats& stat, int index, bool playlists)
+{
+    if (playlists)
+    {
+        stat.BreakoutDamage += stats[index].BreakoutDamage;
+        stat.BreakoutDamageLarge += stats[index].BreakoutDamageLarge;
+        stat.TeamBreakoutDamage += stats[index].TeamBreakoutDamage;
+        stat.TeamBreakoutDamageLarge += stats[index].TeamBreakoutDamageLarge;
+        stat.TotalBreakoutDamage += stats[index].TotalBreakoutDamage;
+        stat.TotalBreakoutDamageLarge += stats[index].TotalBreakoutDamageLarge;
+    }
+    else
+    {
+        session.BreakoutDamageCumul = stat.BreakoutDamage;
+        session.BreakoutDamageLargeCumul = stat.BreakoutDamageLarge;
+        session.TeamBreakoutDamageCumul = stat.TeamBreakoutDamage;
+        session.TeamBreakoutDamageLargeCumul = stat.TeamBreakoutDamageLarge;
+        session.TotalBreakoutDamageCumul = stat.TotalBreakoutDamage;
+        session.TotalBreakoutDamageLargeCumul = stat.TotalBreakoutDamageLarge;
+    }
+}
+
 #pragma region Base
 std::string RocketStats::VarDropshotBreakoutDamage(bool write, bool force, bool default_value)
 {
