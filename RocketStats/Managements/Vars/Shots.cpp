@@ -180,7 +180,6 @@ void RocketStats::ReplaceShots(std::map<std::string, std::string>& vars)
     vars["Center"] = VarShotsCenter();
     vars["AerialHit"] = VarShotsAerialHit();
     vars["BicycleHit"] = VarShotsBicycleHit();
-    vars["FirstTouch"] = VarShotsFirstTouch();
     vars["ShotOnGoal"] = VarShotsShotOnGoal();
     vars["TeamAssist"] = VarShotsTeamAssist();
     vars["TeamBicycleHit"] = VarShotsTeamBicycleHit();
@@ -195,7 +194,6 @@ void RocketStats::ReplaceShots(std::map<std::string, std::string>& vars)
     vars["CenterMatch"] = VarShotsCenterMatch();
     vars["AerialHitMatch"] = VarShotsAerialHitMatch();
     vars["BicycleHitMatch"] = VarShotsBicycleHitMatch();
-    vars["FirstTouchMatch"] = VarShotsFirstTouchMatch();
     vars["ShotOnGoalMatch"] = VarShotsShotOnGoalMatch();
     vars["TeamAssistMatch"] = VarShotsTeamAssistMatch();
     vars["TeamBicycleHitMatch"] = VarShotsTeamBicycleHitMatch();
@@ -210,7 +208,6 @@ void RocketStats::ReplaceShots(std::map<std::string, std::string>& vars)
     vars["CenterCumul"] = VarShotsCenterCumul();
     vars["AerialHitCumul"] = VarShotsAerialHitCumul();
     vars["BicycleHitCumul"] = VarShotsBicycleHitCumul();
-    vars["FirstTouchCumul"] = VarShotsFirstTouchCumul();
     vars["ShotOnGoalCumul"] = VarShotsShotOnGoalCumul();
     vars["TeamAssistCumul"] = VarShotsTeamAssistCumul();
     vars["TeamBicycleHitCumul"] = VarShotsTeamBicycleHitCumul();
@@ -229,7 +226,6 @@ void RocketStats::SessionShots(Stats& stat, int index, bool playlists)
         stat.Center += stats[index].Center;
         stat.AerialHit += stats[index].AerialHit;
         stat.BicycleHit += stats[index].BicycleHit;
-        stat.FirstTouch += stats[index].FirstTouch;
         stat.ShotOnGoal += stats[index].ShotOnGoal;
         stat.TeamAssist += stats[index].TeamAssist;
         stat.TeamBicycleHit += stats[index].TeamBicycleHit;
@@ -243,7 +239,6 @@ void RocketStats::SessionShots(Stats& stat, int index, bool playlists)
         session.ClearCumul = stat.Clear;
         session.CenterCumul = stat.Center;
         session.AssistCumul = stat.Assist;
-        session.FirstTouchCumul = stat.FirstTouch;
         session.ShotOnGoalCumul = stat.ShotOnGoal;
         session.AerialHitCumul = stat.AerialHit;
         session.BicycleHitCumul = stat.BicycleHit;
@@ -307,16 +302,6 @@ std::string RocketStats::VarShotsBicycleHit(bool write, bool force, bool default
     return tmp;
 }
 
-std::string RocketStats::VarShotsFirstTouch(bool write, bool force, bool default_value)
-{
-    std::string tmp = (rs_hide_shots ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().FirstTouch)));
-
-    if (write && (force || (rs_in_file && rs_file_shots)))
-        WriteInFile("RocketStats_FirstTouch.txt", tmp);
-
-    return tmp;
-}
-
 std::string RocketStats::VarShotsShotOnGoal(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_shots ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().ShotOnGoal)));
@@ -327,7 +312,7 @@ std::string RocketStats::VarShotsShotOnGoal(bool write, bool force, bool default
     return tmp;
 }
 
-
+#pragma region BaseTeam
 std::string RocketStats::VarShotsTeamAssist(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_shots ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TeamAssist)));
@@ -357,8 +342,9 @@ std::string RocketStats::VarShotsTeamShotOnGoal(bool write, bool force, bool def
 
     return tmp;
 }
+#pragma endregion
 
-
+#pragma region BaseTotal
 std::string RocketStats::VarShotsTotalAssist(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_shots ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TotalAssist)));
@@ -388,6 +374,7 @@ std::string RocketStats::VarShotsTotalShotOnGoal(bool write, bool force, bool de
 
     return tmp;
 }
+#pragma endregion
 #pragma endregion
 
 #pragma region Match
@@ -441,16 +428,6 @@ std::string RocketStats::VarShotsBicycleHitMatch(bool write, bool force, bool de
     return tmp;
 }
 
-std::string RocketStats::VarShotsFirstTouchMatch(bool write, bool force, bool default_value)
-{
-    std::string tmp = (rs_hide_shots ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.FirstTouch)));
-
-    if (write && (force || (rs_in_file && rs_file_shots)))
-        WriteInFile("RocketStats_FirstTouchMatch.txt", tmp);
-
-    return tmp;
-}
-
 std::string RocketStats::VarShotsShotOnGoalMatch(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_shots ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.ShotOnGoal)));
@@ -461,7 +438,7 @@ std::string RocketStats::VarShotsShotOnGoalMatch(bool write, bool force, bool de
     return tmp;
 }
 
-
+#pragma region MatchTeam
 std::string RocketStats::VarShotsTeamAssistMatch(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_shots ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.TeamAssist)));
@@ -491,8 +468,9 @@ std::string RocketStats::VarShotsTeamShotOnGoalMatch(bool write, bool force, boo
 
     return tmp;
 }
+#pragma endregion
 
-
+#pragma region MatchTotal
 std::string RocketStats::VarShotsTotalAssistMatch(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_shots ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.TotalAssist)));
@@ -522,6 +500,7 @@ std::string RocketStats::VarShotsTotalShotOnGoalMatch(bool write, bool force, bo
 
     return tmp;
 }
+#pragma endregion
 #pragma endregion
 
 #pragma region Cumul
@@ -575,16 +554,6 @@ std::string RocketStats::VarShotsBicycleHitCumul(bool write, bool force, bool de
     return tmp;
 }
 
-std::string RocketStats::VarShotsFirstTouchCumul(bool write, bool force, bool default_value)
-{
-    std::string tmp = (rs_hide_shots ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().FirstTouchCumul)));
-
-    if (write && (force || (rs_in_file && rs_file_shots)))
-        WriteInFile("RocketStats_FirstTouchCumul.txt", tmp);
-
-    return tmp;
-}
-
 std::string RocketStats::VarShotsShotOnGoalCumul(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_shots ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().ShotOnGoalCumul)));
@@ -595,7 +564,7 @@ std::string RocketStats::VarShotsShotOnGoalCumul(bool write, bool force, bool de
     return tmp;
 }
 
-
+#pragma region CumulTeam
 std::string RocketStats::VarShotsTeamAssistCumul(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_shots ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TeamAssistCumul)));
@@ -625,8 +594,9 @@ std::string RocketStats::VarShotsTeamShotOnGoalCumul(bool write, bool force, boo
 
     return tmp;
 }
+#pragma endregion
 
-
+#pragma region CumulTotal
 std::string RocketStats::VarShotsTotalAssistCumul(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_shots ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TotalAssistCumul)));
@@ -656,4 +626,5 @@ std::string RocketStats::VarShotsTotalShotOnGoalCumul(bool write, bool force, bo
 
     return tmp;
 }
+#pragma endregion
 #pragma endregion

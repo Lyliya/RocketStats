@@ -96,7 +96,6 @@ xcopy "$(SolutionDir)bakkesmod" "$(BAKKESMOD)" /E /Y</Command>
     <ResourceCompile Include="Resources\Resource.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\bakkesmod\plugins\settings\rocketstats.set" />
     <None Include="Resources\Languages\INT.json" />
     <None Include="Resources\Languages\FRA.json" />
   </ItemGroup>

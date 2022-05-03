@@ -12,15 +12,6 @@ void RocketStats::ReadOther(Stats& stat, json& config)
         stat.loss = int(config["Loss"]);
     if (config["Streak"].is_number_unsigned() || config["Streak"].is_number_integer())
         stat.streak = int(config["Streak"]);
-    if (config["Death"].is_number_unsigned())
-        stat.Death = int(config["Death"]);
-    if (config["Demo"].is_number_unsigned())
-        stat.Demolitions = int(config["Demo"]);
-
-    if (config["DeathCumul"].is_number_unsigned())
-        stat.DeathCumul = int(config["DeathCumul"]);
-    if (config["DemoCumul"].is_number_unsigned())
-        stat.DemolitionsCumul = int(config["DemoCumul"]);
 }
 
 void RocketStats::WriteOther(Stats& stat, json& config)
@@ -30,11 +21,6 @@ void RocketStats::WriteOther(Stats& stat, json& config)
     config["Win"] = stat.win;
     config["Loss"] = stat.loss;
     config["Streak"] = stat.streak;
-    config["Death"] = stat.Death;
-    config["Demo"] = stat.Demolitions;
-
-    config["DeathCumul"] = stat.DeathCumul;
-    config["DemoCumul"] = stat.DemolitionsCumul;
 }
 
 void RocketStats::ReplaceOther(std::map<std::string, std::string>& vars)
@@ -59,16 +45,6 @@ void RocketStats::ReplaceOther(std::map<std::string, std::string>& vars)
     vars["Streak"] = VarStreak();
     vars["WinRatio"] = VarWinRatio();
     vars["WinPercentage"] = VarWinPercentage();
-    vars["Death"] = VarDeath();
-    vars["Demolitions"] = VarDemolitions();
-
-    /// Match
-    vars["DeathMatch"] = VarDeathMatch();
-    vars["DemolitionsMatch"] = VarDemolitionsMatch();
-
-    /// Cumul
-    vars["DeathCumul"] = VarDeathCumul();
-    vars["DemolitionsCumul"] = VarDemolitionsCumul();
 
     // Replace underscores with spaces
     Utils::ReplaceAll(vars["Rank"], "_", " ");
@@ -100,8 +76,6 @@ void RocketStats::SessionOther(Stats& stat, int index, bool playlists)
         stat.MMRCumulChange += stats[index].MMRChange;
         stat.win += stats[index].win;
         stat.loss += stats[index].loss;
-        stat.Death += stats[index].Death;
-        stat.Demolitions += stats[index].Demolitions;
     }
     else
     {
@@ -110,10 +84,6 @@ void RocketStats::SessionOther(Stats& stat, int index, bool playlists)
         session.MMRChange = stats[current.playlist].MMRChange;
         session.win = stat.win;
         session.loss = stat.loss;
-        session.Death = stat.Death;
-        session.DeathCumul = stat.Death;
-        session.Demolitions = stat.Demolitions;
-        session.DemolitionsCumul = stat.Demolitions;
     }
 }
 
@@ -390,26 +360,6 @@ std::string RocketStats::VarWinPercentage(bool write, bool force, bool default_v
     return tmp;
 }
 
-std::string RocketStats::VarDeath(bool write, bool force, bool default_value)
-{
-    std::string tmp = (rs_hide_death ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().Death)));
-
-    if (write && (force || (rs_in_file && rs_file_death)))
-        WriteInFile("RocketStats_Death.txt", tmp);
-
-    return tmp;
-}
-
-std::string RocketStats::VarDemolitions(bool write, bool force, bool default_value)
-{
-    std::string tmp = (rs_hide_demolitions ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().Demolitions)));
-
-    if (write && (force || (rs_in_file && rs_file_demolitions)))
-        WriteInFile("RocketStats_Demolitions.txt", tmp);
-
-    return tmp;
-}
-
 std::string RocketStats::VarBoost(bool write, bool force, bool default_value, bool enabled)
 {
     std::string tmp = (default_value ? "-1" : (enabled ? "1" : "0"));
@@ -422,45 +372,7 @@ std::string RocketStats::VarBoost(bool write, bool force, bool default_value, bo
 #pragma endregion
 
 #pragma region Match
-std::string RocketStats::VarDeathMatch(bool write, bool force, bool default_value)
-{
-    std::string tmp = (rs_hide_deathm ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.Death)));
-
-    if (write && (force || (rs_in_file && rs_file_deathm)))
-        WriteInFile("RocketStats_DeathMatch.txt", tmp);
-
-    return tmp;
-}
-
-std::string RocketStats::VarDemolitionsMatch(bool write, bool force, bool default_value)
-{
-    std::string tmp = (rs_hide_demolitionsm ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.Demolitions)));
-
-    if (write && (force || (rs_in_file && rs_file_demolitionsm)))
-        WriteInFile("RocketStats_DemolitionsMatch.txt", tmp);
-
-    return tmp;
-}
 #pragma endregion
 
 #pragma region Cumul
-std::string RocketStats::VarDeathCumul(bool write, bool force, bool default_value)
-{
-    std::string tmp = (rs_hide_deathc ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().DeathCumul)));
-
-    if (write && (force || (rs_in_file && rs_file_deathc)))
-        WriteInFile("RocketStats_DeathCumul.txt", tmp);
-
-    return tmp;
-}
-
-std::string RocketStats::VarDemolitionsCumul(bool write, bool force, bool default_value)
-{
-    std::string tmp = (rs_hide_demolitionsc ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().DemolitionsCumul)));
-
-    if (write && (force || (rs_in_file && rs_file_demolitionsc)))
-        WriteInFile("RocketStats_DemolitionsCumul.txt", tmp);
-
-    return tmp;
-}
 #pragma endregion

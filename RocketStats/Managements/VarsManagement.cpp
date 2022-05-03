@@ -63,15 +63,7 @@ void RocketStats::AllOther(bool force, bool default_value)
     VarStreak(true, force, default_value);
     VarWinRatio(true, force, default_value);
     VarWinPercentage(true, force, default_value);
-    VarDemolitions(true, force, default_value);
-    VarDeath(true, force, default_value);
     VarBoost(true, force, (!is_game_started || is_game_ended), false);
-
-    VarDemolitionsMatch(true, force, default_value);
-    VarDeathMatch(true, force, default_value);
-
-    VarDemolitionsCumul(true, force, default_value);
-    VarDeathCumul(true, force, default_value);
 }
 #pragma endregion
 
@@ -83,7 +75,6 @@ void RocketStats::AllShots(bool force, bool default_value)
     AllShotsCenter(force, default_value);
     AllShotsAerialHit(force, default_value);
     AllShotsBicycleHit(force, default_value);
-    AllShotsFirstTouch(force, default_value);
     AllShotsShotOnGoal(force, default_value);
 }
 
@@ -136,13 +127,6 @@ void RocketStats::AllShotsBicycleHit(bool force, bool default_value)
     VarShotsBicycleHitCumul(true, force, default_value);
     VarShotsTeamBicycleHitCumul(true, force, default_value);
     VarShotsTotalBicycleHitCumul(true, force, default_value);
-}
-
-void RocketStats::AllShotsFirstTouch(bool force, bool default_value)
-{
-    VarShotsFirstTouch(true, force, default_value);
-    VarShotsFirstTouchMatch(true, force, default_value);
-    VarShotsFirstTouchCumul(true, force, default_value);
 }
 
 void RocketStats::AllShotsShotOnGoal(bool force, bool default_value)
@@ -204,14 +188,14 @@ void RocketStats::AllGoals(bool force, bool default_value)
 {
     AllGoalsGoal(force, default_value);
     AllGoalsOwnGoal(force, default_value);
-    AllGoalsAerialGoal(force, default_value);
-    AllGoalsBackwardsGoal(force, default_value);
-    AllGoalsBicycleGoal(force, default_value);
     AllGoalsLongGoal(force, default_value);
-    AllGoalsTurtleGoal(force, default_value);
-    AllGoalsOvertimeGoal(force, default_value);
-    AllGoalsHoopsSwishGoal(force, default_value);
     AllGoalsPoolShot(force, default_value);
+    AllGoalsAerialGoal(force, default_value);
+    AllGoalsTurtleGoal(force, default_value);
+    AllGoalsBicycleGoal(force, default_value);
+    AllGoalsOvertimeGoal(force, default_value);
+    AllGoalsBackwardsGoal(force, default_value);
+    AllGoalsHoopsSwishGoal(force, default_value);
 }
 
 void RocketStats::AllGoalsGoal(bool force, bool default_value)
@@ -236,51 +220,6 @@ void RocketStats::AllGoalsOwnGoal(bool force, bool default_value)
     VarGoalsOwnGoalCumul(true, force, default_value);
 }
 
-void RocketStats::AllGoalsAerialGoal(bool force, bool default_value)
-{
-    VarGoalsAerialGoal(true, force, default_value);
-    VarGoalsTeamAerialGoal(true, force, default_value);
-    VarGoalsTotalAerialGoal(true, force, default_value);
-
-    VarGoalsAerialGoalMatch(true, force, default_value);
-    VarGoalsTeamAerialGoalMatch(true, force, default_value);
-    VarGoalsTotalAerialGoalMatch(true, force, default_value);
-
-    VarGoalsAerialGoalCumul(true, force, default_value);
-    VarGoalsTeamAerialGoalCumul(true, force, default_value);
-    VarGoalsTotalAerialGoalCumul(true, force, default_value);
-}
-
-void RocketStats::AllGoalsBackwardsGoal(bool force, bool default_value)
-{
-    VarGoalsBackwardsGoal(true, force, default_value);
-    VarGoalsTeamBackwardsGoal(true, force, default_value);
-    VarGoalsTotalBackwardsGoal(true, force, default_value);
-
-    VarGoalsBackwardsGoalMatch(true, force, default_value);
-    VarGoalsTeamBackwardsGoalMatch(true, force, default_value);
-    VarGoalsTotalBackwardsGoalMatch(true, force, default_value);
-
-    VarGoalsBackwardsGoalCumul(true, force, default_value);
-    VarGoalsTeamBackwardsGoalCumul(true, force, default_value);
-    VarGoalsTotalBackwardsGoalCumul(true, force, default_value);
-}
-
-void RocketStats::AllGoalsBicycleGoal(bool force, bool default_value)
-{
-    VarGoalsBicycleGoal(true, force, default_value);
-    VarGoalsTeamBicycleGoal(true, force, default_value);
-    VarGoalsTotalBicycleGoal(true, force, default_value);
-
-    VarGoalsBicycleGoalMatch(true, force, default_value);
-    VarGoalsTeamBicycleGoalMatch(true, force, default_value);
-    VarGoalsTotalBicycleGoalMatch(true, force, default_value);
-
-    VarGoalsBicycleGoalCumul(true, force, default_value);
-    VarGoalsTeamBicycleGoalCumul(true, force, default_value);
-    VarGoalsTotalBicycleGoalCumul(true, force, default_value);
-}
-
 void RocketStats::AllGoalsLongGoal(bool force, bool default_value)
 {
     VarGoalsLongGoal(true, force, default_value);
@@ -294,6 +233,36 @@ void RocketStats::AllGoalsLongGoal(bool force, bool default_value)
     VarGoalsLongGoalCumul(true, force, default_value);
     VarGoalsTeamLongGoalCumul(true, force, default_value);
     VarGoalsTotalLongGoalCumul(true, force, default_value);
+}
+
+void RocketStats::AllGoalsPoolShot(bool force, bool default_value)
+{
+    VarGoalsPoolShot(true, force, default_value);
+    VarGoalsTeamPoolShot(true, force, default_value);
+    VarGoalsTotalPoolShot(true, force, default_value);
+
+    VarGoalsPoolShotMatch(true, force, default_value);
+    VarGoalsTeamPoolShotMatch(true, force, default_value);
+    VarGoalsTotalPoolShotMatch(true, force, default_value);
+
+    VarGoalsPoolShotCumul(true, force, default_value);
+    VarGoalsTeamPoolShotCumul(true, force, default_value);
+    VarGoalsTotalPoolShotCumul(true, force, default_value);
+}
+
+void RocketStats::AllGoalsAerialGoal(bool force, bool default_value)
+{
+    VarGoalsAerialGoal(true, force, default_value);
+    VarGoalsTeamAerialGoal(true, force, default_value);
+    VarGoalsTotalAerialGoal(true, force, default_value);
+
+    VarGoalsAerialGoalMatch(true, force, default_value);
+    VarGoalsTeamAerialGoalMatch(true, force, default_value);
+    VarGoalsTotalAerialGoalMatch(true, force, default_value);
+
+    VarGoalsAerialGoalCumul(true, force, default_value);
+    VarGoalsTeamAerialGoalCumul(true, force, default_value);
+    VarGoalsTotalAerialGoalCumul(true, force, default_value);
 }
 
 void RocketStats::AllGoalsTurtleGoal(bool force, bool default_value)
@@ -311,6 +280,21 @@ void RocketStats::AllGoalsTurtleGoal(bool force, bool default_value)
     VarGoalsTotalTurtleGoalCumul(true, force, default_value);
 }
 
+void RocketStats::AllGoalsBicycleGoal(bool force, bool default_value)
+{
+    VarGoalsBicycleGoal(true, force, default_value);
+    VarGoalsTeamBicycleGoal(true, force, default_value);
+    VarGoalsTotalBicycleGoal(true, force, default_value);
+
+    VarGoalsBicycleGoalMatch(true, force, default_value);
+    VarGoalsTeamBicycleGoalMatch(true, force, default_value);
+    VarGoalsTotalBicycleGoalMatch(true, force, default_value);
+
+    VarGoalsBicycleGoalCumul(true, force, default_value);
+    VarGoalsTeamBicycleGoalCumul(true, force, default_value);
+    VarGoalsTotalBicycleGoalCumul(true, force, default_value);
+}
+
 void RocketStats::AllGoalsOvertimeGoal(bool force, bool default_value)
 {
     VarGoalsOvertimeGoal(true, force, default_value);
@@ -326,6 +310,21 @@ void RocketStats::AllGoalsOvertimeGoal(bool force, bool default_value)
     VarGoalsTotalOvertimeGoalCumul(true, force, default_value);
 }
 
+void RocketStats::AllGoalsBackwardsGoal(bool force, bool default_value)
+{
+    VarGoalsBackwardsGoal(true, force, default_value);
+    VarGoalsTeamBackwardsGoal(true, force, default_value);
+    VarGoalsTotalBackwardsGoal(true, force, default_value);
+
+    VarGoalsBackwardsGoalMatch(true, force, default_value);
+    VarGoalsTeamBackwardsGoalMatch(true, force, default_value);
+    VarGoalsTotalBackwardsGoalMatch(true, force, default_value);
+
+    VarGoalsBackwardsGoalCumul(true, force, default_value);
+    VarGoalsTeamBackwardsGoalCumul(true, force, default_value);
+    VarGoalsTotalBackwardsGoalCumul(true, force, default_value);
+}
+
 void RocketStats::AllGoalsHoopsSwishGoal(bool force, bool default_value)
 {
     VarGoalsHoopsSwishGoal(true, force, default_value);
@@ -339,21 +338,6 @@ void RocketStats::AllGoalsHoopsSwishGoal(bool force, bool default_value)
     VarGoalsHoopsSwishGoalCumul(true, force, default_value);
     VarGoalsTeamHoopsSwishGoalCumul(true, force, default_value);
     VarGoalsTotalHoopsSwishGoalCumul(true, force, default_value);
-}
-
-void RocketStats::AllGoalsPoolShot(bool force, bool default_value)
-{
-    VarGoalsPoolShot(true, force, default_value);
-    VarGoalsTeamPoolShot(true, force, default_value);
-    VarGoalsTotalPoolShot(true, force, default_value);
-
-    VarGoalsPoolShotMatch(true, force, default_value);
-    VarGoalsTeamPoolShotMatch(true, force, default_value);
-    VarGoalsTotalPoolShotMatch(true, force, default_value);
-
-    VarGoalsPoolShotCumul(true, force, default_value);
-    VarGoalsTeamPoolShotCumul(true, force, default_value);
-    VarGoalsTotalPoolShotCumul(true, force, default_value);
 }
 #pragma endregion
 
@@ -402,6 +386,7 @@ void RocketStats::AllKnockout(bool force, bool default_value)
     AllKnockoutDeath(force, default_value);
     AllKnockoutAssist(force, default_value);
     AllKnockoutThrown(force, default_value);
+    AllKnockoutWinner(force, default_value);
     AllKnockoutGrabbed(force, default_value);
     AllKnockoutDoubleKO(force, default_value);
     AllKnockoutHeavyHit(force, default_value);
@@ -467,6 +452,13 @@ void RocketStats::AllKnockoutThrown(bool force, bool default_value)
     VarKnockoutThrown(true, force, default_value);
     VarKnockoutThrownMatch(true, force, default_value);
     VarKnockoutThrownCumul(true, force, default_value);
+}
+
+void RocketStats::AllKnockoutWinner(bool force, bool default_value)
+{
+    VarKnockoutWinner(true, force, default_value);
+    VarKnockoutWinnerMatch(true, force, default_value);
+    VarKnockoutWinnerCumul(true, force, default_value);
 }
 
 void RocketStats::AllKnockoutGrabbed(bool force, bool default_value)
@@ -612,9 +604,36 @@ void RocketStats::AllKnockoutAerialLightHit(bool force, bool default_value)
 #pragma region Miscs
 void RocketStats::AllMiscs(bool force, bool default_value)
 {
-    AllMiscsHatTrick(force, default_value);
+    AllMiscsDeath(force, default_value);
+    AllMiscsSavior(force, default_value);
     AllMiscsLowFive(force, default_value);
+    AllMiscsHatTrick(force, default_value);
     AllMiscsHighFive(force, default_value);
+    AllMiscsPlaymaker(force, default_value);
+    AllMiscsFirstTouch(force, default_value);
+    AllMiscsDemolitions(force, default_value);
+}
+
+void RocketStats::AllMiscsDeath(bool force, bool default_value)
+{
+    VarMiscsDeath(true, force, default_value);
+    VarMiscsDeathMatch(true, force, default_value);
+    VarMiscsDeathCumul(true, force, default_value);
+}
+
+void RocketStats::AllMiscsSavior(bool force, bool default_value)
+{
+    VarMiscsSavior(true, force, default_value);
+    VarMiscsTeamSavior(true, force, default_value);
+    VarMiscsTotalSavior(true, force, default_value);
+
+    VarMiscsSaviorMatch(true, force, default_value);
+    VarMiscsTeamSaviorMatch(true, force, default_value);
+    VarMiscsTotalSaviorMatch(true, force, default_value);
+
+    VarMiscsSaviorCumul(true, force, default_value);
+    VarMiscsTeamSaviorCumul(true, force, default_value);
+    VarMiscsTotalSaviorCumul(true, force, default_value);
 }
 
 void RocketStats::AllMiscsLowFive(bool force, bool default_value)
@@ -661,14 +680,49 @@ void RocketStats::AllMiscsHighFive(bool force, bool default_value)
     VarMiscsTeamHighFiveCumul(true, force, default_value);
     VarMiscsTotalHighFiveCumul(true, force, default_value);
 }
+
+void RocketStats::AllMiscsPlaymaker(bool force, bool default_value)
+{
+    VarMiscsPlaymaker(true, force, default_value);
+    VarMiscsTeamPlaymaker(true, force, default_value);
+    VarMiscsTotalPlaymaker(true, force, default_value);
+
+    VarMiscsPlaymakerMatch(true, force, default_value);
+    VarMiscsTeamPlaymakerMatch(true, force, default_value);
+    VarMiscsTotalPlaymakerMatch(true, force, default_value);
+
+    VarMiscsPlaymakerCumul(true, force, default_value);
+    VarMiscsTeamPlaymakerCumul(true, force, default_value);
+    VarMiscsTotalPlaymakerCumul(true, force, default_value);
+}
+
+void RocketStats::AllMiscsFirstTouch(bool force, bool default_value)
+{
+    VarMiscsFirstTouch(true, force, default_value);
+    VarMiscsFirstTouchMatch(true, force, default_value);
+    VarMiscsFirstTouchCumul(true, force, default_value);
+}
+
+void RocketStats::AllMiscsDemolitions(bool force, bool default_value)
+{
+    VarMiscsDemolitions(true, force, default_value);
+    VarMiscsDemolitionsMatch(true, force, default_value);
+    VarMiscsDemolitionsCumul(true, force, default_value);
+}
 #pragma endregion
 
 #pragma region Certifications
 void RocketStats::AllCertifications(bool force, bool default_value)
 {
     AllCertificationsMVP(force, default_value);
-    AllCertificationsSavior(force, default_value);
-    AllCertificationsPlaymaker(force, default_value);
+    AllCertificationsCarTouches(force, default_value);
+    AllCertificationsFastestGoal(force, default_value);
+    AllCertificationsSlowestGoal(force, default_value);
+    AllCertificationsBoostPickups(force, default_value);
+    AllCertificationsFurthestGoal(force, default_value);
+    AllCertificationsMostBallTouches(force, default_value);
+    AllCertificationsMostBoostPickups(force, default_value);
+    AllCertificationsFewestBallTouches(force, default_value);
 }
 
 void RocketStats::AllCertificationsMVP(bool force, bool default_value)
@@ -686,33 +740,59 @@ void RocketStats::AllCertificationsMVP(bool force, bool default_value)
     VarCertificationsTotalMVPCumul(true, force, default_value);
 }
 
-void RocketStats::AllCertificationsSavior(bool force, bool default_value)
+void RocketStats::AllCertificationsCarTouches(bool force, bool default_value)
 {
-    VarCertificationsSavior(true, force, default_value);
-    VarCertificationsTeamSavior(true, force, default_value);
-    VarCertificationsTotalSavior(true, force, default_value);
-
-    VarCertificationsSaviorMatch(true, force, default_value);
-    VarCertificationsTeamSaviorMatch(true, force, default_value);
-    VarCertificationsTotalSaviorMatch(true, force, default_value);
-
-    VarCertificationsSaviorCumul(true, force, default_value);
-    VarCertificationsTeamSaviorCumul(true, force, default_value);
-    VarCertificationsTotalSaviorCumul(true, force, default_value);
+    VarCertificationsCarTouches(true, force, default_value);
+    VarCertificationsCarTouchesMatch(true, force, default_value);
+    VarCertificationsCarTouchesCumul(true, force, default_value);
 }
 
-void RocketStats::AllCertificationsPlaymaker(bool force, bool default_value)
+void RocketStats::AllCertificationsFastestGoal(bool force, bool default_value)
 {
-    VarCertificationsPlaymaker(true, force, default_value);
-    VarCertificationsTeamPlaymaker(true, force, default_value);
-    VarCertificationsTotalPlaymaker(true, force, default_value);
+    VarCertificationsFastestGoal(true, force, default_value);
+    VarCertificationsFastestGoalMatch(true, force, default_value);
+    VarCertificationsFastestGoalCumul(true, force, default_value);
+}
 
-    VarCertificationsPlaymakerMatch(true, force, default_value);
-    VarCertificationsTeamPlaymakerMatch(true, force, default_value);
-    VarCertificationsTotalPlaymakerMatch(true, force, default_value);
+void RocketStats::AllCertificationsSlowestGoal(bool force, bool default_value)
+{
+    VarCertificationsSlowestGoal(true, force, default_value);
+    VarCertificationsSlowestGoalMatch(true, force, default_value);
+    VarCertificationsSlowestGoalCumul(true, force, default_value);
+}
 
-    VarCertificationsPlaymakerCumul(true, force, default_value);
-    VarCertificationsTeamPlaymakerCumul(true, force, default_value);
-    VarCertificationsTotalPlaymakerCumul(true, force, default_value);
+void RocketStats::AllCertificationsBoostPickups(bool force, bool default_value)
+{
+    VarCertificationsBoostPickups(true, force, default_value);
+    VarCertificationsBoostPickupsMatch(true, force, default_value);
+    VarCertificationsBoostPickupsCumul(true, force, default_value);
+}
+
+void RocketStats::AllCertificationsFurthestGoal(bool force, bool default_value)
+{
+    VarCertificationsFurthestGoal(true, force, default_value);
+    VarCertificationsFurthestGoalMatch(true, force, default_value);
+    VarCertificationsFurthestGoalCumul(true, force, default_value);
+}
+
+void RocketStats::AllCertificationsMostBallTouches(bool force, bool default_value)
+{
+    VarCertificationsMostBallTouches(true, force, default_value);
+    VarCertificationsMostBallTouchesMatch(true, force, default_value);
+    VarCertificationsMostBallTouchesCumul(true, force, default_value);
+}
+
+void RocketStats::AllCertificationsMostBoostPickups(bool force, bool default_value)
+{
+    VarCertificationsMostBoostPickups(true, force, default_value);
+    VarCertificationsMostBoostPickupsMatch(true, force, default_value);
+    VarCertificationsMostBoostPickupsCumul(true, force, default_value);
+}
+
+void RocketStats::AllCertificationsFewestBallTouches(bool force, bool default_value)
+{
+    VarCertificationsFewestBallTouches(true, force, default_value);
+    VarCertificationsFewestBallTouchesMatch(true, force, default_value);
+    VarCertificationsFewestBallTouchesCumul(true, force, default_value);
 }
 #pragma endregion

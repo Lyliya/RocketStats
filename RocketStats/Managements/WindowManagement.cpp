@@ -712,8 +712,6 @@ void RocketStats::RenderSettings()
         rs_select_all_file = (rs_file_games && rs_file_gm && rs_file_rank && rs_file_div &&
             rs_file_mmr && rs_file_mmrc && rs_file_mmrcc &&
             rs_file_win && rs_file_loss && rs_file_streak && rs_file_winratio && rs_file_winpercentage &&
-            rs_file_demolitions && rs_file_demolitionsm && rs_file_demolitionsc &&
-            rs_file_death && rs_file_deathm && rs_file_deathc &&
             rs_file_boost &&
             rs_file_shots && rs_file_saves && rs_file_goals && rs_file_dropshot && rs_file_knockout && rs_file_miscs && rs_file_certifications);
         select_all = rs_select_all_file;
@@ -750,12 +748,6 @@ void RocketStats::RenderSettings()
         ImGui::Checkbox(GetLang(LANG_STREAKS).c_str(), &rs_file_streak);
         ImGui::Checkbox(GetLang(LANG_WINRATIO).c_str(), &rs_file_winratio);
         ImGui::Checkbox(GetLang(LANG_WINPERCENTAGE).c_str(), &rs_file_winratio);
-        ImGui::Checkbox(GetLang(LANG_DEATH).c_str(), &rs_file_death);
-        ImGui::Checkbox(GetLang(LANG_DEATHMATCH).c_str(), &rs_file_deathm);
-        ImGui::Checkbox(GetLang(LANG_DEATHCUMUL).c_str(), &rs_file_deathc);
-        ImGui::Checkbox(GetLang(LANG_DEMOLITIONS).c_str(), &rs_file_demolitions);
-        ImGui::Checkbox(GetLang(LANG_DEMOLITIONSMATCH).c_str(), &rs_file_demolitionsm);
-        ImGui::Checkbox(GetLang(LANG_DEMOLITIONSCUMUL).c_str(), &rs_file_demolitionsc);
         ImGui::Checkbox(GetLang(LANG_SHOTS).c_str(), &rs_file_shots);
         ImGui::Checkbox(GetLang(LANG_SAVES).c_str(), &rs_file_saves);
         ImGui::Checkbox(GetLang(LANG_GOALS).c_str(), &rs_file_goals);
@@ -784,12 +776,6 @@ void RocketStats::RenderSettings()
             rs_file_streak = rs_select_all_file;
             rs_file_winratio = rs_select_all_file;
             rs_file_winpercentage = rs_select_all_file;
-            rs_file_death = rs_select_all_file;
-            rs_file_deathm = rs_select_all_file;
-            rs_file_deathc = rs_select_all_file;
-            rs_file_demolitions = rs_select_all_file;
-            rs_file_demolitionsm = rs_select_all_file;
-            rs_file_demolitionsc = rs_select_all_file;
             rs_file_shots = rs_select_all_file;
             rs_file_saves = rs_select_all_file;
             rs_file_goals = rs_select_all_file;
@@ -803,8 +789,6 @@ void RocketStats::RenderSettings()
         rs_select_all_hide = (rs_hide_games && rs_hide_gm && rs_hide_rank && rs_hide_div &&
             rs_hide_mmr && rs_hide_mmrc && rs_hide_mmrcc &&
             rs_hide_win && rs_hide_loss && rs_hide_streak && rs_hide_winratio && rs_hide_winpercentage &&
-            rs_hide_demolitions && rs_hide_demolitionsm && rs_hide_demolitionsc &&
-            rs_hide_death && rs_hide_deathm && rs_hide_deathc &&
             rs_hide_shots && rs_hide_saves && rs_hide_goals && rs_hide_dropshot && rs_hide_knockout && rs_hide_miscs && rs_hide_certifications);
         select_all = rs_select_all_hide;
         tpos = { (column_start + (column_space * 2) + ((column_width * 2) + 16)), 320 };
@@ -838,12 +822,6 @@ void RocketStats::RenderSettings()
         ImGui::Checkbox(GetLang(LANG_STREAKS).c_str(), &rs_hide_streak);
         ImGui::Checkbox(GetLang(LANG_WINRATIO).c_str(), &rs_hide_winratio);
         ImGui::Checkbox(GetLang(LANG_WINPERCENTAGE).c_str(), &rs_hide_winpercentage);
-        ImGui::Checkbox(GetLang(LANG_DEATH).c_str(), &rs_hide_death);
-        ImGui::Checkbox(GetLang(LANG_DEATHMATCH).c_str(), &rs_hide_deathm);
-        ImGui::Checkbox(GetLang(LANG_DEATHCUMUL).c_str(), &rs_hide_deathc);
-        ImGui::Checkbox(GetLang(LANG_DEMOLITIONS).c_str(), &rs_hide_demolitions);
-        ImGui::Checkbox(GetLang(LANG_DEMOLITIONSMATCH).c_str(), &rs_hide_demolitionsm);
-        ImGui::Checkbox(GetLang(LANG_DEMOLITIONSCUMUL).c_str(), &rs_hide_demolitionsc);
         ImGui::Checkbox(GetLang(LANG_SHOTS).c_str(), &rs_hide_shots);
         ImGui::Checkbox(GetLang(LANG_SAVES).c_str(), &rs_hide_saves);
         ImGui::Checkbox(GetLang(LANG_GOALS).c_str(), &rs_hide_goals);
@@ -869,12 +847,6 @@ void RocketStats::RenderSettings()
             rs_hide_streak = rs_select_all_hide;
             rs_hide_winratio = rs_select_all_hide;
             rs_hide_winpercentage = rs_select_all_hide;
-            rs_hide_death = rs_select_all_hide;
-            rs_hide_deathm = rs_select_all_hide;
-            rs_hide_deathc = rs_select_all_hide;
-            rs_hide_demolitions = rs_select_all_hide;
-            rs_hide_demolitionsm = rs_select_all_hide;
-            rs_hide_demolitionsc = rs_select_all_hide;
             rs_hide_shots = rs_select_all_hide;
             rs_hide_saves = rs_select_all_hide;
             rs_hide_goals = rs_select_all_hide;

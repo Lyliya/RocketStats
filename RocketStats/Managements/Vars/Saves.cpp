@@ -122,7 +122,7 @@ std::string RocketStats::VarSavesEpicSave(bool write, bool force, bool default_v
     return tmp;
 }
 
-
+#pragma region BaseTeam
 std::string RocketStats::VarSavesTeamSave(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_saves ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TeamSave)));
@@ -142,8 +142,9 @@ std::string RocketStats::VarSavesTeamEpicSave(bool write, bool force, bool defau
 
     return tmp;
 }
+#pragma endregion
 
-
+#pragma region BaseTotal
 std::string RocketStats::VarSavesTotalSave(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_saves ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TotalSave)));
@@ -163,6 +164,7 @@ std::string RocketStats::VarSavesTotalEpicSave(bool write, bool force, bool defa
 
     return tmp;
 }
+#pragma endregion
 #pragma endregion
 
 #pragma region Match
@@ -186,7 +188,7 @@ std::string RocketStats::VarSavesEpicSaveMatch(bool write, bool force, bool defa
     return tmp;
 }
 
-
+#pragma region MatchTeam
 std::string RocketStats::VarSavesTeamSaveMatch(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_saves ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.TeamSave)));
@@ -206,8 +208,9 @@ std::string RocketStats::VarSavesTeamEpicSaveMatch(bool write, bool force, bool 
 
     return tmp;
 }
+#pragma endregion
 
-
+#pragma region MatchTotal
 std::string RocketStats::VarSavesTotalSaveMatch(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_saves ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.TotalSave)));
@@ -227,6 +230,7 @@ std::string RocketStats::VarSavesTotalEpicSaveMatch(bool write, bool force, bool
 
     return tmp;
 }
+#pragma endregion
 #pragma endregion
 
 #pragma region Cumul
@@ -250,7 +254,7 @@ std::string RocketStats::VarSavesEpicSaveCumul(bool write, bool force, bool defa
     return tmp;
 }
 
-
+#pragma region CumulTeam
 std::string RocketStats::VarSavesTeamSaveCumul(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_saves ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TeamSaveCumul)));
@@ -270,8 +274,9 @@ std::string RocketStats::VarSavesTeamEpicSaveCumul(bool write, bool force, bool 
 
     return tmp;
 }
+#pragma endregion
 
-
+#pragma region CumulTotal
 std::string RocketStats::VarSavesTotalSaveCumul(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_saves ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TotalSaveCumul)));
@@ -291,4 +296,5 @@ std::string RocketStats::VarSavesTotalEpicSaveCumul(bool write, bool force, bool
 
     return tmp;
 }
+#pragma endregion
 #pragma endregion

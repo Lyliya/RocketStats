@@ -4,100 +4,118 @@ void RocketStats::ReadCertifications(Stats& stat, json& config)
 {
     if (config["MVP"].is_number_unsigned())
         stat.MVP = int(config["MVP"]);
-    if (config["Savior"].is_number_unsigned())
-        stat.Savior = int(config["Savior"]);
-    if (config["Playmaker"].is_number_unsigned())
-        stat.Playmaker = int(config["Playmaker"]);
+    if (config["CarTouches"].is_number_unsigned())
+        stat.CarTouches = int(config["CarTouches"]);
+    if (config["FastestGoal"].is_number_unsigned())
+        stat.FastestGoal = int(config["FastestGoal"]);
+    if (config["SlowestGoal"].is_number_unsigned())
+        stat.SlowestGoal = int(config["SlowestGoal"]);
+    if (config["BoostPickups"].is_number_unsigned())
+        stat.BoostPickups = int(config["BoostPickups"]);
+    if (config["FurthestGoal"].is_number_unsigned())
+        stat.FurthestGoal = int(config["FurthestGoal"]);
+    if (config["MostBallTouches"].is_number_unsigned())
+        stat.MostBallTouches = int(config["MostBallTouches"]);
+    if (config["MostBoostPickups"].is_number_unsigned())
+        stat.MostBoostPickups = int(config["MostBoostPickups"]);
+    if (config["FewestBallTouches"].is_number_unsigned())
+        stat.FewestBallTouches = int(config["FewestBallTouches"]);
     if (config["TeamMVP"].is_number_unsigned())
         stat.TeamMVP = int(config["TeamMVP"]);
-    if (config["TeamSavior"].is_number_unsigned())
-        stat.TeamSavior = int(config["TeamSavior"]);
-    if (config["TeamPlaymaker"].is_number_unsigned())
-        stat.TeamPlaymaker = int(config["TeamPlaymaker"]);
     if (config["TotalMVP"].is_number_unsigned())
         stat.TotalMVP = int(config["TotalMVP"]);
-    if (config["TotalSavior"].is_number_unsigned())
-        stat.TotalSavior = int(config["TotalSavior"]);
-    if (config["TotalPlaymaker"].is_number_unsigned())
-        stat.TotalPlaymaker = int(config["TotalPlaymaker"]);
 
-    if (config["SaviorCumul"].is_number_unsigned())
-        stat.SaviorCumul = int(config["SaviorCumul"]);
     if (config["MVPCumul"].is_number_unsigned())
         stat.MVPCumul = int(config["MVPCumul"]);
-    if (config["PlaymakerCumul"].is_number_unsigned())
-        stat.PlaymakerCumul = int(config["PlaymakerCumul"]);
+    if (config["CarTouchesCumul"].is_number_unsigned())
+        stat.CarTouchesCumul = int(config["CarTouchesCumul"]);
+    if (config["FastestGoalCumul"].is_number_unsigned())
+        stat.FastestGoalCumul = int(config["FastestGoalCumul"]);
+    if (config["SlowestGoalCumul"].is_number_unsigned())
+        stat.SlowestGoalCumul = int(config["SlowestGoalCumul"]);
+    if (config["BoostPickupsCumul"].is_number_unsigned())
+        stat.BoostPickupsCumul = int(config["BoostPickupsCumul"]);
+    if (config["FurthestGoalCumul"].is_number_unsigned())
+        stat.FurthestGoalCumul = int(config["FurthestGoalCumul"]);
+    if (config["MostBallTouchesCumul"].is_number_unsigned())
+        stat.MostBallTouchesCumul = int(config["MostBallTouchesCumul"]);
+    if (config["MostBoostPickupsCumul"].is_number_unsigned())
+        stat.MostBoostPickupsCumul = int(config["MostBoostPickupsCumul"]);
+    if (config["FewestBallTouchesCumul"].is_number_unsigned())
+        stat.FewestBallTouchesCumul = int(config["FewestBallTouchesCumul"]);
     if (config["TeamMVPCumul"].is_number_unsigned())
         stat.TeamMVPCumul = int(config["TeamMVPCumul"]);
-    if (config["TeamSaviorCumul"].is_number_unsigned())
-        stat.TeamSaviorCumul = int(config["TeamSaviorCumul"]);
-    if (config["TeamPlaymakerCumul"].is_number_unsigned())
-        stat.TeamPlaymakerCumul = int(config["TeamPlaymakerCumul"]);
     if (config["TotalMVPCumul"].is_number_unsigned())
         stat.TotalMVPCumul = int(config["TotalMVPCumul"]);
-    if (config["TotalSaviorCumul"].is_number_unsigned())
-        stat.TotalSaviorCumul = int(config["TotalSaviorCumul"]);
-    if (config["TotalPlaymakerCumul"].is_number_unsigned())
-        stat.TotalPlaymakerCumul = int(config["TotalPlaymakerCumul"]);
 }
 
 void RocketStats::WriteCertifications(Stats& stat, json& config)
 {
     config["MVP"] = stat.MVP;
-    config["Savior"] = stat.Savior;
-    config["Playmaker"] = stat.Playmaker;
+    config["CarTouches"] = stat.CarTouches;
+    config["FastestGoal"] = stat.FastestGoal;
+    config["SlowestGoal"] = stat.SlowestGoal;
+    config["BoostPickups"] = stat.BoostPickups;
+    config["FurthestGoal"] = stat.FurthestGoal;
+    config["MostBallTouches"] = stat.MostBallTouches;
+    config["MostBoostPickups"] = stat.MostBoostPickups;
+    config["FewestBallTouches"] = stat.FewestBallTouches;
     config["TeamMVP"] = stat.TeamMVP;
-    config["TeamSavior"] = stat.TeamSavior;
-    config["TeamPlaymaker"] = stat.TeamPlaymaker;
     config["TotalMVP"] = stat.TotalMVP;
-    config["TotalSavior"] = stat.TotalSavior;
-    config["TotalPlaymaker"] = stat.TotalPlaymaker;
 
-    config["SaviorCumul"] = stat.SaviorCumul;
     config["MVPCumul"] = stat.MVPCumul;
-    config["PlaymakerCumul"] = stat.PlaymakerCumul;
+    config["CarTouchesCumul"] = stat.CarTouchesCumul;
+    config["FastestGoalCumul"] = stat.FastestGoalCumul;
+    config["SlowestGoalCumul"] = stat.SlowestGoalCumul;
+    config["BoostPickupsCumul"] = stat.BoostPickupsCumul;
+    config["FurthestGoalCumul"] = stat.FurthestGoalCumul;
+    config["MostBallTouchesCumul"] = stat.MostBallTouchesCumul;
+    config["MostBoostPickupsCumul"] = stat.MostBoostPickupsCumul;
+    config["FewestBallTouchesCumul"] = stat.FewestBallTouchesCumul;
     config["TeamMVPCumul"] = stat.TeamMVPCumul;
-    config["TeamSaviorCumul"] = stat.TeamSaviorCumul;
-    config["TeamPlaymakerCumul"] = stat.TeamPlaymakerCumul;
     config["TotalMVPCumul"] = stat.TotalMVPCumul;
-    config["TotalSaviorCumul"] = stat.TotalSaviorCumul;
-    config["TotalPlaymakerCumul"] = stat.TotalPlaymakerCumul;
 }
 
 void RocketStats::ReplaceCertifications(std::map<std::string, std::string>& vars)
 {
     /// Base
     vars["MVP"] = VarCertificationsMVP();
-    vars["Savior"] = VarCertificationsSavior();
-    vars["Playmaker"] = VarCertificationsPlaymaker();
+    vars["CarTouches"] = VarCertificationsCarTouches();
+    vars["FastestGoal"] = VarCertificationsFastestGoal();
+    vars["SlowestGoal"] = VarCertificationsSlowestGoal();
+    vars["BoostPickups"] = VarCertificationsBoostPickups();
+    vars["FurthestGoal"] = VarCertificationsFurthestGoal();
+    vars["MostBallTouches"] = VarCertificationsMostBallTouches();
+    vars["MostBoostPickups"] = VarCertificationsMostBoostPickups();
+    vars["FewestBallTouches"] = VarCertificationsFewestBallTouches();
     vars["TeamMVP"] = VarCertificationsTeamMVP();
-    vars["TeamSavior"] = VarCertificationsTeamSavior();
-    vars["TeamPlaymaker"] = VarCertificationsTeamPlaymaker();
     vars["TotalMVP"] = VarCertificationsTotalMVP();
-    vars["TotalSavior"] = VarCertificationsTotalSavior();
-    vars["TotalPlaymaker"] = VarCertificationsTotalPlaymaker();
 
     /// Match
     vars["MVPMatch"] = VarCertificationsMVPMatch();
-    vars["SaviorMatch"] = VarCertificationsSaviorMatch();
-    vars["PlaymakerMatch"] = VarCertificationsPlaymakerMatch();
+    vars["CarTouchesMatch"] = VarCertificationsCarTouchesMatch();
+    vars["FastestGoalMatch"] = VarCertificationsFastestGoalMatch();
+    vars["SlowestGoalMatch"] = VarCertificationsSlowestGoalMatch();
+    vars["BoostPickupsMatch"] = VarCertificationsBoostPickupsMatch();
+    vars["FurthestGoalMatch"] = VarCertificationsFurthestGoalMatch();
+    vars["MostBallTouchesMatch"] = VarCertificationsMostBallTouchesMatch();
+    vars["MostBoostPickupsMatch"] = VarCertificationsMostBoostPickupsMatch();
+    vars["FewestBallTouchesMatch"] = VarCertificationsFewestBallTouchesMatch();
     vars["TeamMVPMatch"] = VarCertificationsTeamMVPMatch();
-    vars["TeamSaviorMatch"] = VarCertificationsTeamSaviorMatch();
-    vars["TeamPlaymakerMatch"] = VarCertificationsTeamPlaymakerMatch();
     vars["TotalMVPMatch"] = VarCertificationsTotalMVPMatch();
-    vars["TotalSaviorMatch"] = VarCertificationsTotalSaviorMatch();
-    vars["TotalPlaymakerMatch"] = VarCertificationsTotalPlaymakerMatch();
 
     /// Cumul
     vars["MVPCumul"] = VarCertificationsMVPCumul();
-    vars["SaviorCumul"] = VarCertificationsSaviorCumul();
-    vars["PlaymakerCumul"] = VarCertificationsPlaymakerCumul();
+    vars["CarTouchesCumul"] = VarCertificationsCarTouchesCumul();
+    vars["FastestGoalCumul"] = VarCertificationsFastestGoalCumul();
+    vars["SlowestGoalCumul"] = VarCertificationsSlowestGoalCumul();
+    vars["BoostPickupsCumul"] = VarCertificationsBoostPickupsCumul();
+    vars["FurthestGoalCumul"] = VarCertificationsFurthestGoalCumul();
+    vars["MostBallTouchesCumul"] = VarCertificationsMostBallTouchesCumul();
+    vars["MostBoostPickupsCumul"] = VarCertificationsMostBoostPickupsCumul();
+    vars["FewestBallTouchesCumul"] = VarCertificationsFewestBallTouchesCumul();
     vars["TeamMVPCumul"] = VarCertificationsTeamMVPCumul();
-    vars["TeamSaviorCumul"] = VarCertificationsTeamSaviorCumul();
-    vars["TeamPlaymakerCumul"] = VarCertificationsTeamPlaymakerCumul();
     vars["TotalMVPCumul"] = VarCertificationsTotalMVPCumul();
-    vars["TotalSaviorCumul"] = VarCertificationsTotalSaviorCumul();
-    vars["TotalPlaymakerCumul"] = VarCertificationsTotalPlaymakerCumul();
 }
 
 void RocketStats::SessionCertifications(Stats& stat, int index, bool playlists)
@@ -105,307 +123,377 @@ void RocketStats::SessionCertifications(Stats& stat, int index, bool playlists)
     if (playlists)
     {
         stat.MVP += stats[index].MVP;
-        stat.Savior += stats[index].Savior;
-        stat.Playmaker += stats[index].Playmaker;
+        stat.CarTouches += stats[index].CarTouches;
+        stat.FastestGoal += stats[index].FastestGoal;
+        stat.SlowestGoal += stats[index].SlowestGoal;
+        stat.BoostPickups += stats[index].BoostPickups;
+        stat.FurthestGoal += stats[index].FurthestGoal;
+        stat.MostBallTouches += stats[index].MostBallTouches;
+        stat.MostBoostPickups += stats[index].MostBoostPickups;
+        stat.FewestBallTouches += stats[index].FewestBallTouches;
         stat.TeamMVP += stats[index].TeamMVP;
-        stat.TeamSavior += stats[index].TeamSavior;
-        stat.TeamPlaymaker += stats[index].TeamPlaymaker;
         stat.TotalMVP += stats[index].TotalMVP;
-        stat.TotalSavior += stats[index].TotalSavior;
-        stat.TotalPlaymaker += stats[index].TotalPlaymaker;
     }
     else
     {
         session.MVPCumul = stat.MVP;
-        session.SaviorCumul = stat.Savior;
-        session.PlaymakerCumul = stat.Playmaker;
+        session.CarTouchesCumul = stat.CarTouches;
+        session.FastestGoalCumul = stat.FastestGoal;
+        session.SlowestGoalCumul = stat.SlowestGoal;
+        session.BoostPickupsCumul = stat.BoostPickups;
+        session.FurthestGoalCumul = stat.FurthestGoal;
+        session.MostBallTouchesCumul = stat.MostBallTouches;
+        session.MostBoostPickupsCumul = stat.MostBoostPickups;
+        session.FewestBallTouchesCumul = stat.FewestBallTouches;
         session.TeamMVPCumul = stat.TeamMVP;
-        session.TeamSaviorCumul = stat.TeamSavior;
-        session.TeamPlaymakerCumul = stat.TeamPlaymaker;
         session.TotalMVPCumul = stat.TotalMVP;
-        session.TotalSaviorCumul = stat.TotalSavior;
-        session.TotalPlaymakerCumul = stat.TotalPlaymaker;
     }
 }
 
 #pragma region Base
 std::string RocketStats::VarCertificationsMVP(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_miscs ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().MVP)));
+    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().MVP)));
 
-    if (write && (force || (rs_in_file && rs_file_miscs)))
+    if (write && (force || (rs_in_file && rs_file_certifications)))
         WriteInFile("RocketStats_MVP.txt", tmp);
 
     return tmp;
 }
 
-std::string RocketStats::VarCertificationsSavior(bool write, bool force, bool default_value)
+std::string RocketStats::VarCertificationsCarTouches(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().Savior)));
+    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().CarTouches)));
 
     if (write && (force || (rs_in_file && rs_file_certifications)))
-        WriteInFile("RocketStats_Savior.txt", tmp);
+        WriteInFile("RocketStats_CarTouches.txt", tmp);
 
     return tmp;
 }
 
-std::string RocketStats::VarCertificationsPlaymaker(bool write, bool force, bool default_value)
+std::string RocketStats::VarCertificationsFastestGoal(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().Playmaker)));
+    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().FastestGoal)));
 
     if (write && (force || (rs_in_file && rs_file_certifications)))
-        WriteInFile("RocketStats_Playmaker.txt", tmp);
+        WriteInFile("RocketStats_FastestGoal.txt", tmp);
 
     return tmp;
 }
 
+std::string RocketStats::VarCertificationsSlowestGoal(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().SlowestGoal)));
 
+    if (write && (force || (rs_in_file && rs_file_certifications)))
+        WriteInFile("RocketStats_SlowestGoal.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarCertificationsBoostPickups(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().BoostPickups)));
+
+    if (write && (force || (rs_in_file && rs_file_certifications)))
+        WriteInFile("RocketStats_BoostPickups.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarCertificationsFurthestGoal(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().FurthestGoal)));
+
+    if (write && (force || (rs_in_file && rs_file_certifications)))
+        WriteInFile("RocketStats_FurthestGoal.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarCertificationsMostBallTouches(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().MostBallTouches)));
+
+    if (write && (force || (rs_in_file && rs_file_certifications)))
+        WriteInFile("RocketStats_MostBallTouches.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarCertificationsMostBoostPickups(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().MostBoostPickups)));
+
+    if (write && (force || (rs_in_file && rs_file_certifications)))
+        WriteInFile("RocketStats_MostBoostPickups.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarCertificationsFewestBallTouches(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().FewestBallTouches)));
+
+    if (write && (force || (rs_in_file && rs_file_certifications)))
+        WriteInFile("RocketStats_FewestBallTouches.txt", tmp);
+
+    return tmp;
+}
+
+#pragma region BaseTeam
 std::string RocketStats::VarCertificationsTeamMVP(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_miscs ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TeamMVP)));
+    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TeamMVP)));
 
-    if (write && (force || (rs_in_file && rs_file_miscs)))
+    if (write && (force || (rs_in_file && rs_file_certifications)))
         WriteInFile("RocketStats_TeamMVP.txt", tmp);
 
     return tmp;
 }
+#pragma endregion
 
-std::string RocketStats::VarCertificationsTeamSavior(bool write, bool force, bool default_value)
-{
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TeamSavior)));
-
-    if (write && (force || (rs_in_file && rs_file_certifications)))
-        WriteInFile("RocketStats_TeamSavior.txt", tmp);
-
-    return tmp;
-}
-
-std::string RocketStats::VarCertificationsTeamPlaymaker(bool write, bool force, bool default_value)
-{
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TeamPlaymaker)));
-
-    if (write && (force || (rs_in_file && rs_file_certifications)))
-        WriteInFile("RocketStats_TeamPlaymaker.txt", tmp);
-
-    return tmp;
-}
-
-
+#pragma region BaseTotal
 std::string RocketStats::VarCertificationsTotalMVP(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_miscs ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TotalMVP)));
+    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TotalMVP)));
 
-    if (write && (force || (rs_in_file && rs_file_miscs)))
+    if (write && (force || (rs_in_file && rs_file_certifications)))
         WriteInFile("RocketStats_TotalMVP.txt", tmp);
 
     return tmp;
 }
-
-std::string RocketStats::VarCertificationsTotalSavior(bool write, bool force, bool default_value)
-{
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TotalSavior)));
-
-    if (write && (force || (rs_in_file && rs_file_certifications)))
-        WriteInFile("RocketStats_TotalSavior.txt", tmp);
-
-    return tmp;
-}
-
-std::string RocketStats::VarCertificationsTotalPlaymaker(bool write, bool force, bool default_value)
-{
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TotalPlaymaker)));
-
-    if (write && (force || (rs_in_file && rs_file_certifications)))
-        WriteInFile("RocketStats_TotalPlaymaker.txt", tmp);
-
-    return tmp;
-}
+#pragma endregion
 #pragma endregion
 
 #pragma region Match
 std::string RocketStats::VarCertificationsMVPMatch(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_miscs ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.MVP)));
+    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.MVP)));
 
-    if (write && (force || (rs_in_file && rs_file_miscs)))
+    if (write && (force || (rs_in_file && rs_file_certifications)))
         WriteInFile("RocketStats_MVPMatch.txt", tmp);
 
     return tmp;
 }
 
-std::string RocketStats::VarCertificationsSaviorMatch(bool write, bool force, bool default_value)
+std::string RocketStats::VarCertificationsCarTouchesMatch(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.Savior)));
+    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.CarTouches)));
 
     if (write && (force || (rs_in_file && rs_file_certifications)))
-        WriteInFile("RocketStats_SaviorMatch.txt", tmp);
+        WriteInFile("RocketStats_CarTouchesMatch.txt", tmp);
 
     return tmp;
 }
 
-std::string RocketStats::VarCertificationsPlaymakerMatch(bool write, bool force, bool default_value)
+std::string RocketStats::VarCertificationsFastestGoalMatch(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.Playmaker)));
+    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.FastestGoal)));
 
     if (write && (force || (rs_in_file && rs_file_certifications)))
-        WriteInFile("RocketStats_PlaymakerMatch.txt", tmp);
+        WriteInFile("RocketStats_FastestGoalMatch.txt", tmp);
 
     return tmp;
 }
 
+std::string RocketStats::VarCertificationsSlowestGoalMatch(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.SlowestGoal)));
 
+    if (write && (force || (rs_in_file && rs_file_certifications)))
+        WriteInFile("RocketStats_SlowestGoalMatch.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarCertificationsBoostPickupsMatch(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.BoostPickups)));
+
+    if (write && (force || (rs_in_file && rs_file_certifications)))
+        WriteInFile("RocketStats_BoostPickupsMatch.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarCertificationsFurthestGoalMatch(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.FurthestGoal)));
+
+    if (write && (force || (rs_in_file && rs_file_certifications)))
+        WriteInFile("RocketStats_FurthestGoalMatch.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarCertificationsMostBallTouchesMatch(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.MostBallTouches)));
+
+    if (write && (force || (rs_in_file && rs_file_certifications)))
+        WriteInFile("RocketStats_MostBallTouchesMatch.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarCertificationsMostBoostPickupsMatch(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.MostBoostPickups)));
+
+    if (write && (force || (rs_in_file && rs_file_certifications)))
+        WriteInFile("RocketStats_MostBoostPickupsMatch.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarCertificationsFewestBallTouchesMatch(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.FewestBallTouches)));
+
+    if (write && (force || (rs_in_file && rs_file_certifications)))
+        WriteInFile("RocketStats_FewestBallTouchesMatch.txt", tmp);
+
+    return tmp;
+}
+
+#pragma region MatchTeam
 std::string RocketStats::VarCertificationsTeamMVPMatch(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_miscs ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.TeamMVP)));
+    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.TeamMVP)));
 
-    if (write && (force || (rs_in_file && rs_file_miscs)))
+    if (write && (force || (rs_in_file && rs_file_certifications)))
         WriteInFile("RocketStats_TeamMVPMatch.txt", tmp);
-
-    return tmp;
-}
-
-std::string RocketStats::VarCertificationsTeamSaviorMatch(bool write, bool force, bool default_value)
-{
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.TeamSavior)));
-
-    if (write && (force || (rs_in_file && rs_file_certifications)))
-        WriteInFile("RocketStats_TeamSaviorMatch.txt", tmp);
-
-    return tmp;
-}
-
-std::string RocketStats::VarCertificationsTeamPlaymakerMatch(bool write, bool force, bool default_value)
-{
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.TeamPlaymaker)));
-
-    if (write && (force || (rs_in_file && rs_file_certifications)))
-        WriteInFile("RocketStats_TeamPlaymakerMatch.txt", tmp);
-
-    return tmp;
-}
-
-
-std::string RocketStats::VarCertificationsTotalMVPMatch(bool write, bool force, bool default_value)
-{
-    std::string tmp = (rs_hide_miscs ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.TotalMVP)));
-
-    if (write && (force || (rs_in_file && rs_file_miscs)))
-        WriteInFile("RocketStats_TotalMVPMatch.txt", tmp);
-
-    return tmp;
-}
-
-std::string RocketStats::VarCertificationsTotalSaviorMatch(bool write, bool force, bool default_value)
-{
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.TotalSavior)));
-
-    if (write && (force || (rs_in_file && rs_file_certifications)))
-        WriteInFile("RocketStats_TotalSaviorMatch.txt", tmp);
-
-    return tmp;
-}
-
-std::string RocketStats::VarCertificationsTotalPlaymakerMatch(bool write, bool force, bool default_value)
-{
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.TotalPlaymaker)));
-
-    if (write && (force || (rs_in_file && rs_file_certifications)))
-        WriteInFile("RocketStats_TotalPlaymakerMatch.txt", tmp);
 
     return tmp;
 }
 #pragma endregion
 
+#pragma region MatchTotal
+std::string RocketStats::VarCertificationsTotalMVPMatch(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.TotalMVP)));
+
+    if (write && (force || (rs_in_file && rs_file_certifications)))
+        WriteInFile("RocketStats_TotalMVPMatch.txt", tmp);
+
+    return tmp;
+}
+#pragma endregion
+#pragma endregion
+
 #pragma region Cumul
 std::string RocketStats::VarCertificationsMVPCumul(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_miscs ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().MVPCumul)));
+    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().MVPCumul)));
 
-    if (write && (force || (rs_in_file && rs_file_miscs)))
+    if (write && (force || (rs_in_file && rs_file_certifications)))
         WriteInFile("RocketStats_MVPCumul.txt", tmp);
 
     return tmp;
 }
 
-std::string RocketStats::VarCertificationsSaviorCumul(bool write, bool force, bool default_value)
+std::string RocketStats::VarCertificationsCarTouchesCumul(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().SaviorCumul)));
+    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().CarTouchesCumul)));
 
     if (write && (force || (rs_in_file && rs_file_certifications)))
-        WriteInFile("RocketStats_SaviorCumul.txt", tmp);
+        WriteInFile("RocketStats_CarTouchesCumul.txt", tmp);
 
     return tmp;
 }
 
-std::string RocketStats::VarCertificationsPlaymakerCumul(bool write, bool force, bool default_value)
+std::string RocketStats::VarCertificationsFastestGoalCumul(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().PlaymakerCumul)));
+    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().FastestGoalCumul)));
 
     if (write && (force || (rs_in_file && rs_file_certifications)))
-        WriteInFile("RocketStats_PlaymakerCumul.txt", tmp);
+        WriteInFile("RocketStats_FastestGoalCumul.txt", tmp);
 
     return tmp;
 }
 
+std::string RocketStats::VarCertificationsSlowestGoalCumul(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().SlowestGoalCumul)));
 
+    if (write && (force || (rs_in_file && rs_file_certifications)))
+        WriteInFile("RocketStats_SlowestGoalCumul.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarCertificationsBoostPickupsCumul(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().BoostPickupsCumul)));
+
+    if (write && (force || (rs_in_file && rs_file_certifications)))
+        WriteInFile("RocketStats_BoostPickupsCumul.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarCertificationsFurthestGoalCumul(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().FurthestGoalCumul)));
+
+    if (write && (force || (rs_in_file && rs_file_certifications)))
+        WriteInFile("RocketStats_FurthestGoalCumul.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarCertificationsMostBallTouchesCumul(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().MostBallTouchesCumul)));
+
+    if (write && (force || (rs_in_file && rs_file_certifications)))
+        WriteInFile("RocketStats_MostBallTouchesCumul.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarCertificationsMostBoostPickupsCumul(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().MostBoostPickupsCumul)));
+
+    if (write && (force || (rs_in_file && rs_file_certifications)))
+        WriteInFile("RocketStats_MostBoostPickupsCumul.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarCertificationsFewestBallTouchesCumul(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().FewestBallTouchesCumul)));
+
+    if (write && (force || (rs_in_file && rs_file_certifications)))
+        WriteInFile("RocketStats_FewestBallTouchesCumul.txt", tmp);
+
+    return tmp;
+}
+
+#pragma region CumulTeam
 std::string RocketStats::VarCertificationsTeamMVPCumul(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_miscs ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TeamMVPCumul)));
+    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TeamMVPCumul)));
 
-    if (write && (force || (rs_in_file && rs_file_miscs)))
+    if (write && (force || (rs_in_file && rs_file_certifications)))
         WriteInFile("RocketStats_TeamMVPCumul.txt", tmp);
 
     return tmp;
 }
+#pragma endregion
 
-std::string RocketStats::VarCertificationsTeamSaviorCumul(bool write, bool force, bool default_value)
-{
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TeamSaviorCumul)));
-
-    if (write && (force || (rs_in_file && rs_file_certifications)))
-        WriteInFile("RocketStats_TeamSaviorCumul.txt", tmp);
-
-    return tmp;
-}
-
-std::string RocketStats::VarCertificationsTeamPlaymakerCumul(bool write, bool force, bool default_value)
-{
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TeamPlaymakerCumul)));
-
-    if (write && (force || (rs_in_file && rs_file_certifications)))
-        WriteInFile("RocketStats_TeamPlaymakerCumul.txt", tmp);
-
-    return tmp;
-}
-
-
+#pragma region CumulTotal
 std::string RocketStats::VarCertificationsTotalMVPCumul(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_miscs ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TotalMVPCumul)));
+    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TotalMVPCumul)));
 
-    if (write && (force || (rs_in_file && rs_file_miscs)))
+    if (write && (force || (rs_in_file && rs_file_certifications)))
         WriteInFile("RocketStats_TotalMVPCumul.txt", tmp);
 
     return tmp;
 }
-
-std::string RocketStats::VarCertificationsTotalSaviorCumul(bool write, bool force, bool default_value)
-{
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TotalSaviorCumul)));
-
-    if (write && (force || (rs_in_file && rs_file_certifications)))
-        WriteInFile("RocketStats_TotalSaviorCumul.txt", tmp);
-
-    return tmp;
-}
-
-std::string RocketStats::VarCertificationsTotalPlaymakerCumul(bool write, bool force, bool default_value)
-{
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TotalPlaymakerCumul)));
-
-    if (write && (force || (rs_in_file && rs_file_certifications)))
-        WriteInFile("RocketStats_TotalPlaymakerCumul.txt", tmp);
-
-    return tmp;
-}
+#pragma endregion
 #pragma endregion

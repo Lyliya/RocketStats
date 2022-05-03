@@ -116,7 +116,7 @@ std::string RocketStats::VarDropshotBreakoutDamageLarge(bool write, bool force, 
     return tmp;
 }
 
-
+#pragma region BaseTeam
 std::string RocketStats::VarDropshotTeamBreakoutDamage(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_dropshot ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TeamBreakoutDamage)));
@@ -136,8 +136,9 @@ std::string RocketStats::VarDropshotTeamBreakoutDamageLarge(bool write, bool for
 
     return tmp;
 }
+#pragma endregion
 
-
+#pragma region BaseTotal
 std::string RocketStats::VarDropshotTotalBreakoutDamage(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_dropshot ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TotalBreakoutDamage)));
@@ -157,6 +158,7 @@ std::string RocketStats::VarDropshotTotalBreakoutDamageLarge(bool write, bool fo
 
     return tmp;
 }
+#pragma endregion
 #pragma endregion
 
 #pragma region Match
@@ -180,7 +182,7 @@ std::string RocketStats::VarDropshotBreakoutDamageLargeMatch(bool write, bool fo
     return tmp;
 }
 
-
+#pragma region MatchTeam
 std::string RocketStats::VarDropshotTeamBreakoutDamageMatch(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_dropshot ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.TeamBreakoutDamage)));
@@ -200,8 +202,9 @@ std::string RocketStats::VarDropshotTeamBreakoutDamageLargeMatch(bool write, boo
 
     return tmp;
 }
+#pragma endregion
 
-
+#pragma region MatchTotal
 std::string RocketStats::VarDropshotTotalBreakoutDamageMatch(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_dropshot ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.TotalBreakoutDamage)));
@@ -221,6 +224,7 @@ std::string RocketStats::VarDropshotTotalBreakoutDamageLargeMatch(bool write, bo
 
     return tmp;
 }
+#pragma endregion
 #pragma endregion
 
 #pragma region Cumul
@@ -244,7 +248,7 @@ std::string RocketStats::VarDropshotBreakoutDamageLargeCumul(bool write, bool fo
     return tmp;
 }
 
-
+#pragma region CumulTeam
 std::string RocketStats::VarDropshotTeamBreakoutDamageCumul(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_dropshot ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TeamBreakoutDamageCumul)));
@@ -254,7 +258,6 @@ std::string RocketStats::VarDropshotTeamBreakoutDamageCumul(bool write, bool for
 
     return tmp;
 }
-
 std::string RocketStats::VarDropshotTeamBreakoutDamageLargeCumul(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_dropshot ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TeamBreakoutDamageLargeCumul)));
@@ -264,8 +267,9 @@ std::string RocketStats::VarDropshotTeamBreakoutDamageLargeCumul(bool write, boo
 
     return tmp;
 }
+#pragma endregion
 
-
+#pragma region CumulTotal
 std::string RocketStats::VarDropshotTotalBreakoutDamageCumul(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_dropshot ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TotalBreakoutDamageCumul)));
@@ -285,4 +289,5 @@ std::string RocketStats::VarDropshotTotalBreakoutDamageLargeCumul(bool write, bo
 
     return tmp;
 }
+#pragma endregion
 #pragma endregion

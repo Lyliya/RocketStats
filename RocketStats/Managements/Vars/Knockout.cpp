@@ -10,6 +10,8 @@ void RocketStats::ReadKnockout(Stats& stat, json& config)
         stat.KnockoutAssist = int(config["KnockoutAssist"]);
     if (config["KnockoutThrown"].is_number_unsigned())
         stat.KnockoutThrown = int(config["KnockoutThrown"]);
+    if (config["KnockoutWinner"].is_number_unsigned())
+        stat.KnockoutWinner = int(config["KnockoutWinner"]);
     if (config["KnockoutGrabbed"].is_number_unsigned())
         stat.KnockoutGrabbed = int(config["KnockoutGrabbed"]);
     if (config["KnockoutDoubleKO"].is_number_unsigned())
@@ -81,6 +83,8 @@ void RocketStats::ReadKnockout(Stats& stat, json& config)
         stat.KnockoutAssistCumul = int(config["KnockoutAssistCumul"]);
     if (config["KnockoutThrownCumul"].is_number_unsigned())
         stat.KnockoutThrownCumul = int(config["KnockoutThrownCumul"]);
+    if (config["KnockoutWinnerCumul"].is_number_unsigned())
+        stat.KnockoutWinnerCumul = int(config["KnockoutWinnerCumul"]);
     if (config["KnockoutGrabbedCumul"].is_number_unsigned())
         stat.KnockoutGrabbedCumul = int(config["KnockoutGrabbedCumul"]);
     if (config["KnockoutDoubleKOCumul"].is_number_unsigned())
@@ -151,6 +155,7 @@ void RocketStats::WriteKnockout(Stats& stat, json& config)
     config["KnockoutDeath"] = stat.KnockoutDeath;
     config["KnockoutAssist"] = stat.KnockoutAssist;
     config["KnockoutThrown"] = stat.KnockoutThrown;
+    config["KnockoutWinner"] = stat.KnockoutWinner;
     config["KnockoutGrabbed"] = stat.KnockoutGrabbed;
     config["KnockoutDoubleKO"] = stat.KnockoutDoubleKO;
     config["KnockoutHeavyHit"] = stat.KnockoutHeavyHit;
@@ -187,6 +192,7 @@ void RocketStats::WriteKnockout(Stats& stat, json& config)
     config["KnockoutDeathCumul"] = stat.KnockoutDeathCumul;
     config["KnockoutAssistCumul"] = stat.KnockoutAssistCumul;
     config["KnockoutThrownCumul"] = stat.KnockoutThrownCumul;
+    config["KnockoutWinnerCumul"] = stat.KnockoutWinnerCumul;
     config["KnockoutGrabbedCumul"] = stat.KnockoutGrabbedCumul;
     config["KnockoutDoubleKOCumul"] = stat.KnockoutDoubleKOCumul;
     config["KnockoutHeavyHitCumul"] = stat.KnockoutHeavyHitCumul;
@@ -227,6 +233,7 @@ void RocketStats::ReplaceKnockout(std::map<std::string, std::string>& vars)
     vars["KnockoutDeath"] = VarKnockoutDeath();
     vars["KnockoutAssist"] = VarKnockoutAssist();
     vars["KnockoutThrown"] = VarKnockoutThrown();
+    vars["KnockoutWinner"] = VarKnockoutWinner();
     vars["KnockoutGrabbed"] = VarKnockoutGrabbed();
     vars["KnockoutDoubleKO"] = VarKnockoutDoubleKO();
     vars["KnockoutHeavyHit"] = VarKnockoutHeavyHit();
@@ -264,6 +271,7 @@ void RocketStats::ReplaceKnockout(std::map<std::string, std::string>& vars)
     vars["KnockoutDeathMatch"] = VarKnockoutDeathMatch();
     vars["KnockoutAssistMatch"] = VarKnockoutAssistMatch();
     vars["KnockoutThrownMatch"] = VarKnockoutThrownMatch();
+    vars["KnockoutWinnerMatch"] = VarKnockoutWinnerMatch();
     vars["KnockoutGrabbedMatch"] = VarKnockoutGrabbedMatch();
     vars["KnockoutDoubleKOMatch"] = VarKnockoutDoubleKOMatch();
     vars["KnockoutHeavyHitMatch"] = VarKnockoutHeavyHitMatch();
@@ -301,6 +309,7 @@ void RocketStats::ReplaceKnockout(std::map<std::string, std::string>& vars)
     vars["KnockoutDeathCumul"] = VarKnockoutDeathCumul();
     vars["KnockoutAssistCumul"] = VarKnockoutAssistCumul();
     vars["KnockoutThrownCumul"] = VarKnockoutThrownCumul();
+    vars["KnockoutWinnerCumul"] = VarKnockoutWinnerCumul();
     vars["KnockoutGrabbedCumul"] = VarKnockoutGrabbedCumul();
     vars["KnockoutDoubleKOCumul"] = VarKnockoutDoubleKOCumul();
     vars["KnockoutHeavyHitCumul"] = VarKnockoutHeavyHitCumul();
@@ -342,6 +351,7 @@ void RocketStats::SessionKnockout(Stats& stat, int index, bool playlists)
         stat.KnockoutDeath += stats[index].KnockoutDeath;
         stat.KnockoutAssist += stats[index].KnockoutAssist;
         stat.KnockoutThrown += stats[index].KnockoutThrown;
+        stat.KnockoutWinner += stats[index].KnockoutWinner;
         stat.KnockoutGrabbed += stats[index].KnockoutGrabbed;
         stat.KnockoutDoubleKO += stats[index].KnockoutDoubleKO;
         stat.KnockoutHeavyHit += stats[index].KnockoutHeavyHit;
@@ -378,6 +388,7 @@ void RocketStats::SessionKnockout(Stats& stat, int index, bool playlists)
         session.KnockoutDeathCumul = stat.KnockoutDeath;
         session.KnockoutAssistCumul = stat.KnockoutAssist;
         session.KnockoutThrownCumul = stat.KnockoutThrown;
+        session.KnockoutWinnerCumul = stat.KnockoutWinner;
         session.KnockoutGrabbedCumul = stat.KnockoutGrabbed;
         session.KnockoutDoubleKOCumul = stat.KnockoutDoubleKO;
         session.KnockoutHeavyHitCumul = stat.KnockoutHeavyHit;
@@ -447,6 +458,16 @@ std::string RocketStats::VarKnockoutThrown(bool write, bool force, bool default_
 
     if (write && (force || (rs_in_file && rs_file_knockout)))
         WriteInFile("RocketStats_KnockoutThrown.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarKnockoutWinner(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutWinner)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutWinner.txt", tmp);
 
     return tmp;
 }
@@ -581,7 +602,7 @@ std::string RocketStats::VarKnockoutAerialLightHit(bool write, bool force, bool 
     return tmp;
 }
 
-
+#pragma region BaseTeam
 std::string RocketStats::VarKnockoutTeam(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutTeam)));
@@ -671,8 +692,9 @@ std::string RocketStats::VarKnockoutTeamAerialLightHit(bool write, bool force, b
 
     return tmp;
 }
+#pragma endregion
 
-
+#pragma region BaseTotal
 std::string RocketStats::VarKnockoutTotal(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutTotal)));
@@ -763,6 +785,7 @@ std::string RocketStats::VarKnockoutTotalAerialLightHit(bool write, bool force, 
     return tmp;
 }
 #pragma endregion
+#pragma endregion
 
 #pragma region Match
 std::string RocketStats::VarKnockoutMatch(bool write, bool force, bool default_value)
@@ -801,6 +824,16 @@ std::string RocketStats::VarKnockoutThrownMatch(bool write, bool force, bool def
 
     if (write && (force || (rs_in_file && rs_file_knockout)))
         WriteInFile("RocketStats_KnockoutThrownMatch.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarKnockoutWinnerMatch(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.KnockoutWinner)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutWinnerMatch.txt", tmp);
 
     return tmp;
 }
@@ -935,7 +968,7 @@ std::string RocketStats::VarKnockoutAerialLightHitMatch(bool write, bool force, 
     return tmp;
 }
 
-
+#pragma region MatchTeam
 std::string RocketStats::VarKnockoutTeamMatch(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.KnockoutTeam)));
@@ -1025,8 +1058,9 @@ std::string RocketStats::VarKnockoutTeamAerialLightHitMatch(bool write, bool for
 
     return tmp;
 }
+#pragma endregion
 
-
+#pragma region MatchTotal
 std::string RocketStats::VarKnockoutTotalMatch(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.KnockoutTotal)));
@@ -1117,6 +1151,7 @@ std::string RocketStats::VarKnockoutTotalAerialLightHitMatch(bool write, bool fo
     return tmp;
 }
 #pragma endregion
+#pragma endregion
 
 #pragma region Cumul
 std::string RocketStats::VarKnockoutCumul(bool write, bool force, bool default_value)
@@ -1155,6 +1190,16 @@ std::string RocketStats::VarKnockoutThrownCumul(bool write, bool force, bool def
 
     if (write && (force || (rs_in_file && rs_file_knockout)))
         WriteInFile("RocketStats_KnockoutThrownCumul.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarKnockoutWinnerCumul(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutWinnerCumul)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutWinnerCumul.txt", tmp);
 
     return tmp;
 }
@@ -1289,7 +1334,7 @@ std::string RocketStats::VarKnockoutAerialLightHitCumul(bool write, bool force, 
     return tmp;
 }
 
-
+#pragma region CumulTeam
 std::string RocketStats::VarKnockoutTeamCumul(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutTeamCumul)));
@@ -1379,8 +1424,9 @@ std::string RocketStats::VarKnockoutTeamAerialLightHitCumul(bool write, bool for
 
     return tmp;
 }
+#pragma endregion
 
-
+#pragma region CumulTotal
 std::string RocketStats::VarKnockoutTotalCumul(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutTotalCumul)));
@@ -1470,4 +1516,5 @@ std::string RocketStats::VarKnockoutTotalAerialLightHitCumul(bool write, bool fo
 
     return tmp;
 }
+#pragma endregion
 #pragma endregion
