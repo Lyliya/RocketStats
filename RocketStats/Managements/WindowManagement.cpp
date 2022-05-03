@@ -397,10 +397,19 @@ void RocketStats::RenderSettings()
     CVarWrapper cvar_rotate = cvarManager->getCvar("rs_rotate");
     CVarWrapper cvar_opacity = cvarManager->getCvar("rs_opacity");
 
+    GuiManagerWrapper gui = gameWrapper->GetGUIManager();
+    ImFont* font = gui.GetFont("Ubuntu-Regular28");
+    bool menu_font = font->IsLoaded();
+
+    if (menu_font)
+        ImGui::PushFont(font);
+
     ImGui::SetNextWindowPos({ 128.f, 256.f }, ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(settings_size);
 
     ImGui::Begin((menu_title + "##Settings").c_str(), nullptr, (ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse));
+
+    ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
 
     // Show menu only if menu image is loaded
     if (rs_logo != nullptr && rs_title != nullptr && rs_logo->IsLoadedForImGui() && rs_title->IsLoadedForImGui())
@@ -433,7 +442,7 @@ void RocketStats::RenderSettings()
         image_pos = { p0.x + ImGui::GetCursorPosX(), p0.y + ImGui::GetCursorPosY() };
         drawlist->AddImage(rs_title->GetImGuiTex(), image_pos, { (image_size.X / 2) + image_pos.x, (image_size.Y / 2) + image_pos.y });
 
-        ImGui::SetWindowFontScale(1.7f);
+        ImGui::SetWindowFontScale(1.7f / (font ? 2.f : 1.f));
         ImGui::SetCursorPos({ 23, 52 });
         ImGui::Checkbox("##overlay", &rs_disp_overlay);
         if (ImGui::IsItemHovered())
@@ -442,11 +451,11 @@ void RocketStats::RenderSettings()
         ImGui::SetCursorPos({ 63, 54 });
         ImGui::TextColored(ImVec4{ 0.2f, 0.2f, 0.2f, 1.f }, Utils::toupper(GetLang(LANG_OVERLAY)).c_str());
 
-        ImGui::SetWindowFontScale(1.3f);
+        ImGui::SetWindowFontScale(1.3f / (font ? 2.f : 1.f));
         ImGui::SetCursorPos({ 355, 43 });
         ImGui::TextColored(ImVec4{ 0.8f, 0.8f, 0.8f, 1.f }, GetLang(LANG_MODE).c_str());
 
-        ImGui::SetWindowFontScale(1.f);
+        ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
         ImGui::SetCursorPos({ 295, 68 });
         ImGui::SetNextItemWidth(142);
         if (ImGui::BeginCombo("##modes_combo", modes.at(rs_mode).c_str(), ImGuiComboFlags_NoArrowButton))
@@ -473,11 +482,11 @@ void RocketStats::RenderSettings()
         if (ImGui::ArrowButton("##modes_right", ImGuiDir_Right) && rs_mode < (modes.size() - 1))
             ++rs_mode;
 
-        ImGui::SetWindowFontScale(1.3f);
+        ImGui::SetWindowFontScale(1.3f / (font ? 2.f : 1.f));
         ImGui::SetCursorPos({ 585, 43 });
         ImGui::TextColored(ImVec4{ 0.8f, 0.8f, 0.8f, 1.f }, GetLang(LANG_THEME).c_str());
 
-        ImGui::SetWindowFontScale(1.f);
+        ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
         ImGui::SetCursorPos({ 525, 68 });
         ImGui::SetNextItemWidth(142);
         if (ImGui::BeginCombo("##themes_combo", theme_render.name.c_str(), ImGuiComboFlags_NoArrowButton))
@@ -634,7 +643,7 @@ void RocketStats::RenderSettings()
         image_pos = { p0.x + ImGui::GetCursorPosX(), p0.y + ImGui::GetCursorPosY() };
         drawlist->AddImage(rs_title->GetImGuiTex(), image_pos, { (image_size.X / 2) + image_pos.x, (image_size.Y / 2) + image_pos.y });
 
-        ImGui::SetWindowFontScale(1.7f);
+        ImGui::SetWindowFontScale(1.7f / (font ? 2.f : 1.f));
         ImGui::SetCursorPos({ 23, 263 });
         ImGui::Checkbox("##in_file", &rs_in_file);
         if (ImGui::IsItemHovered())
@@ -643,7 +652,7 @@ void RocketStats::RenderSettings()
         ImGui::SetCursorPos({ 63, 265 });
         ImGui::TextColored(ImVec4{ 0.2f, 0.2f, 0.2f, 1.f }, Utils::toupper(GetLang(LANG_IN_FILE)).c_str());
 
-        ImGui::SetWindowFontScale(1.f);
+        ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
         ImGui::SetCursorPos({ (settings_size.x - 135), 241 });
         if (ImGui::Button(GetLang(LANG_OPEN_FOLDER).c_str(), { 125, 0 }))
             system(("powershell -WindowStyle Hidden \"start \"\"" + GetPath() + "\"\"\"").c_str());
@@ -673,18 +682,18 @@ void RocketStats::RenderSettings()
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip(GetLang(LANG_RESET_STATS_TOOLTIP).c_str());
 
-        ImGui::SetWindowFontScale(1.7f);
+        ImGui::SetWindowFontScale(1.7f / (font ? 2.f : 1.f));
         ImGui::SetCursorPos({ 280, 258 });
         text_size = ImGui::CalcTextSize(theme_render.name.c_str());
         ImGui::TextColored(ImVec4{ 1.f, 1.f, 1.f, 1.f }, theme_render.name.c_str());
-        ImGui::SetWindowFontScale(1.f);
+        ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
         ImGui::SetCursorPos({ (285 + text_size.x), 265 });
         ImGui::TextColored(ImVec4{ 1.f, 1.f, 1.f, 0.5f }, (theme_render.version + (theme_render.date.size() ? (" - " + theme_render.date) : "")).c_str());
         ImGui::SetCursorPos({ 290, 282 });
         ImGui::TextColored(ImVec4{ 1.f, 1.f, 1.f, 0.8f }, ((GetLang(LANG_THEME_BY) + " ").c_str() + theme_render.author).c_str());
 
         ImGui::SetCursorPos({ (column_start - 8), 342 });
-        ImGui::SetWindowFontScale(1.f);
+        ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
         ImGui::BeginChild("##column1", { (column_width + 16), 205 }, false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
         ImGui::Checkbox(GetLang(LANG_SHOW_IN_MENU).c_str(), &rs_enable_inmenu);
         ImGui::Checkbox(GetLang(LANG_SHOW_IN_GAME).c_str(), &rs_enable_ingame);
@@ -703,14 +712,14 @@ void RocketStats::RenderSettings()
         rs_select_all_file = (rs_file_games && rs_file_gm && rs_file_rank && rs_file_div &&
             rs_file_mmr && rs_file_mmrc && rs_file_mmrcc &&
             rs_file_win && rs_file_loss && rs_file_streak && rs_file_winratio && rs_file_winpercentage &&
-            rs_file_demo && rs_file_demom && rs_file_democ &&
+            rs_file_demolitions && rs_file_demolitionsm && rs_file_demolitionsc &&
             rs_file_death && rs_file_deathm && rs_file_deathc &&
-            rs_file_shots && rs_file_saves && rs_file_goals && rs_file_dropshot && rs_file_knockout && rs_file_miscs && rs_file_certifications &&
-            rs_file_boost);
+            rs_file_boost &&
+            rs_file_shots && rs_file_saves && rs_file_goals && rs_file_dropshot && rs_file_knockout && rs_file_miscs && rs_file_certifications);
         select_all = rs_select_all_file;
         tpos = { (column_start + column_space + (column_width + 16) - 0.5f), 320 };
         ImGui::SetCursorPos(tpos);
-        ImGui::SetWindowFontScale(1.f);
+        ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
         ImGui::PushStyleColor(ImGuiCol_FrameBg, { 0.3f, 0.3f, 0.3f, 1.f });
         ImGui::PushStyleColor(ImGuiCol_FrameBgActive, { 0.3f, 0.3f, 0.3f, 1.f });
         ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, { 0.3f, 0.3f, 0.3f, 1.f });
@@ -720,12 +729,12 @@ void RocketStats::RenderSettings()
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip(GetLang(LANG_SELECT_ALL_TOOLTIP).c_str());
         ImGui::PopStyleColor(4);
-        ImGui::SetWindowFontScale(1.2f);
+        ImGui::SetWindowFontScale(1.2f / (font ? 2.f : 1.f));
         ImGui::SameLine();
         ImGui::SetCursorPosY(316);
         ImGui::TextColored(ImVec4{ 0.8f, 0.8f, 0.8f, 1.f }, GetLang(LANG_FILE_TITLE).c_str());
         ImGui::SetCursorPos({ (column_start + column_space + (column_width + 16)), 342 });
-        ImGui::SetWindowFontScale(1.f);
+        ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
         ImGui::BeginChild("##column2", { (column_width - 8), 205 }, false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
         if (!rs_in_file)
             ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.5f);
@@ -741,12 +750,12 @@ void RocketStats::RenderSettings()
         ImGui::Checkbox(GetLang(LANG_STREAKS).c_str(), &rs_file_streak);
         ImGui::Checkbox(GetLang(LANG_WINRATIO).c_str(), &rs_file_winratio);
         ImGui::Checkbox(GetLang(LANG_WINPERCENTAGE).c_str(), &rs_file_winratio);
-        ImGui::Checkbox(GetLang(LANG_DEMOLITIONS).c_str(), &rs_file_demo);
-        ImGui::Checkbox(GetLang(LANG_DEMOLITIONSMATCH).c_str(), &rs_file_demom);
-        ImGui::Checkbox(GetLang(LANG_DEMOLITIONSCUMUL).c_str(), &rs_file_democ);
         ImGui::Checkbox(GetLang(LANG_DEATH).c_str(), &rs_file_death);
         ImGui::Checkbox(GetLang(LANG_DEATHMATCH).c_str(), &rs_file_deathm);
         ImGui::Checkbox(GetLang(LANG_DEATHCUMUL).c_str(), &rs_file_deathc);
+        ImGui::Checkbox(GetLang(LANG_DEMOLITIONS).c_str(), &rs_file_demolitions);
+        ImGui::Checkbox(GetLang(LANG_DEMOLITIONSMATCH).c_str(), &rs_file_demolitionsm);
+        ImGui::Checkbox(GetLang(LANG_DEMOLITIONSCUMUL).c_str(), &rs_file_demolitionsc);
         ImGui::Checkbox(GetLang(LANG_SHOTS).c_str(), &rs_file_shots);
         ImGui::Checkbox(GetLang(LANG_SAVES).c_str(), &rs_file_saves);
         ImGui::Checkbox(GetLang(LANG_GOALS).c_str(), &rs_file_goals);
@@ -775,12 +784,12 @@ void RocketStats::RenderSettings()
             rs_file_streak = rs_select_all_file;
             rs_file_winratio = rs_select_all_file;
             rs_file_winpercentage = rs_select_all_file;
-            rs_file_demo = rs_select_all_file;
-            rs_file_demom = rs_select_all_file;
-            rs_file_democ = rs_select_all_file;
             rs_file_death = rs_select_all_file;
             rs_file_deathm = rs_select_all_file;
             rs_file_deathc = rs_select_all_file;
+            rs_file_demolitions = rs_select_all_file;
+            rs_file_demolitionsm = rs_select_all_file;
+            rs_file_demolitionsc = rs_select_all_file;
             rs_file_shots = rs_select_all_file;
             rs_file_saves = rs_select_all_file;
             rs_file_goals = rs_select_all_file;
@@ -794,13 +803,13 @@ void RocketStats::RenderSettings()
         rs_select_all_hide = (rs_hide_games && rs_hide_gm && rs_hide_rank && rs_hide_div &&
             rs_hide_mmr && rs_hide_mmrc && rs_hide_mmrcc &&
             rs_hide_win && rs_hide_loss && rs_hide_streak && rs_hide_winratio && rs_hide_winpercentage &&
-            rs_hide_demo && rs_hide_demom && rs_hide_democ &&
-            rs_hide_shots && rs_hide_saves && rs_hide_goals && rs_hide_dropshot && rs_hide_knockout && rs_hide_miscs && rs_hide_certifications &&
-            rs_hide_death && rs_hide_deathm && rs_hide_deathc);
+            rs_hide_demolitions && rs_hide_demolitionsm && rs_hide_demolitionsc &&
+            rs_hide_death && rs_hide_deathm && rs_hide_deathc &&
+            rs_hide_shots && rs_hide_saves && rs_hide_goals && rs_hide_dropshot && rs_hide_knockout && rs_hide_miscs && rs_hide_certifications);
         select_all = rs_select_all_hide;
         tpos = { (column_start + (column_space * 2) + ((column_width * 2) + 16)), 320 };
         ImGui::SetCursorPos(tpos);
-        ImGui::SetWindowFontScale(1.f);
+        ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
         ImGui::PushStyleColor(ImGuiCol_FrameBg, { 0.3f, 0.3f, 0.3f, 1.f });
         ImGui::PushStyleColor(ImGuiCol_FrameBgActive, { 0.3f, 0.3f, 0.3f, 1.f });
         ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, { 0.3f, 0.3f, 0.3f, 1.f });
@@ -810,12 +819,12 @@ void RocketStats::RenderSettings()
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip(GetLang(LANG_SELECT_ALL_TOOLTIP).c_str());
         ImGui::PopStyleColor(4);
-        ImGui::SetWindowFontScale(1.2f);
+        ImGui::SetWindowFontScale(1.2f / (font ? 2.f : 1.f));
         ImGui::SameLine();
         ImGui::SetCursorPosY(316);
         ImGui::TextColored(ImVec4{ 0.8f, 0.8f, 0.8f, 1.f }, GetLang(LANG_HIDE_TITLE).c_str());
         ImGui::SetCursorPos({ (column_start + (column_space * 2) + ((column_width * 2) + 16)), 342 });
-        ImGui::SetWindowFontScale(1.f);
+        ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
         ImGui::BeginChild("##column3", { (column_width - 8), 205 }, false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
         ImGui::Checkbox(GetLang(LANG_GAMES).c_str(), &rs_hide_games);
         ImGui::Checkbox(GetLang(LANG_GAMEMODE).c_str(), &rs_hide_gm);
@@ -829,12 +838,12 @@ void RocketStats::RenderSettings()
         ImGui::Checkbox(GetLang(LANG_STREAKS).c_str(), &rs_hide_streak);
         ImGui::Checkbox(GetLang(LANG_WINRATIO).c_str(), &rs_hide_winratio);
         ImGui::Checkbox(GetLang(LANG_WINPERCENTAGE).c_str(), &rs_hide_winpercentage);
-        ImGui::Checkbox(GetLang(LANG_DEMOLITIONS).c_str(), &rs_hide_demo);
-        ImGui::Checkbox(GetLang(LANG_DEMOLITIONSMATCH).c_str(), &rs_hide_demom);
-        ImGui::Checkbox(GetLang(LANG_DEMOLITIONSCUMUL).c_str(), &rs_hide_democ);
         ImGui::Checkbox(GetLang(LANG_DEATH).c_str(), &rs_hide_death);
         ImGui::Checkbox(GetLang(LANG_DEATHMATCH).c_str(), &rs_hide_deathm);
         ImGui::Checkbox(GetLang(LANG_DEATHCUMUL).c_str(), &rs_hide_deathc);
+        ImGui::Checkbox(GetLang(LANG_DEMOLITIONS).c_str(), &rs_hide_demolitions);
+        ImGui::Checkbox(GetLang(LANG_DEMOLITIONSMATCH).c_str(), &rs_hide_demolitionsm);
+        ImGui::Checkbox(GetLang(LANG_DEMOLITIONSCUMUL).c_str(), &rs_hide_demolitionsc);
         ImGui::Checkbox(GetLang(LANG_SHOTS).c_str(), &rs_hide_shots);
         ImGui::Checkbox(GetLang(LANG_SAVES).c_str(), &rs_hide_saves);
         ImGui::Checkbox(GetLang(LANG_GOALS).c_str(), &rs_hide_goals);
@@ -860,12 +869,12 @@ void RocketStats::RenderSettings()
             rs_hide_streak = rs_select_all_hide;
             rs_hide_winratio = rs_select_all_hide;
             rs_hide_winpercentage = rs_select_all_hide;
-            rs_hide_demo = rs_select_all_hide;
-            rs_hide_demom = rs_select_all_hide;
-            rs_hide_democ = rs_select_all_hide;
             rs_hide_death = rs_select_all_hide;
             rs_hide_deathm = rs_select_all_hide;
             rs_hide_deathc = rs_select_all_hide;
+            rs_hide_demolitions = rs_select_all_hide;
+            rs_hide_demolitionsm = rs_select_all_hide;
+            rs_hide_demolitionsc = rs_select_all_hide;
             rs_hide_shots = rs_select_all_hide;
             rs_hide_saves = rs_select_all_hide;
             rs_hide_goals = rs_select_all_hide;
@@ -926,10 +935,10 @@ void RocketStats::RenderSettings()
     }
     else
     {
-        ImGui::SetWindowFontScale(1.5f);
+        ImGui::SetWindowFontScale(1.5f / (font ? 2.f : 1.f));
         ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), (GetLang(LANG_ERROR) + ": data/RocketStats").c_str());
         ImGui::SameLine();
-        ImGui::SetWindowFontScale(1.f);
+        ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
         ImGui::SetCursorPosX(settings_size.x - 80 - 7);
         if (ImGui::Button(GetLang(LANG_ERROR_RELOAD).c_str(), {80, 0}))
         {
@@ -942,6 +951,9 @@ void RocketStats::RenderSettings()
     }
 
     ImGui::End();
+
+    if (menu_font)
+        ImGui::PopFont();
 
     RefreshVars();
 }

@@ -85,10 +85,10 @@ struct Stats {
 	int win = 0;
 	int loss = 0;
 	int streak = 0;
-	int demo = 0;
-	int demoCumul = 0;
-	int death = 0;
-	int deathCumul = 0;
+	int Demolitions = 0;
+	int DemolitionsCumul = 0;
+	int Death = 0;
+	int DeathCumul = 0;
 
 	/// Shots
 	int Clear = 0;
@@ -607,12 +607,12 @@ public:
 	bool rs_file_streak = true;
 	bool rs_file_winratio = true;
 	bool rs_file_winpercentage = true;
-	bool rs_file_demo = true;
-	bool rs_file_demom = true;
-	bool rs_file_democ = true;
 	bool rs_file_death = true;
 	bool rs_file_deathm = true;
 	bool rs_file_deathc = true;
+	bool rs_file_demolitions = true;
+	bool rs_file_demolitionsm = true;
+	bool rs_file_demolitionsc = true;
 	bool rs_file_shots = true;
 	bool rs_file_goals = true;
 	bool rs_file_saves = true;
@@ -635,12 +635,12 @@ public:
 	bool rs_hide_streak = false;
 	bool rs_hide_winratio = false;
 	bool rs_hide_winpercentage = false;
-	bool rs_hide_demo = false;
-	bool rs_hide_demom = false;
-	bool rs_hide_democ = false;
 	bool rs_hide_death = false;
 	bool rs_hide_deathm = false;
 	bool rs_hide_deathc = false;
+	bool rs_hide_demolitions = false;
+	bool rs_hide_demolitionsm = false;
+	bool rs_hide_demolitionsc = false;
 	bool rs_hide_shots = false;
 	bool rs_hide_goals = false;
 	bool rs_hide_saves = false;

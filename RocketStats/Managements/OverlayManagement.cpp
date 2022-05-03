@@ -292,9 +292,9 @@ void RocketStats::RefreshVars()
     SetCVar("rs_file_streak", rs_file_streak);
     SetCVar("rs_file_winratio", rs_file_winratio);
     SetCVar("rs_file_winpercentage", rs_file_winpercentage);
-    SetCVar("rs_file_demo", rs_file_demo);
-    SetCVar("rs_file_demom", rs_file_demom);
-    SetCVar("rs_file_democ", rs_file_democ);
+    SetCVar("rs_file_demo", rs_file_demolitions);
+    SetCVar("rs_file_demom", rs_file_demolitionsm);
+    SetCVar("rs_file_democ", rs_file_demolitionsc);
     SetCVar("rs_file_death", rs_file_death);
     SetCVar("rs_file_deathm", rs_file_deathm);
     SetCVar("rs_file_deathc", rs_file_deathc);
@@ -319,9 +319,9 @@ void RocketStats::RefreshVars()
     SetCVar("rs_hide_streak", rs_hide_streak);
     SetCVar("rs_hide_winratio", rs_hide_winratio);
     SetCVar("rs_hide_winpercentage", rs_hide_winpercentage);
-    SetCVar("rs_hide_demo", rs_hide_demo);
-    SetCVar("rs_hide_demom", rs_hide_demom);
-    SetCVar("rs_hide_democ", rs_hide_democ);
+    SetCVar("rs_hide_demo", rs_hide_demolitions);
+    SetCVar("rs_hide_demom", rs_hide_demolitionsm);
+    SetCVar("rs_hide_democ", rs_hide_demolitionsc);
     SetCVar("rs_hide_death", rs_hide_death);
     SetCVar("rs_hide_deathm", rs_hide_deathm);
     SetCVar("rs_hide_deathc", rs_hide_deathc);

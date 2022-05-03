@@ -290,7 +290,7 @@ void RocketStats::onStatEvent(ServerWrapper caller, void* params)
     }
     else
     {
-        if (name == "Shot" || name == "Goal" || name == "LongGoal" || name == "HatTrick" || name == "BackwardsGoal" || name == "HoopsSwishGoal" || name == "BreakoutDamage" || name == "BreakoutDamageLarge" || name == "OvertimeGoal" || name == "Playmaker" || name == "AerialGoal" || name == "Assist" || name == "Save" || name == "EpicSave" || name == "Savior" || name == "MVP" || name == "BicycleHit" || name == "" || name == "" || name == "" || name == "")
+        if (name == "Demolish" || name == "Shot" || name == "Goal" || name == "LongGoal" || name == "HatTrick" || name == "BackwardsGoal" || name == "HoopsSwishGoal" || name == "BreakoutDamage" || name == "BreakoutDamageLarge" || name == "OvertimeGoal" || name == "Playmaker" || name == "AerialGoal" || name == "Assist" || name == "Save" || name == "EpicSave" || name == "Savior" || name == "MVP" || name == "BicycleHit")
             return;
 
         refresh = false;
@@ -311,50 +311,50 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     PriWrapper victim = PriWrapper(pstats->Victim);
     StatEventWrapper event = StatEventWrapper(pstats->StatEvent);
 
-    bool me = isPrimaryPlayer(receiver);
-    std::string name = event.GetEventName();
-    if (name == "Demolish" && !receiver.IsNull() && !victim.IsNull())
-    {
-        bool demo = isPrimaryPlayer(receiver);
-        if (demo && current.playlist)
-        {
-            ++always.demo;
-            ++current.stats.demo;
-            ++session.demo;
-            ++stats[current.playlist].demo;
-            ++always_gm[current.playlist].demo;
+    bool me = (receiver.IsNull() ? false : isPrimaryPlayer(receiver));
+    bool target = (victim.IsNull() ? false : isPrimaryPlayer(victim));
 
-            ++always.demoCumul;
-            ++current.stats.demoCumul;
-            ++session.demoCumul;
+    std::string name = event.GetEventName();
+    if (name == "Demolish")
+    {
+        if (me && current.playlist)
+        {
+            ++always.Demolitions;
+            ++current.stats.Demolitions;
+            ++session.Demolitions;
+            ++stats[current.playlist].Demolitions;
+            ++always_gm[current.playlist].Demolitions;
+
+            ++always.DemolitionsCumul;
+            ++current.stats.DemolitionsCumul;
+            ++session.DemolitionsCumul;
 
             for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
             {
-                ++stats[it->first].demoCumul;
-                ++always_gm[it->first].demoCumul;
+                ++stats[it->first].DemolitionsCumul;
+                ++always_gm[it->first].DemolitionsCumul;
             }
 
             SetRefresh(RefreshFlags_Refresh);
             VarDemolitions(true);
         }
 
-        bool death = isPrimaryPlayer(victim);
-        if (death && current.playlist)
+        if (target && current.playlist)
         {
-            ++always.death;
-            ++current.stats.death;
-            ++session.death;
-            ++stats[current.playlist].death;
-            ++always_gm[current.playlist].death;
+            ++always.Death;
+            ++current.stats.Death;
+            ++session.Death;
+            ++stats[current.playlist].Death;
+            ++always_gm[current.playlist].Death;
 
-            ++always.deathCumul;
-            ++current.stats.deathCumul;
-            ++session.deathCumul;
+            ++always.DeathCumul;
+            ++current.stats.DeathCumul;
+            ++session.DeathCumul;
 
             for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
             {
-                ++stats[it->first].deathCumul;
-                ++always_gm[it->first].deathCumul;
+                ++stats[it->first].DeathCumul;
+                ++always_gm[it->first].DeathCumul;
             }
 
             SetRefresh(RefreshFlags_Refresh);
@@ -451,6 +451,64 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
 
             AllShotsAssist(true);
         }
+        else if (name == "Save")
+        {
+            ++always.TotalSave;
+            ++current.stats.TotalSave;
+            ++session.TotalSave;
+            ++stats[current.playlist].TotalSave;
+            ++always_gm[current.playlist].TotalSave;
+
+            ++(me ? always.Save : always.TeamSave);
+            ++(me ? current.stats.Save : current.stats.TeamSave);
+            ++(me ? session.Save : session.TeamSave);
+            ++(me ? stats[current.playlist].Save : stats[current.playlist].TeamSave);
+            ++(me ? always_gm[current.playlist].Save : always_gm[current.playlist].TeamSave);
+
+            ++always.TotalSaveCumul;
+            ++current.stats.TotalSaveCumul;
+            ++session.TotalSaveCumul;
+
+            for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
+            {
+                ++stats[it->first].TotalSaveCumul;
+                ++always_gm[it->first].TotalSaveCumul;
+
+                ++(me ? stats[it->first].SaveCumul : stats[it->first].TeamSaveCumul);
+                ++(me ? always_gm[it->first].SaveCumul : always_gm[it->first].TeamSaveCumul);
+            }
+
+            AllSavesSave(true);
+        }
+        else if (name == "EpicSave")
+        {
+            ++always.TotalEpicSave;
+            ++current.stats.TotalEpicSave;
+            ++session.TotalEpicSave;
+            ++stats[current.playlist].TotalEpicSave;
+            ++always_gm[current.playlist].TotalEpicSave;
+
+            ++(me ? always.EpicSave : always.TeamEpicSave);
+            ++(me ? current.stats.EpicSave : current.stats.TeamEpicSave);
+            ++(me ? session.EpicSave : session.TeamEpicSave);
+            ++(me ? stats[current.playlist].EpicSave : stats[current.playlist].TeamEpicSave);
+            ++(me ? always_gm[current.playlist].EpicSave : always_gm[current.playlist].TeamEpicSave);
+
+            ++always.TotalEpicSaveCumul;
+            ++current.stats.TotalEpicSaveCumul;
+            ++session.TotalEpicSaveCumul;
+
+            for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
+            {
+                ++stats[it->first].TotalEpicSaveCumul;
+                ++always_gm[it->first].TotalEpicSaveCumul;
+
+                ++(me ? stats[it->first].EpicSaveCumul : stats[it->first].TeamEpicSaveCumul);
+                ++(me ? always_gm[it->first].EpicSaveCumul : always_gm[it->first].TeamEpicSaveCumul);
+            }
+
+            AllSavesEpicSave(true);
+        }
         else if (name == "Goal")
         {
             ++always.TotalGoal;
@@ -540,7 +598,7 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
         }
         else if (name == "BicycleGoal")
         {
-            cvarManager->log(" --> BicycleGoal " + std::string(me ? "PLAYER" : "TEAM"));
+            cvarManager->log(" --> BicycleGoal " + std::string(me ? "PLAYER" : (target ? "ENNEMI" : "TEAM")));
 
             ++always.TotalBicycleGoal;
             ++current.stats.TotalBicycleGoal;
@@ -600,7 +658,7 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
         }
         else if (name == "TurtleGoal")
         {
-            cvarManager->log(" --> TurtleGoal " + std::string(me ? "PLAYER" : "TEAM"));
+            cvarManager->log(" --> TurtleGoal " + std::string(me ? "PLAYER" : (target ? "ENNEMI" : "TEAM")));
 
             ++always.TotalTurtleGoal;
             ++current.stats.TotalTurtleGoal;
@@ -689,7 +747,7 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
         }
         else if (name == "PoolShot")
         {
-            cvarManager->log(" --> PoolShot " + std::string(me ? "PLAYER" : "TEAM"));
+            cvarManager->log(" --> PoolShot " + std::string(me ? "PLAYER" : (target ? "ENNEMI" : "TEAM")));
 
             ++always.TotalPoolShot;
             ++current.stats.TotalPoolShot;
@@ -749,7 +807,7 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
         }
         else if (name == "LowFive")
         {
-            cvarManager->log(" --> LowFive " + std::string(me ? "PLAYER" : "TEAM"));
+            cvarManager->log(" --> LowFive " + std::string(me ? "PLAYER" : (target ? "ENNEMI" : "TEAM")));
 
             ++always.TotalLowFive;
             ++current.stats.TotalLowFive;
@@ -780,7 +838,7 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
         }
         else if (name == "HighFive")
         {
-            cvarManager->log(" --> HighFive " + std::string(me ? "PLAYER" : "TEAM"));
+            cvarManager->log(" --> HighFive " + std::string(me ? "PLAYER" : (target ? "ENNEMI" : "TEAM")));
 
             ++always.TotalHighFive;
             ++current.stats.TotalHighFive;
@@ -867,9 +925,9 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
 
             AllDropshotBreakoutDamageLarge(true);
         }
-        else if (name == "KO_Knockout")
+        else if (me && name == "KO_Knockout")
         {
-            cvarManager->log(" --> Knockout " + std::string(me ? "PLAYER" : "TEAM"));
+            cvarManager->log(" --> Knockout " + std::string(me ? "PLAYER" : (target ? "ENNEMI" : "TEAM")));
 
             ++always.KnockoutTotal;
             ++current.stats.KnockoutTotal;
@@ -898,9 +956,9 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
 
             AllKnockoutBase(true);
         }
-        else if (name == "KO_Death")
+        else if (me && name == "KO_Death")
         {
-            cvarManager->log(" --> KnockoutDeath " + std::string(me ? "PLAYER" : "TEAM"));
+            cvarManager->log(" --> KnockoutDeath " + std::string(me ? "PLAYER" : (target ? "ENNEMI" : "TEAM")));
 
             ++always.KnockoutTotalDeath;
             ++current.stats.KnockoutTotalDeath;
@@ -929,9 +987,9 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
 
             AllKnockoutDeath(true);
         }
-        else if (name == "KO_KnockoutAssist")
+        else if (me && name == "KO_KnockoutAssist")
         {
-            cvarManager->log(" --> KnockoutAssist " + std::string(me ? "PLAYER" : "TEAM"));
+            cvarManager->log(" --> KnockoutAssist " + std::string(me ? "PLAYER" : (target ? "ENNEMI" : "TEAM")));
 
             ++always.KnockoutTotalAssist;
             ++current.stats.KnockoutTotalAssist;
@@ -960,9 +1018,9 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
 
             AllKnockoutAssist(true);
         }
-        else if (name == "KO_DoubleKO")
+        else if (me && name == "KO_DoubleKO")
         {
-            cvarManager->log(" --> KnockoutDoubleKO " + std::string(me ? "PLAYER" : "TEAM"));
+            cvarManager->log(" --> KnockoutDoubleKO " + std::string(me ? "PLAYER" : (target ? "ENNEMI" : "TEAM")));
 
             ++always.KnockoutTotalDoubleKO;
             ++current.stats.KnockoutTotalDoubleKO;
@@ -991,9 +1049,9 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
 
             AllKnockoutDoubleKO(true);
         }
-        else if (name == "KO_HeavyHit")
+        else if (me && name == "KO_HeavyHit")
         {
-            cvarManager->log(" --> KnockoutHeavyHit " + std::string(me ? "PLAYER" : "TEAM"));
+            cvarManager->log(" --> KnockoutHeavyHit " + std::string(me ? "PLAYER" : (target ? "ENNEMI" : "TEAM")));
 
             ++always.KnockoutTotalHeavyHit;
             ++current.stats.KnockoutTotalHeavyHit;
@@ -1022,9 +1080,9 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
 
             AllKnockoutHeavyHit(true);
         }
-        else if (name == "KO_TripleKO")
+        else if (me && name == "KO_TripleKO")
         {
-            cvarManager->log(" --> KnockoutTripleKO " + std::string(me ? "PLAYER" : "TEAM"));
+            cvarManager->log(" --> KnockoutTripleKO " + std::string(me ? "PLAYER" : (target ? "ENNEMI" : "TEAM")));
 
             ++always.KnockoutTotalTripleKO;
             ++current.stats.KnockoutTotalTripleKO;
@@ -1053,9 +1111,9 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
 
             AllKnockoutTripleKO(true);
         }
-        else if (name == "KO_HeavyBlock")
+        else if (me && name == "KO_HeavyBlock")
         {
-            cvarManager->log(" --> KnockoutHeavyBlock " + std::string(me ? "PLAYER" : "TEAM"));
+            cvarManager->log(" --> KnockoutHeavyBlock " + std::string(me ? "PLAYER" : (target ? "ENNEMI" : "TEAM")));
 
             ++always.KnockoutTotalHeavyBlock;
             ++current.stats.KnockoutTotalHeavyBlock;
@@ -1084,9 +1142,9 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
 
             AllKnockoutHeavyBlock(true);
         }
-        else if (name == "KO_AerialHeavyHit")
+        else if (me && name == "KO_AerialHeavyHit")
         {
-            cvarManager->log(" --> KnockoutAerialHeavyHit " + std::string(me ? "PLAYER" : "TEAM"));
+            cvarManager->log(" --> KnockoutAerialHeavyHit " + std::string(me ? "PLAYER" : (target ? "ENNEMI" : "TEAM")));
 
             ++always.KnockoutTotalAerialHeavyHit;
             ++current.stats.KnockoutTotalAerialHeavyHit;
@@ -1115,9 +1173,9 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
 
             AllKnockoutAerialHeavyHit(true);
         }
-        else if (name == "KO_AerialLightHit")
+        else if (me && name == "KO_AerialLightHit")
         {
-            cvarManager->log(" --> KnockoutAerialLightHit " + std::string(me ? "PLAYER" : "TEAM"));
+            cvarManager->log(" --> KnockoutAerialLightHit " + std::string(me ? "PLAYER" : (target ? "ENNEMI" : "TEAM")));
 
             ++always.KnockoutTotalAerialLightHit;
             ++current.stats.KnockoutTotalAerialLightHit;
@@ -1236,7 +1294,8 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
         else
         {
             refresh = false;
-            cvarManager->log("onStatTickerMessage receiver:" + std::string(isPrimaryPlayer(receiver) ? "1" : "0") + " victim:" + std::string(isPrimaryPlayer(victim) ? "1" : "0") + " e:" + name + "=" + std::to_string(event.GetPoints()));
+            if (me || name.find("KO_"))
+                cvarManager->log("onStatTickerMessage receiver:" + std::string(isPrimaryPlayer(receiver) ? "1" : "0") + " victim:" + std::string(isPrimaryPlayer(victim) ? "1" : "0") + " e:" + name + "=" + std::to_string(event.GetPoints()));
         }
 
         if (refresh)
