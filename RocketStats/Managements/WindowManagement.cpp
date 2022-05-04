@@ -391,6 +391,7 @@ void RocketStats::RenderOverlay()
 
 void RocketStats::RenderSettings()
 {
+    std::string tooltip;
     ImVec2 settings_size = { 750.f, 0.f };
 
     CVarWrapper cvar_scale = cvarManager->getCvar("rs_scale");
@@ -407,7 +408,7 @@ void RocketStats::RenderSettings()
     ImGui::SetNextWindowPos({ 128.f, 256.f }, ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(settings_size);
 
-    ImGui::Begin((menu_title + "##Settings").c_str(), nullptr, (ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse));
+    ImGui::Begin((menu_title + "##Settings").c_str(), nullptr, (ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse));
 
     ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
 
@@ -446,7 +447,7 @@ void RocketStats::RenderSettings()
         ImGui::SetCursorPos({ 23, 52 });
         ImGui::Checkbox("##overlay", &rs_disp_overlay);
         if (ImGui::IsItemHovered())
-            ImGui::SetTooltip(GetLang(LANG_OVERLAY_TOOLTIP).c_str());
+            tooltip = GetLang(LANG_OVERLAY_TOOLTIP);
 
         ImGui::SetCursorPos({ 63, 54 });
         ImGui::TextColored(ImVec4{ 0.2f, 0.2f, 0.2f, 1.f }, Utils::toupper(GetLang(LANG_OVERLAY)).c_str());
@@ -474,7 +475,7 @@ void RocketStats::RenderSettings()
             ImGui::EndCombo();
         }
         if (ImGui::IsItemHovered())
-            ImGui::SetTooltip(GetLang(LANG_IN_FILE_TOOLTIP).c_str());
+            tooltip = GetLang(LANG_IN_FILE_TOOLTIP);
         ImGui::SameLine(0, 0);
         if (ImGui::ArrowButton("##modes_left", ImGuiDir_Left) && rs_mode > 0)
             --rs_mode;
@@ -505,7 +506,7 @@ void RocketStats::RenderSettings()
             ImGui::EndCombo();
         }
         if (ImGui::IsItemHovered())
-            ImGui::SetTooltip(GetLang(LANG_THEME_TOOLTIP).c_str());
+            tooltip = GetLang(LANG_THEME_TOOLTIP);
         ImGui::SameLine(0, 0);
         if (ImGui::ArrowButton("##themes_left", ImGuiDir_Left) && rs_theme > 0)
             --rs_theme;
@@ -517,7 +518,7 @@ void RocketStats::RenderSettings()
         if (ImGui::Button(GetLang(LANG_X).c_str(), { 65, 0 }))
             rs_x_edit = !rs_x_edit;
         if (ImGui::IsItemHovered())
-            ImGui::SetTooltip(GetLang(LANG_X_TOOLTIP).c_str());
+            tooltip = GetLang(LANG_X_TOOLTIP);
         ImGui::SetCursorPos({ 158, 120 });
         ImGui::SetNextItemWidth(rs_x_edit ? 170.f : 150.f);
         if (!rs_x_edit)
@@ -533,7 +534,7 @@ void RocketStats::RenderSettings()
                     rs_x = float(theme_config["x"]);
             }
             if (ImGui::IsItemHovered())
-                ImGui::SetTooltip(GetLang(LANG_RESET_TOOLTIP).c_str());
+                tooltip = GetLang(LANG_RESET_TOOLTIP);
         }
         else
             ImGui::InputFloat("##x_position", &rs_x, 0.001f, 0.1f, "%.3f");
@@ -542,7 +543,7 @@ void RocketStats::RenderSettings()
         if (ImGui::Button(GetLang(LANG_Y).c_str(), { 65, 0 }))
             rs_y_edit = !rs_y_edit;
         if (ImGui::IsItemHovered())
-            ImGui::SetTooltip(GetLang(LANG_Y_TOOLTIP).c_str());
+            tooltip = GetLang(LANG_Y_TOOLTIP);
         ImGui::SetCursorPos({ 476, 120 });
         ImGui::SetNextItemWidth(rs_y_edit ? 170.f : 150.f);
         if (!rs_y_edit)
@@ -558,7 +559,7 @@ void RocketStats::RenderSettings()
                     rs_y = float(theme_config["y"]);
             }
             if (ImGui::IsItemHovered())
-                ImGui::SetTooltip(GetLang(LANG_RESET_TOOLTIP).c_str());
+                tooltip = GetLang(LANG_RESET_TOOLTIP);
         }
         else
             ImGui::InputFloat("##y_position", &rs_y, 0.001f, 0.1f, "%.3f");
@@ -567,7 +568,7 @@ void RocketStats::RenderSettings()
         if (ImGui::Button(GetLang(LANG_SCALE).c_str(), { 65, 0 }))
             rs_scale_edit = !rs_scale_edit;
         if (ImGui::IsItemHovered())
-            ImGui::SetTooltip(GetLang(LANG_SCALE_TOOLTIP).c_str());
+            tooltip = GetLang(LANG_SCALE_TOOLTIP);
         ImGui::SetCursorPos({ 79, 165 });
         ImGui::SetNextItemWidth(rs_scale_edit ? 170.f : 150.f);
         if (!rs_scale_edit)
@@ -581,7 +582,7 @@ void RocketStats::RenderSettings()
                     rs_scale = float(theme_config["scale"]);
             }
             if (ImGui::IsItemHovered())
-                ImGui::SetTooltip(GetLang(LANG_RESET_TOOLTIP).c_str());
+                tooltip = GetLang(LANG_RESET_TOOLTIP);
         }
         else
             ImGui::InputFloat("##scale", &rs_scale, 0.01f, 0.1f, "%.3f");
@@ -590,7 +591,7 @@ void RocketStats::RenderSettings()
         if (ImGui::Button(GetLang(LANG_ROTATE).c_str(), { 65, 0 }))
             rs_rotate_edit = !rs_rotate_edit;
         if (ImGui::IsItemHovered())
-            ImGui::SetTooltip(GetLang(LANG_ROTATE_TOOLTIP).c_str());
+            tooltip = GetLang(LANG_ROTATE_TOOLTIP);
         ImGui::SetCursorPos({ 318, 165 });
         ImGui::SetNextItemWidth(rs_rotate_edit ? 170.f : 150.f);
         if (!rs_rotate_edit)
@@ -604,7 +605,7 @@ void RocketStats::RenderSettings()
                     rs_rotate = float(theme_config["rotate"]);
             }
             if (ImGui::IsItemHovered())
-                ImGui::SetTooltip(GetLang(LANG_RESET_TOOLTIP).c_str());
+                tooltip = GetLang(LANG_RESET_TOOLTIP);
         }
         else
             ImGui::InputFloat("##rotate", &rs_rotate, 0.001f, 0.1f, "%.3f");
@@ -613,7 +614,7 @@ void RocketStats::RenderSettings()
         if (ImGui::Button(GetLang(LANG_OPACITY).c_str(), { 65, 0 }))
             rs_opacity_edit = !rs_opacity_edit;
         if (ImGui::IsItemHovered())
-            ImGui::SetTooltip(GetLang(LANG_OPACITY_TOOLTIP).c_str());
+            tooltip = GetLang(LANG_OPACITY_TOOLTIP);
         ImGui::SetCursorPos({ 557, 165 });
         ImGui::SetNextItemWidth(rs_opacity_edit ? 170.f : 150.f);
         if (!rs_opacity_edit)
@@ -627,7 +628,7 @@ void RocketStats::RenderSettings()
                     rs_opacity = float(theme_config["opacity"]);
             }
             if (ImGui::IsItemHovered())
-                ImGui::SetTooltip(GetLang(LANG_RESET_TOOLTIP).c_str());
+                tooltip = GetLang(LANG_RESET_TOOLTIP);
         }
         else
             ImGui::InputFloat("##opacity", &rs_opacity, 0.001f, 0.1f, "%.3f");
@@ -647,7 +648,7 @@ void RocketStats::RenderSettings()
         ImGui::SetCursorPos({ 23, 263 });
         ImGui::Checkbox("##in_file", &rs_in_file);
         if (ImGui::IsItemHovered())
-            ImGui::SetTooltip(GetLang(LANG_IN_FILE_TOOLTIP).c_str());
+            tooltip = GetLang(LANG_IN_FILE_TOOLTIP);
 
         ImGui::SetCursorPos({ 63, 265 });
         ImGui::TextColored(ImVec4{ 0.2f, 0.2f, 0.2f, 1.f }, Utils::toupper(GetLang(LANG_IN_FILE)).c_str());
@@ -657,7 +658,7 @@ void RocketStats::RenderSettings()
         if (ImGui::Button(GetLang(LANG_OPEN_FOLDER).c_str(), { 125, 0 }))
             system(("powershell -WindowStyle Hidden \"start \"\"" + GetPath() + "\"\"\"").c_str());
         if (ImGui::IsItemHovered())
-            ImGui::SetTooltip(GetLang(LANG_OPEN_FOLDER_TOOLTIP).c_str());
+            tooltip = GetLang(LANG_OPEN_FOLDER_TOOLTIP);
         ImGui::SetCursorPos({ (settings_size.x - 135), 266 });
         if (ImGui::Button(GetLang(LANG_RELOAD_THEME).c_str(), { 103, 0 }))
         {
@@ -665,7 +666,7 @@ void RocketStats::RenderSettings()
             ChangeTheme(rs_theme);
         }
         if (ImGui::IsItemHovered())
-            ImGui::SetTooltip(GetLang(LANG_RELOAD_THEME_TOOLTIP).c_str());
+            tooltip = GetLang(LANG_RELOAD_THEME_TOOLTIP);
         ImGui::SetCursorPos({ (settings_size.x - 27), 266 });
         if (ImGui::Button(GetLang(LANG_RELOAD_THEME_A).c_str(), { 17, 0 }))
         {
@@ -675,12 +676,12 @@ void RocketStats::RenderSettings()
             ChangeTheme(rs_theme);
         }
         if (ImGui::IsItemHovered())
-            ImGui::SetTooltip(GetLang(LANG_RELOAD_THEME_A_TOOLTIP).c_str());
+            tooltip = GetLang(LANG_RELOAD_THEME_A_TOOLTIP);
         ImGui::SetCursorPos({ (settings_size.x - 135), 291 });
         if (ImGui::Button(GetLang(LANG_RESET_STATS).c_str(), { 125, 0 }))
             ResetStats();
         if (ImGui::IsItemHovered())
-            ImGui::SetTooltip(GetLang(LANG_RESET_STATS_TOOLTIP).c_str());
+            tooltip = GetLang(LANG_RESET_STATS_TOOLTIP);
 
         ImGui::SetWindowFontScale(1.7f / (font ? 2.f : 1.f));
         ImGui::SetCursorPos({ 280, 258 });
@@ -725,7 +726,7 @@ void RocketStats::RenderSettings()
         ImGui::GetWindowDrawList()->AddLine({ (tpos.x + win_pos.x + 5), (tpos.y + win_pos.y + 17) }, { (tpos.x + win_pos.x + 200), (tpos.y + win_pos.y + 17) }, ImGui::ColorConvertFloat4ToU32({ 0.3f, 0.3f, 0.3f, 1.f }), 2.f);
         ImGui::Checkbox("##select_all_file", &select_all);
         if (ImGui::IsItemHovered())
-            ImGui::SetTooltip(GetLang(LANG_SELECT_ALL_TOOLTIP).c_str());
+            tooltip = GetLang(LANG_SELECT_ALL_TOOLTIP);
         ImGui::PopStyleColor(4);
         ImGui::SetWindowFontScale(1.2f / (font ? 2.f : 1.f));
         ImGui::SameLine();
@@ -801,7 +802,7 @@ void RocketStats::RenderSettings()
         ImGui::GetWindowDrawList()->AddLine({ (tpos.x + win_pos.x + 5), (tpos.y + win_pos.y + 17) }, { (tpos.x + win_pos.x + 200), (tpos.y + win_pos.y + 17) }, ImGui::ColorConvertFloat4ToU32({ 0.3f, 0.3f, 0.3f, 1.f }), 2.f);
         ImGui::Checkbox("##select_all_hide", &select_all);
         if (ImGui::IsItemHovered())
-            ImGui::SetTooltip(GetLang(LANG_SELECT_ALL_TOOLTIP).c_str());
+            tooltip = GetLang(LANG_SELECT_ALL_TOOLTIP);
         ImGui::PopStyleColor(4);
         ImGui::SetWindowFontScale(1.2f / (font ? 2.f : 1.f));
         ImGui::SameLine();
@@ -922,7 +923,26 @@ void RocketStats::RenderSettings()
         }
     }
 
+    ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
     ImGui::End();
+
+    if (!tooltip.empty())
+    {
+        ImVec4 color;
+        float padding = 8.f;
+        ImVec2 mouse_pos = ImGui::GetIO().MousePos;
+        ImDrawList* drawlist = ImGui::GetForegroundDrawList();
+        ImVec2 text_size = ImGui::CalcTextSize(tooltip.c_str());
+        ImVec2 tooltip_min = { (mouse_pos.x + 25.f), (mouse_pos.y + 2.f) };
+        ImVec2 tooltip_max = { (tooltip_min.x + text_size.x + (2 * padding)), (tooltip_min.y + text_size.y + (2 * padding)) };
+
+        color = ImGui::GetStyleColorVec4(ImGuiCol_FrameBg);
+        drawlist->AddRectFilled(tooltip_min, tooltip_max, ImGui::ColorConvertFloat4ToU32({ color.x, color.x, color.x, 0.7f }));
+        color = ImGui::GetStyleColorVec4(ImGuiCol_Border);
+        drawlist->AddRect(tooltip_min, tooltip_max, ImGui::ColorConvertFloat4ToU32({ color.x, color.x, color.x, 0.4f }));
+        color = ImGui::GetStyleColorVec4(ImGuiCol_Text);
+        drawlist->AddText({ (tooltip_min.x + padding), (tooltip_min.y + padding) }, ImGui::ColorConvertFloat4ToU32({ color.x, color.x, color.x, 0.7f }), tooltip.c_str());
+    }
 
     if (menu_font)
         ImGui::PopFont();
@@ -973,7 +993,7 @@ void RocketStats::OnClose()
         escape_state = false;
         gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
             cvarManager->executeCommand("togglemenu " + GetMenuName());
-        }, 0.02F);
+        }, 0.02f);
     }
 
     ToggleSettings("OnClose", ToggleFlags_Hide);
