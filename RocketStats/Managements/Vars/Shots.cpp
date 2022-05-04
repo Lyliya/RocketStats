@@ -2,174 +2,84 @@
 
 void RocketStats::ReadShots(Stats& stat, json& config)
 {
-    if (config["Knockout"].is_number_unsigned())
-        stat.Knockout = int(config["Knockout"]);
-    if (config["KnockoutDeath"].is_number_unsigned())
-        stat.KnockoutDeath = int(config["KnockoutDeath"]);
-    if (config["KnockoutAssist"].is_number_unsigned())
-        stat.KnockoutAssist = int(config["KnockoutAssist"]);
-    if (config["KnockoutDoubleKO"].is_number_unsigned())
-        stat.KnockoutDoubleKO = int(config["KnockoutDoubleKO"]);
-    if (config["KnockoutHeavyHit"].is_number_unsigned())
-        stat.KnockoutHeavyHit = int(config["KnockoutHeavyHit"]);
-    if (config["KnockoutTripleKO"].is_number_unsigned())
-        stat.KnockoutTripleKO = int(config["KnockoutTripleKO"]);
-    if (config["KnockoutHeavyBlock"].is_number_unsigned())
-        stat.KnockoutHeavyBlock = int(config["KnockoutHeavyBlock"]);
-    if (config["KnockoutAerialHeavyHit"].is_number_unsigned())
-        stat.KnockoutAerialHeavyHit = int(config["KnockoutAerialHeavyHit"]);
-    if (config["KnockoutAerialLightHit"].is_number_unsigned())
-        stat.KnockoutAerialLightHit = int(config["KnockoutAerialLightHit"]);
-    if (config["KnockoutTeam"].is_number_unsigned())
-        stat.KnockoutTeam = int(config["KnockoutTeam"]);
-    if (config["KnockoutTeamDeath"].is_number_unsigned())
-        stat.KnockoutTeamDeath = int(config["KnockoutTeamDeath"]);
-    if (config["KnockoutTeamAssist"].is_number_unsigned())
-        stat.KnockoutTeamAssist = int(config["KnockoutTeamAssist"]);
-    if (config["KnockoutTeamDoubleKO"].is_number_unsigned())
-        stat.KnockoutTeamDoubleKO = int(config["KnockoutTeamDoubleKO"]);
-    if (config["KnockoutTeamHeavyHit"].is_number_unsigned())
-        stat.KnockoutTeamHeavyHit = int(config["KnockoutTeamHeavyHit"]);
-    if (config["KnockoutTeamTripleKO"].is_number_unsigned())
-        stat.KnockoutTeamTripleKO = int(config["KnockoutTeamTripleKO"]);
-    if (config["KnockoutTeamHeavyBlock"].is_number_unsigned())
-        stat.KnockoutTeamHeavyBlock = int(config["KnockoutTeamHeavyBlock"]);
-    if (config["KnockoutTeamAerialHeavyHit"].is_number_unsigned())
-        stat.KnockoutTeamAerialHeavyHit = int(config["KnockoutTeamAerialHeavyHit"]);
-    if (config["KnockoutTeamAerialLightHit"].is_number_unsigned())
-        stat.KnockoutTeamAerialLightHit = int(config["KnockoutTeamAerialLightHit"]);
-    if (config["KnockoutTotal"].is_number_unsigned())
-        stat.KnockoutTotal = int(config["KnockoutTotal"]);
-    if (config["KnockoutTotalDeath"].is_number_unsigned())
-        stat.KnockoutTotalDeath = int(config["KnockoutTotalDeath"]);
-    if (config["KnockoutTotalAssist"].is_number_unsigned())
-        stat.KnockoutTotalAssist = int(config["KnockoutTotalAssist"]);
-    if (config["KnockoutTotalDoubleKO"].is_number_unsigned())
-        stat.KnockoutTotalDoubleKO = int(config["KnockoutTotalDoubleKO"]);
-    if (config["KnockoutTotalHeavyHit"].is_number_unsigned())
-        stat.KnockoutTotalHeavyHit = int(config["KnockoutTotalHeavyHit"]);
-    if (config["KnockoutTotalTripleKO"].is_number_unsigned())
-        stat.KnockoutTotalTripleKO = int(config["KnockoutTotalTripleKO"]);
-    if (config["KnockoutTotalHeavyBlock"].is_number_unsigned())
-        stat.KnockoutTotalHeavyBlock = int(config["KnockoutTotalHeavyBlock"]);
-    if (config["KnockoutTotalAerialHeavyHit"].is_number_unsigned())
-        stat.KnockoutTotalAerialHeavyHit = int(config["KnockoutTotalAerialHeavyHit"]);
-    if (config["KnockoutTotalAerialLightHit"].is_number_unsigned())
-        stat.KnockoutTotalAerialLightHit = int(config["KnockoutTotalAerialLightHit"]);
+    if (config["Clear"].is_number_unsigned())
+        stat.Clear = int(config["Clear"]);
+    if (config["Assist"].is_number_unsigned())
+        stat.Assist = int(config["Assist"]);
+    if (config["Center"].is_number_unsigned())
+        stat.Center = int(config["Center"]);
+    if (config["AerialHit"].is_number_unsigned())
+        stat.AerialHit = int(config["AerialHit"]);
+    if (config["BicycleHit"].is_number_unsigned())
+        stat.BicycleHit = int(config["BicycleHit"]);
+    if (config["ShotOnGoal"].is_number_unsigned())
+        stat.ShotOnGoal = int(config["ShotOnGoal"]);
+    if (config["TeamAssist"].is_number_unsigned())
+        stat.TeamAssist = int(config["TeamAssist"]);
+    if (config["TeamBicycleHit"].is_number_unsigned())
+        stat.TeamBicycleHit = int(config["TeamBicycleHit"]);
+    if (config["TeamShotOnGoal"].is_number_unsigned())
+        stat.TeamShotOnGoal = int(config["TeamShotOnGoal"]);
+    if (config["TotalAssist"].is_number_unsigned())
+        stat.TotalAssist = int(config["TotalAssist"]);
+    if (config["TotalBicycleHit"].is_number_unsigned())
+        stat.TotalBicycleHit = int(config["TotalBicycleHit"]);
+    if (config["TotalShotOnGoal"].is_number_unsigned())
+        stat.TotalShotOnGoal = int(config["TotalShotOnGoal"]);
 
-    if (config["KnockoutCumul"].is_number_unsigned())
-        stat.KnockoutCumul = int(config["KnockoutCumul"]);
-    if (config["KnockoutDeathCumul"].is_number_unsigned())
-        stat.KnockoutDeathCumul = int(config["KnockoutDeathCumul"]);
-    if (config["KnockoutAssistCumul"].is_number_unsigned())
-        stat.KnockoutAssistCumul = int(config["KnockoutAssistCumul"]);
-    if (config["KnockoutDoubleKOCumul"].is_number_unsigned())
-        stat.KnockoutDoubleKOCumul = int(config["KnockoutDoubleKOCumul"]);
-    if (config["KnockoutHeavyHitCumul"].is_number_unsigned())
-        stat.KnockoutHeavyHitCumul = int(config["KnockoutHeavyHitCumul"]);
-    if (config["KnockoutTripleKOCumul"].is_number_unsigned())
-        stat.KnockoutTripleKOCumul = int(config["KnockoutTripleKOCumul"]);
-    if (config["KnockoutHeavyBlockCumul"].is_number_unsigned())
-        stat.KnockoutHeavyBlockCumul = int(config["KnockoutHeavyBlockCumul"]);
-    if (config["KnockoutAerialHeavyHitCumul"].is_number_unsigned())
-        stat.KnockoutAerialHeavyHitCumul = int(config["KnockoutAerialHeavyHitCumul"]);
-    if (config["KnockoutAerialLightHitCumul"].is_number_unsigned())
-        stat.KnockoutAerialLightHitCumul = int(config["KnockoutAerialLightHitCumul"]);
-    if (config["KnockoutTeamCumul"].is_number_unsigned())
-        stat.KnockoutTeamCumul = int(config["KnockoutTeamCumul"]);
-    if (config["KnockoutTeamDeathCumul"].is_number_unsigned())
-        stat.KnockoutTeamDeathCumul = int(config["KnockoutTeamDeathCumul"]);
-    if (config["KnockoutTeamAssistCumul"].is_number_unsigned())
-        stat.KnockoutTeamAssistCumul = int(config["KnockoutTeamAssistCumul"]);
-    if (config["KnockoutTeamDoubleKOCumul"].is_number_unsigned())
-        stat.KnockoutTeamDoubleKOCumul = int(config["KnockoutTeamDoubleKOCumul"]);
-    if (config["KnockoutTeamHeavyHitCumul"].is_number_unsigned())
-        stat.KnockoutTeamHeavyHitCumul = int(config["KnockoutTeamHeavyHitCumul"]);
-    if (config["KnockoutTeamTripleKOCumul"].is_number_unsigned())
-        stat.KnockoutTeamTripleKOCumul = int(config["KnockoutTeamTripleKOCumul"]);
-    if (config["KnockoutTeamHeavyBlockCumul"].is_number_unsigned())
-        stat.KnockoutTeamHeavyBlockCumul = int(config["KnockoutTeamHeavyBlockCumul"]);
-    if (config["KnockoutTeamAerialHeavyHitCumul"].is_number_unsigned())
-        stat.KnockoutTeamAerialHeavyHitCumul = int(config["KnockoutTeamAerialHeavyHitCumul"]);
-    if (config["KnockoutTeamAerialLightHitCumul"].is_number_unsigned())
-        stat.KnockoutTeamAerialLightHitCumul = int(config["KnockoutTeamAerialLightHitCumul"]);
-    if (config["KnockoutTotalCumul"].is_number_unsigned())
-        stat.KnockoutTotalCumul = int(config["KnockoutTotalCumul"]);
-    if (config["KnockoutTotalDeathCumul"].is_number_unsigned())
-        stat.KnockoutTotalDeathCumul = int(config["KnockoutTotalDeathCumul"]);
-    if (config["KnockoutTotalAssistCumul"].is_number_unsigned())
-        stat.KnockoutTotalAssistCumul = int(config["KnockoutTotalAssistCumul"]);
-    if (config["KnockoutTotalDoubleKOCumul"].is_number_unsigned())
-        stat.KnockoutTotalDoubleKOCumul = int(config["KnockoutTotalDoubleKOCumul"]);
-    if (config["KnockoutTotalHeavyHitCumul"].is_number_unsigned())
-        stat.KnockoutTotalHeavyHitCumul = int(config["KnockoutTotalHeavyHitCumul"]);
-    if (config["KnockoutTotalTripleKOCumul"].is_number_unsigned())
-        stat.KnockoutTotalTripleKOCumul = int(config["KnockoutTotalTripleKOCumul"]);
-    if (config["KnockoutTotalHeavyBlockCumul"].is_number_unsigned())
-        stat.KnockoutTotalHeavyBlockCumul = int(config["KnockoutTotalHeavyBlockCumul"]);
-    if (config["KnockoutTotalAerialHeavyHitCumul"].is_number_unsigned())
-        stat.KnockoutTotalAerialHeavyHitCumul = int(config["KnockoutTotalAerialHeavyHitCumul"]);
-    if (config["KnockoutTotalAerialLightHitCumul"].is_number_unsigned())
-        stat.KnockoutTotalAerialLightHitCumul = int(config["KnockoutTotalAerialLightHitCumul"]);
+    if (config["ClearCumul"].is_number_unsigned())
+        stat.ClearCumul = int(config["ClearCumul"]);
+    if (config["AssistCumul"].is_number_unsigned())
+        stat.AssistCumul = int(config["AssistCumul"]);
+    if (config["CenterCumul"].is_number_unsigned())
+        stat.CenterCumul = int(config["CenterCumul"]);
+    if (config["AerialHitCumul"].is_number_unsigned())
+        stat.AerialHitCumul = int(config["AerialHitCumul"]);
+    if (config["BicycleHitCumul"].is_number_unsigned())
+        stat.BicycleHitCumul = int(config["BicycleHitCumul"]);
+    if (config["ShotOnGoalCumul"].is_number_unsigned())
+        stat.ShotOnGoalCumul = int(config["ShotOnGoalCumul"]);
+    if (config["TeamAssistCumul"].is_number_unsigned())
+        stat.TeamAssistCumul = int(config["TeamAssistCumul"]);
+    if (config["TeamBicycleHitCumul"].is_number_unsigned())
+        stat.TeamBicycleHitCumul = int(config["TeamBicycleHitCumul"]);
+    if (config["TeamShotOnGoalCumul"].is_number_unsigned())
+        stat.TeamShotOnGoalCumul = int(config["TeamShotOnGoalCumul"]);
+    if (config["TotalAssistCumul"].is_number_unsigned())
+        stat.TotalAssistCumul = int(config["TotalAssistCumul"]);
+    if (config["TotalBicycleHitCumul"].is_number_unsigned())
+        stat.TotalBicycleHitCumul = int(config["TotalBicycleHitCumul"]);
+    if (config["TotalShotOnGoalCumul"].is_number_unsigned())
+        stat.TotalShotOnGoalCumul = int(config["TotalShotOnGoalCumul"]);
 }
 
 void RocketStats::WriteShots(Stats& stat, json& config)
 {
-    config["Knockout"] = stat.Knockout;
-    config["KnockoutDeath"] = stat.KnockoutDeath;
-    config["KnockoutAssist"] = stat.KnockoutAssist;
-    config["KnockoutDoubleKO"] = stat.KnockoutDoubleKO;
-    config["KnockoutHeavyHit"] = stat.KnockoutHeavyHit;
-    config["KnockoutTripleKO"] = stat.KnockoutTripleKO;
-    config["KnockoutHeavyBlock"] = stat.KnockoutHeavyBlock;
-    config["KnockoutAerialHeavyHit"] = stat.KnockoutAerialHeavyHit;
-    config["KnockoutAerialLightHit"] = stat.KnockoutAerialLightHit;
-    config["KnockoutTeam"] = stat.KnockoutTeam;
-    config["KnockoutTeamDeath"] = stat.KnockoutTeamDeath;
-    config["KnockoutTeamAssist"] = stat.KnockoutTeamAssist;
-    config["KnockoutTeamDoubleKO"] = stat.KnockoutTeamDoubleKO;
-    config["KnockoutTeamHeavyHit"] = stat.KnockoutTeamHeavyHit;
-    config["KnockoutTeamTripleKO"] = stat.KnockoutTeamTripleKO;
-    config["KnockoutTeamHeavyBlock"] = stat.KnockoutTeamHeavyBlock;
-    config["KnockoutTeamAerialHeavyHit"] = stat.KnockoutTeamAerialHeavyHit;
-    config["KnockoutTeamAerialLightHit"] = stat.KnockoutTeamAerialLightHit;
-    config["KnockoutTotal"] = stat.KnockoutTotal;
-    config["KnockoutTotalDeath"] = stat.KnockoutTotalDeath;
-    config["KnockoutTotalAssist"] = stat.KnockoutTotalAssist;
-    config["KnockoutTotalDoubleKO"] = stat.KnockoutTotalDoubleKO;
-    config["KnockoutTotalHeavyHit"] = stat.KnockoutTotalHeavyHit;
-    config["KnockoutTotalTripleKO"] = stat.KnockoutTotalTripleKO;
-    config["KnockoutTotalHeavyBlock"] = stat.KnockoutTotalHeavyBlock;
-    config["KnockoutTotalAerialHeavyHit"] = stat.KnockoutTotalAerialHeavyHit;
-    config["KnockoutTotalAerialLightHit"] = stat.KnockoutTotalAerialLightHit;
+    config["Clear"] = stat.Clear;
+    config["Assist"] = stat.Assist;
+    config["Center"] = stat.Center;
+    config["AerialHit"] = stat.AerialHit;
+    config["BicycleHit"] = stat.BicycleHit;
+    config["ShotOnGoal"] = stat.ShotOnGoal;
+    config["TeamAssist"] = stat.TeamAssist;
+    config["TeamBicycleHit"] = stat.TeamBicycleHit;
+    config["TeamShotOnGoal"] = stat.TeamShotOnGoal;
+    config["TotalAssist"] = stat.TotalAssist;
+    config["TotalBicycleHit"] = stat.TotalBicycleHit;
+    config["TotalShotOnGoal"] = stat.TotalShotOnGoal;
 
-    config["KnockoutCumul"] = stat.KnockoutCumul;
-    config["KnockoutDeathCumul"] = stat.KnockoutDeathCumul;
-    config["KnockoutAssistCumul"] = stat.KnockoutAssistCumul;
-    config["KnockoutDoubleKOCumul"] = stat.KnockoutDoubleKOCumul;
-    config["KnockoutHeavyHitCumul"] = stat.KnockoutHeavyHitCumul;
-    config["KnockoutTripleKOCumul"] = stat.KnockoutTripleKOCumul;
-    config["KnockoutHeavyBlockCumul"] = stat.KnockoutHeavyBlockCumul;
-    config["KnockoutAerialHeavyHitCumul"] = stat.KnockoutAerialHeavyHitCumul;
-    config["KnockoutAerialLightHitCumul"] = stat.KnockoutAerialLightHitCumul;
-    config["KnockoutTeamCumul"] = stat.KnockoutTeamCumul;
-    config["KnockoutTeamDeathCumul"] = stat.KnockoutTeamDeathCumul;
-    config["KnockoutTeamAssistCumul"] = stat.KnockoutTeamAssistCumul;
-    config["KnockoutTeamDoubleKOCumul"] = stat.KnockoutTeamDoubleKOCumul;
-    config["KnockoutTeamHeavyHitCumul"] = stat.KnockoutTeamHeavyHitCumul;
-    config["KnockoutTeamTripleKOCumul"] = stat.KnockoutTeamTripleKOCumul;
-    config["KnockoutTeamHeavyBlockCumul"] = stat.KnockoutTeamHeavyBlockCumul;
-    config["KnockoutTeamAerialHeavyHitCumul"] = stat.KnockoutTeamAerialHeavyHitCumul;
-    config["KnockoutTeamAerialLightHitCumul"] = stat.KnockoutTeamAerialLightHitCumul;
-    config["KnockoutTotalCumul"] = stat.KnockoutTotalCumul;
-    config["KnockoutTotalDeathCumul"] = stat.KnockoutTotalDeathCumul;
-    config["KnockoutTotalAssistCumul"] = stat.KnockoutTotalAssistCumul;
-    config["KnockoutTotalDoubleKOCumul"] = stat.KnockoutTotalDoubleKOCumul;
-    config["KnockoutTotalHeavyHitCumul"] = stat.KnockoutTotalHeavyHitCumul;
-    config["KnockoutTotalTripleKOCumul"] = stat.KnockoutTotalTripleKOCumul;
-    config["KnockoutTotalHeavyBlockCumul"] = stat.KnockoutTotalHeavyBlockCumul;
-    config["KnockoutTotalAerialHeavyHitCumul"] = stat.KnockoutTotalAerialHeavyHitCumul;
-    config["KnockoutTotalAerialLightHitCumul"] = stat.KnockoutTotalAerialLightHitCumul;
+    config["ClearCumul"] = stat.ClearCumul;
+    config["AssistCumul"] = stat.AssistCumul;
+    config["CenterCumul"] = stat.CenterCumul;
+    config["AerialHitCumul"] = stat.AerialHitCumul;
+    config["BicycleHitCumul"] = stat.BicycleHitCumul;
+    config["ShotOnGoalCumul"] = stat.ShotOnGoalCumul;
+    config["TeamAssistCumul"] = stat.TeamAssistCumul;
+    config["TeamBicycleHitCumul"] = stat.TeamBicycleHitCumul;
+    config["TeamShotOnGoalCumul"] = stat.TeamShotOnGoalCumul;
+    config["TotalAssistCumul"] = stat.TotalAssistCumul;
+    config["TotalBicycleHitCumul"] = stat.TotalBicycleHitCumul;
+    config["TotalShotOnGoalCumul"] = stat.TotalShotOnGoalCumul;
 }
 
 void RocketStats::ReplaceShots(std::map<std::string, std::string>& vars)

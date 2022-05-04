@@ -1025,119 +1025,60 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
 
         AllDropshotBreakoutDamageLarge(true);
     }
-    else if (name == "KO_Knockout")
+    else if (name == "KO_Knockout" && (iam_receiver || iam_victim)) // KO_Death
     {
-        cvarManager->log(" --> Knockout " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+        cvarManager->log(" --> " + name + " " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
 
-        ++always.KnockoutTotal;
-        ++current.stats.KnockoutTotal;
-        ++session.KnockoutTotal;
-        ++stats[current.playlist].KnockoutTotal;
-        ++always_gm[current.playlist].KnockoutTotal;
+        ++(iam_receiver ? always.KnockoutDemolitions : always.Death);
+        ++(iam_receiver ? current.stats.KnockoutDemolitions : current.stats.Death);
+        ++(iam_receiver ? session.KnockoutDemolitions : session.Death);
+        ++(iam_receiver ? stats[current.playlist].KnockoutDemolitions : stats[current.playlist].Death);
+        ++(iam_receiver ? always_gm[current.playlist].KnockoutDemolitions : always_gm[current.playlist].Death);
 
-        ++(iam_receiver ? always.Knockout : always.KnockoutTeam);
-        ++(iam_receiver ? current.stats.Knockout : current.stats.KnockoutTeam);
-        ++(iam_receiver ? session.Knockout : session.KnockoutTeam);
-        ++(iam_receiver ? stats[current.playlist].Knockout : stats[current.playlist].KnockoutTeam);
-        ++(iam_receiver ? always_gm[current.playlist].Knockout : always_gm[current.playlist].KnockoutTeam);
-
-        ++always.KnockoutTotalCumul;
-        ++current.stats.KnockoutTotalCumul;
-        ++session.KnockoutTotalCumul;
+        ++(iam_receiver ? always.KnockoutDemolitionsCumul : always.DeathCumul);
+        ++(iam_receiver ? current.stats.KnockoutDemolitionsCumul : current.stats.DeathCumul);
+        ++(iam_receiver ? session.KnockoutDemolitionsCumul : session.DeathCumul);
 
         for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
         {
-            ++stats[it->first].KnockoutTotalCumul;
-            ++always_gm[it->first].KnockoutTotalCumul;
-
-            ++(iam_receiver ? stats[it->first].KnockoutCumul : stats[it->first].KnockoutTeamCumul);
-            ++(iam_receiver ? always_gm[it->first].KnockoutCumul : always_gm[it->first].KnockoutTeamCumul);
+            ++(iam_receiver ? stats[it->first].KnockoutDemolitionsCumul : stats[it->first].DeathCumul);
+            ++(iam_receiver ? always_gm[it->first].KnockoutDemolitionsCumul : always_gm[it->first].DeathCumul);
         }
 
-        AllKnockoutBase(true);
-    }
-    else if (name == "KO_Death" && (iam_receiver || iam_victim))
-    {
-        cvarManager->log(" --> KnockoutDeath " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
-        /*if (iam_receiver || iam_victim)
-        {
-            ++(iam_receiver ? always.KnockoutDemolitions : always.Death);
-            ++(iam_receiver ? current.stats.KnockoutDemolitions : current.stats.Death);
-            ++(iam_receiver ? session.KnockoutDemolitions : session.Death);
-            ++(iam_receiver ? stats[current.playlist].KnockoutDemolitions : stats[current.playlist].Death);
-            ++(iam_receiver ? always_gm[current.playlist].KnockoutDemolitions : always_gm[current.playlist].Death);
-
-            ++(iam_receiver ? always.KnockoutDemolitionsCumul : always.DeathCumul);
-            ++(iam_receiver ? current.stats.KnockoutDemolitionsCumul : current.stats.DeathCumul);
-            ++(iam_receiver ? session.KnockoutDemolitionsCumul : session.DeathCumul);
-
-            for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
-            {
-                ++(iam_receiver ? stats[it->first].KnockoutDemolitionsCumul : stats[it->first].DeathCumul);
-                ++(iam_receiver ? always_gm[it->first].KnockoutDemolitionsCumul : always_gm[it->first].DeathCumul);
-            }
-
-            AllKnockoutDeath(true);
-        }*/
+        AllKnockoutDeath(true);
     }
     else if (name == "KO_KnockoutAssist")
     {
-    cvarManager->log(" --> KnockoutAssist " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+        cvarManager->log(" --> KnockoutAssist " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
 
-        ++always.KnockoutTotalAssist;
-        ++current.stats.KnockoutTotalAssist;
-        ++session.KnockoutTotalAssist;
-        ++stats[current.playlist].KnockoutTotalAssist;
-        ++always_gm[current.playlist].KnockoutTotalAssist;
-
-        ++(iam_receiver ? always.KnockoutAssist : always.KnockoutTeamAssist);
-        ++(iam_receiver ? current.stats.KnockoutAssist : current.stats.KnockoutTeamAssist);
-        ++(iam_receiver ? session.KnockoutAssist : session.KnockoutTeamAssist);
-        ++(iam_receiver ? stats[current.playlist].KnockoutAssist : stats[current.playlist].KnockoutTeamAssist);
-        ++(iam_receiver ? always_gm[current.playlist].KnockoutAssist : always_gm[current.playlist].KnockoutTeamAssist);
-
-        ++always.KnockoutTotalAssistCumul;
-        ++current.stats.KnockoutTotalAssistCumul;
-        ++session.KnockoutTotalAssistCumul;
+        ++always.KnockoutAssist;
+        ++current.stats.KnockoutAssist;
+        ++session.KnockoutAssist;
+        ++stats[current.playlist].KnockoutAssist;
+        ++always_gm[current.playlist].KnockoutAssist;
 
         for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
         {
-            ++stats[it->first].KnockoutTotalAssistCumul;
-            ++always_gm[it->first].KnockoutTotalAssistCumul;
-
-            ++(iam_receiver ? stats[it->first].KnockoutAssistCumul : stats[it->first].KnockoutTeamAssistCumul);
-            ++(iam_receiver ? always_gm[it->first].KnockoutAssistCumul : always_gm[it->first].KnockoutTeamAssistCumul);
+            ++stats[it->first].KnockoutAssistCumul;
+            ++always_gm[it->first].KnockoutAssistCumul;
         }
 
         AllKnockoutAssist(true);
     }
-    else if (name == "KO_DoubleKO")
+    else if (name == "KO_DoubleKO" && iam_receiver)
     {
         cvarManager->log(" --> KnockoutDoubleKO " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
 
-        ++always.KnockoutTotalDoubleKO;
-        ++current.stats.KnockoutTotalDoubleKO;
-        ++session.KnockoutTotalDoubleKO;
-        ++stats[current.playlist].KnockoutTotalDoubleKO;
-        ++always_gm[current.playlist].KnockoutTotalDoubleKO;
-
-        ++(iam_receiver ? always.KnockoutDoubleKO : always.KnockoutTeamDoubleKO);
-        ++(iam_receiver ? current.stats.KnockoutDoubleKO : current.stats.KnockoutTeamDoubleKO);
-        ++(iam_receiver ? session.KnockoutDoubleKO : session.KnockoutTeamDoubleKO);
-        ++(iam_receiver ? stats[current.playlist].KnockoutDoubleKO : stats[current.playlist].KnockoutTeamDoubleKO);
-        ++(iam_receiver ? always_gm[current.playlist].KnockoutDoubleKO : always_gm[current.playlist].KnockoutTeamDoubleKO);
-
-        ++always.KnockoutTotalDoubleKOCumul;
-        ++current.stats.KnockoutTotalDoubleKOCumul;
-        ++session.KnockoutTotalDoubleKOCumul;
+        ++always.KnockoutDoubleKO;
+        ++current.stats.KnockoutDoubleKO;
+        ++session.KnockoutDoubleKO;
+        ++stats[current.playlist].KnockoutDoubleKO;
+        ++always_gm[current.playlist].KnockoutDoubleKO;
 
         for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
         {
-            ++stats[it->first].KnockoutTotalDoubleKOCumul;
-            ++always_gm[it->first].KnockoutTotalDoubleKOCumul;
-
-            ++(iam_receiver ? stats[it->first].KnockoutDoubleKOCumul : stats[it->first].KnockoutTeamDoubleKOCumul);
-            ++(iam_receiver ? always_gm[it->first].KnockoutDoubleKOCumul : always_gm[it->first].KnockoutTeamDoubleKOCumul);
+            ++stats[it->first].KnockoutDoubleKOCumul;
+            ++always_gm[it->first].KnockoutDoubleKOCumul;
         }
 
         AllKnockoutDoubleKO(true);
@@ -1146,29 +1087,16 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     {
         cvarManager->log(" --> KnockoutHeavyHit " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
 
-        ++always.KnockoutTotalHeavyHit;
-        ++current.stats.KnockoutTotalHeavyHit;
-        ++session.KnockoutTotalHeavyHit;
-        ++stats[current.playlist].KnockoutTotalHeavyHit;
-        ++always_gm[current.playlist].KnockoutTotalHeavyHit;
-
-        ++(iam_receiver ? always.KnockoutHeavyHit : always.KnockoutTeamHeavyHit);
-        ++(iam_receiver ? current.stats.KnockoutHeavyHit : current.stats.KnockoutTeamHeavyHit);
-        ++(iam_receiver ? session.KnockoutHeavyHit : session.KnockoutTeamHeavyHit);
-        ++(iam_receiver ? stats[current.playlist].KnockoutHeavyHit : stats[current.playlist].KnockoutTeamHeavyHit);
-        ++(iam_receiver ? always_gm[current.playlist].KnockoutHeavyHit : always_gm[current.playlist].KnockoutTeamHeavyHit);
-
-        ++always.KnockoutTotalHeavyHitCumul;
-        ++current.stats.KnockoutTotalHeavyHitCumul;
-        ++session.KnockoutTotalHeavyHitCumul;
+        ++always.KnockoutHeavyHit;
+        ++current.stats.KnockoutHeavyHit;
+        ++session.KnockoutHeavyHit;
+        ++stats[current.playlist].KnockoutHeavyHit;
+        ++always_gm[current.playlist].KnockoutHeavyHit;
 
         for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
         {
-            ++stats[it->first].KnockoutTotalHeavyHitCumul;
-            ++always_gm[it->first].KnockoutTotalHeavyHitCumul;
-
-            ++(iam_receiver ? stats[it->first].KnockoutHeavyHitCumul : stats[it->first].KnockoutTeamHeavyHitCumul);
-            ++(iam_receiver ? always_gm[it->first].KnockoutHeavyHitCumul : always_gm[it->first].KnockoutTeamHeavyHitCumul);
+            ++stats[it->first].KnockoutHeavyHitCumul;
+            ++always_gm[it->first].KnockoutHeavyHitCumul;
         }
 
         AllKnockoutHeavyHit(true);
@@ -1177,29 +1105,16 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     {
         cvarManager->log(" --> KnockoutTripleKO " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
 
-        ++always.KnockoutTotalTripleKO;
-        ++current.stats.KnockoutTotalTripleKO;
-        ++session.KnockoutTotalTripleKO;
-        ++stats[current.playlist].KnockoutTotalTripleKO;
-        ++always_gm[current.playlist].KnockoutTotalTripleKO;
-
-        ++(iam_receiver ? always.KnockoutTripleKO : always.KnockoutTeamTripleKO);
-        ++(iam_receiver ? current.stats.KnockoutTripleKO : current.stats.KnockoutTeamTripleKO);
-        ++(iam_receiver ? session.KnockoutTripleKO : session.KnockoutTeamTripleKO);
-        ++(iam_receiver ? stats[current.playlist].KnockoutTripleKO : stats[current.playlist].KnockoutTeamTripleKO);
-        ++(iam_receiver ? always_gm[current.playlist].KnockoutTripleKO : always_gm[current.playlist].KnockoutTeamTripleKO);
-
-        ++always.KnockoutTotalTripleKOCumul;
-        ++current.stats.KnockoutTotalTripleKOCumul;
-        ++session.KnockoutTotalTripleKOCumul;
+        ++always.KnockoutTripleKO;
+        ++current.stats.KnockoutTripleKO;
+        ++session.KnockoutTripleKO;
+        ++stats[current.playlist].KnockoutTripleKO;
+        ++always_gm[current.playlist].KnockoutTripleKO;
 
         for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
         {
-            ++stats[it->first].KnockoutTotalTripleKOCumul;
-            ++always_gm[it->first].KnockoutTotalTripleKOCumul;
-
-            ++(iam_receiver ? stats[it->first].KnockoutTripleKOCumul : stats[it->first].KnockoutTeamTripleKOCumul);
-            ++(iam_receiver ? always_gm[it->first].KnockoutTripleKOCumul : always_gm[it->first].KnockoutTeamTripleKOCumul);
+            ++stats[it->first].KnockoutTripleKOCumul;
+            ++always_gm[it->first].KnockoutTripleKOCumul;
         }
 
         AllKnockoutTripleKO(true);
@@ -1208,29 +1123,16 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     {
         cvarManager->log(" --> KnockoutHeavyBlock " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
 
-        ++always.KnockoutTotalHeavyBlock;
-        ++current.stats.KnockoutTotalHeavyBlock;
-        ++session.KnockoutTotalHeavyBlock;
-        ++stats[current.playlist].KnockoutTotalHeavyBlock;
-        ++always_gm[current.playlist].KnockoutTotalHeavyBlock;
-
-        ++(iam_receiver ? always.KnockoutHeavyBlock : always.KnockoutTeamHeavyBlock);
-        ++(iam_receiver ? current.stats.KnockoutHeavyBlock : current.stats.KnockoutTeamHeavyBlock);
-        ++(iam_receiver ? session.KnockoutHeavyBlock : session.KnockoutTeamHeavyBlock);
-        ++(iam_receiver ? stats[current.playlist].KnockoutHeavyBlock : stats[current.playlist].KnockoutTeamHeavyBlock);
-        ++(iam_receiver ? always_gm[current.playlist].KnockoutHeavyBlock : always_gm[current.playlist].KnockoutTeamHeavyBlock);
-
-        ++always.KnockoutTotalHeavyBlockCumul;
-        ++current.stats.KnockoutTotalHeavyBlockCumul;
-        ++session.KnockoutTotalHeavyBlockCumul;
+        ++always.KnockoutHeavyBlock;
+        ++current.stats.KnockoutHeavyBlock;
+        ++session.KnockoutHeavyBlock;
+        ++stats[current.playlist].KnockoutHeavyBlock;
+        ++always_gm[current.playlist].KnockoutHeavyBlock;
 
         for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
         {
-            ++stats[it->first].KnockoutTotalHeavyBlockCumul;
-            ++always_gm[it->first].KnockoutTotalHeavyBlockCumul;
-
-            ++(iam_receiver ? stats[it->first].KnockoutHeavyBlockCumul : stats[it->first].KnockoutTeamHeavyBlockCumul);
-            ++(iam_receiver ? always_gm[it->first].KnockoutHeavyBlockCumul : always_gm[it->first].KnockoutTeamHeavyBlockCumul);
+            ++stats[it->first].KnockoutHeavyBlockCumul;
+            ++always_gm[it->first].KnockoutHeavyBlockCumul;
         }
 
         AllKnockoutHeavyBlock(true);
@@ -1239,29 +1141,16 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     {
         cvarManager->log(" --> KnockoutAerialHeavyHit " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
 
-        ++always.KnockoutTotalAerialHeavyHit;
-        ++current.stats.KnockoutTotalAerialHeavyHit;
-        ++session.KnockoutTotalAerialHeavyHit;
-        ++stats[current.playlist].KnockoutTotalAerialHeavyHit;
-        ++always_gm[current.playlist].KnockoutTotalAerialHeavyHit;
-
-        ++(iam_receiver ? always.KnockoutAerialHeavyHit : always.KnockoutTeamAerialHeavyHit);
-        ++(iam_receiver ? current.stats.KnockoutAerialHeavyHit : current.stats.KnockoutTeamAerialHeavyHit);
-        ++(iam_receiver ? session.KnockoutAerialHeavyHit : session.KnockoutTeamAerialHeavyHit);
-        ++(iam_receiver ? stats[current.playlist].KnockoutAerialHeavyHit : stats[current.playlist].KnockoutTeamAerialHeavyHit);
-        ++(iam_receiver ? always_gm[current.playlist].KnockoutAerialHeavyHit : always_gm[current.playlist].KnockoutTeamAerialHeavyHit);
-
-        ++always.KnockoutTotalAerialHeavyHitCumul;
-        ++current.stats.KnockoutTotalAerialHeavyHitCumul;
-        ++session.KnockoutTotalAerialHeavyHitCumul;
+        ++always.KnockoutAerialHeavyHit;
+        ++current.stats.KnockoutAerialHeavyHit;
+        ++session.KnockoutAerialHeavyHit;
+        ++stats[current.playlist].KnockoutAerialHeavyHit;
+        ++always_gm[current.playlist].KnockoutAerialHeavyHit;
 
         for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
         {
-            ++stats[it->first].KnockoutTotalAerialHeavyHitCumul;
-            ++always_gm[it->first].KnockoutTotalAerialHeavyHitCumul;
-
-            ++(iam_receiver ? stats[it->first].KnockoutAerialHeavyHitCumul : stats[it->first].KnockoutTeamAerialHeavyHitCumul);
-            ++(iam_receiver ? always_gm[it->first].KnockoutAerialHeavyHitCumul : always_gm[it->first].KnockoutTeamAerialHeavyHitCumul);
+            ++stats[it->first].KnockoutAerialHeavyHitCumul;
+            ++always_gm[it->first].KnockoutAerialHeavyHitCumul;
         }
 
         AllKnockoutAerialHeavyHit(true);
@@ -1270,29 +1159,16 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     {
         cvarManager->log(" --> KnockoutAerialLightHit " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
 
-        ++always.KnockoutTotalAerialLightHit;
-        ++current.stats.KnockoutTotalAerialLightHit;
-        ++session.KnockoutTotalAerialLightHit;
-        ++stats[current.playlist].KnockoutTotalAerialLightHit;
-        ++always_gm[current.playlist].KnockoutTotalAerialLightHit;
-
-        ++(iam_receiver ? always.KnockoutAerialLightHit : always.KnockoutTeamAerialLightHit);
-        ++(iam_receiver ? current.stats.KnockoutAerialLightHit : current.stats.KnockoutTeamAerialLightHit);
-        ++(iam_receiver ? session.KnockoutAerialLightHit : session.KnockoutTeamAerialLightHit);
-        ++(iam_receiver ? stats[current.playlist].KnockoutAerialLightHit : stats[current.playlist].KnockoutTeamAerialLightHit);
-        ++(iam_receiver ? always_gm[current.playlist].KnockoutAerialLightHit : always_gm[current.playlist].KnockoutTeamAerialLightHit);
-
-        ++always.KnockoutTotalAerialLightHitCumul;
-        ++current.stats.KnockoutTotalAerialLightHitCumul;
-        ++session.KnockoutTotalAerialLightHitCumul;
+        ++always.KnockoutAerialLightHit;
+        ++current.stats.KnockoutAerialLightHit;
+        ++session.KnockoutAerialLightHit;
+        ++stats[current.playlist].KnockoutAerialLightHit;
+        ++always_gm[current.playlist].KnockoutAerialLightHit;
 
         for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
         {
-            ++stats[it->first].KnockoutTotalAerialLightHitCumul;
-            ++always_gm[it->first].KnockoutTotalAerialLightHitCumul;
-
-            ++(iam_receiver ? stats[it->first].KnockoutAerialLightHitCumul : stats[it->first].KnockoutTeamAerialLightHitCumul);
-            ++(iam_receiver ? always_gm[it->first].KnockoutAerialLightHitCumul : always_gm[it->first].KnockoutTeamAerialLightHitCumul);
+            ++stats[it->first].KnockoutAerialLightHitCumul;
+            ++always_gm[it->first].KnockoutAerialLightHitCumul;
         }
 
         AllKnockoutAerialLightHit(true);

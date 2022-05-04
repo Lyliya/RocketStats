@@ -382,7 +382,6 @@ void RocketStats::AllDropshotBreakoutDamageLarge(bool force, bool default_value)
 #pragma region Knockout
 void RocketStats::AllKnockout(bool force, bool default_value)
 {
-    AllKnockoutBase(force, default_value);
     AllKnockoutDeath(force, default_value);
     AllKnockoutAssist(force, default_value);
     AllKnockoutThrown(force, default_value);
@@ -396,55 +395,25 @@ void RocketStats::AllKnockout(bool force, bool default_value)
     AllKnockoutBlockTaken(force, default_value);
     AllKnockoutHeavyBlock(force, default_value);
     AllKnockoutLightBlock(force, default_value);
+    AllKnockoutDemolitions(force, default_value);
     AllKnockoutPlayerThrown(force, default_value);
     AllKnockoutPlayerGrabbed(force, default_value);
     AllKnockoutAerialHeavyHit(force, default_value);
     AllKnockoutAerialLightHit(force, default_value);
 }
 
-void RocketStats::AllKnockoutBase(bool force, bool default_value)
-{
-    VarKnockout(true, force, default_value);
-    VarKnockoutTeam(true, force, default_value);
-    VarKnockoutTotal(true, force, default_value);
-
-    VarKnockoutMatch(true, force, default_value);
-    VarKnockoutTeamMatch(true, force, default_value);
-    VarKnockoutTotalMatch(true, force, default_value);
-
-    VarKnockoutCumul(true, force, default_value);
-    VarKnockoutTeamCumul(true, force, default_value);
-    VarKnockoutTotalCumul(true, force, default_value);
-}
-
 void RocketStats::AllKnockoutDeath(bool force, bool default_value)
 {
     VarKnockoutDeath(true, force, default_value);
-    VarKnockoutTeamDeath(true, force, default_value);
-    VarKnockoutTotalDeath(true, force, default_value);
-
     VarKnockoutDeathMatch(true, force, default_value);
-    VarKnockoutTeamDeathMatch(true, force, default_value);
-    VarKnockoutTotalDeathMatch(true, force, default_value);
-
     VarKnockoutDeathCumul(true, force, default_value);
-    VarKnockoutTeamDeathCumul(true, force, default_value);
-    VarKnockoutTotalDeathCumul(true, force, default_value);
 }
 
 void RocketStats::AllKnockoutAssist(bool force, bool default_value)
 {
     VarKnockoutAssist(true, force, default_value);
-    VarKnockoutTeamAssist(true, force, default_value);
-    VarKnockoutTotalAssist(true, force, default_value);
-
     VarKnockoutAssistMatch(true, force, default_value);
-    VarKnockoutTeamAssistMatch(true, force, default_value);
-    VarKnockoutTotalAssistMatch(true, force, default_value);
-
     VarKnockoutAssistCumul(true, force, default_value);
-    VarKnockoutTeamAssistCumul(true, force, default_value);
-    VarKnockoutTotalAssistCumul(true, force, default_value);
 }
 
 void RocketStats::AllKnockoutThrown(bool force, bool default_value)
@@ -471,31 +440,15 @@ void RocketStats::AllKnockoutGrabbed(bool force, bool default_value)
 void RocketStats::AllKnockoutDoubleKO(bool force, bool default_value)
 {
     VarKnockoutDoubleKO(true, force, default_value);
-    VarKnockoutTeamDoubleKO(true, force, default_value);
-    VarKnockoutTotalDoubleKO(true, force, default_value);
-
     VarKnockoutDoubleKOMatch(true, force, default_value);
-    VarKnockoutTeamDoubleKOMatch(true, force, default_value);
-    VarKnockoutTotalDoubleKOMatch(true, force, default_value);
-
     VarKnockoutDoubleKOCumul(true, force, default_value);
-    VarKnockoutTeamDoubleKOCumul(true, force, default_value);
-    VarKnockoutTotalDoubleKOCumul(true, force, default_value);
 }
 
 void RocketStats::AllKnockoutHeavyHit(bool force, bool default_value)
 {
     VarKnockoutHeavyHit(true, force, default_value);
-    VarKnockoutTeamHeavyHit(true, force, default_value);
-    VarKnockoutTotalHeavyHit(true, force, default_value);
-
     VarKnockoutHeavyHitMatch(true, force, default_value);
-    VarKnockoutTeamHeavyHitMatch(true, force, default_value);
-    VarKnockoutTotalHeavyHitMatch(true, force, default_value);
-
     VarKnockoutHeavyHitCumul(true, force, default_value);
-    VarKnockoutTeamHeavyHitCumul(true, force, default_value);
-    VarKnockoutTotalHeavyHitCumul(true, force, default_value);
 }
 
 void RocketStats::AllKnockoutHitTaken(bool force, bool default_value)
@@ -515,16 +468,8 @@ void RocketStats::AllKnockoutLightHit(bool force, bool default_value)
 void RocketStats::AllKnockoutTripleKO(bool force, bool default_value)
 {
     VarKnockoutTripleKO(true, force, default_value);
-    VarKnockoutTeamTripleKO(true, force, default_value);
-    VarKnockoutTotalTripleKO(true, force, default_value);
-
     VarKnockoutTripleKOMatch(true, force, default_value);
-    VarKnockoutTeamTripleKOMatch(true, force, default_value);
-    VarKnockoutTotalTripleKOMatch(true, force, default_value);
-
     VarKnockoutTripleKOCumul(true, force, default_value);
-    VarKnockoutTeamTripleKOCumul(true, force, default_value);
-    VarKnockoutTotalTripleKOCumul(true, force, default_value);
 }
 
 void RocketStats::AllKnockoutBlockTaken(bool force, bool default_value)
@@ -537,16 +482,8 @@ void RocketStats::AllKnockoutBlockTaken(bool force, bool default_value)
 void RocketStats::AllKnockoutHeavyBlock(bool force, bool default_value)
 {
     VarKnockoutHeavyBlock(true, force, default_value);
-    VarKnockoutTeamHeavyBlock(true, force, default_value);
-    VarKnockoutTotalHeavyBlock(true, force, default_value);
-
     VarKnockoutHeavyBlockMatch(true, force, default_value);
-    VarKnockoutTeamHeavyBlockMatch(true, force, default_value);
-    VarKnockoutTotalHeavyBlockMatch(true, force, default_value);
-
     VarKnockoutHeavyBlockCumul(true, force, default_value);
-    VarKnockoutTeamHeavyBlockCumul(true, force, default_value);
-    VarKnockoutTotalHeavyBlockCumul(true, force, default_value);
 }
 
 void RocketStats::AllKnockoutLightBlock(bool force, bool default_value)
@@ -554,6 +491,13 @@ void RocketStats::AllKnockoutLightBlock(bool force, bool default_value)
     VarKnockoutLightBlock(true, force, default_value);
     VarKnockoutLightBlockMatch(true, force, default_value);
     VarKnockoutLightBlockCumul(true, force, default_value);
+}
+
+void RocketStats::AllKnockoutDemolitions(bool force, bool default_value)
+{
+    VarKnockoutDemolitions(true, force, default_value);
+    VarKnockoutDemolitionsMatch(true, force, default_value);
+    VarKnockoutDemolitionsCumul(true, force, default_value);
 }
 
 void RocketStats::AllKnockoutPlayerThrown(bool force, bool default_value)
@@ -573,31 +517,15 @@ void RocketStats::AllKnockoutPlayerGrabbed(bool force, bool default_value)
 void RocketStats::AllKnockoutAerialHeavyHit(bool force, bool default_value)
 {
     VarKnockoutAerialHeavyHit(true, force, default_value);
-    VarKnockoutTeamAerialHeavyHit(true, force, default_value);
-    VarKnockoutTotalAerialHeavyHit(true, force, default_value);
-
     VarKnockoutAerialHeavyHitMatch(true, force, default_value);
-    VarKnockoutTeamAerialHeavyHitMatch(true, force, default_value);
-    VarKnockoutTotalAerialHeavyHitMatch(true, force, default_value);
-
     VarKnockoutAerialHeavyHitCumul(true, force, default_value);
-    VarKnockoutTeamAerialHeavyHitCumul(true, force, default_value);
-    VarKnockoutTotalAerialHeavyHitCumul(true, force, default_value);
 }
 
 void RocketStats::AllKnockoutAerialLightHit(bool force, bool default_value)
 {
     VarKnockoutAerialLightHit(true, force, default_value);
-    VarKnockoutTeamAerialLightHit(true, force, default_value);
-    VarKnockoutTotalAerialLightHit(true, force, default_value);
-
     VarKnockoutAerialLightHitMatch(true, force, default_value);
-    VarKnockoutTeamAerialLightHitMatch(true, force, default_value);
-    VarKnockoutTotalAerialLightHitMatch(true, force, default_value);
-
     VarKnockoutAerialLightHitCumul(true, force, default_value);
-    VarKnockoutTeamAerialLightHitCumul(true, force, default_value);
-    VarKnockoutTotalAerialLightHitCumul(true, force, default_value);
 }
 #pragma endregion
 
