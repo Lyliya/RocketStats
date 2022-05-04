@@ -923,11 +923,13 @@ void RocketStats::RenderSettings()
         }
     }
 
-    ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
     ImGui::End();
 
     if (!tooltip.empty())
     {
+        ImGui::Begin((menu_title + "##Tooltip").c_str(), nullptr, (ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoFocusOnAppearing));
+        ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
+
         ImVec4 color;
         float padding = 8.f;
         ImVec2 mouse_pos = ImGui::GetIO().MousePos;
@@ -942,6 +944,8 @@ void RocketStats::RenderSettings()
         drawlist->AddRect(tooltip_min, tooltip_max, ImGui::ColorConvertFloat4ToU32({ color.x, color.x, color.x, 0.4f }));
         color = ImGui::GetStyleColorVec4(ImGuiCol_Text);
         drawlist->AddText({ (tooltip_min.x + padding), (tooltip_min.y + padding) }, ImGui::ColorConvertFloat4ToU32({ color.x, color.x, color.x, 0.7f }), tooltip.c_str());
+
+        ImGui::End();
     }
 
     if (menu_font)
