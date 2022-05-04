@@ -382,6 +382,7 @@ void RocketStats::AllDropshotBreakoutDamageLarge(bool force, bool default_value)
 #pragma region Knockout
 void RocketStats::AllKnockout(bool force, bool default_value)
 {
+    AllKnockoutKO(force, default_value);
     AllKnockoutDeath(force, default_value);
     AllKnockoutAssist(force, default_value);
     AllKnockoutThrown(force, default_value);
@@ -395,11 +396,17 @@ void RocketStats::AllKnockout(bool force, bool default_value)
     AllKnockoutBlockTaken(force, default_value);
     AllKnockoutHeavyBlock(force, default_value);
     AllKnockoutLightBlock(force, default_value);
-    AllKnockoutDemolitions(force, default_value);
     AllKnockoutPlayerThrown(force, default_value);
     AllKnockoutPlayerGrabbed(force, default_value);
     AllKnockoutAerialHeavyHit(force, default_value);
     AllKnockoutAerialLightHit(force, default_value);
+}
+
+void RocketStats::AllKnockoutKO(bool force, bool default_value)
+{
+    VarKnockoutKO(true, force, default_value);
+    VarKnockoutKOMatch(true, force, default_value);
+    VarKnockoutKOCumul(true, force, default_value);
 }
 
 void RocketStats::AllKnockoutDeath(bool force, bool default_value)
@@ -491,13 +498,6 @@ void RocketStats::AllKnockoutLightBlock(bool force, bool default_value)
     VarKnockoutLightBlock(true, force, default_value);
     VarKnockoutLightBlockMatch(true, force, default_value);
     VarKnockoutLightBlockCumul(true, force, default_value);
-}
-
-void RocketStats::AllKnockoutDemolitions(bool force, bool default_value)
-{
-    VarKnockoutDemolitions(true, force, default_value);
-    VarKnockoutDemolitionsMatch(true, force, default_value);
-    VarKnockoutDemolitionsCumul(true, force, default_value);
 }
 
 void RocketStats::AllKnockoutPlayerThrown(bool force, bool default_value)

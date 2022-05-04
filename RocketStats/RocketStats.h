@@ -203,6 +203,7 @@ struct Stats {
 	int TotalBreakoutDamageLargeCumul = 0;
 
 	/// Knockout
+	int KnockoutKO = 0;
 	int KnockoutDeath = 0;
 	int KnockoutAssist = 0;
 	int KnockoutThrown = 0;
@@ -216,12 +217,12 @@ struct Stats {
 	int KnockoutBlockTaken = 0;
 	int KnockoutHeavyBlock = 0;
 	int KnockoutLightBlock = 0;
-	int KnockoutDemolitions = 0;
 	int KnockoutPlayerThrown = 0;
 	int KnockoutPlayerGrabbed = 0;
 	int KnockoutAerialHeavyHit = 0;
 	int KnockoutAerialLightHit = 0;
 
+	int KnockoutKOCumul = 0;
 	int KnockoutDeathCumul = 0;
 	int KnockoutAssistCumul = 0;
 	int KnockoutThrownCumul = 0;
@@ -235,7 +236,6 @@ struct Stats {
 	int KnockoutBlockTakenCumul = 0;
 	int KnockoutHeavyBlockCumul = 0;
 	int KnockoutLightBlockCumul = 0;
-	int KnockoutDemolitionsCumul = 0;
 	int KnockoutPlayerThrownCumul = 0;
 	int KnockoutPlayerGrabbedCumul = 0;
 	int KnockoutAerialHeavyHitCumul = 0;
@@ -980,6 +980,7 @@ public:
 	void ReplaceKnockout(std::map<std::string, std::string>& vars);
 	void SessionKnockout(Stats& stat, int index = 0, bool playlists = false);
 	void AllKnockout(bool force = false, bool default_value = false);
+	void AllKnockoutKO(bool force = false, bool default_value = false);
 	void AllKnockoutDeath(bool force = false, bool default_value = false);
 	void AllKnockoutAssist(bool force = false, bool default_value = false);
 	void AllKnockoutThrown(bool force = false, bool default_value = false);
@@ -993,12 +994,12 @@ public:
 	void AllKnockoutBlockTaken(bool force = false, bool default_value = false);
 	void AllKnockoutHeavyBlock(bool force = false, bool default_value = false);
 	void AllKnockoutLightBlock(bool force = false, bool default_value = false);
-	void AllKnockoutDemolitions(bool force = false, bool default_value = false);
 	void AllKnockoutPlayerThrown(bool force = false, bool default_value = false);
 	void AllKnockoutPlayerGrabbed(bool force = false, bool default_value = false);
 	void AllKnockoutAerialHeavyHit(bool force = false, bool default_value = false);
 	void AllKnockoutAerialLightHit(bool force = false, bool default_value = false);
 
+	std::string VarKnockoutKO(bool write = false, bool force = false, bool default_value = false);
 	std::string VarKnockoutDeath(bool write = false, bool force = false, bool default_value = false);
 	std::string VarKnockoutAssist(bool write = false, bool force = false, bool default_value = false);
 	std::string VarKnockoutThrown(bool write = false, bool force = false, bool default_value = false);
@@ -1012,12 +1013,12 @@ public:
 	std::string VarKnockoutBlockTaken(bool write = false, bool force = false, bool default_value = false);
 	std::string VarKnockoutHeavyBlock(bool write = false, bool force = false, bool default_value = false);
 	std::string VarKnockoutLightBlock(bool write = false, bool force = false, bool default_value = false);
-	std::string VarKnockoutDemolitions(bool write = false, bool force = false, bool default_value = false);
 	std::string VarKnockoutPlayerThrown(bool write = false, bool force = false, bool default_value = false);
 	std::string VarKnockoutPlayerGrabbed(bool write = false, bool force = false, bool default_value = false);
 	std::string VarKnockoutAerialHeavyHit(bool write = false, bool force = false, bool default_value = false);
 	std::string VarKnockoutAerialLightHit(bool write = false, bool force = false, bool default_value = false);
 
+	std::string VarKnockoutKOMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarKnockoutDeathMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarKnockoutAssistMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarKnockoutThrownMatch(bool write = false, bool force = false, bool default_value = false);
@@ -1031,12 +1032,12 @@ public:
 	std::string VarKnockoutBlockTakenMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarKnockoutHeavyBlockMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarKnockoutLightBlockMatch(bool write = false, bool force = false, bool default_value = false);
-	std::string VarKnockoutDemolitionsMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarKnockoutPlayerThrownMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarKnockoutPlayerGrabbedMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarKnockoutAerialHeavyHitMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarKnockoutAerialLightHitMatch(bool write = false, bool force = false, bool default_value = false);
 
+	std::string VarKnockoutKOCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarKnockoutDeathCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarKnockoutAssistCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarKnockoutThrownCumul(bool write = false, bool force = false, bool default_value = false);
@@ -1050,7 +1051,6 @@ public:
 	std::string VarKnockoutBlockTakenCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarKnockoutHeavyBlockCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarKnockoutLightBlockCumul(bool write = false, bool force = false, bool default_value = false);
-	std::string VarKnockoutDemolitionsCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarKnockoutPlayerThrownCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarKnockoutPlayerGrabbedCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarKnockoutAerialHeavyHitCumul(bool write = false, bool force = false, bool default_value = false);

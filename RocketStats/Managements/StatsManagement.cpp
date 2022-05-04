@@ -321,6 +321,8 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     std::string name = event.GetEventName();
     if (name == "BicycleHit")
     {
+        cvarManager->log(" --> " + name + " " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+
         ++always.TotalBicycleHit;
         ++current.stats.TotalBicycleHit;
         ++session.TotalBicycleHit;
@@ -350,6 +352,8 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     }
     else if (name == "Shot")
     {
+        cvarManager->log(" --> " + name + " " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+
         ++always.TotalShotOnGoal;
         ++current.stats.TotalShotOnGoal;
         ++session.TotalShotOnGoal;
@@ -379,6 +383,8 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     }
     else if (name == "Assist")
     {
+        cvarManager->log(" --> " + name + " " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+
         ++always.TotalAssist;
         ++current.stats.TotalAssist;
         ++session.TotalAssist;
@@ -408,6 +414,8 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     }
     else if (name == "Save")
     {
+        cvarManager->log(" --> " + name + " " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+
         ++always.TotalSave;
         ++current.stats.TotalSave;
         ++session.TotalSave;
@@ -437,6 +445,8 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     }
     else if (name == "EpicSave")
     {
+        cvarManager->log(" --> " + name + " " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+
         ++always.TotalEpicSave;
         ++current.stats.TotalEpicSave;
         ++session.TotalEpicSave;
@@ -466,6 +476,8 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     }
     else if (name == "Goal")
     {
+        cvarManager->log(" --> " + name + " " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+
         ++always.TotalGoal;
         ++current.stats.TotalGoal;
         ++session.TotalGoal;
@@ -495,6 +507,8 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     }
     else if (name == "AerialGoal")
     {
+        cvarManager->log(" --> " + name + " " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+
         ++always.TotalAerialGoal;
         ++current.stats.TotalAerialGoal;
         ++session.TotalAerialGoal;
@@ -524,6 +538,8 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     }
     else if (name == "BackwardsGoal")
     {
+        cvarManager->log(" --> " + name + " " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+
         ++always.TotalBackwardsGoal;
         ++current.stats.TotalBackwardsGoal;
         ++session.TotalBackwardsGoal;
@@ -553,7 +569,7 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     }
     else if (name == "BicycleGoal")
     {
-        cvarManager->log(" --> BicycleGoal " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+        cvarManager->log(" --> " + name + " " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
 
         ++always.TotalBicycleGoal;
         ++current.stats.TotalBicycleGoal;
@@ -584,6 +600,8 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     }
     else if (name == "LongGoal")
     {
+        cvarManager->log(" --> " + name + " " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+
         ++always.TotalLongGoal;
         ++current.stats.TotalLongGoal;
         ++session.TotalLongGoal;
@@ -613,6 +631,8 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     }
     else if (name == "TurtleGoal")
     {
+        cvarManager->log(" --> " + name + " " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+
         ++always.TotalTurtleGoal;
         ++current.stats.TotalTurtleGoal;
         ++session.TotalTurtleGoal;
@@ -642,6 +662,8 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     }
     else if (name == "OvertimeGoal")
     {
+        cvarManager->log(" --> " + name + " " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+
         ++always.TotalOvertimeGoal;
         ++current.stats.TotalOvertimeGoal;
         ++session.TotalOvertimeGoal;
@@ -671,6 +693,8 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     }
     else if (name == "HoopsSwishGoal")
     {
+        cvarManager->log(" --> " + name + " " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+
         ++always.TotalHoopsSwishGoal;
         ++current.stats.TotalHoopsSwishGoal;
         ++session.TotalHoopsSwishGoal;
@@ -700,7 +724,7 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     }
     else if (name == "PoolShot")
     {
-        cvarManager->log(" --> PoolShot " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+        cvarManager->log(" --> " + name + " " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
 
         ++always.TotalPoolShot;
         ++current.stats.TotalPoolShot;
@@ -731,6 +755,8 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     }
     else if (name == "FirstTouch")
     {
+        cvarManager->log(" --> " + name + " " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+
         ++always.FirstTouch;
         ++current.stats.FirstTouch;
         ++session.FirstTouch;
@@ -751,6 +777,8 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     }
     else if (name == "Savior")
     {
+        cvarManager->log(" --> " + name + " " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+
         ++always.TotalSavior;
         ++current.stats.TotalSavior;
         ++session.TotalSavior;
@@ -780,7 +808,7 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     }
     else if (name == "LowFive")
     {
-        cvarManager->log(" --> LowFive " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+        cvarManager->log(" --> " + name + " " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
 
         ++always.TotalLowFive;
         ++current.stats.TotalLowFive;
@@ -811,6 +839,8 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     }
     else if (name == "HatTrick")
     {
+        cvarManager->log(" --> " + name + " " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+
         ++always.TotalHatTrick;
         ++current.stats.TotalHatTrick;
         ++session.TotalHatTrick;
@@ -840,7 +870,7 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     }
     else if (name == "HighFive")
     {
-        cvarManager->log(" --> HighFive " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+        cvarManager->log(" --> " + name + " " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
 
         ++always.TotalHighFive;
         ++current.stats.TotalHighFive;
@@ -871,6 +901,8 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     }
     else if (name == "Playmaker")
     {
+        cvarManager->log(" --> " + name + " " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+
         ++always.TotalPlaymaker;
         ++current.stats.TotalPlaymaker;
         ++session.TotalPlaymaker;
@@ -900,7 +932,8 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     }
     else if (name == "Demolish")
     {
-        cvarManager->log(" --> Demolish " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+        cvarManager->log(" --> " + name + " " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+
         if (iam_receiver || iam_victim || team_receiver || team_victim)
         {
             ++((iam_receiver || team_receiver) ? always.TotalDemolitions : always.TotalDeath);
@@ -969,6 +1002,8 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     }
     else if (name == "BreakoutDamage")
     {
+        cvarManager->log(" --> " + name + " " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+
         ++always.TotalBreakoutDamage;
         ++current.stats.TotalBreakoutDamage;
         ++session.TotalBreakoutDamage;
@@ -998,6 +1033,8 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     }
     else if (name == "BreakoutDamageLarge")
     {
+        cvarManager->log(" --> " + name + " " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+
         ++always.TotalBreakoutDamageLarge;
         ++current.stats.TotalBreakoutDamageLarge;
         ++session.TotalBreakoutDamageLarge;
@@ -1025,31 +1062,34 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
 
         AllDropshotBreakoutDamageLarge(true);
     }
-    else if (name == "KO_Knockout" && (iam_receiver || iam_victim)) // KO_Death
+    else if (name == "KO_Knockout" && (iam_receiver || iam_victim))
     {
         cvarManager->log(" --> " + name + " " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
 
-        ++(iam_receiver ? always.KnockoutDemolitions : always.Death);
-        ++(iam_receiver ? current.stats.KnockoutDemolitions : current.stats.Death);
-        ++(iam_receiver ? session.KnockoutDemolitions : session.Death);
-        ++(iam_receiver ? stats[current.playlist].KnockoutDemolitions : stats[current.playlist].Death);
-        ++(iam_receiver ? always_gm[current.playlist].KnockoutDemolitions : always_gm[current.playlist].Death);
+        ++(iam_receiver ? always.KnockoutKO : always.Death);
+        ++(iam_receiver ? current.stats.KnockoutKO : current.stats.Death);
+        ++(iam_receiver ? session.KnockoutKO : session.Death);
+        ++(iam_receiver ? stats[current.playlist].KnockoutKO : stats[current.playlist].Death);
+        ++(iam_receiver ? always_gm[current.playlist].KnockoutKO : always_gm[current.playlist].Death);
 
-        ++(iam_receiver ? always.KnockoutDemolitionsCumul : always.DeathCumul);
-        ++(iam_receiver ? current.stats.KnockoutDemolitionsCumul : current.stats.DeathCumul);
-        ++(iam_receiver ? session.KnockoutDemolitionsCumul : session.DeathCumul);
+        ++(iam_receiver ? always.KnockoutKOCumul : always.DeathCumul);
+        ++(iam_receiver ? current.stats.KnockoutKOCumul : current.stats.DeathCumul);
+        ++(iam_receiver ? session.KnockoutKOCumul : session.DeathCumul);
 
         for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
         {
-            ++(iam_receiver ? stats[it->first].KnockoutDemolitionsCumul : stats[it->first].DeathCumul);
-            ++(iam_receiver ? always_gm[it->first].KnockoutDemolitionsCumul : always_gm[it->first].DeathCumul);
+            ++(iam_receiver ? stats[it->first].KnockoutKOCumul : stats[it->first].DeathCumul);
+            ++(iam_receiver ? always_gm[it->first].KnockoutKOCumul : always_gm[it->first].DeathCumul);
         }
 
-        AllKnockoutDeath(true);
+        if (iam_receiver)
+            AllKnockoutKO(true);
+        else
+            AllKnockoutDeath(true);
     }
     else if (name == "KO_KnockoutAssist")
     {
-        cvarManager->log(" --> KnockoutAssist " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+        cvarManager->log(" --> " + name + " " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
 
         ++always.KnockoutAssist;
         ++current.stats.KnockoutAssist;
@@ -1067,7 +1107,7 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     }
     else if (name == "KO_DoubleKO" && iam_receiver)
     {
-        cvarManager->log(" --> KnockoutDoubleKO " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+        cvarManager->log(" --> " + name + " " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
 
         ++always.KnockoutDoubleKO;
         ++current.stats.KnockoutDoubleKO;
@@ -1085,7 +1125,7 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     }
     else if (name == "KO_HeavyHit")
     {
-        cvarManager->log(" --> KnockoutHeavyHit " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+        cvarManager->log(" --> " + name + " " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
 
         ++always.KnockoutHeavyHit;
         ++current.stats.KnockoutHeavyHit;
@@ -1103,7 +1143,7 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     }
     else if (name == "KO_TripleKO")
     {
-        cvarManager->log(" --> KnockoutTripleKO " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+        cvarManager->log(" --> " + name + " " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
 
         ++always.KnockoutTripleKO;
         ++current.stats.KnockoutTripleKO;
@@ -1121,7 +1161,7 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     }
     else if (name == "KO_HeavyBlock")
     {
-        cvarManager->log(" --> KnockoutHeavyBlock " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+        cvarManager->log(" --> " + name + " " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
 
         ++always.KnockoutHeavyBlock;
         ++current.stats.KnockoutHeavyBlock;
@@ -1139,7 +1179,7 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     }
     else if (name == "KO_AerialHeavyHit")
     {
-        cvarManager->log(" --> KnockoutAerialHeavyHit " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+        cvarManager->log(" --> " + name + " " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
 
         ++always.KnockoutAerialHeavyHit;
         ++current.stats.KnockoutAerialHeavyHit;
@@ -1157,7 +1197,7 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     }
     else if (name == "KO_AerialLightHit")
     {
-        cvarManager->log(" --> KnockoutAerialLightHit " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+        cvarManager->log(" --> " + name + " " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
 
         ++always.KnockoutAerialLightHit;
         ++current.stats.KnockoutAerialLightHit;
@@ -1175,6 +1215,8 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     }
     else if (name == "MVP")
     {
+        cvarManager->log(" --> " + name + " " + std::string(iam_receiver ? "iam_receiver" : (iam_victim ? "iam_victim" : "-")) + " " + std::string(team_receiver ? "team_receiver" : (team_victim ? "team_victim" : "-")));
+
         ++always.TotalMVP;
         ++current.stats.TotalMVP;
         ++session.TotalMVP;

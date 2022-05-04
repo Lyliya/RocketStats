@@ -2,6 +2,8 @@
 
 void RocketStats::ReadKnockout(Stats& stat, json& config)
 {
+    if (config["KnockoutKO"].is_number_unsigned())
+        stat.KnockoutKO = int(config["KnockoutKO"]);
     if (config["KnockoutDeath"].is_number_unsigned())
         stat.KnockoutDeath = int(config["KnockoutDeath"]);
     if (config["KnockoutAssist"].is_number_unsigned())
@@ -28,8 +30,6 @@ void RocketStats::ReadKnockout(Stats& stat, json& config)
         stat.KnockoutHeavyBlock = int(config["KnockoutHeavyBlock"]);
     if (config["KnockoutLightBlock"].is_number_unsigned())
         stat.KnockoutLightBlock = int(config["KnockoutLightBlock"]);
-    if (config["KnockoutDemolitions"].is_number_unsigned())
-        stat.KnockoutDemolitions = int(config["KnockoutDemolitions"]);
     if (config["KnockoutPlayerThrown"].is_number_unsigned())
         stat.KnockoutPlayerThrown = int(config["KnockoutPlayerThrown"]);
     if (config["KnockoutPlayerGrabbed"].is_number_unsigned())
@@ -39,6 +39,8 @@ void RocketStats::ReadKnockout(Stats& stat, json& config)
     if (config["KnockoutAerialLightHit"].is_number_unsigned())
         stat.KnockoutAerialLightHit = int(config["KnockoutAerialLightHit"]);
 
+    if (config["KnockoutKOCumul"].is_number_unsigned())
+        stat.KnockoutKOCumul = int(config["KnockoutKOCumul"]);
     if (config["KnockoutDeathCumul"].is_number_unsigned())
         stat.KnockoutDeathCumul = int(config["KnockoutDeathCumul"]);
     if (config["KnockoutAssistCumul"].is_number_unsigned())
@@ -65,8 +67,6 @@ void RocketStats::ReadKnockout(Stats& stat, json& config)
         stat.KnockoutHeavyBlockCumul = int(config["KnockoutHeavyBlockCumul"]);
     if (config["KnockoutLightBlockCumul"].is_number_unsigned())
         stat.KnockoutLightBlockCumul = int(config["KnockoutLightBlockCumul"]);
-    if (config["KnockoutDemolitionsCumul"].is_number_unsigned())
-        stat.KnockoutDemolitionsCumul = int(config["KnockoutDemolitionsCumul"]);
     if (config["KnockoutPlayerThrownCumul"].is_number_unsigned())
         stat.KnockoutPlayerThrownCumul = int(config["KnockoutPlayerThrownCumul"]);
     if (config["KnockoutPlayerGrabbedCumul"].is_number_unsigned())
@@ -79,6 +79,7 @@ void RocketStats::ReadKnockout(Stats& stat, json& config)
 
 void RocketStats::WriteKnockout(Stats& stat, json& config)
 {
+    config["KnockoutKO"] = stat.KnockoutKO;
     config["KnockoutDeath"] = stat.KnockoutDeath;
     config["KnockoutAssist"] = stat.KnockoutAssist;
     config["KnockoutThrown"] = stat.KnockoutThrown;
@@ -92,12 +93,12 @@ void RocketStats::WriteKnockout(Stats& stat, json& config)
     config["KnockoutBlockTaken"] = stat.KnockoutBlockTaken;
     config["KnockoutHeavyBlock"] = stat.KnockoutHeavyBlock;
     config["KnockoutLightBlock"] = stat.KnockoutLightBlock;
-    config["KnockoutDemolitions"] = stat.KnockoutDemolitions;
     config["KnockoutPlayerThrown"] = stat.KnockoutPlayerThrown;
     config["KnockoutPlayerGrabbed"] = stat.KnockoutPlayerGrabbed;
     config["KnockoutAerialHeavyHit"] = stat.KnockoutAerialHeavyHit;
     config["KnockoutAerialLightHit"] = stat.KnockoutAerialLightHit;
 
+    config["KnockoutKOCumul"] = stat.KnockoutKOCumul;
     config["KnockoutDeathCumul"] = stat.KnockoutDeathCumul;
     config["KnockoutAssistCumul"] = stat.KnockoutAssistCumul;
     config["KnockoutThrownCumul"] = stat.KnockoutThrownCumul;
@@ -111,7 +112,6 @@ void RocketStats::WriteKnockout(Stats& stat, json& config)
     config["KnockoutBlockTakenCumul"] = stat.KnockoutBlockTakenCumul;
     config["KnockoutHeavyBlockCumul"] = stat.KnockoutHeavyBlockCumul;
     config["KnockoutLightBlockCumul"] = stat.KnockoutLightBlockCumul;
-    config["KnockoutDemolitionsCumul"] = stat.KnockoutDemolitionsCumul;
     config["KnockoutPlayerThrownCumul"] = stat.KnockoutPlayerThrownCumul;
     config["KnockoutPlayerGrabbedCumul"] = stat.KnockoutPlayerGrabbedCumul;
     config["KnockoutAerialHeavyHitCumul"] = stat.KnockoutAerialHeavyHitCumul;
@@ -121,6 +121,7 @@ void RocketStats::WriteKnockout(Stats& stat, json& config)
 void RocketStats::ReplaceKnockout(std::map<std::string, std::string>& vars)
 {
     /// Base
+    vars["KnockoutKO"] = VarKnockoutKO();
     vars["KnockoutDeath"] = VarKnockoutDeath();
     vars["KnockoutAssist"] = VarKnockoutAssist();
     vars["KnockoutThrown"] = VarKnockoutThrown();
@@ -134,13 +135,13 @@ void RocketStats::ReplaceKnockout(std::map<std::string, std::string>& vars)
     vars["KnockoutBlockTaken"] = VarKnockoutBlockTaken();
     vars["KnockoutHeavyBlock"] = VarKnockoutHeavyBlock();
     vars["KnockoutLightBlock"] = VarKnockoutLightBlock();
-    vars["KnockoutDemolitions"] = VarKnockoutDemolitions();
     vars["KnockoutPlayerThrown"] = VarKnockoutPlayerThrown();
     vars["KnockoutPlayerGrabbed"] = VarKnockoutPlayerGrabbed();
     vars["KnockoutAerialHeavyHit"] = VarKnockoutAerialHeavyHit();
     vars["KnockoutAerialLightHit"] = VarKnockoutAerialLightHit();
 
     /// Match
+    vars["KnockoutKOMatch"] = VarKnockoutKOMatch();
     vars["KnockoutDeathMatch"] = VarKnockoutDeathMatch();
     vars["KnockoutAssistMatch"] = VarKnockoutAssistMatch();
     vars["KnockoutThrownMatch"] = VarKnockoutThrownMatch();
@@ -154,13 +155,13 @@ void RocketStats::ReplaceKnockout(std::map<std::string, std::string>& vars)
     vars["KnockoutBlockTakenMatch"] = VarKnockoutBlockTakenMatch();
     vars["KnockoutHeavyBlockMatch"] = VarKnockoutHeavyBlockMatch();
     vars["KnockoutLightBlockMatch"] = VarKnockoutLightBlockMatch();
-    vars["KnockoutDemolitionsMatch"] = VarKnockoutDemolitionsMatch();
     vars["KnockoutPlayerThrownMatch"] = VarKnockoutPlayerThrownMatch();
     vars["KnockoutPlayerGrabbedMatch"] = VarKnockoutPlayerGrabbedMatch();
     vars["KnockoutAerialHeavyHitMatch"] = VarKnockoutAerialHeavyHitMatch();
     vars["KnockoutAerialLightHitMatch"] = VarKnockoutAerialLightHitMatch();
 
     /// Cumul
+    vars["KnockoutKOCumul"] = VarKnockoutKOCumul();
     vars["KnockoutDeathCumul"] = VarKnockoutDeathCumul();
     vars["KnockoutAssistCumul"] = VarKnockoutAssistCumul();
     vars["KnockoutThrownCumul"] = VarKnockoutThrownCumul();
@@ -174,7 +175,6 @@ void RocketStats::ReplaceKnockout(std::map<std::string, std::string>& vars)
     vars["KnockoutBlockTakenCumul"] = VarKnockoutBlockTakenCumul();
     vars["KnockoutHeavyBlockCumul"] = VarKnockoutHeavyBlockCumul();
     vars["KnockoutLightBlockCumul"] = VarKnockoutLightBlockCumul();
-    vars["KnockoutDemolitionsCumul"] = VarKnockoutDemolitionsCumul();
     vars["KnockoutPlayerThrownCumul"] = VarKnockoutPlayerThrownCumul();
     vars["KnockoutPlayerGrabbedCumul"] = VarKnockoutPlayerGrabbedCumul();
     vars["KnockoutAerialHeavyHitCumul"] = VarKnockoutAerialHeavyHitCumul();
@@ -185,6 +185,7 @@ void RocketStats::SessionKnockout(Stats& stat, int index, bool playlists)
 {
     if (playlists)
     {
+        stat.KnockoutKO += stats[index].KnockoutKO;
         stat.KnockoutDeath += stats[index].KnockoutDeath;
         stat.KnockoutAssist += stats[index].KnockoutAssist;
         stat.KnockoutThrown += stats[index].KnockoutThrown;
@@ -198,7 +199,6 @@ void RocketStats::SessionKnockout(Stats& stat, int index, bool playlists)
         stat.KnockoutBlockTaken += stats[index].KnockoutBlockTaken;
         stat.KnockoutHeavyBlock += stats[index].KnockoutHeavyBlock;
         stat.KnockoutLightBlock += stats[index].KnockoutLightBlock;
-        stat.KnockoutDemolitions += stats[index].KnockoutDemolitions;
         stat.KnockoutPlayerThrown += stats[index].KnockoutPlayerThrown;
         stat.KnockoutPlayerGrabbed += stats[index].KnockoutPlayerGrabbed;
         stat.KnockoutAerialHeavyHit += stats[index].KnockoutAerialHeavyHit;
@@ -206,6 +206,7 @@ void RocketStats::SessionKnockout(Stats& stat, int index, bool playlists)
     }
     else
     {
+        session.KnockoutKOCumul = stat.KnockoutKO;
         session.KnockoutDeathCumul = stat.KnockoutDeath;
         session.KnockoutAssistCumul = stat.KnockoutAssist;
         session.KnockoutThrownCumul = stat.KnockoutThrown;
@@ -219,7 +220,6 @@ void RocketStats::SessionKnockout(Stats& stat, int index, bool playlists)
         session.KnockoutBlockTakenCumul = stat.KnockoutBlockTaken;
         session.KnockoutHeavyBlockCumul = stat.KnockoutHeavyBlock;
         session.KnockoutLightBlockCumul = stat.KnockoutLightBlock;
-        session.KnockoutDemolitionsCumul = stat.KnockoutDemolitions;
         session.KnockoutPlayerThrownCumul = stat.KnockoutPlayerThrown;
         session.KnockoutPlayerGrabbedCumul = stat.KnockoutPlayerGrabbed;
         session.KnockoutAerialHeavyHitCumul = stat.KnockoutAerialHeavyHit;
@@ -228,6 +228,16 @@ void RocketStats::SessionKnockout(Stats& stat, int index, bool playlists)
 }
 
 #pragma region Base
+std::string RocketStats::VarKnockoutKO(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutKO)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutKO.txt", tmp);
+
+    return tmp;
+}
+
 std::string RocketStats::VarKnockoutDeath(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutDeath)));
@@ -358,16 +368,6 @@ std::string RocketStats::VarKnockoutLightBlock(bool write, bool force, bool defa
     return tmp;
 }
 
-std::string RocketStats::VarKnockoutDemolitions(bool write, bool force, bool default_value)
-{
-    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutDemolitions)));
-
-    if (write && (force || (rs_in_file && rs_file_knockout)))
-        WriteInFile("RocketStats_KnockoutDemolitions.txt", tmp);
-
-    return tmp;
-}
-
 std::string RocketStats::VarKnockoutPlayerThrown(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutPlayerThrown)));
@@ -410,6 +410,16 @@ std::string RocketStats::VarKnockoutAerialLightHit(bool write, bool force, bool 
 #pragma endregion
 
 #pragma region Match
+std::string RocketStats::VarKnockoutKOMatch(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.KnockoutKO)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutKOMatch.txt", tmp);
+
+    return tmp;
+}
+
 std::string RocketStats::VarKnockoutDeathMatch(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.KnockoutDeath)));
@@ -540,16 +550,6 @@ std::string RocketStats::VarKnockoutLightBlockMatch(bool write, bool force, bool
     return tmp;
 }
 
-std::string RocketStats::VarKnockoutDemolitionsMatch(bool write, bool force, bool default_value)
-{
-    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.KnockoutDemolitions)));
-
-    if (write && (force || (rs_in_file && rs_file_knockout)))
-        WriteInFile("RocketStats_KnockoutDemolitionsMatch.txt", tmp);
-
-    return tmp;
-}
-
 std::string RocketStats::VarKnockoutPlayerThrownMatch(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.KnockoutPlayerThrown)));
@@ -592,6 +592,16 @@ std::string RocketStats::VarKnockoutAerialLightHitMatch(bool write, bool force, 
 #pragma endregion
 
 #pragma region Cumul
+std::string RocketStats::VarKnockoutKOCumul(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutKOCumul)));
+
+    if (write && (force || (rs_in_file && rs_file_knockout)))
+        WriteInFile("RocketStats_KnockoutKOCumul.txt", tmp);
+
+    return tmp;
+}
+
 std::string RocketStats::VarKnockoutDeathCumul(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutDeathCumul)));
@@ -718,16 +728,6 @@ std::string RocketStats::VarKnockoutLightBlockCumul(bool write, bool force, bool
 
     if (write && (force || (rs_in_file && rs_file_knockout)))
         WriteInFile("RocketStats_KnockoutLightBlockCumul.txt", tmp);
-
-    return tmp;
-}
-
-std::string RocketStats::VarKnockoutDemolitionsCumul(bool write, bool force, bool default_value)
-{
-    std::string tmp = (rs_hide_knockout ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().KnockoutDemolitionsCumul)));
-
-    if (write && (force || (rs_in_file && rs_file_knockout)))
-        WriteInFile("RocketStats_KnockoutDemolitionsCumul.txt", tmp);
 
     return tmp;
 }
