@@ -286,16 +286,20 @@ struct Stats {
 	int Playmaker = 0; // 3 assists in a game
 	int FirstTouch = 0;
 	int Demolitions = 0;
+	int TeamDeath = 0;
 	int TeamSavior = 0;
 	int TeamLowFive = 0;
 	int TeamHatTrick = 0;
 	int TeamHighFive = 0;
 	int TeamPlaymaker = 0;
+	int TeamDemolitions = 0;
+	int TotalDeath = 0;
 	int TotalSavior = 0;
 	int TotalLowFive = 0;
 	int TotalHatTrick = 0;
 	int TotalHighFive = 0;
 	int TotalPlaymaker = 0;
+	int TotalDemolitions = 0;
 
 	int DeathCumul = 0;
 	int SaviorCumul = 0;
@@ -305,16 +309,20 @@ struct Stats {
 	int PlaymakerCumul = 0;
 	int FirstTouchCumul = 0;
 	int DemolitionsCumul = 0;
+	int TeamDeathCumul = 0;
 	int TeamSaviorCumul = 0;
 	int TeamLowFiveCumul = 0;
 	int TeamHatTrickCumul = 0;
 	int TeamHighFiveCumul = 0;
 	int TeamPlaymakerCumul = 0;
+	int TeamDemolitionsCumul = 0;
+	int TotalDeathCumul = 0;
 	int TotalSaviorCumul = 0;
 	int TotalLowFiveCumul = 0;
 	int TotalHatTrickCumul = 0;
 	int TotalHighFiveCumul = 0;
 	int TotalPlaymakerCumul = 0;
+	int TotalDemolitionsCumul = 0;
 
 	/// Certifications (what data to display on "Match" variables: 0/1, Y/N, Yes/No, ...)
 	int MVP = 0;
@@ -1162,16 +1170,20 @@ public:
 	std::string VarMiscsPlaymaker(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsFirstTouch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsDemolitions(bool write = false, bool force = false, bool default_value = false);
+	std::string VarMiscsTeamDeath(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsTeamSavior(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsTeamLowFive(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsTeamHatTrick(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsTeamHighFive(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsTeamPlaymaker(bool write = false, bool force = false, bool default_value = false);
+	std::string VarMiscsTeamDemolitions(bool write = false, bool force = false, bool default_value = false);
+	std::string VarMiscsTotalDeath(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsTotalSavior(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsTotalLowFive(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsTotalHatTrick(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsTotalHighFive(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsTotalPlaymaker(bool write = false, bool force = false, bool default_value = false);
+	std::string VarMiscsTotalDemolitions(bool write = false, bool force = false, bool default_value = false);
 
 	std::string VarMiscsDeathMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsSaviorMatch(bool write = false, bool force = false, bool default_value = false);
@@ -1181,16 +1193,20 @@ public:
 	std::string VarMiscsPlaymakerMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsFirstTouchMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsDemolitionsMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarMiscsTeamDeathMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsTeamSaviorMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsTeamLowFiveMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsTeamHatTrickMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsTeamHighFiveMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsTeamPlaymakerMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarMiscsTeamDemolitionsMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarMiscsTotalDeathMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsTotalSaviorMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsTotalLowFiveMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsTotalHatTrickMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsTotalHighFiveMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsTotalPlaymakerMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarMiscsTotalDemolitionsMatch(bool write = false, bool force = false, bool default_value = false);
 
 	std::string VarMiscsDeathCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsSaviorCumul(bool write = false, bool force = false, bool default_value = false);
@@ -1200,16 +1216,20 @@ public:
 	std::string VarMiscsPlaymakerCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsFirstTouchCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsDemolitionsCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarMiscsTeamDeathCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsTeamSaviorCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsTeamLowFiveCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsTeamHatTrickCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsTeamHighFiveCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsTeamPlaymakerCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarMiscsTeamDemolitionsCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarMiscsTotalDeathCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsTotalSaviorCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsTotalLowFiveCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsTotalHatTrickCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsTotalHighFiveCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarMiscsTotalPlaymakerCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarMiscsTotalDemolitionsCumul(bool write = false, bool force = false, bool default_value = false);
 #pragma endregion
 
 #pragma region Certifications

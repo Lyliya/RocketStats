@@ -617,8 +617,16 @@ void RocketStats::AllMiscs(bool force, bool default_value)
 void RocketStats::AllMiscsDeath(bool force, bool default_value)
 {
     VarMiscsDeath(true, force, default_value);
+    VarMiscsTeamDeath(true, force, default_value);
+    VarMiscsTotalDeath(true, force, default_value);
+
     VarMiscsDeathMatch(true, force, default_value);
+    VarMiscsTeamDeathMatch(true, force, default_value);
+    VarMiscsTotalDeathMatch(true, force, default_value);
+
     VarMiscsDeathCumul(true, force, default_value);
+    VarMiscsTeamDeathCumul(true, force, default_value);
+    VarMiscsTotalDeathCumul(true, force, default_value);
 }
 
 void RocketStats::AllMiscsSavior(bool force, bool default_value)
@@ -706,8 +714,16 @@ void RocketStats::AllMiscsFirstTouch(bool force, bool default_value)
 void RocketStats::AllMiscsDemolitions(bool force, bool default_value)
 {
     VarMiscsDemolitions(true, force, default_value);
+    VarMiscsTeamDemolitions(true, force, default_value);
+    VarMiscsTotalDemolitions(true, force, default_value);
+
     VarMiscsDemolitionsMatch(true, force, default_value);
+    VarMiscsTeamDemolitionsMatch(true, force, default_value);
+    VarMiscsTotalDemolitionsMatch(true, force, default_value);
+
     VarMiscsDemolitionsCumul(true, force, default_value);
+    VarMiscsTeamDemolitionsCumul(true, force, default_value);
+    VarMiscsTotalDemolitionsCumul(true, force, default_value);
 }
 #pragma endregion
 
