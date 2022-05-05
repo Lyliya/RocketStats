@@ -419,7 +419,7 @@ void RocketStats::RenderSettings()
         float column_nb = 3;
         float column_space = 10.f;
         float column_start = 25.f;
-        float column_width = ((settings_size.x - (column_start * 2) - (column_space * (column_nb - 1))) / column_nb);
+        float column_width = ((settings_size.x - (column_start * 2.f) - (column_space * (column_nb - 1.f))) / column_nb);
 
         ImVec2 tpos;
         ImVec2 text_size;
@@ -439,26 +439,50 @@ void RocketStats::RenderSettings()
         std::time(&current_time);
         const auto time_error = localtime_s(&local_time, &current_time);
 
-        ImGui::SetCursorPos({ 0, 27 });
+        // Documentation
+        float circle_size = 21.5f;
+        const float radian_min = (((210.f - 90.f) / 360.f) * ARC_SPAN);
+        const float radian_max = (((270.f - 90.f) / 360.f) * ARC_SPAN);
+        ImU32 circle_color = ImGui::ColorConvertFloat4ToU32(ImGui::GetStyleColorVec4(ImGuiCol_Border));
+        ImVec2 circle_end = { (win_pos.x + win_size.x - 6.f), (win_pos.y + 1.f) };
+        ImVec2 circle_start = { (circle_end.x + ((circle_size * cos(radian_min)))), (circle_end.y + ((circle_size * sin(radian_min)))) };
+
+        ImGui::SetWindowFontScale(1.3f / (font ? 2.f : 1.f));
+        drawlist->PathLineTo(circle_start);
+        drawlist->PathArcTo(circle_end, circle_size, radian_min, radian_max, 20);
+        drawlist->PathStroke(circle_color, false, 1.f);
+        drawlist->AddLine({ (circle_start.x - 1.f), (circle_start.y - 1.f) }, { (circle_start.x + 15.f), (circle_start.y - 1.f) }, circle_color, 1.f);
+        drawlist->AddText({ (win_pos.x + win_size.x - 14.f), win_pos.y }, ImGui::ColorConvertFloat4ToU32({ 1.f, 1.f, 1.f, 1.f }), "?");
+
+        if (ImGui::GetMousePos().x >= (circle_start.x - 6.f) && ImGui::GetMousePos().x <= (win_pos.x + win_size.x - 1.f) && ImGui::GetMousePos().y >= win_pos.y && ImGui::GetMousePos().y <= circle_start.y)
+        {
+            tooltip = GetLang(LANG_DOCUMENTATION);
+            ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+            if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+                system("powershell -WindowStyle Hidden \"start https://github.com/Lyliya/RocketStats/wiki\"");
+        }
+
+        // First Part
+        ImGui::SetCursorPos({ 0.f, 27.f });
         image_pos = { p0.x + ImGui::GetCursorPosX(), p0.y + ImGui::GetCursorPosY() };
-        drawlist->AddImage(rs_title->GetImGuiTex(), image_pos, { (image_size.X / 2) + image_pos.x, (image_size.Y / 2) + image_pos.y });
+        drawlist->AddImage(rs_title->GetImGuiTex(), image_pos, { (image_size.X / 2.f) + image_pos.x, (image_size.Y / 2.f) + image_pos.y });
 
         ImGui::SetWindowFontScale(1.7f / (font ? 2.f : 1.f));
-        ImGui::SetCursorPos({ 23, 52 });
+        ImGui::SetCursorPos({ 23.f, 52.f });
         ImGui::Checkbox("##overlay", &rs_disp_overlay);
         if (ImGui::IsItemHovered())
             tooltip = GetLang(LANG_OVERLAY_TOOLTIP);
 
-        ImGui::SetCursorPos({ 63, 54 });
+        ImGui::SetCursorPos({ 63.f, 54.f });
         ImGui::TextColored(ImVec4{ 0.2f, 0.2f, 0.2f, 1.f }, Utils::toupper(GetLang(LANG_OVERLAY)).c_str());
 
         ImGui::SetWindowFontScale(1.3f / (font ? 2.f : 1.f));
-        ImGui::SetCursorPos({ 355, 43 });
+        ImGui::SetCursorPos({ 355.f, 43.f });
         ImGui::TextColored(ImVec4{ 0.8f, 0.8f, 0.8f, 1.f }, GetLang(LANG_MODE).c_str());
 
         ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
-        ImGui::SetCursorPos({ 295, 68 });
-        ImGui::SetNextItemWidth(142);
+        ImGui::SetCursorPos({ 295.f, 68.f });
+        ImGui::SetNextItemWidth(142.f);
         if (ImGui::BeginCombo("##modes_combo", modes.at(rs_mode).c_str(), ImGuiComboFlags_NoArrowButton))
         {
             int Trs_mode = rs_mode;
@@ -476,20 +500,20 @@ void RocketStats::RenderSettings()
         }
         if (ImGui::IsItemHovered())
             tooltip = GetLang(LANG_IN_FILE_TOOLTIP);
-        ImGui::SameLine(0, 0);
+        ImGui::SameLine(0.f, 0.f);
         if (ImGui::ArrowButton("##modes_left", ImGuiDir_Left) && rs_mode > 0)
             --rs_mode;
-        ImGui::SameLine(0, 0);
+        ImGui::SameLine(0.f, 0.f);
         if (ImGui::ArrowButton("##modes_right", ImGuiDir_Right) && rs_mode < (modes.size() - 1))
             ++rs_mode;
 
         ImGui::SetWindowFontScale(1.3f / (font ? 2.f : 1.f));
-        ImGui::SetCursorPos({ 585, 43 });
+        ImGui::SetCursorPos({ 585.f, 43.f });
         ImGui::TextColored(ImVec4{ 0.8f, 0.8f, 0.8f, 1.f }, GetLang(LANG_THEME).c_str());
 
         ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
-        ImGui::SetCursorPos({ 525, 68 });
-        ImGui::SetNextItemWidth(142);
+        ImGui::SetCursorPos({ 525.f, 68.f });
+        ImGui::SetNextItemWidth(142.f);
         if (ImGui::BeginCombo("##themes_combo", theme_render.name.c_str(), ImGuiComboFlags_NoArrowButton))
         {
             int Trs_theme = rs_theme;
@@ -507,24 +531,24 @@ void RocketStats::RenderSettings()
         }
         if (ImGui::IsItemHovered())
             tooltip = GetLang(LANG_THEME_TOOLTIP);
-        ImGui::SameLine(0, 0);
+        ImGui::SameLine(0.f, 0.f);
         if (ImGui::ArrowButton("##themes_left", ImGuiDir_Left) && rs_theme > 0)
             --rs_theme;
-        ImGui::SameLine(0, 0);
+        ImGui::SameLine(0.f, 0.f);
         if (ImGui::ArrowButton("##themes_right", ImGuiDir_Right) && themes.size() && rs_theme < (themes.size() - 1))
             ++rs_theme;
 
-        ImGui::SetCursorPos({ 103, 120 });
-        if (ImGui::Button(GetLang(LANG_X).c_str(), { 65, 0 }))
+        ImGui::SetCursorPos({ 103.f, 120.f });
+        if (ImGui::Button(GetLang(LANG_X).c_str(), { 65.f, 0.f }))
             rs_x_edit = !rs_x_edit;
         if (ImGui::IsItemHovered())
             tooltip = GetLang(LANG_X_TOOLTIP);
-        ImGui::SetCursorPos({ 158, 120 });
+        ImGui::SetCursorPos({ 158.f, 120.f });
         ImGui::SetNextItemWidth(rs_x_edit ? 170.f : 150.f);
         if (!rs_x_edit)
         {
             ImGui::SliderFloat("##x_position", &rs_x, 0.f, 1.f, "%.3f");
-            ImGui::SetCursorPos({ 312, 120 });
+            ImGui::SetCursorPos({ 312.f, 120.f });
             if (ImGui::Button("R##Rx_position"))
             {
                 rs_x = 0.f;
@@ -539,17 +563,17 @@ void RocketStats::RenderSettings()
         else
             ImGui::InputFloat("##x_position", &rs_x, 0.001f, 0.1f, "%.3f");
 
-        ImGui::SetCursorPos({ 421, 120 });
-        if (ImGui::Button(GetLang(LANG_Y).c_str(), { 65, 0 }))
+        ImGui::SetCursorPos({ 421.f, 120.f });
+        if (ImGui::Button(GetLang(LANG_Y).c_str(), { 65.f, 0.f }))
             rs_y_edit = !rs_y_edit;
         if (ImGui::IsItemHovered())
             tooltip = GetLang(LANG_Y_TOOLTIP);
-        ImGui::SetCursorPos({ 476, 120 });
+        ImGui::SetCursorPos({ 476.f, 120.f });
         ImGui::SetNextItemWidth(rs_y_edit ? 170.f : 150.f);
         if (!rs_y_edit)
         {
             ImGui::SliderFloat("##y_position", &rs_y, 0.f, 1.f, "%.3f");
-            ImGui::SetCursorPos({ 630, 120 });
+            ImGui::SetCursorPos({ 630.f, 120.f });
             if (ImGui::Button("R##Ry_position"))
             {
                 rs_y = 0.f;
@@ -564,17 +588,17 @@ void RocketStats::RenderSettings()
         else
             ImGui::InputFloat("##y_position", &rs_y, 0.001f, 0.1f, "%.3f");
 
-        ImGui::SetCursorPos({ 24, 165 });
+        ImGui::SetCursorPos({ 24.f, 165.f });
         if (ImGui::Button(GetLang(LANG_SCALE).c_str(), { 65, 0 }))
             rs_scale_edit = !rs_scale_edit;
         if (ImGui::IsItemHovered())
             tooltip = GetLang(LANG_SCALE_TOOLTIP);
-        ImGui::SetCursorPos({ 79, 165 });
+        ImGui::SetCursorPos({ 79.f, 165.f });
         ImGui::SetNextItemWidth(rs_scale_edit ? 170.f : 150.f);
         if (!rs_scale_edit)
         {
             ImGui::SliderFloat("##scale", &rs_scale, cvar_scale.GetMinimum(), cvar_scale.GetMaximum(), "%.3f");
-            ImGui::SetCursorPos({ 233, 165 });
+            ImGui::SetCursorPos({ 233.f, 165.f });
             if (ImGui::Button("R##Rscale"))
             {
                 rs_scale = 1.f;
@@ -587,17 +611,17 @@ void RocketStats::RenderSettings()
         else
             ImGui::InputFloat("##scale", &rs_scale, 0.01f, 0.1f, "%.3f");
 
-        ImGui::SetCursorPos({ 263, 165 });
+        ImGui::SetCursorPos({ 263.f, 165.f });
         if (ImGui::Button(GetLang(LANG_ROTATE).c_str(), { 65, 0 }))
             rs_rotate_edit = !rs_rotate_edit;
         if (ImGui::IsItemHovered())
             tooltip = GetLang(LANG_ROTATE_TOOLTIP);
-        ImGui::SetCursorPos({ 318, 165 });
+        ImGui::SetCursorPos({ 318.f, 165.f });
         ImGui::SetNextItemWidth(rs_rotate_edit ? 170.f : 150.f);
         if (!rs_rotate_edit)
         {
             ImGui::SliderFloat("##rotate", &rs_rotate, cvar_rotate.GetMinimum(), cvar_rotate.GetMaximum(), "%.3f");
-            ImGui::SetCursorPos({ 472, 165 });
+            ImGui::SetCursorPos({ 472.f, 165.f });
             if (ImGui::Button("R##Rrotate"))
             {
                 rs_rotate = 0.f;
@@ -610,17 +634,17 @@ void RocketStats::RenderSettings()
         else
             ImGui::InputFloat("##rotate", &rs_rotate, 0.001f, 0.1f, "%.3f");
 
-        ImGui::SetCursorPos({ 502, 165 });
-        if (ImGui::Button(GetLang(LANG_OPACITY).c_str(), { 65, 0 }))
+        ImGui::SetCursorPos({ 502.f, 165.f });
+        if (ImGui::Button(GetLang(LANG_OPACITY).c_str(), { 65.f, 0.f }))
             rs_opacity_edit = !rs_opacity_edit;
         if (ImGui::IsItemHovered())
             tooltip = GetLang(LANG_OPACITY_TOOLTIP);
-        ImGui::SetCursorPos({ 557, 165 });
+        ImGui::SetCursorPos({ 557.f, 165.f });
         ImGui::SetNextItemWidth(rs_opacity_edit ? 170.f : 150.f);
         if (!rs_opacity_edit)
         {
             ImGui::SliderFloat("##opacity", &rs_opacity, cvar_opacity.GetMinimum(), cvar_opacity.GetMaximum(), "%.3f");
-            ImGui::SetCursorPos({ 711, 165 });
+            ImGui::SetCursorPos({ 711.f, 165.f });
             if (ImGui::Button("R##Ropacity"))
             {
                 rs_opacity = 1.f;
@@ -634,41 +658,42 @@ void RocketStats::RenderSettings()
             ImGui::InputFloat("##opacity", &rs_opacity, 0.001f, 0.1f, "%.3f");
 
         text_size = ImGui::CalcTextSize(GetLang(LANG_OVERLAY_OBS).c_str());
-        ImGui::SetCursorPos({ ((settings_size.x - text_size.x) / 2), 200 });
+        ImGui::SetCursorPos({ ((settings_size.x - text_size.x) / 2.f), 200.f });
         ImGui::TextColored(ImVec4{ 0.94f, 0.77f, 0.f, 1.f }, GetLang(LANG_OVERLAY_OBS).c_str());
 
-        ImGui::SetCursorPosY(228);
+        ImGui::SetCursorPosY(228.f);
         ImGui::Separator();
 
-        ImGui::SetCursorPos({ 0, 238 });
+        // Second Part
+        ImGui::SetCursorPos({ 0.f, 238.f });
         image_pos = { p0.x + ImGui::GetCursorPosX(), p0.y + ImGui::GetCursorPosY() };
         drawlist->AddImage(rs_title->GetImGuiTex(), image_pos, { (image_size.X / 2) + image_pos.x, (image_size.Y / 2) + image_pos.y });
 
         ImGui::SetWindowFontScale(1.7f / (font ? 2.f : 1.f));
-        ImGui::SetCursorPos({ 23, 263 });
+        ImGui::SetCursorPos({ 23.f, 263.f });
         ImGui::Checkbox("##in_file", &rs_in_file);
         if (ImGui::IsItemHovered())
             tooltip = GetLang(LANG_IN_FILE_TOOLTIP);
 
-        ImGui::SetCursorPos({ 63, 265 });
+        ImGui::SetCursorPos({ 63.f, 265.f });
         ImGui::TextColored(ImVec4{ 0.2f, 0.2f, 0.2f, 1.f }, Utils::toupper(GetLang(LANG_IN_FILE)).c_str());
 
         ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
-        ImGui::SetCursorPos({ (settings_size.x - 135), 241 });
-        if (ImGui::Button(GetLang(LANG_OPEN_FOLDER).c_str(), { 125, 0 }))
+        ImGui::SetCursorPos({ (settings_size.x - 135.f), 241.f });
+        if (ImGui::Button(GetLang(LANG_OPEN_FOLDER).c_str(), { 125.f, 0.f }))
             system(("powershell -WindowStyle Hidden \"start \"\"" + GetPath() + "\"\"\"").c_str());
         if (ImGui::IsItemHovered())
             tooltip = GetLang(LANG_OPEN_FOLDER_TOOLTIP);
-        ImGui::SetCursorPos({ (settings_size.x - 135), 266 });
-        if (ImGui::Button(GetLang(LANG_RELOAD_THEME).c_str(), { 103, 0 }))
+        ImGui::SetCursorPos({ (settings_size.x - 135.f), 266.f });
+        if (ImGui::Button(GetLang(LANG_RELOAD_THEME).c_str(), { 103.f, 0.f }))
         {
             LoadImgs();
             ChangeTheme(rs_theme);
         }
         if (ImGui::IsItemHovered())
             tooltip = GetLang(LANG_RELOAD_THEME_TOOLTIP);
-        ImGui::SetCursorPos({ (settings_size.x - 27), 266 });
-        if (ImGui::Button(GetLang(LANG_RELOAD_THEME_A).c_str(), { 17, 0 }))
+        ImGui::SetCursorPos({ (settings_size.x - 27.f), 266.f });
+        if (ImGui::Button(GetLang(LANG_RELOAD_THEME_A).c_str(), { 17.f, 0.f }))
         {
             LoadImgs();
             LoadThemes();
@@ -677,25 +702,25 @@ void RocketStats::RenderSettings()
         }
         if (ImGui::IsItemHovered())
             tooltip = GetLang(LANG_RELOAD_THEME_A_TOOLTIP);
-        ImGui::SetCursorPos({ (settings_size.x - 135), 291 });
-        if (ImGui::Button(GetLang(LANG_RESET_STATS).c_str(), { 125, 0 }))
+        ImGui::SetCursorPos({ (settings_size.x - 135.f), 291.f });
+        if (ImGui::Button(GetLang(LANG_RESET_STATS).c_str(), { 125.f, 0.f }))
             ResetStats();
         if (ImGui::IsItemHovered())
             tooltip = GetLang(LANG_RESET_STATS_TOOLTIP);
 
         ImGui::SetWindowFontScale(1.7f / (font ? 2.f : 1.f));
-        ImGui::SetCursorPos({ 280, 258 });
+        ImGui::SetCursorPos({ 280.f, 258.f });
         text_size = ImGui::CalcTextSize(theme_render.name.c_str());
         ImGui::TextColored(ImVec4{ 1.f, 1.f, 1.f, 1.f }, theme_render.name.c_str());
         ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
-        ImGui::SetCursorPos({ (285 + text_size.x), 265 });
+        ImGui::SetCursorPos({ (285.f + text_size.x), 265.f });
         ImGui::TextColored(ImVec4{ 1.f, 1.f, 1.f, 0.5f }, (theme_render.version + (theme_render.date.size() ? (" - " + theme_render.date) : "")).c_str());
-        ImGui::SetCursorPos({ 290, 282 });
+        ImGui::SetCursorPos({ 290.f, 282.f });
         ImGui::TextColored(ImVec4{ 1.f, 1.f, 1.f, 0.8f }, ((GetLang(LANG_THEME_BY) + " ").c_str() + theme_render.author).c_str());
 
-        ImGui::SetCursorPos({ (column_start - 8), 342 });
+        ImGui::SetCursorPos({ (column_start - 8.f), 350.f });
         ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
-        ImGui::BeginChild("##column1", { (column_width + 16), 205 }, false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
+        ImGui::BeginChild("##column1", { (column_width + 16.f), 205.f }, false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
         ImGui::Checkbox(GetLang(LANG_SHOW_IN_MENU).c_str(), &rs_enable_inmenu);
         ImGui::Checkbox(GetLang(LANG_SHOW_IN_GAME).c_str(), &rs_enable_ingame);
         ImGui::Checkbox(GetLang(LANG_SHOW_IN_SCOREBOARD).c_str(), &rs_enable_inscoreboard);
@@ -716,25 +741,25 @@ void RocketStats::RenderSettings()
             rs_file_boost &&
             rs_file_shots && rs_file_saves && rs_file_goals && rs_file_dropshot && rs_file_knockout && rs_file_miscs && rs_file_accolades);
         select_all = rs_select_all_file;
-        tpos = { (column_start + column_space + (column_width + 16) - 0.5f), 320 };
+        tpos = { (column_start + column_space + (column_width + 16.f) - 0.5f), 323.f };
         ImGui::SetCursorPos(tpos);
         ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
         ImGui::PushStyleColor(ImGuiCol_FrameBg, { 0.3f, 0.3f, 0.3f, 1.f });
         ImGui::PushStyleColor(ImGuiCol_FrameBgActive, { 0.3f, 0.3f, 0.3f, 1.f });
         ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, { 0.3f, 0.3f, 0.3f, 1.f });
         ImGui::PushStyleColor(ImGuiCol_CheckMark, { 0.f, 0.f, 0.f, 0.8f });
-        ImGui::GetWindowDrawList()->AddLine({ (tpos.x + win_pos.x + 5), (tpos.y + win_pos.y + 17) }, { (tpos.x + win_pos.x + 200), (tpos.y + win_pos.y + 17) }, ImGui::ColorConvertFloat4ToU32({ 0.3f, 0.3f, 0.3f, 1.f }), 2.f);
+        ImGui::GetWindowDrawList()->AddLine({ (tpos.x + win_pos.x + 5.f), (tpos.y + win_pos.y + 17.f) }, { (tpos.x + win_pos.x + 200.f), (tpos.y + win_pos.y + 17.f) }, ImGui::ColorConvertFloat4ToU32({ 0.3f, 0.3f, 0.3f, 1.f }), 2.f);
         ImGui::Checkbox("##select_all_file", &select_all);
         if (ImGui::IsItemHovered())
             tooltip = GetLang(LANG_SELECT_ALL_TOOLTIP);
         ImGui::PopStyleColor(4);
         ImGui::SetWindowFontScale(1.2f / (font ? 2.f : 1.f));
         ImGui::SameLine();
-        ImGui::SetCursorPosY(316);
+        ImGui::SetCursorPosY(316.f);
         ImGui::TextColored(ImVec4{ 0.8f, 0.8f, 0.8f, 1.f }, GetLang(LANG_FILE_TITLE).c_str());
-        ImGui::SetCursorPos({ (column_start + column_space + (column_width + 16)), 342 });
+        ImGui::SetCursorPos({ (column_start + column_space + (column_width + 16.f)), 350.f });
         ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
-        ImGui::BeginChild("##column2", { (column_width - 8), 205 }, false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
+        ImGui::BeginChild("##column2", { (column_width - 8.f), 205.f }, false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
         if (!rs_in_file)
             ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.5f);
         ImGui::Checkbox(GetLang(LANG_GAMES).c_str(), &rs_file_games);
@@ -792,25 +817,25 @@ void RocketStats::RenderSettings()
             rs_hide_win && rs_hide_loss && rs_hide_streak && rs_hide_winratio && rs_hide_winpercentage &&
             rs_hide_shots && rs_hide_saves && rs_hide_goals && rs_hide_dropshot && rs_hide_knockout && rs_hide_miscs && rs_hide_accolades);
         select_all = rs_select_all_hide;
-        tpos = { (column_start + (column_space * 2) + ((column_width * 2) + 16)), 320 };
+        tpos = { (column_start + (column_space * 2.f) + ((column_width * 2.f) + 16.f)), 323.f };
         ImGui::SetCursorPos(tpos);
         ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
         ImGui::PushStyleColor(ImGuiCol_FrameBg, { 0.3f, 0.3f, 0.3f, 1.f });
         ImGui::PushStyleColor(ImGuiCol_FrameBgActive, { 0.3f, 0.3f, 0.3f, 1.f });
         ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, { 0.3f, 0.3f, 0.3f, 1.f });
         ImGui::PushStyleColor(ImGuiCol_CheckMark, { 0.f, 0.f, 0.f, 0.8f });
-        ImGui::GetWindowDrawList()->AddLine({ (tpos.x + win_pos.x + 5), (tpos.y + win_pos.y + 17) }, { (tpos.x + win_pos.x + 200), (tpos.y + win_pos.y + 17) }, ImGui::ColorConvertFloat4ToU32({ 0.3f, 0.3f, 0.3f, 1.f }), 2.f);
+        ImGui::GetWindowDrawList()->AddLine({ (tpos.x + win_pos.x + 5.f), (tpos.y + win_pos.y + 17.f) }, { (tpos.x + win_pos.x + 200.f), (tpos.y + win_pos.y + 17.f) }, ImGui::ColorConvertFloat4ToU32({ 0.3f, 0.3f, 0.3f, 1.f }), 2.f);
         ImGui::Checkbox("##select_all_hide", &select_all);
         if (ImGui::IsItemHovered())
             tooltip = GetLang(LANG_SELECT_ALL_TOOLTIP);
         ImGui::PopStyleColor(4);
         ImGui::SetWindowFontScale(1.2f / (font ? 2.f : 1.f));
         ImGui::SameLine();
-        ImGui::SetCursorPosY(316);
+        ImGui::SetCursorPosY(316.f);
         ImGui::TextColored(ImVec4{ 0.8f, 0.8f, 0.8f, 1.f }, GetLang(LANG_HIDE_TITLE).c_str());
-        ImGui::SetCursorPos({ (column_start + (column_space * 2) + ((column_width * 2) + 16)), 342 });
+        ImGui::SetCursorPos({ (column_start + (column_space * 2.f) + ((column_width * 2.f) + 16.f)), 350.f });
         ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
-        ImGui::BeginChild("##column3", { (column_width - 8), 205 }, false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
+        ImGui::BeginChild("##column3", { (column_width - 8.f), 205.f }, false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
         ImGui::Checkbox(GetLang(LANG_GAMES).c_str(), &rs_hide_games);
         ImGui::Checkbox(GetLang(LANG_GAMEMODE).c_str(), &rs_hide_gm);
         ImGui::Checkbox(GetLang(LANG_RANK).c_str(), &rs_hide_rank);
@@ -858,21 +883,22 @@ void RocketStats::RenderSettings()
         }
 
         /* Variable to use to animate images
-        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10);
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10.f);
         ImGui::Separator();
-        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10);
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10.f);
         float fps = ImGui::GetIO().Framerate;
         ImGui::Text(("Framerate: " + std::to_string(fps)).c_str());
         */
 
-        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10);
+        // Footer
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10.f);
         ImGui::Separator();
 
         ImGui::TextColored(((time_error || local_time.tm_sec % 2) ? ImVec4{ 0.04f, 0.52f, 0.89f, 1.f } : ImVec4{ 1.f, 1.f, 1.f, 0.5f }), GetLang(LANG_DONATE).c_str());
         if (ImGui::IsItemHovered())
         {
             ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
-            if (ImGui::IsMouseClicked(0))
+            if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
                 system("powershell -WindowStyle Hidden \"start https://www.paypal.com/paypalme/rocketstats\"");
         }
         ImGui::SameLine();
@@ -882,26 +908,16 @@ void RocketStats::RenderSettings()
         if (ImGui::IsItemHovered())
         {
             ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
-            if (ImGui::IsMouseClicked(0))
+            if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
                 system("powershell -WindowStyle Hidden \"start https://discord.gg/weBCBE4\"");
         }
         ImGui::SameLine();
-        ImGui::Text("|");
-        ImGui::SameLine();
-        ImGui::TextColored(ImVec4{ 0.04f, 0.52f, 0.89f, 1.f }, "Documentation");
-        if (ImGui::IsItemHovered())
-        {
-            ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
-            if (ImGui::IsMouseClicked(0))
-                system("powershell -WindowStyle Hidden \"start https://github.com/Lyliya/RocketStats/wiki\"");
-        }
-        ImGui::SameLine();
         text_size = ImGui::CalcTextSize(GetLang(LANG_DEVELOPERS).c_str());
-        ImGui::SetCursorPosX(((settings_size.x - text_size.x) / 2) + 95.f);
+        ImGui::SetCursorPosX((settings_size.x - text_size.x) / 2.f);
         ImGui::Text(GetLang(LANG_DEVELOPERS).c_str());
         text_size = ImGui::CalcTextSize(menu_version.c_str());
         ImGui::SameLine();
-        ImGui::SetCursorPosX(settings_size.x - text_size.x - 7);
+        ImGui::SetCursorPosX(settings_size.x - text_size.x - 7.f);
         ImGui::Text(menu_version.c_str());
 
         drawlist->PopClipRect();
@@ -912,8 +928,8 @@ void RocketStats::RenderSettings()
         ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), (GetLang(LANG_ERROR) + ": data/RocketStats").c_str());
         ImGui::SameLine();
         ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
-        ImGui::SetCursorPosX(settings_size.x - 80 - 7);
-        if (ImGui::Button(GetLang(LANG_ERROR_RELOAD).c_str(), {80, 0}))
+        ImGui::SetCursorPosX(settings_size.x - 80.f - 7.f);
+        if (ImGui::Button(GetLang(LANG_ERROR_RELOAD).c_str(), { 80.f, 0.f }))
         {
             LoadImgs();
             LoadThemes();
@@ -936,7 +952,7 @@ void RocketStats::RenderSettings()
         ImDrawList* drawlist = ImGui::GetForegroundDrawList();
         ImVec2 text_size = ImGui::CalcTextSize(tooltip.c_str());
         ImVec2 tooltip_min = { (mouse_pos.x + 25.f), (mouse_pos.y + 2.f) };
-        ImVec2 tooltip_max = { (tooltip_min.x + text_size.x + (2 * padding)), (tooltip_min.y + text_size.y + (2 * padding)) };
+        ImVec2 tooltip_max = { (tooltip_min.x + text_size.x + (2.f * padding)), (tooltip_min.y + text_size.y + (2.f * padding)) };
 
         color = ImGui::GetStyleColorVec4(ImGuiCol_FrameBg);
         drawlist->AddRectFilled(tooltip_min, tooltip_max, ImGui::ColorConvertFloat4ToU32({ color.x, color.x, color.x, 0.7f }));

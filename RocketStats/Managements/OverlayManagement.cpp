@@ -526,11 +526,10 @@ Element RocketStats::CalculateElement(json& element, Options& options, bool& che
             else if (element["type"] == "pie_chart")
             {
                 const float radius = float(element["radius"].is_string() ? Utils::EvaluateExpression(element["radius"], options.width, display_size) : int(element["radius"]));
-                const float item_arc_span = (float(M_PI) * 2);
                 const float angle_min = ((element.contains("angle-min") ? float(element["angle-min"]) : 0.f) - 90.f);
                 const float angle_max = ((element.contains("angle-max") ? float(element["angle-max"]) : 0.f) - 90.f);
-                const float radian_min = ((angle_min / 360.f) * item_arc_span);
-                const float radian_max = ((angle_max / 360.f) * item_arc_span);
+                const float radian_min = ((angle_min / 360.f) * ARC_SPAN);
+                const float radian_max = ((angle_max / 360.f) * ARC_SPAN);
 
                 element_size.x = (radius * options.scale);
                 element_size.y = float(element.contains("segments") ? int(element["segments"]) : 0);
