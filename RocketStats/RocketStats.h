@@ -591,7 +591,7 @@ public:
 	bool rs_file_dropshot = true;
 	bool rs_file_knockout = true;
 	bool rs_file_miscs = true;
-	bool rs_file_certifications = true;
+	bool rs_file_accolades = true;
 	bool rs_file_boost = true;
 
 	bool rs_select_all_hide = true;
@@ -619,7 +619,7 @@ public:
 	bool rs_hide_dropshot = false;
 	bool rs_hide_knockout = false;
 	bool rs_hide_miscs = false;
-	bool rs_hide_certifications = false;
+	bool rs_hide_accolades = false;
 
 	float rs_x = 0.7f;
 	float rs_y = 0.575f;

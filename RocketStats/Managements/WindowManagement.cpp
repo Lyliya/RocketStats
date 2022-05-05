@@ -714,7 +714,7 @@ void RocketStats::RenderSettings()
             rs_file_mmr && rs_file_mmrc && rs_file_mmrcc &&
             rs_file_win && rs_file_loss && rs_file_streak && rs_file_winratio && rs_file_winpercentage &&
             rs_file_boost &&
-            rs_file_shots && rs_file_saves && rs_file_goals && rs_file_dropshot && rs_file_knockout && rs_file_miscs && rs_file_certifications);
+            rs_file_shots && rs_file_saves && rs_file_goals && rs_file_dropshot && rs_file_knockout && rs_file_miscs && rs_file_accolades);
         select_all = rs_select_all_file;
         tpos = { (column_start + column_space + (column_width + 16) - 0.5f), 320 };
         ImGui::SetCursorPos(tpos);
@@ -755,7 +755,7 @@ void RocketStats::RenderSettings()
         ImGui::Checkbox(GetLang(LANG_DROPSHOT).c_str(), &rs_file_dropshot);
         ImGui::Checkbox(GetLang(LANG_KNOCKOUT).c_str(), &rs_file_knockout);
         ImGui::Checkbox(GetLang(LANG_MISCS).c_str(), &rs_file_miscs);
-        ImGui::Checkbox(GetLang(LANG_CERTIFICATIONS).c_str(), &rs_file_certifications);
+        ImGui::Checkbox(GetLang(LANG_ACCOLADES).c_str(), &rs_file_accolades);
         ImGui::Checkbox(GetLang(LANG_BOOST).c_str(), &rs_file_boost);
         if (!rs_in_file)
             ImGui::PopStyleVar();
@@ -783,14 +783,14 @@ void RocketStats::RenderSettings()
             rs_file_dropshot = rs_select_all_file;
             rs_file_knockout = rs_select_all_file;
             rs_file_miscs = rs_select_all_file;
-            rs_file_certifications = rs_select_all_file;
+            rs_file_accolades = rs_select_all_file;
             rs_file_boost = rs_select_all_file;
         }
 
         rs_select_all_hide = (rs_hide_games && rs_hide_gm && rs_hide_rank && rs_hide_div &&
             rs_hide_mmr && rs_hide_mmrc && rs_hide_mmrcc &&
             rs_hide_win && rs_hide_loss && rs_hide_streak && rs_hide_winratio && rs_hide_winpercentage &&
-            rs_hide_shots && rs_hide_saves && rs_hide_goals && rs_hide_dropshot && rs_hide_knockout && rs_hide_miscs && rs_hide_certifications);
+            rs_hide_shots && rs_hide_saves && rs_hide_goals && rs_hide_dropshot && rs_hide_knockout && rs_hide_miscs && rs_hide_accolades);
         select_all = rs_select_all_hide;
         tpos = { (column_start + (column_space * 2) + ((column_width * 2) + 16)), 320 };
         ImGui::SetCursorPos(tpos);
@@ -829,7 +829,7 @@ void RocketStats::RenderSettings()
         ImGui::Checkbox(GetLang(LANG_DROPSHOT).c_str(), &rs_hide_dropshot);
         ImGui::Checkbox(GetLang(LANG_KNOCKOUT).c_str(), &rs_hide_knockout);
         ImGui::Checkbox(GetLang(LANG_MISCS).c_str(), &rs_hide_miscs);
-        ImGui::Checkbox(GetLang(LANG_CERTIFICATIONS).c_str(), &rs_hide_certifications);
+        ImGui::Checkbox(GetLang(LANG_ACCOLADES).c_str(), &rs_hide_accolades);
         ImGui::EndChild();
 
         if (select_all != rs_select_all_hide)
@@ -854,7 +854,7 @@ void RocketStats::RenderSettings()
             rs_hide_dropshot = rs_select_all_hide;
             rs_hide_knockout = rs_select_all_hide;
             rs_hide_miscs = rs_select_all_hide;
-            rs_hide_certifications = rs_select_all_hide;
+            rs_hide_accolades = rs_select_all_hide;
         }
 
         /* Variable to use to animate images

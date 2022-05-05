@@ -505,7 +505,7 @@ void RocketStats::onInit()
     cvarManager->registerCvar("rs_file_dropshot", (rs_file_dropshot ? "1" : "0"), GetLang(LANG_FILE_DROPSHOT), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("rs_file_knockout", (rs_file_knockout ? "1" : "0"), GetLang(LANG_FILE_KNOCKOUT), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("rs_file_miscs", (rs_file_miscs ? "1" : "0"), GetLang(LANG_FILE_MISCS), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("rs_file_certifications", (rs_file_certifications ? "1" : "0"), GetLang(LANG_FILE_CERTIFICATIONS), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_file_accolades", (rs_file_accolades ? "1" : "0"), GetLang(LANG_FILE_ACCOLADES), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("rs_file_boost", (rs_file_boost ? "1" : "0"), GetLang(LANG_FILE_BOOST), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
 
     cvarManager->registerCvar("rs_hide_games", (rs_hide_games ? "1" : "0"), GetLang(LANG_HIDE_GAMES), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
@@ -526,7 +526,7 @@ void RocketStats::onInit()
     cvarManager->registerCvar("rs_hide_dropshot", (rs_hide_dropshot ? "1" : "0"), GetLang(LANG_HIDE_DROPSHOT), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("rs_file_knockout", (rs_file_knockout ? "1" : "0"), GetLang(LANG_HIDE_KNOCKOUT), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("rs_hide_miscs", (rs_hide_miscs ? "1" : "0"), GetLang(LANG_HIDE_MISCS), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
-    cvarManager->registerCvar("rs_hide_certifications", (rs_hide_certifications ? "1" : "0"), GetLang(LANG_HIDE_CERTIFICATIONS), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
+    cvarManager->registerCvar("rs_hide_accolades", (rs_hide_accolades ? "1" : "0"), GetLang(LANG_HIDE_ACCOLADES), true, true, 0, true, 1, false).addOnValueChanged(std::bind(&RocketStats::RefreshFiles, this, std::placeholders::_1, std::placeholders::_2));
 
 
     gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {

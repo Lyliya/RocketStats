@@ -153,9 +153,9 @@ void RocketStats::SessionAccolades(Stats& stat, int index, bool playlists)
 #pragma region Base
 std::string RocketStats::VarAccoladesMVP(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().MVP)));
+    std::string tmp = (rs_hide_accolades ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().MVP)));
 
-    if (write && (force || (rs_in_file && rs_file_certifications)))
+    if (write && (force || (rs_in_file && rs_file_accolades)))
         WriteInFile("RocketStats_MVP.txt", tmp);
 
     return tmp;
@@ -163,9 +163,9 @@ std::string RocketStats::VarAccoladesMVP(bool write, bool force, bool default_va
 
 std::string RocketStats::VarAccoladesCarTouches(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().CarTouches)));
+    std::string tmp = (rs_hide_accolades ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().CarTouches)));
 
-    if (write && (force || (rs_in_file && rs_file_certifications)))
+    if (write && (force || (rs_in_file && rs_file_accolades)))
         WriteInFile("RocketStats_CarTouches.txt", tmp);
 
     return tmp;
@@ -173,9 +173,9 @@ std::string RocketStats::VarAccoladesCarTouches(bool write, bool force, bool def
 
 std::string RocketStats::VarAccoladesFastestGoal(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().FastestGoal)));
+    std::string tmp = (rs_hide_accolades ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().FastestGoal)));
 
-    if (write && (force || (rs_in_file && rs_file_certifications)))
+    if (write && (force || (rs_in_file && rs_file_accolades)))
         WriteInFile("RocketStats_FastestGoal.txt", tmp);
 
     return tmp;
@@ -183,9 +183,9 @@ std::string RocketStats::VarAccoladesFastestGoal(bool write, bool force, bool de
 
 std::string RocketStats::VarAccoladesSlowestGoal(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().SlowestGoal)));
+    std::string tmp = (rs_hide_accolades ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().SlowestGoal)));
 
-    if (write && (force || (rs_in_file && rs_file_certifications)))
+    if (write && (force || (rs_in_file && rs_file_accolades)))
         WriteInFile("RocketStats_SlowestGoal.txt", tmp);
 
     return tmp;
@@ -193,9 +193,9 @@ std::string RocketStats::VarAccoladesSlowestGoal(bool write, bool force, bool de
 
 std::string RocketStats::VarAccoladesBoostPickups(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().BoostPickups)));
+    std::string tmp = (rs_hide_accolades ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().BoostPickups)));
 
-    if (write && (force || (rs_in_file && rs_file_certifications)))
+    if (write && (force || (rs_in_file && rs_file_accolades)))
         WriteInFile("RocketStats_BoostPickups.txt", tmp);
 
     return tmp;
@@ -203,9 +203,9 @@ std::string RocketStats::VarAccoladesBoostPickups(bool write, bool force, bool d
 
 std::string RocketStats::VarAccoladesFurthestGoal(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().FurthestGoal)));
+    std::string tmp = (rs_hide_accolades ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().FurthestGoal)));
 
-    if (write && (force || (rs_in_file && rs_file_certifications)))
+    if (write && (force || (rs_in_file && rs_file_accolades)))
         WriteInFile("RocketStats_FurthestGoal.txt", tmp);
 
     return tmp;
@@ -213,9 +213,9 @@ std::string RocketStats::VarAccoladesFurthestGoal(bool write, bool force, bool d
 
 std::string RocketStats::VarAccoladesMostBallTouches(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().MostBallTouches)));
+    std::string tmp = (rs_hide_accolades ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().MostBallTouches)));
 
-    if (write && (force || (rs_in_file && rs_file_certifications)))
+    if (write && (force || (rs_in_file && rs_file_accolades)))
         WriteInFile("RocketStats_MostBallTouches.txt", tmp);
 
     return tmp;
@@ -223,9 +223,9 @@ std::string RocketStats::VarAccoladesMostBallTouches(bool write, bool force, boo
 
 std::string RocketStats::VarAccoladesMostBoostPickups(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().MostBoostPickups)));
+    std::string tmp = (rs_hide_accolades ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().MostBoostPickups)));
 
-    if (write && (force || (rs_in_file && rs_file_certifications)))
+    if (write && (force || (rs_in_file && rs_file_accolades)))
         WriteInFile("RocketStats_MostBoostPickups.txt", tmp);
 
     return tmp;
@@ -233,9 +233,9 @@ std::string RocketStats::VarAccoladesMostBoostPickups(bool write, bool force, bo
 
 std::string RocketStats::VarAccoladesFewestBallTouches(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().FewestBallTouches)));
+    std::string tmp = (rs_hide_accolades ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().FewestBallTouches)));
 
-    if (write && (force || (rs_in_file && rs_file_certifications)))
+    if (write && (force || (rs_in_file && rs_file_accolades)))
         WriteInFile("RocketStats_FewestBallTouches.txt", tmp);
 
     return tmp;
@@ -244,9 +244,9 @@ std::string RocketStats::VarAccoladesFewestBallTouches(bool write, bool force, b
 #pragma region BaseTeam
 std::string RocketStats::VarAccoladesTeamMVP(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TeamMVP)));
+    std::string tmp = (rs_hide_accolades ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TeamMVP)));
 
-    if (write && (force || (rs_in_file && rs_file_certifications)))
+    if (write && (force || (rs_in_file && rs_file_accolades)))
         WriteInFile("RocketStats_TeamMVP.txt", tmp);
 
     return tmp;
@@ -256,9 +256,9 @@ std::string RocketStats::VarAccoladesTeamMVP(bool write, bool force, bool defaul
 #pragma region BaseTotal
 std::string RocketStats::VarAccoladesTotalMVP(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TotalMVP)));
+    std::string tmp = (rs_hide_accolades ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TotalMVP)));
 
-    if (write && (force || (rs_in_file && rs_file_certifications)))
+    if (write && (force || (rs_in_file && rs_file_accolades)))
         WriteInFile("RocketStats_TotalMVP.txt", tmp);
 
     return tmp;
@@ -269,9 +269,9 @@ std::string RocketStats::VarAccoladesTotalMVP(bool write, bool force, bool defau
 #pragma region Match
 std::string RocketStats::VarAccoladesMVPMatch(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.MVP)));
+    std::string tmp = (rs_hide_accolades ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.MVP)));
 
-    if (write && (force || (rs_in_file && rs_file_certifications)))
+    if (write && (force || (rs_in_file && rs_file_accolades)))
         WriteInFile("RocketStats_MVPMatch.txt", tmp);
 
     return tmp;
@@ -279,9 +279,9 @@ std::string RocketStats::VarAccoladesMVPMatch(bool write, bool force, bool defau
 
 std::string RocketStats::VarAccoladesCarTouchesMatch(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.CarTouches)));
+    std::string tmp = (rs_hide_accolades ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.CarTouches)));
 
-    if (write && (force || (rs_in_file && rs_file_certifications)))
+    if (write && (force || (rs_in_file && rs_file_accolades)))
         WriteInFile("RocketStats_CarTouchesMatch.txt", tmp);
 
     return tmp;
@@ -289,9 +289,9 @@ std::string RocketStats::VarAccoladesCarTouchesMatch(bool write, bool force, boo
 
 std::string RocketStats::VarAccoladesFastestGoalMatch(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.FastestGoal)));
+    std::string tmp = (rs_hide_accolades ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.FastestGoal)));
 
-    if (write && (force || (rs_in_file && rs_file_certifications)))
+    if (write && (force || (rs_in_file && rs_file_accolades)))
         WriteInFile("RocketStats_FastestGoalMatch.txt", tmp);
 
     return tmp;
@@ -299,9 +299,9 @@ std::string RocketStats::VarAccoladesFastestGoalMatch(bool write, bool force, bo
 
 std::string RocketStats::VarAccoladesSlowestGoalMatch(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.SlowestGoal)));
+    std::string tmp = (rs_hide_accolades ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.SlowestGoal)));
 
-    if (write && (force || (rs_in_file && rs_file_certifications)))
+    if (write && (force || (rs_in_file && rs_file_accolades)))
         WriteInFile("RocketStats_SlowestGoalMatch.txt", tmp);
 
     return tmp;
@@ -309,9 +309,9 @@ std::string RocketStats::VarAccoladesSlowestGoalMatch(bool write, bool force, bo
 
 std::string RocketStats::VarAccoladesBoostPickupsMatch(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.BoostPickups)));
+    std::string tmp = (rs_hide_accolades ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.BoostPickups)));
 
-    if (write && (force || (rs_in_file && rs_file_certifications)))
+    if (write && (force || (rs_in_file && rs_file_accolades)))
         WriteInFile("RocketStats_BoostPickupsMatch.txt", tmp);
 
     return tmp;
@@ -319,9 +319,9 @@ std::string RocketStats::VarAccoladesBoostPickupsMatch(bool write, bool force, b
 
 std::string RocketStats::VarAccoladesFurthestGoalMatch(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.FurthestGoal)));
+    std::string tmp = (rs_hide_accolades ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.FurthestGoal)));
 
-    if (write && (force || (rs_in_file && rs_file_certifications)))
+    if (write && (force || (rs_in_file && rs_file_accolades)))
         WriteInFile("RocketStats_FurthestGoalMatch.txt", tmp);
 
     return tmp;
@@ -329,9 +329,9 @@ std::string RocketStats::VarAccoladesFurthestGoalMatch(bool write, bool force, b
 
 std::string RocketStats::VarAccoladesMostBallTouchesMatch(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.MostBallTouches)));
+    std::string tmp = (rs_hide_accolades ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.MostBallTouches)));
 
-    if (write && (force || (rs_in_file && rs_file_certifications)))
+    if (write && (force || (rs_in_file && rs_file_accolades)))
         WriteInFile("RocketStats_MostBallTouchesMatch.txt", tmp);
 
     return tmp;
@@ -339,9 +339,9 @@ std::string RocketStats::VarAccoladesMostBallTouchesMatch(bool write, bool force
 
 std::string RocketStats::VarAccoladesMostBoostPickupsMatch(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.MostBoostPickups)));
+    std::string tmp = (rs_hide_accolades ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.MostBoostPickups)));
 
-    if (write && (force || (rs_in_file && rs_file_certifications)))
+    if (write && (force || (rs_in_file && rs_file_accolades)))
         WriteInFile("RocketStats_MostBoostPickupsMatch.txt", tmp);
 
     return tmp;
@@ -349,9 +349,9 @@ std::string RocketStats::VarAccoladesMostBoostPickupsMatch(bool write, bool forc
 
 std::string RocketStats::VarAccoladesFewestBallTouchesMatch(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.FewestBallTouches)));
+    std::string tmp = (rs_hide_accolades ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.FewestBallTouches)));
 
-    if (write && (force || (rs_in_file && rs_file_certifications)))
+    if (write && (force || (rs_in_file && rs_file_accolades)))
         WriteInFile("RocketStats_FewestBallTouchesMatch.txt", tmp);
 
     return tmp;
@@ -360,9 +360,9 @@ std::string RocketStats::VarAccoladesFewestBallTouchesMatch(bool write, bool for
 #pragma region MatchTeam
 std::string RocketStats::VarAccoladesTeamMVPMatch(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.TeamMVP)));
+    std::string tmp = (rs_hide_accolades ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.TeamMVP)));
 
-    if (write && (force || (rs_in_file && rs_file_certifications)))
+    if (write && (force || (rs_in_file && rs_file_accolades)))
         WriteInFile("RocketStats_TeamMVPMatch.txt", tmp);
 
     return tmp;
@@ -372,9 +372,9 @@ std::string RocketStats::VarAccoladesTeamMVPMatch(bool write, bool force, bool d
 #pragma region MatchTotal
 std::string RocketStats::VarAccoladesTotalMVPMatch(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.TotalMVP)));
+    std::string tmp = (rs_hide_accolades ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.TotalMVP)));
 
-    if (write && (force || (rs_in_file && rs_file_certifications)))
+    if (write && (force || (rs_in_file && rs_file_accolades)))
         WriteInFile("RocketStats_TotalMVPMatch.txt", tmp);
 
     return tmp;
@@ -385,9 +385,9 @@ std::string RocketStats::VarAccoladesTotalMVPMatch(bool write, bool force, bool 
 #pragma region Cumul
 std::string RocketStats::VarAccoladesMVPCumul(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().MVPCumul)));
+    std::string tmp = (rs_hide_accolades ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().MVPCumul)));
 
-    if (write && (force || (rs_in_file && rs_file_certifications)))
+    if (write && (force || (rs_in_file && rs_file_accolades)))
         WriteInFile("RocketStats_MVPCumul.txt", tmp);
 
     return tmp;
@@ -395,9 +395,9 @@ std::string RocketStats::VarAccoladesMVPCumul(bool write, bool force, bool defau
 
 std::string RocketStats::VarAccoladesCarTouchesCumul(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().CarTouchesCumul)));
+    std::string tmp = (rs_hide_accolades ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().CarTouchesCumul)));
 
-    if (write && (force || (rs_in_file && rs_file_certifications)))
+    if (write && (force || (rs_in_file && rs_file_accolades)))
         WriteInFile("RocketStats_CarTouchesCumul.txt", tmp);
 
     return tmp;
@@ -405,9 +405,9 @@ std::string RocketStats::VarAccoladesCarTouchesCumul(bool write, bool force, boo
 
 std::string RocketStats::VarAccoladesFastestGoalCumul(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().FastestGoalCumul)));
+    std::string tmp = (rs_hide_accolades ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().FastestGoalCumul)));
 
-    if (write && (force || (rs_in_file && rs_file_certifications)))
+    if (write && (force || (rs_in_file && rs_file_accolades)))
         WriteInFile("RocketStats_FastestGoalCumul.txt", tmp);
 
     return tmp;
@@ -415,9 +415,9 @@ std::string RocketStats::VarAccoladesFastestGoalCumul(bool write, bool force, bo
 
 std::string RocketStats::VarAccoladesSlowestGoalCumul(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().SlowestGoalCumul)));
+    std::string tmp = (rs_hide_accolades ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().SlowestGoalCumul)));
 
-    if (write && (force || (rs_in_file && rs_file_certifications)))
+    if (write && (force || (rs_in_file && rs_file_accolades)))
         WriteInFile("RocketStats_SlowestGoalCumul.txt", tmp);
 
     return tmp;
@@ -425,9 +425,9 @@ std::string RocketStats::VarAccoladesSlowestGoalCumul(bool write, bool force, bo
 
 std::string RocketStats::VarAccoladesBoostPickupsCumul(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().BoostPickupsCumul)));
+    std::string tmp = (rs_hide_accolades ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().BoostPickupsCumul)));
 
-    if (write && (force || (rs_in_file && rs_file_certifications)))
+    if (write && (force || (rs_in_file && rs_file_accolades)))
         WriteInFile("RocketStats_BoostPickupsCumul.txt", tmp);
 
     return tmp;
@@ -435,9 +435,9 @@ std::string RocketStats::VarAccoladesBoostPickupsCumul(bool write, bool force, b
 
 std::string RocketStats::VarAccoladesFurthestGoalCumul(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().FurthestGoalCumul)));
+    std::string tmp = (rs_hide_accolades ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().FurthestGoalCumul)));
 
-    if (write && (force || (rs_in_file && rs_file_certifications)))
+    if (write && (force || (rs_in_file && rs_file_accolades)))
         WriteInFile("RocketStats_FurthestGoalCumul.txt", tmp);
 
     return tmp;
@@ -445,9 +445,9 @@ std::string RocketStats::VarAccoladesFurthestGoalCumul(bool write, bool force, b
 
 std::string RocketStats::VarAccoladesMostBallTouchesCumul(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().MostBallTouchesCumul)));
+    std::string tmp = (rs_hide_accolades ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().MostBallTouchesCumul)));
 
-    if (write && (force || (rs_in_file && rs_file_certifications)))
+    if (write && (force || (rs_in_file && rs_file_accolades)))
         WriteInFile("RocketStats_MostBallTouchesCumul.txt", tmp);
 
     return tmp;
@@ -455,9 +455,9 @@ std::string RocketStats::VarAccoladesMostBallTouchesCumul(bool write, bool force
 
 std::string RocketStats::VarAccoladesMostBoostPickupsCumul(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().MostBoostPickupsCumul)));
+    std::string tmp = (rs_hide_accolades ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().MostBoostPickupsCumul)));
 
-    if (write && (force || (rs_in_file && rs_file_certifications)))
+    if (write && (force || (rs_in_file && rs_file_accolades)))
         WriteInFile("RocketStats_MostBoostPickupsCumul.txt", tmp);
 
     return tmp;
@@ -465,9 +465,9 @@ std::string RocketStats::VarAccoladesMostBoostPickupsCumul(bool write, bool forc
 
 std::string RocketStats::VarAccoladesFewestBallTouchesCumul(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().FewestBallTouchesCumul)));
+    std::string tmp = (rs_hide_accolades ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().FewestBallTouchesCumul)));
 
-    if (write && (force || (rs_in_file && rs_file_certifications)))
+    if (write && (force || (rs_in_file && rs_file_accolades)))
         WriteInFile("RocketStats_FewestBallTouchesCumul.txt", tmp);
 
     return tmp;
@@ -476,9 +476,9 @@ std::string RocketStats::VarAccoladesFewestBallTouchesCumul(bool write, bool for
 #pragma region CumulTeam
 std::string RocketStats::VarAccoladesTeamMVPCumul(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TeamMVPCumul)));
+    std::string tmp = (rs_hide_accolades ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TeamMVPCumul)));
 
-    if (write && (force || (rs_in_file && rs_file_certifications)))
+    if (write && (force || (rs_in_file && rs_file_accolades)))
         WriteInFile("RocketStats_TeamMVPCumul.txt", tmp);
 
     return tmp;
@@ -488,9 +488,9 @@ std::string RocketStats::VarAccoladesTeamMVPCumul(bool write, bool force, bool d
 #pragma region CumulTotal
 std::string RocketStats::VarAccoladesTotalMVPCumul(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TotalMVPCumul)));
+    std::string tmp = (rs_hide_accolades ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TotalMVPCumul)));
 
-    if (write && (force || (rs_in_file && rs_file_certifications)))
+    if (write && (force || (rs_in_file && rs_file_accolades)))
         WriteInFile("RocketStats_TotalMVPCumul.txt", tmp);
 
     return tmp;

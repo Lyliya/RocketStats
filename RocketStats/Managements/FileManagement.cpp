@@ -283,8 +283,8 @@ bool RocketStats::ReadConfig()
                             rs_file_boost = config["settings"]["files"]["boost"];
                         if (config["settings"]["files"]["miscs"].is_boolean())
                             rs_file_miscs = config["settings"]["files"]["miscs"];
-                        if (config["settings"]["files"]["certifications"].is_boolean())
-                            rs_file_certifications = config["settings"]["files"]["certifications"];
+                        if (config["settings"]["files"]["accolades"].is_boolean())
+                            rs_file_accolades = config["settings"]["files"]["accolades"];
                     }
 
                     if (config["settings"]["hides"].is_object() && !config["settings"]["hides"].is_null())
@@ -337,8 +337,8 @@ bool RocketStats::ReadConfig()
                             rs_hide_knockout = config["settings"]["hides"]["knockout"];
                         if (config["settings"]["hides"]["miscs"].is_boolean())
                             rs_hide_miscs = config["settings"]["hides"]["miscs"];
-                        if (config["settings"]["hides"]["certifications"].is_boolean())
-                            rs_hide_certifications = config["settings"]["hides"]["certifications"];
+                        if (config["settings"]["hides"]["accolades"].is_boolean())
+                            rs_hide_accolades = config["settings"]["hides"]["accolades"];
 
                         cvarManager->log("Config: hides loaded");
                     }
@@ -446,7 +446,7 @@ void RocketStats::WriteConfig()
     tmp["settings"]["files"]["dropshot"] = rs_file_dropshot;
     tmp["settings"]["files"]["knockout"] = rs_file_knockout;
     tmp["settings"]["files"]["miscs"] = rs_file_miscs;
-    tmp["settings"]["files"]["certifications"] = rs_file_certifications;
+    tmp["settings"]["files"]["accolades"] = rs_file_accolades;
     tmp["settings"]["files"]["boost"] = rs_file_boost;
 
     tmp["settings"]["hides"] = json::object();
@@ -474,7 +474,7 @@ void RocketStats::WriteConfig()
     tmp["settings"]["hides"]["dropshot"] = rs_hide_dropshot;
     tmp["settings"]["hides"]["knockout"] = rs_hide_knockout;
     tmp["settings"]["hides"]["miscs"] = rs_hide_miscs;
-    tmp["settings"]["hides"]["certifications"] = rs_hide_certifications;
+    tmp["settings"]["hides"]["accolades"] = rs_hide_accolades;
 
     tmp["always"] = json::object();
     VarsWrite(always, tmp["always"]);
