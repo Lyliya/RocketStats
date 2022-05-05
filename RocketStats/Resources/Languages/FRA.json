@@ -87,7 +87,7 @@
 	"Dropshot",
 	"Knockout",
 	"Divers",
-	"Certifications",
+	"Distinctions",
 	"Boost",
 
 	"Écrire en fichier",
@@ -109,7 +109,7 @@
 	"Écrire les Dommages en dropshot en fichier",
 	"Écrire les Knockout en fichier",
 	"Écrire les Divers en fichier",
-	"Écrire les Certifications en fichier",
+	"Écrire les Distinctions en fichier",
 	"Écrire le Boost en fichier",
 
 	"Masquer la valeur",
@@ -131,5 +131,5 @@
 	"Masque les Dommages en dropshot",
 	"Masque les Knockout",
 	"Masque les Divers",
-	"Masque les Certifications"
+	"Masque les Distinctions"
 ]

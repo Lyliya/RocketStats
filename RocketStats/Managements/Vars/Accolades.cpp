@@ -1,6 +1,6 @@
 #include "../RocketStats.h"
 
-void RocketStats::ReadCertifications(Stats& stat, json& config)
+void RocketStats::ReadAccolades(Stats& stat, json& config)
 {
     if (config["MVP"].is_number_unsigned())
         stat.MVP = int(config["MVP"]);
@@ -49,7 +49,7 @@ void RocketStats::ReadCertifications(Stats& stat, json& config)
         stat.TotalMVPCumul = int(config["TotalMVPCumul"]);
 }
 
-void RocketStats::WriteCertifications(Stats& stat, json& config)
+void RocketStats::WriteAccolades(Stats& stat, json& config)
 {
     config["MVP"] = stat.MVP;
     config["CarTouches"] = stat.CarTouches;
@@ -76,49 +76,49 @@ void RocketStats::WriteCertifications(Stats& stat, json& config)
     config["TotalMVPCumul"] = stat.TotalMVPCumul;
 }
 
-void RocketStats::ReplaceCertifications(std::map<std::string, std::string>& vars)
+void RocketStats::ReplaceAccolades(std::map<std::string, std::string>& vars)
 {
     /// Base
-    vars["MVP"] = VarCertificationsMVP();
-    vars["CarTouches"] = VarCertificationsCarTouches();
-    vars["FastestGoal"] = VarCertificationsFastestGoal();
-    vars["SlowestGoal"] = VarCertificationsSlowestGoal();
-    vars["BoostPickups"] = VarCertificationsBoostPickups();
-    vars["FurthestGoal"] = VarCertificationsFurthestGoal();
-    vars["MostBallTouches"] = VarCertificationsMostBallTouches();
-    vars["MostBoostPickups"] = VarCertificationsMostBoostPickups();
-    vars["FewestBallTouches"] = VarCertificationsFewestBallTouches();
-    vars["TeamMVP"] = VarCertificationsTeamMVP();
-    vars["TotalMVP"] = VarCertificationsTotalMVP();
+    vars["MVP"] = VarAccoladesMVP();
+    vars["CarTouches"] = VarAccoladesCarTouches();
+    vars["FastestGoal"] = VarAccoladesFastestGoal();
+    vars["SlowestGoal"] = VarAccoladesSlowestGoal();
+    vars["BoostPickups"] = VarAccoladesBoostPickups();
+    vars["FurthestGoal"] = VarAccoladesFurthestGoal();
+    vars["MostBallTouches"] = VarAccoladesMostBallTouches();
+    vars["MostBoostPickups"] = VarAccoladesMostBoostPickups();
+    vars["FewestBallTouches"] = VarAccoladesFewestBallTouches();
+    vars["TeamMVP"] = VarAccoladesTeamMVP();
+    vars["TotalMVP"] = VarAccoladesTotalMVP();
 
     /// Match
-    vars["MVPMatch"] = VarCertificationsMVPMatch();
-    vars["CarTouchesMatch"] = VarCertificationsCarTouchesMatch();
-    vars["FastestGoalMatch"] = VarCertificationsFastestGoalMatch();
-    vars["SlowestGoalMatch"] = VarCertificationsSlowestGoalMatch();
-    vars["BoostPickupsMatch"] = VarCertificationsBoostPickupsMatch();
-    vars["FurthestGoalMatch"] = VarCertificationsFurthestGoalMatch();
-    vars["MostBallTouchesMatch"] = VarCertificationsMostBallTouchesMatch();
-    vars["MostBoostPickupsMatch"] = VarCertificationsMostBoostPickupsMatch();
-    vars["FewestBallTouchesMatch"] = VarCertificationsFewestBallTouchesMatch();
-    vars["TeamMVPMatch"] = VarCertificationsTeamMVPMatch();
-    vars["TotalMVPMatch"] = VarCertificationsTotalMVPMatch();
+    vars["MVPMatch"] = VarAccoladesMVPMatch();
+    vars["CarTouchesMatch"] = VarAccoladesCarTouchesMatch();
+    vars["FastestGoalMatch"] = VarAccoladesFastestGoalMatch();
+    vars["SlowestGoalMatch"] = VarAccoladesSlowestGoalMatch();
+    vars["BoostPickupsMatch"] = VarAccoladesBoostPickupsMatch();
+    vars["FurthestGoalMatch"] = VarAccoladesFurthestGoalMatch();
+    vars["MostBallTouchesMatch"] = VarAccoladesMostBallTouchesMatch();
+    vars["MostBoostPickupsMatch"] = VarAccoladesMostBoostPickupsMatch();
+    vars["FewestBallTouchesMatch"] = VarAccoladesFewestBallTouchesMatch();
+    vars["TeamMVPMatch"] = VarAccoladesTeamMVPMatch();
+    vars["TotalMVPMatch"] = VarAccoladesTotalMVPMatch();
 
     /// Cumul
-    vars["MVPCumul"] = VarCertificationsMVPCumul();
-    vars["CarTouchesCumul"] = VarCertificationsCarTouchesCumul();
-    vars["FastestGoalCumul"] = VarCertificationsFastestGoalCumul();
-    vars["SlowestGoalCumul"] = VarCertificationsSlowestGoalCumul();
-    vars["BoostPickupsCumul"] = VarCertificationsBoostPickupsCumul();
-    vars["FurthestGoalCumul"] = VarCertificationsFurthestGoalCumul();
-    vars["MostBallTouchesCumul"] = VarCertificationsMostBallTouchesCumul();
-    vars["MostBoostPickupsCumul"] = VarCertificationsMostBoostPickupsCumul();
-    vars["FewestBallTouchesCumul"] = VarCertificationsFewestBallTouchesCumul();
-    vars["TeamMVPCumul"] = VarCertificationsTeamMVPCumul();
-    vars["TotalMVPCumul"] = VarCertificationsTotalMVPCumul();
+    vars["MVPCumul"] = VarAccoladesMVPCumul();
+    vars["CarTouchesCumul"] = VarAccoladesCarTouchesCumul();
+    vars["FastestGoalCumul"] = VarAccoladesFastestGoalCumul();
+    vars["SlowestGoalCumul"] = VarAccoladesSlowestGoalCumul();
+    vars["BoostPickupsCumul"] = VarAccoladesBoostPickupsCumul();
+    vars["FurthestGoalCumul"] = VarAccoladesFurthestGoalCumul();
+    vars["MostBallTouchesCumul"] = VarAccoladesMostBallTouchesCumul();
+    vars["MostBoostPickupsCumul"] = VarAccoladesMostBoostPickupsCumul();
+    vars["FewestBallTouchesCumul"] = VarAccoladesFewestBallTouchesCumul();
+    vars["TeamMVPCumul"] = VarAccoladesTeamMVPCumul();
+    vars["TotalMVPCumul"] = VarAccoladesTotalMVPCumul();
 }
 
-void RocketStats::SessionCertifications(Stats& stat, int index, bool playlists)
+void RocketStats::SessionAccolades(Stats& stat, int index, bool playlists)
 {
     if (playlists)
     {
@@ -151,7 +151,7 @@ void RocketStats::SessionCertifications(Stats& stat, int index, bool playlists)
 }
 
 #pragma region Base
-std::string RocketStats::VarCertificationsMVP(bool write, bool force, bool default_value)
+std::string RocketStats::VarAccoladesMVP(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().MVP)));
 
@@ -161,7 +161,7 @@ std::string RocketStats::VarCertificationsMVP(bool write, bool force, bool defau
     return tmp;
 }
 
-std::string RocketStats::VarCertificationsCarTouches(bool write, bool force, bool default_value)
+std::string RocketStats::VarAccoladesCarTouches(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().CarTouches)));
 
@@ -171,7 +171,7 @@ std::string RocketStats::VarCertificationsCarTouches(bool write, bool force, boo
     return tmp;
 }
 
-std::string RocketStats::VarCertificationsFastestGoal(bool write, bool force, bool default_value)
+std::string RocketStats::VarAccoladesFastestGoal(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().FastestGoal)));
 
@@ -181,7 +181,7 @@ std::string RocketStats::VarCertificationsFastestGoal(bool write, bool force, bo
     return tmp;
 }
 
-std::string RocketStats::VarCertificationsSlowestGoal(bool write, bool force, bool default_value)
+std::string RocketStats::VarAccoladesSlowestGoal(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().SlowestGoal)));
 
@@ -191,7 +191,7 @@ std::string RocketStats::VarCertificationsSlowestGoal(bool write, bool force, bo
     return tmp;
 }
 
-std::string RocketStats::VarCertificationsBoostPickups(bool write, bool force, bool default_value)
+std::string RocketStats::VarAccoladesBoostPickups(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().BoostPickups)));
 
@@ -201,7 +201,7 @@ std::string RocketStats::VarCertificationsBoostPickups(bool write, bool force, b
     return tmp;
 }
 
-std::string RocketStats::VarCertificationsFurthestGoal(bool write, bool force, bool default_value)
+std::string RocketStats::VarAccoladesFurthestGoal(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().FurthestGoal)));
 
@@ -211,7 +211,7 @@ std::string RocketStats::VarCertificationsFurthestGoal(bool write, bool force, b
     return tmp;
 }
 
-std::string RocketStats::VarCertificationsMostBallTouches(bool write, bool force, bool default_value)
+std::string RocketStats::VarAccoladesMostBallTouches(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().MostBallTouches)));
 
@@ -221,7 +221,7 @@ std::string RocketStats::VarCertificationsMostBallTouches(bool write, bool force
     return tmp;
 }
 
-std::string RocketStats::VarCertificationsMostBoostPickups(bool write, bool force, bool default_value)
+std::string RocketStats::VarAccoladesMostBoostPickups(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().MostBoostPickups)));
 
@@ -231,7 +231,7 @@ std::string RocketStats::VarCertificationsMostBoostPickups(bool write, bool forc
     return tmp;
 }
 
-std::string RocketStats::VarCertificationsFewestBallTouches(bool write, bool force, bool default_value)
+std::string RocketStats::VarAccoladesFewestBallTouches(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().FewestBallTouches)));
 
@@ -242,7 +242,7 @@ std::string RocketStats::VarCertificationsFewestBallTouches(bool write, bool for
 }
 
 #pragma region BaseTeam
-std::string RocketStats::VarCertificationsTeamMVP(bool write, bool force, bool default_value)
+std::string RocketStats::VarAccoladesTeamMVP(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TeamMVP)));
 
@@ -254,7 +254,7 @@ std::string RocketStats::VarCertificationsTeamMVP(bool write, bool force, bool d
 #pragma endregion
 
 #pragma region BaseTotal
-std::string RocketStats::VarCertificationsTotalMVP(bool write, bool force, bool default_value)
+std::string RocketStats::VarAccoladesTotalMVP(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TotalMVP)));
 
@@ -267,7 +267,7 @@ std::string RocketStats::VarCertificationsTotalMVP(bool write, bool force, bool 
 #pragma endregion
 
 #pragma region Match
-std::string RocketStats::VarCertificationsMVPMatch(bool write, bool force, bool default_value)
+std::string RocketStats::VarAccoladesMVPMatch(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.MVP)));
 
@@ -277,7 +277,7 @@ std::string RocketStats::VarCertificationsMVPMatch(bool write, bool force, bool 
     return tmp;
 }
 
-std::string RocketStats::VarCertificationsCarTouchesMatch(bool write, bool force, bool default_value)
+std::string RocketStats::VarAccoladesCarTouchesMatch(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.CarTouches)));
 
@@ -287,7 +287,7 @@ std::string RocketStats::VarCertificationsCarTouchesMatch(bool write, bool force
     return tmp;
 }
 
-std::string RocketStats::VarCertificationsFastestGoalMatch(bool write, bool force, bool default_value)
+std::string RocketStats::VarAccoladesFastestGoalMatch(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.FastestGoal)));
 
@@ -297,7 +297,7 @@ std::string RocketStats::VarCertificationsFastestGoalMatch(bool write, bool forc
     return tmp;
 }
 
-std::string RocketStats::VarCertificationsSlowestGoalMatch(bool write, bool force, bool default_value)
+std::string RocketStats::VarAccoladesSlowestGoalMatch(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.SlowestGoal)));
 
@@ -307,7 +307,7 @@ std::string RocketStats::VarCertificationsSlowestGoalMatch(bool write, bool forc
     return tmp;
 }
 
-std::string RocketStats::VarCertificationsBoostPickupsMatch(bool write, bool force, bool default_value)
+std::string RocketStats::VarAccoladesBoostPickupsMatch(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.BoostPickups)));
 
@@ -317,7 +317,7 @@ std::string RocketStats::VarCertificationsBoostPickupsMatch(bool write, bool for
     return tmp;
 }
 
-std::string RocketStats::VarCertificationsFurthestGoalMatch(bool write, bool force, bool default_value)
+std::string RocketStats::VarAccoladesFurthestGoalMatch(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.FurthestGoal)));
 
@@ -327,7 +327,7 @@ std::string RocketStats::VarCertificationsFurthestGoalMatch(bool write, bool for
     return tmp;
 }
 
-std::string RocketStats::VarCertificationsMostBallTouchesMatch(bool write, bool force, bool default_value)
+std::string RocketStats::VarAccoladesMostBallTouchesMatch(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.MostBallTouches)));
 
@@ -337,7 +337,7 @@ std::string RocketStats::VarCertificationsMostBallTouchesMatch(bool write, bool 
     return tmp;
 }
 
-std::string RocketStats::VarCertificationsMostBoostPickupsMatch(bool write, bool force, bool default_value)
+std::string RocketStats::VarAccoladesMostBoostPickupsMatch(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.MostBoostPickups)));
 
@@ -347,7 +347,7 @@ std::string RocketStats::VarCertificationsMostBoostPickupsMatch(bool write, bool
     return tmp;
 }
 
-std::string RocketStats::VarCertificationsFewestBallTouchesMatch(bool write, bool force, bool default_value)
+std::string RocketStats::VarAccoladesFewestBallTouchesMatch(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.FewestBallTouches)));
 
@@ -358,7 +358,7 @@ std::string RocketStats::VarCertificationsFewestBallTouchesMatch(bool write, boo
 }
 
 #pragma region MatchTeam
-std::string RocketStats::VarCertificationsTeamMVPMatch(bool write, bool force, bool default_value)
+std::string RocketStats::VarAccoladesTeamMVPMatch(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.TeamMVP)));
 
@@ -370,7 +370,7 @@ std::string RocketStats::VarCertificationsTeamMVPMatch(bool write, bool force, b
 #pragma endregion
 
 #pragma region MatchTotal
-std::string RocketStats::VarCertificationsTotalMVPMatch(bool write, bool force, bool default_value)
+std::string RocketStats::VarAccoladesTotalMVPMatch(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.TotalMVP)));
 
@@ -383,7 +383,7 @@ std::string RocketStats::VarCertificationsTotalMVPMatch(bool write, bool force, 
 #pragma endregion
 
 #pragma region Cumul
-std::string RocketStats::VarCertificationsMVPCumul(bool write, bool force, bool default_value)
+std::string RocketStats::VarAccoladesMVPCumul(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().MVPCumul)));
 
@@ -393,7 +393,7 @@ std::string RocketStats::VarCertificationsMVPCumul(bool write, bool force, bool 
     return tmp;
 }
 
-std::string RocketStats::VarCertificationsCarTouchesCumul(bool write, bool force, bool default_value)
+std::string RocketStats::VarAccoladesCarTouchesCumul(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().CarTouchesCumul)));
 
@@ -403,7 +403,7 @@ std::string RocketStats::VarCertificationsCarTouchesCumul(bool write, bool force
     return tmp;
 }
 
-std::string RocketStats::VarCertificationsFastestGoalCumul(bool write, bool force, bool default_value)
+std::string RocketStats::VarAccoladesFastestGoalCumul(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().FastestGoalCumul)));
 
@@ -413,7 +413,7 @@ std::string RocketStats::VarCertificationsFastestGoalCumul(bool write, bool forc
     return tmp;
 }
 
-std::string RocketStats::VarCertificationsSlowestGoalCumul(bool write, bool force, bool default_value)
+std::string RocketStats::VarAccoladesSlowestGoalCumul(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().SlowestGoalCumul)));
 
@@ -423,7 +423,7 @@ std::string RocketStats::VarCertificationsSlowestGoalCumul(bool write, bool forc
     return tmp;
 }
 
-std::string RocketStats::VarCertificationsBoostPickupsCumul(bool write, bool force, bool default_value)
+std::string RocketStats::VarAccoladesBoostPickupsCumul(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().BoostPickupsCumul)));
 
@@ -433,7 +433,7 @@ std::string RocketStats::VarCertificationsBoostPickupsCumul(bool write, bool for
     return tmp;
 }
 
-std::string RocketStats::VarCertificationsFurthestGoalCumul(bool write, bool force, bool default_value)
+std::string RocketStats::VarAccoladesFurthestGoalCumul(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().FurthestGoalCumul)));
 
@@ -443,7 +443,7 @@ std::string RocketStats::VarCertificationsFurthestGoalCumul(bool write, bool for
     return tmp;
 }
 
-std::string RocketStats::VarCertificationsMostBallTouchesCumul(bool write, bool force, bool default_value)
+std::string RocketStats::VarAccoladesMostBallTouchesCumul(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().MostBallTouchesCumul)));
 
@@ -453,7 +453,7 @@ std::string RocketStats::VarCertificationsMostBallTouchesCumul(bool write, bool 
     return tmp;
 }
 
-std::string RocketStats::VarCertificationsMostBoostPickupsCumul(bool write, bool force, bool default_value)
+std::string RocketStats::VarAccoladesMostBoostPickupsCumul(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().MostBoostPickupsCumul)));
 
@@ -463,7 +463,7 @@ std::string RocketStats::VarCertificationsMostBoostPickupsCumul(bool write, bool
     return tmp;
 }
 
-std::string RocketStats::VarCertificationsFewestBallTouchesCumul(bool write, bool force, bool default_value)
+std::string RocketStats::VarAccoladesFewestBallTouchesCumul(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().FewestBallTouchesCumul)));
 
@@ -474,7 +474,7 @@ std::string RocketStats::VarCertificationsFewestBallTouchesCumul(bool write, boo
 }
 
 #pragma region CumulTeam
-std::string RocketStats::VarCertificationsTeamMVPCumul(bool write, bool force, bool default_value)
+std::string RocketStats::VarAccoladesTeamMVPCumul(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TeamMVPCumul)));
 
@@ -486,7 +486,7 @@ std::string RocketStats::VarCertificationsTeamMVPCumul(bool write, bool force, b
 #pragma endregion
 
 #pragma region CumulTotal
-std::string RocketStats::VarCertificationsTotalMVPCumul(bool write, bool force, bool default_value)
+std::string RocketStats::VarAccoladesTotalMVPCumul(bool write, bool force, bool default_value)
 {
     std::string tmp = (rs_hide_certifications ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TotalMVPCumul)));
 

@@ -288,7 +288,7 @@ struct Stats {
 	int TotalPlaymakerCumul = 0;
 	int TotalDemolitionsCumul = 0;
 
-	/// Certifications (what data to display on "Match" variables: 0/1, Y/N, Yes/No, ...)
+	/// Accolades (what data to display on "Match" variables: 0/1, Y/N, Yes/No, ...)
 	int MVP = 0;
 	int CarTouches = 0;
 	int FastestGoal = 0;
@@ -1142,56 +1142,56 @@ public:
 	std::string VarMiscsTotalDemolitionsCumul(bool write = false, bool force = false, bool default_value = false);
 #pragma endregion
 
-#pragma region Certifications
-	void ReadCertifications(Stats& stat, json& config);
-	void WriteCertifications(Stats& stat, json& config);
-	void ReplaceCertifications(std::map<std::string, std::string>& vars);
-	void SessionCertifications(Stats& stat, int index = 0, bool playlists = false);
-	void AllCertifications(bool force = false, bool default_value = false);
-	void AllCertificationsMVP(bool force = false, bool default_value = false);
-	void AllCertificationsCarTouches(bool force = false, bool default_value = false);
-	void AllCertificationsFastestGoal(bool force = false, bool default_value = false);
-	void AllCertificationsSlowestGoal(bool force = false, bool default_value = false);
-	void AllCertificationsBoostPickups(bool force = false, bool default_value = false);
-	void AllCertificationsFurthestGoal(bool force = false, bool default_value = false);
-	void AllCertificationsMostBallTouches(bool force = false, bool default_value = false);
-	void AllCertificationsMostBoostPickups(bool force = false, bool default_value = false);
-	void AllCertificationsFewestBallTouches(bool force = false, bool default_value = false);
+#pragma region Accolades
+	void ReadAccolades(Stats& stat, json& config);
+	void WriteAccolades(Stats& stat, json& config);
+	void ReplaceAccolades(std::map<std::string, std::string>& vars);
+	void SessionAccolades(Stats& stat, int index = 0, bool playlists = false);
+	void AllAccolades(bool force = false, bool default_value = false);
+	void AllAccoladesMVP(bool force = false, bool default_value = false);
+	void AllAccoladesCarTouches(bool force = false, bool default_value = false);
+	void AllAccoladesFastestGoal(bool force = false, bool default_value = false);
+	void AllAccoladesSlowestGoal(bool force = false, bool default_value = false);
+	void AllAccoladesBoostPickups(bool force = false, bool default_value = false);
+	void AllAccoladesFurthestGoal(bool force = false, bool default_value = false);
+	void AllAccoladesMostBallTouches(bool force = false, bool default_value = false);
+	void AllAccoladesMostBoostPickups(bool force = false, bool default_value = false);
+	void AllAccoladesFewestBallTouches(bool force = false, bool default_value = false);
 
-	std::string VarCertificationsMVP(bool write = false, bool force = false, bool default_value = false);
-	std::string VarCertificationsCarTouches(bool write = false, bool force = false, bool default_value = false);
-	std::string VarCertificationsFastestGoal(bool write = false, bool force = false, bool default_value = false);
-	std::string VarCertificationsSlowestGoal(bool write = false, bool force = false, bool default_value = false);
-	std::string VarCertificationsBoostPickups(bool write = false, bool force = false, bool default_value = false);
-	std::string VarCertificationsFurthestGoal(bool write = false, bool force = false, bool default_value = false);
-	std::string VarCertificationsMostBallTouches(bool write = false, bool force = false, bool default_value = false);
-	std::string VarCertificationsMostBoostPickups(bool write = false, bool force = false, bool default_value = false);
-	std::string VarCertificationsFewestBallTouches(bool write = false, bool force = false, bool default_value = false);
-	std::string VarCertificationsTeamMVP(bool write = false, bool force = false, bool default_value = false);
-	std::string VarCertificationsTotalMVP(bool write = false, bool force = false, bool default_value = false);
+	std::string VarAccoladesMVP(bool write = false, bool force = false, bool default_value = false);
+	std::string VarAccoladesCarTouches(bool write = false, bool force = false, bool default_value = false);
+	std::string VarAccoladesFastestGoal(bool write = false, bool force = false, bool default_value = false);
+	std::string VarAccoladesSlowestGoal(bool write = false, bool force = false, bool default_value = false);
+	std::string VarAccoladesBoostPickups(bool write = false, bool force = false, bool default_value = false);
+	std::string VarAccoladesFurthestGoal(bool write = false, bool force = false, bool default_value = false);
+	std::string VarAccoladesMostBallTouches(bool write = false, bool force = false, bool default_value = false);
+	std::string VarAccoladesMostBoostPickups(bool write = false, bool force = false, bool default_value = false);
+	std::string VarAccoladesFewestBallTouches(bool write = false, bool force = false, bool default_value = false);
+	std::string VarAccoladesTeamMVP(bool write = false, bool force = false, bool default_value = false);
+	std::string VarAccoladesTotalMVP(bool write = false, bool force = false, bool default_value = false);
 
-	std::string VarCertificationsMVPMatch(bool write = false, bool force = false, bool default_value = false);
-	std::string VarCertificationsCarTouchesMatch(bool write = false, bool force = false, bool default_value = false);
-	std::string VarCertificationsFastestGoalMatch(bool write = false, bool force = false, bool default_value = false);
-	std::string VarCertificationsSlowestGoalMatch(bool write = false, bool force = false, bool default_value = false);
-	std::string VarCertificationsBoostPickupsMatch(bool write = false, bool force = false, bool default_value = false);
-	std::string VarCertificationsFurthestGoalMatch(bool write = false, bool force = false, bool default_value = false);
-	std::string VarCertificationsMostBallTouchesMatch(bool write = false, bool force = false, bool default_value = false);
-	std::string VarCertificationsMostBoostPickupsMatch(bool write = false, bool force = false, bool default_value = false);
-	std::string VarCertificationsFewestBallTouchesMatch(bool write = false, bool force = false, bool default_value = false);
-	std::string VarCertificationsTeamMVPMatch(bool write = false, bool force = false, bool default_value = false);
-	std::string VarCertificationsTotalMVPMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarAccoladesMVPMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarAccoladesCarTouchesMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarAccoladesFastestGoalMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarAccoladesSlowestGoalMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarAccoladesBoostPickupsMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarAccoladesFurthestGoalMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarAccoladesMostBallTouchesMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarAccoladesMostBoostPickupsMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarAccoladesFewestBallTouchesMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarAccoladesTeamMVPMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarAccoladesTotalMVPMatch(bool write = false, bool force = false, bool default_value = false);
 
-	std::string VarCertificationsMVPCumul(bool write = false, bool force = false, bool default_value = false);
-	std::string VarCertificationsCarTouchesCumul(bool write = false, bool force = false, bool default_value = false);
-	std::string VarCertificationsFastestGoalCumul(bool write = false, bool force = false, bool default_value = false);
-	std::string VarCertificationsSlowestGoalCumul(bool write = false, bool force = false, bool default_value = false);
-	std::string VarCertificationsBoostPickupsCumul(bool write = false, bool force = false, bool default_value = false);
-	std::string VarCertificationsFurthestGoalCumul(bool write = false, bool force = false, bool default_value = false);
-	std::string VarCertificationsMostBallTouchesCumul(bool write = false, bool force = false, bool default_value = false);
-	std::string VarCertificationsMostBoostPickupsCumul(bool write = false, bool force = false, bool default_value = false);
-	std::string VarCertificationsFewestBallTouchesCumul(bool write = false, bool force = false, bool default_value = false);
-	std::string VarCertificationsTeamMVPCumul(bool write = false, bool force = false, bool default_value = false);
-	std::string VarCertificationsTotalMVPCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarAccoladesMVPCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarAccoladesCarTouchesCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarAccoladesFastestGoalCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarAccoladesSlowestGoalCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarAccoladesBoostPickupsCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarAccoladesFurthestGoalCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarAccoladesMostBallTouchesCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarAccoladesMostBoostPickupsCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarAccoladesFewestBallTouchesCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarAccoladesTeamMVPCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarAccoladesTotalMVPCumul(bool write = false, bool force = false, bool default_value = false);
 #pragma endregion
 };

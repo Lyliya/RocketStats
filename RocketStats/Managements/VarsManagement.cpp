@@ -9,7 +9,7 @@ void RocketStats::VarsReplace(std::map<std::string, std::string>& vars)
     ReplaceDropshot(vars);
     ReplaceKnockout(vars);
     ReplaceMiscs(vars);
-    ReplaceCertifications(vars);
+    ReplaceAccolades(vars);
 }
 
 void RocketStats::VarsSession(Stats& stat, int index, bool playlists)
@@ -21,7 +21,7 @@ void RocketStats::VarsSession(Stats& stat, int index, bool playlists)
     SessionDropshot(stat, index, playlists);
     SessionKnockout(stat, index, playlists);
     SessionMiscs(stat, index, playlists);
-    SessionCertifications(stat, index, playlists);
+    SessionAccolades(stat, index, playlists);
 }
 
 void RocketStats::VarsRead(Stats& stat, json& config)
@@ -33,7 +33,7 @@ void RocketStats::VarsRead(Stats& stat, json& config)
     ReadDropshot(stat, config);
     ReadKnockout(stat, config);
     ReadMiscs(stat, config);
-    ReadCertifications(stat, config);
+    ReadAccolades(stat, config);
 }
 
 void RocketStats::VarsWrite(Stats& stat, json& config)
@@ -45,7 +45,7 @@ void RocketStats::VarsWrite(Stats& stat, json& config)
     WriteDropshot(stat, config);
     WriteKnockout(stat, config);
     WriteMiscs(stat, config);
-    WriteCertifications(stat, config);
+    WriteAccolades(stat, config);
 }
 
 #pragma region Other
@@ -655,88 +655,88 @@ void RocketStats::AllMiscsDemolitions(bool force, bool default_value)
 }
 #pragma endregion
 
-#pragma region Certifications
-void RocketStats::AllCertifications(bool force, bool default_value)
+#pragma region Accolades
+void RocketStats::AllAccolades(bool force, bool default_value)
 {
-    AllCertificationsMVP(force, default_value);
-    AllCertificationsCarTouches(force, default_value);
-    AllCertificationsFastestGoal(force, default_value);
-    AllCertificationsSlowestGoal(force, default_value);
-    AllCertificationsBoostPickups(force, default_value);
-    AllCertificationsFurthestGoal(force, default_value);
-    AllCertificationsMostBallTouches(force, default_value);
-    AllCertificationsMostBoostPickups(force, default_value);
-    AllCertificationsFewestBallTouches(force, default_value);
+    AllAccoladesMVP(force, default_value);
+    AllAccoladesCarTouches(force, default_value);
+    AllAccoladesFastestGoal(force, default_value);
+    AllAccoladesSlowestGoal(force, default_value);
+    AllAccoladesBoostPickups(force, default_value);
+    AllAccoladesFurthestGoal(force, default_value);
+    AllAccoladesMostBallTouches(force, default_value);
+    AllAccoladesMostBoostPickups(force, default_value);
+    AllAccoladesFewestBallTouches(force, default_value);
 }
 
-void RocketStats::AllCertificationsMVP(bool force, bool default_value)
+void RocketStats::AllAccoladesMVP(bool force, bool default_value)
 {
-    VarCertificationsMVP(true, force, default_value);
-    VarCertificationsTeamMVP(true, force, default_value);
-    VarCertificationsTotalMVP(true, force, default_value);
+    VarAccoladesMVP(true, force, default_value);
+    VarAccoladesTeamMVP(true, force, default_value);
+    VarAccoladesTotalMVP(true, force, default_value);
 
-    VarCertificationsMVPMatch(true, force, default_value);
-    VarCertificationsTeamMVPMatch(true, force, default_value);
-    VarCertificationsTotalMVPMatch(true, force, default_value);
+    VarAccoladesMVPMatch(true, force, default_value);
+    VarAccoladesTeamMVPMatch(true, force, default_value);
+    VarAccoladesTotalMVPMatch(true, force, default_value);
 
-    VarCertificationsMVPCumul(true, force, default_value);
-    VarCertificationsTeamMVPCumul(true, force, default_value);
-    VarCertificationsTotalMVPCumul(true, force, default_value);
+    VarAccoladesMVPCumul(true, force, default_value);
+    VarAccoladesTeamMVPCumul(true, force, default_value);
+    VarAccoladesTotalMVPCumul(true, force, default_value);
 }
 
-void RocketStats::AllCertificationsCarTouches(bool force, bool default_value)
+void RocketStats::AllAccoladesCarTouches(bool force, bool default_value)
 {
-    VarCertificationsCarTouches(true, force, default_value);
-    VarCertificationsCarTouchesMatch(true, force, default_value);
-    VarCertificationsCarTouchesCumul(true, force, default_value);
+    VarAccoladesCarTouches(true, force, default_value);
+    VarAccoladesCarTouchesMatch(true, force, default_value);
+    VarAccoladesCarTouchesCumul(true, force, default_value);
 }
 
-void RocketStats::AllCertificationsFastestGoal(bool force, bool default_value)
+void RocketStats::AllAccoladesFastestGoal(bool force, bool default_value)
 {
-    VarCertificationsFastestGoal(true, force, default_value);
-    VarCertificationsFastestGoalMatch(true, force, default_value);
-    VarCertificationsFastestGoalCumul(true, force, default_value);
+    VarAccoladesFastestGoal(true, force, default_value);
+    VarAccoladesFastestGoalMatch(true, force, default_value);
+    VarAccoladesFastestGoalCumul(true, force, default_value);
 }
 
-void RocketStats::AllCertificationsSlowestGoal(bool force, bool default_value)
+void RocketStats::AllAccoladesSlowestGoal(bool force, bool default_value)
 {
-    VarCertificationsSlowestGoal(true, force, default_value);
-    VarCertificationsSlowestGoalMatch(true, force, default_value);
-    VarCertificationsSlowestGoalCumul(true, force, default_value);
+    VarAccoladesSlowestGoal(true, force, default_value);
+    VarAccoladesSlowestGoalMatch(true, force, default_value);
+    VarAccoladesSlowestGoalCumul(true, force, default_value);
 }
 
-void RocketStats::AllCertificationsBoostPickups(bool force, bool default_value)
+void RocketStats::AllAccoladesBoostPickups(bool force, bool default_value)
 {
-    VarCertificationsBoostPickups(true, force, default_value);
-    VarCertificationsBoostPickupsMatch(true, force, default_value);
-    VarCertificationsBoostPickupsCumul(true, force, default_value);
+    VarAccoladesBoostPickups(true, force, default_value);
+    VarAccoladesBoostPickupsMatch(true, force, default_value);
+    VarAccoladesBoostPickupsCumul(true, force, default_value);
 }
 
-void RocketStats::AllCertificationsFurthestGoal(bool force, bool default_value)
+void RocketStats::AllAccoladesFurthestGoal(bool force, bool default_value)
 {
-    VarCertificationsFurthestGoal(true, force, default_value);
-    VarCertificationsFurthestGoalMatch(true, force, default_value);
-    VarCertificationsFurthestGoalCumul(true, force, default_value);
+    VarAccoladesFurthestGoal(true, force, default_value);
+    VarAccoladesFurthestGoalMatch(true, force, default_value);
+    VarAccoladesFurthestGoalCumul(true, force, default_value);
 }
 
-void RocketStats::AllCertificationsMostBallTouches(bool force, bool default_value)
+void RocketStats::AllAccoladesMostBallTouches(bool force, bool default_value)
 {
-    VarCertificationsMostBallTouches(true, force, default_value);
-    VarCertificationsMostBallTouchesMatch(true, force, default_value);
-    VarCertificationsMostBallTouchesCumul(true, force, default_value);
+    VarAccoladesMostBallTouches(true, force, default_value);
+    VarAccoladesMostBallTouchesMatch(true, force, default_value);
+    VarAccoladesMostBallTouchesCumul(true, force, default_value);
 }
 
-void RocketStats::AllCertificationsMostBoostPickups(bool force, bool default_value)
+void RocketStats::AllAccoladesMostBoostPickups(bool force, bool default_value)
 {
-    VarCertificationsMostBoostPickups(true, force, default_value);
-    VarCertificationsMostBoostPickupsMatch(true, force, default_value);
-    VarCertificationsMostBoostPickupsCumul(true, force, default_value);
+    VarAccoladesMostBoostPickups(true, force, default_value);
+    VarAccoladesMostBoostPickupsMatch(true, force, default_value);
+    VarAccoladesMostBoostPickupsCumul(true, force, default_value);
 }
 
-void RocketStats::AllCertificationsFewestBallTouches(bool force, bool default_value)
+void RocketStats::AllAccoladesFewestBallTouches(bool force, bool default_value)
 {
-    VarCertificationsFewestBallTouches(true, force, default_value);
-    VarCertificationsFewestBallTouchesMatch(true, force, default_value);
-    VarCertificationsFewestBallTouchesCumul(true, force, default_value);
+    VarAccoladesFewestBallTouches(true, force, default_value);
+    VarAccoladesFewestBallTouchesMatch(true, force, default_value);
+    VarAccoladesFewestBallTouchesCumul(true, force, default_value);
 }
 #pragma endregion

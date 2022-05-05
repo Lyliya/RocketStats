@@ -1242,7 +1242,7 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
             ++(iam_receiver ? always_gm[it->first].MVPCumul : always_gm[it->first].TeamMVPCumul);
         }
 
-        AllCertificationsMVP(true);
+        AllAccoladesMVP(true);
     }
     else
     {

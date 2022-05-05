@@ -136,7 +136,7 @@ void RocketStats::UpdateFiles(bool force)
     AllDropshot(force);
     AllKnockout(force);
     AllMiscs(force);
-    AllCertifications(force);
+    AllAccolades(force);
 }
 
 void RocketStats::ResetFiles()
@@ -151,7 +151,7 @@ void RocketStats::ResetFiles()
     AllDropshot(true, true);
     AllKnockout(true, true);
     AllMiscs(true, true);
-    AllCertifications(true, true);
+    AllAccolades(true, true);
 }
 
 bool RocketStats::ReadConfig()

@@ -112,7 +112,7 @@
     <ClCompile Include="Managements\VarsManagement.cpp">
       <Filter>Sources\Managements</Filter>
     </ClCompile>
-    <ClCompile Include="Managements\Vars\Certifications.cpp">
+    <ClCompile Include="Managements\Vars\Accolades.cpp">
       <Filter>Sources\Managements\Vars</Filter>
     </ClCompile>
     <ClCompile Include="Managements\Vars\Dropshot.cpp">
