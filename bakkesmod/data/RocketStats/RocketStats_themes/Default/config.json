@@ -58,6 +58,7 @@
 			"name":			"mmrchange",
 			"type":			"text",
 			"value":		"MMRChange : {{MMRCumulChange}}",
+			"chameleon":	"MMRCumulChange",
 			"sign":			"MMRCumulChange",
 			"x":			10,
 			"y":			"(3 * 20px) + 10px",
