@@ -316,13 +316,189 @@ void RocketStats::onStatEvent(ServerWrapper caller, void* params)
 
         AllKnockoutPlayerGrabbed(true);
     }
+    else if (name == "CarTouches")
+    {
+        cvarManager->log(" --> " + name);
+
+        ++always.CarTouches;
+        ++current.stats.CarTouches;
+        ++session.CarTouches;
+        ++stats[current.playlist].CarTouches;
+        ++always_gm[current.playlist].CarTouches;
+
+        ++always.CarTouchesCumul;
+        ++current.stats.CarTouchesCumul;
+        ++session.CarTouchesCumul;
+
+        for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
+        {
+            ++stats[it->first].CarTouchesCumul;
+            ++always_gm[it->first].CarTouchesCumul;
+        }
+
+        AllAccoladesCarTouches(true);
+    }
+    else if (name == "FastestGoal")
+    {
+        cvarManager->log(" --> " + name);
+
+        ++always.FastestGoal;
+        ++current.stats.FastestGoal;
+        ++session.FastestGoal;
+        ++stats[current.playlist].FastestGoal;
+        ++always_gm[current.playlist].FastestGoal;
+
+        ++always.FastestGoalCumul;
+        ++current.stats.FastestGoalCumul;
+        ++session.FastestGoalCumul;
+
+        for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
+        {
+            ++stats[it->first].FastestGoalCumul;
+            ++always_gm[it->first].FastestGoalCumul;
+        }
+
+        AllAccoladesFastestGoal(true);
+    }
+    else if (name == "SlowestGoal")
+    {
+        cvarManager->log(" --> " + name);
+
+        ++always.SlowestGoal;
+        ++current.stats.SlowestGoal;
+        ++session.SlowestGoal;
+        ++stats[current.playlist].SlowestGoal;
+        ++always_gm[current.playlist].SlowestGoal;
+
+        ++always.SlowestGoalCumul;
+        ++current.stats.SlowestGoalCumul;
+        ++session.SlowestGoalCumul;
+
+        for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
+        {
+            ++stats[it->first].SlowestGoalCumul;
+            ++always_gm[it->first].SlowestGoalCumul;
+        }
+
+        AllAccoladesSlowestGoal(true);
+    }
+    else if (name == "BoostPickups")
+    {
+        cvarManager->log(" --> " + name);
+
+        ++always.BoostPickups;
+        ++current.stats.BoostPickups;
+        ++session.BoostPickups;
+        ++stats[current.playlist].BoostPickups;
+        ++always_gm[current.playlist].BoostPickups;
+
+        ++always.BoostPickupsCumul;
+        ++current.stats.BoostPickupsCumul;
+        ++session.BoostPickupsCumul;
+
+        for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
+        {
+            ++stats[it->first].BoostPickupsCumul;
+            ++always_gm[it->first].BoostPickupsCumul;
+        }
+
+        AllAccoladesBoostPickups(true);
+    }
+    else if (name == "FurthestGoal")
+    {
+        cvarManager->log(" --> " + name);
+
+        ++always.FurthestGoal;
+        ++current.stats.FurthestGoal;
+        ++session.FurthestGoal;
+        ++stats[current.playlist].FurthestGoal;
+        ++always_gm[current.playlist].FurthestGoal;
+
+        ++always.FurthestGoalCumul;
+        ++current.stats.FurthestGoalCumul;
+        ++session.FurthestGoalCumul;
+
+        for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
+        {
+            ++stats[it->first].FurthestGoalCumul;
+            ++always_gm[it->first].FurthestGoalCumul;
+        }
+
+        AllAccoladesFurthestGoal(true);
+    }
+    else if (name == "MostBallTouches")
+    {
+        cvarManager->log(" --> " + name);
+
+        ++always.MostBallTouches;
+        ++current.stats.MostBallTouches;
+        ++session.MostBallTouches;
+        ++stats[current.playlist].MostBallTouches;
+        ++always_gm[current.playlist].MostBallTouches;
+
+        ++always.MostBallTouchesCumul;
+        ++current.stats.MostBallTouchesCumul;
+        ++session.MostBallTouchesCumul;
+
+        for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
+        {
+            ++stats[it->first].MostBallTouchesCumul;
+            ++always_gm[it->first].MostBallTouchesCumul;
+        }
+
+        AllAccoladesMostBallTouches(true);
+    }
+    else if (name == "MostBoostPickups")
+    {
+        cvarManager->log(" --> " + name);
+
+        ++always.MostBoostPickups;
+        ++current.stats.MostBoostPickups;
+        ++session.MostBoostPickups;
+        ++stats[current.playlist].MostBoostPickups;
+        ++always_gm[current.playlist].MostBoostPickups;
+
+        ++always.MostBoostPickupsCumul;
+        ++current.stats.MostBoostPickupsCumul;
+        ++session.MostBoostPickupsCumul;
+
+        for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
+        {
+            ++stats[it->first].MostBoostPickupsCumul;
+            ++always_gm[it->first].MostBoostPickupsCumul;
+        }
+
+        AllAccoladesMostBoostPickups(true);
+    }
+    else if (name == "FewestBallTouches")
+    {
+        cvarManager->log(" --> " + name);
+
+        ++always.FewestBallTouches;
+        ++current.stats.FewestBallTouches;
+        ++session.FewestBallTouches;
+        ++stats[current.playlist].FewestBallTouches;
+        ++always_gm[current.playlist].FewestBallTouches;
+
+        ++always.FewestBallTouchesCumul;
+        ++current.stats.FewestBallTouchesCumul;
+        ++session.FewestBallTouchesCumul;
+
+        for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
+        {
+            ++stats[it->first].FewestBallTouchesCumul;
+            ++always_gm[it->first].FewestBallTouchesCumul;
+        }
+
+        AllAccoladesFewestBallTouches(true);
+    }
     else
     {
-        if (name == "Demolish" || name == "Shot" || name == "Goal" || name == "LongGoal" || name == "HatTrick" || name == "BackwardsGoal" || name == "HoopsSwishGoal" || name == "BreakoutDamage" || name == "BreakoutDamageLarge" || name == "OvertimeGoal" || name == "Playmaker" || name == "AerialGoal" || name == "Assist" || name == "Save" || name == "EpicSave" || name == "Savior" || name == "MVP" || name == "BicycleHit" || name == "TurtleGoal")
+        if (name == "Win" || name == "Loss" || name == "TimePlayed" || name == "BicycleHit" || name == "Shot" || name == "Assist" || name == "Save" || name == "EpicSave" || name == "Goal" || name == "AerialGoal" || name == "BackwardsGoal" || name == "BicycleGoal" || name == "LongGoal" || name == "TurtleGoal" || name == "OvertimeGoal" || name == "HoopsSwishGoal" || name == "PoolShot" || name == "FirstTouch" || name == "Savior" || name == "LowFive" || name == "HatTrick" || name == "HighFive" || name == "Playmaker" || name == "Demolish" || name == "BreakoutDamage" || name == "BreakoutDamageLarge" || name == "KO_Knockout" || name == "KO_KnockoutAssist" || name == "KO_DoubleKO" || name == "KO_HeavyHit" || name == "KO_TripleKO" || name == "KO_HeavyBlock" || name == "KO_AerialHeavyHit" || name == "KO_AerialLightHit" || name == "MVP")
             return;
 
         refresh = false;
-        cvarManager->log("onStatEvent e:" + name + "=" + std::to_string(event.GetPoints()));
+        cvarManager->log("onStatEvent " + name + "[" + std::to_string(event.GetPoints()) + "]");
     }
 
     if (refresh)
@@ -1282,6 +1458,9 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
         }
         else
         {
+            if (name == "Win" || name == "Loss")
+                return;
+
             refresh = false;
             cvarManager->log("onStatTickerMessage " + name + "[" + std::to_string(event.GetPoints()) + "] receiver:" + std::string(iam_receiver ? "me" : (team_receiver ? "team" : "no")) + " victim:" + std::string(iam_victim ? "me" : (team_victim ? "team" : "no")));
         }
