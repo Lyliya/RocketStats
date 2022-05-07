@@ -78,6 +78,7 @@ xcopy "$(SolutionDir)bakkesmod" "$(BAKKESMOD)" /E /Y</Command>
     <ClCompile Include="Managements\GameManagement.cpp" />
     <ClCompile Include="Managements\LangManagement.cpp" />
     <ClCompile Include="Managements\OverlayManagement.cpp" />
+    <ClCompile Include="Managements\SocketManagement.cpp" />
     <ClCompile Include="Managements\StatsManagement.cpp" />
     <ClCompile Include="Managements\VarsManagement.cpp" />
     <ClCompile Include="Managements\Vars\Accolades.cpp" />

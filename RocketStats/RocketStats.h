@@ -9,9 +9,13 @@
 #include <fpstimer.hpp>
 #include <resource.hpp>
 #include <imgui/imgui_rotate.h>
+#include <websocketpp/server.hpp>
+#include <websocketpp/config/asio_no_tls.hpp>
 #include "bakkesmod/wrappers/GuiManagerWrapper.h"
 
 #include <map>
+#include <set>
+#include <thread>
 #include <vector>
 #include <fstream>
 #include <windows.h>
@@ -28,6 +32,13 @@
 using json = nlohmann::json;
 
 namespace fs = std::filesystem;
+
+typedef websocketpp::server<websocketpp::config::asio> server;
+
+using websocketpp::connection_hdl;
+using websocketpp::lib::placeholders::_1;
+using websocketpp::lib::placeholders::_2;
+using websocketpp::lib::bind;
 
 enum ToggleFlags {
 	ToggleFlags_Toggle,
@@ -367,6 +378,21 @@ private:
 	std::shared_ptr<ImageWrapper> rs_welcome;
 	ImDrawList* rs_drawlist = IM_NEW(ImDrawList(NULL));
 
+	// WebServer
+	typedef std::set<connection_hdl, std::owner_less<connection_hdl>> con_list;
+	void SocketServer();
+	void SocketOpen(connection_hdl hdl);
+	void SocketClose(connection_hdl hdl);
+	void SocketMessage(connection_hdl hdl, server::message_ptr msg);
+	void SocketSend(std::string name, json data, std::string type = "");
+	void SocketBroadcast(json data);
+
+	std::thread server_thread;
+	server ws_server;
+
+	server m_server;
+	con_list m_connections;
+
 	// Time
 	tm local_time;
 	time_t current_time;
@@ -428,6 +454,7 @@ private:
 		int division_number = 0;
 		int preview_rank_number = 0;
 		int preview_division_number = 0;
+		int boost_amount = -1;
 
 		Stats stats = {};
 	} t_current;
@@ -689,6 +716,7 @@ public:
 
 	// BoostManagement
 	void OnBoostStart(std::string eventName);
+	void OnBoostChanged(std::string eventName);
 	void OnBoostEnd(std::string eventName);
 	int GetBoostAmount();
 	//void StopBoost();

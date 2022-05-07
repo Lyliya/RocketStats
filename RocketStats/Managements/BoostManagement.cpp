@@ -18,7 +18,18 @@ void RocketStats::OnBoostStart(std::string eventName)
             is_boosting = true;
             //SetRefresh(RefreshFlags_Refresh);
             VarBoost(true, false, false, true);
+            SocketSend("Boost", true);
         }
+    }
+}
+
+void RocketStats::OnBoostChanged(std::string eventName)
+{
+    int boost_amount = GetBoostAmount();
+    if (boost_amount != current.boost_amount)
+    {
+        current.boost_amount = boost_amount;
+        SocketSend("Boost", boost_amount);
     }
 }
 
@@ -40,6 +51,7 @@ void RocketStats::OnBoostEnd(std::string eventName)
             is_boosting = false;
             //SetRefresh(RefreshFlags_Refresh);
             VarBoost(true, false, false, false);
+            SocketSend("Boost", false);
         }
     }
 }

@@ -2,6 +2,10 @@
  *   Developped by @Lyliya, @NuSa_yt, @Arubinu42 & @Larsluph
  * =========================================================== */
 
+#define _WINSOCKAPI_ // stops windows.h including winsock.h
+#define ASIO_STANDALONE
+#define _WEBSOCKETPP_CPP11_TYPE_TRAITS_
+
 #include "RocketStats.h"
 
 BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "4.0.12", PERMISSION_ALL)
@@ -354,6 +358,12 @@ void RocketStats::onLoad()
     is_in_menu = (!gameWrapper->IsInGame() && !gameWrapper->IsInOnlineGame() && !gameWrapper->IsInFreeplay());
 
     gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
+        // Here, thread WebSocket.run()
+        // SocketServer();
+        server_thread = std::thread(std::bind(&RocketStats::SocketServer, this));
+        server_thread.detach();
+
+        // Checks if the configuration file exists
         if (!ExistsPath("data/rocketstats.json", true))
         {
             if (ExistsPath("RocketStats", true))
@@ -412,6 +422,7 @@ void RocketStats::onInit()
     gameWrapper->HookEvent("Function GameEvent_TA.Countdown.BeginState", std::bind(&RocketStats::GameStart, this, std::placeholders::_1));
     gameWrapper->HookEvent("Function TAGame.GameEvent_Soccar_TA.EventMatchEnded", std::bind(&RocketStats::GameEnd, this, std::placeholders::_1));
     gameWrapper->HookEvent("Function CarComponent_Boost_TA.Active.BeginState", std::bind(&RocketStats::OnBoostStart, this, std::placeholders::_1));
+    gameWrapper->HookEvent("Function TAGame.CarComponent_Boost_TA.EventBoostAmountChanged", std::bind(&RocketStats::OnBoostChanged, this, std::placeholders::_1));
     gameWrapper->HookEvent("Function CarComponent_Boost_TA.Active.EndState", std::bind(&RocketStats::OnBoostEnd, this, std::placeholders::_1));
     gameWrapper->HookEvent("Function TAGame.GameEvent_TA.Destroyed", std::bind(&RocketStats::GameDestroyed, this, std::placeholders::_1));
     gameWrapper->HookEvent("Function TAGame.GameEvent_Soccar_TA.TriggerGoalScoreEvent", std::bind(&RocketStats::onGoalScore, this, std::placeholders::_1));
@@ -544,6 +555,15 @@ void RocketStats::onInit()
 
 void RocketStats::onUnload()
 {
+    m_server.stop_listening();
+    SocketSend("State", "Disconnected");
+    for (auto& con : m_connections)
+        m_server.close(con, websocketpp::close::status::normal, "close");
+    //m_server.stop();
+
+    if (server_thread.joinable())
+        server_thread.join();
+
     WriteConfig(); // Save settings (if not already done)
     TogglePlugin("onUnload", ToggleFlags_Hide); // Hide the plugin before unloading it
 }

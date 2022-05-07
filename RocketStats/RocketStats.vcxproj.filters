@@ -136,6 +136,9 @@
     <ClCompile Include="Managements\Vars\Shots.cpp">
       <Filter>Sources\Managements\Vars</Filter>
     </ClCompile>
+    <ClCompile Include="Managements\SocketManagement.cpp">
+      <Filter>Sources\Managements</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\Resource.rc">

@@ -22,14 +22,18 @@ bool RocketStats::isPrimaryPlayer(PriWrapper PRI)
 
 void RocketStats::onStatEvent(ServerWrapper caller, void* params)
 {
-    if (!is_online_game)
-        return;
-
     StatEventParams* pstats = (StatEventParams*)params;
     StatEventWrapper event = StatEventWrapper(pstats->StatEvent);
 
-    bool refresh = true;
     std::string name = event.GetEventName();
+    SocketSend(name, {
+        { "points", event.GetPoints() }
+    }, "StatEvent");
+
+    if (!is_online_game)
+        return;
+
+    bool refresh = true;
     if (name == "Clear")
     {
         cvarManager->log(" --> " + name);
@@ -507,9 +511,6 @@ void RocketStats::onStatEvent(ServerWrapper caller, void* params)
 
 void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
 {
-    if (!is_online_game)
-        return;
-
     StatTickerParams* pstats = (StatTickerParams*)params;
 
     CarWrapper me = gameWrapper->GetLocalCar();
@@ -517,14 +518,25 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     PriWrapper victim = PriWrapper(pstats->Victim);
     StatEventWrapper event = StatEventWrapper(pstats->StatEvent);
 
+    std::string name = event.GetEventName();
     bool iam_receiver = (!receiver.IsNull() && isPrimaryPlayer(receiver));
     bool iam_victim = (!victim.IsNull() && isPrimaryPlayer(victim));
     bool team_receiver = (!me.IsNull() && !receiver.IsNull() && me.GetTeamNum2() == receiver.GetTeamNum2());
     bool team_victim = (!me.IsNull() && !victim.IsNull() && me.GetTeamNum2() == victim.GetTeamNum2());
 
+    if (name == "Shot")
+        name = "ShotOnGoal";
+
+    SocketSend(name, {
+        { "points", event.GetPoints() },
+        { "receiver", (iam_receiver ? "me" : (team_receiver ? "team" : "no")) },
+        { "victim", (iam_victim ? "me" : (team_victim ? "team" : "no")) }
+    }, "TickerMessage");
+
+    if (!is_online_game)
+        return;
 
     bool refresh = true;
-    std::string name = event.GetEventName();
     if (!iam_receiver && !team_receiver && !iam_victim && !team_victim) // Opponent statistics
     {
         refresh = false;
@@ -562,7 +574,7 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
 
             AllShotsBicycleHit(true);
         }
-        else if (name == "Shot")
+        else if (name == "ShotOnGoal")
         {
             cvarManager->log(" --> " + name + " receiver:" + std::string(iam_receiver ? "me" : (team_receiver ? "team" : "no")) + " victim:" + std::string(iam_victim ? "me" : (team_victim ? "team" : "no")));
 

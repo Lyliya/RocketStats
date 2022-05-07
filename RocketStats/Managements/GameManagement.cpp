@@ -41,6 +41,10 @@ void RocketStats::GameStart(std::string eventName)
     WriteConfig();
     UpdateFiles();
 
+    json tstats = json::object();
+    VarsWrite(current.stats, tstats);
+    SocketSend("GameState", tstats, "GameStart");
+
     cvarManager->log("===== !GameStart =====");
 }
 
@@ -120,6 +124,10 @@ void RocketStats::GameEnd(std::string eventName)
         WriteConfig();
         UpdateFiles();
 
+        json tstats = json::object();
+        VarsWrite(current.stats, tstats);
+        SocketSend("GameState", tstats, "GameEnd");
+
         // Reset myTeamNum security
         my_team_num = -1;
 
@@ -169,6 +177,10 @@ void RocketStats::GameDestroyed(std::string eventName)
     is_game_ended = true;
     is_game_started = false;
     UpdateFiles();
+
+    json tstats = json::object();
+    VarsWrite(current.stats, tstats);
+    SocketSend("GameState", tstats, "GameDestroyed");
 
     SetRefresh(RefreshFlags_Refresh);
     cvarManager->log("===== !GameDestroyed =====");
