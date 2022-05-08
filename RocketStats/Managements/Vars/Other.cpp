@@ -14,13 +14,19 @@ void RocketStats::ReadOther(Stats& stat, json& config)
         stat.streak = int(config["Streak"]);
 }
 
-void RocketStats::WriteOther(Stats& stat, json& config)
+void RocketStats::WriteOther(Stats& stat, json& config, bool more)
 {
     config["Games"] = stat.games;
     config["MMRCumulChange"] = stat.MMRCumulChange;
     config["Win"] = stat.win;
     config["Loss"] = stat.loss;
     config["Streak"] = stat.streak;
+
+    if (more)
+    {
+        config["MMR"] = stat.myMMR;
+        config["MMRChange"] = stat.MMRChange;
+    }
 }
 
 void RocketStats::ReplaceOther(std::map<std::string, std::string>& vars)

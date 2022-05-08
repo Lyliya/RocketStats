@@ -760,13 +760,13 @@ public:
 
 	// VarManagement
 	void VarsRead(Stats& stat, json& config);
-	void VarsWrite(Stats& stat, json& config);
+	void VarsWrite(Stats& stat, json& config, bool more = false);
 	void VarsReplace(std::map<std::string, std::string>& vars);
 	void VarsSession(Stats& stat, int index = 0, bool playlists = false);
 
 #pragma region Other
 	void ReadOther(Stats& stat, json& config);
-	void WriteOther(Stats& stat, json& config);
+	void WriteOther(Stats& stat, json& config, bool more = false);
 	void ReplaceOther(std::map<std::string, std::string>& vars);
 	void SessionOther(Stats& stat, int index = 0, bool playlists = false);
 	void AllOther(bool force = false, bool default_value = false);
@@ -794,7 +794,7 @@ public:
 
 #pragma region Shots
 	void ReadShots(Stats& stat, json& config);
-	void WriteShots(Stats& stat, json& config);
+	void WriteShots(Stats& stat, json& config, bool more = false);
 	void ReplaceShots(std::map<std::string, std::string>& vars);
 	void SessionShots(Stats& stat, int index = 0, bool playlists = false);
 	void AllShots(bool force = false, bool default_value = false);
@@ -847,7 +847,7 @@ public:
 
 #pragma region Saves
 	void ReadSaves(Stats& stat, json& config);
-	void WriteSaves(Stats& stat, json& config);
+	void WriteSaves(Stats& stat, json& config, bool more = false);
 	void ReplaceSaves(std::map<std::string, std::string>& vars);
 	void SessionSaves(Stats& stat, int index = 0, bool playlists = false);
 	void AllSaves(bool force = false, bool default_value = false);
@@ -878,7 +878,7 @@ public:
 
 #pragma region Goals
 	void ReadGoals(Stats& stat, json& config);
-	void WriteGoals(Stats& stat, json& config);
+	void WriteGoals(Stats& stat, json& config, bool more = false);
 	void ReplaceGoals(std::map<std::string, std::string>& vars);
 	void SessionGoals(Stats& stat, int index = 0, bool playlists = false);
 	void AllGoals(bool force = false, bool default_value = false);
@@ -983,7 +983,7 @@ public:
 
 #pragma region Dropshot
 	void ReadDropshot(Stats& stat, json& config);
-	void WriteDropshot(Stats& stat, json& config);
+	void WriteDropshot(Stats& stat, json& config, bool more = false);
 	void ReplaceDropshot(std::map<std::string, std::string>& vars);
 	void SessionDropshot(Stats& stat, int index = 0, bool playlists = false);
 	void AllDropshot(bool force = false, bool default_value = false);
@@ -1014,7 +1014,7 @@ public:
 
 #pragma region Knockout
 	void ReadKnockout(Stats& stat, json& config);
-	void WriteKnockout(Stats& stat, json& config);
+	void WriteKnockout(Stats& stat, json& config, bool more = false);
 	void ReplaceKnockout(std::map<std::string, std::string>& vars);
 	void SessionKnockout(Stats& stat, int index = 0, bool playlists = false);
 	void AllKnockout(bool force = false, bool default_value = false);
@@ -1097,7 +1097,7 @@ public:
 
 #pragma region Miscs
 	void ReadMiscs(Stats& stat, json& config);
-	void WriteMiscs(Stats& stat, json& config);
+	void WriteMiscs(Stats& stat, json& config, bool more = false);
 	void ReplaceMiscs(std::map<std::string, std::string>& vars);
 	void SessionMiscs(Stats& stat, int index = 0, bool playlists = false);
 	void AllMiscs(bool force = false, bool default_value = false);
@@ -1182,7 +1182,7 @@ public:
 
 #pragma region Accolades
 	void ReadAccolades(Stats& stat, json& config);
-	void WriteAccolades(Stats& stat, json& config);
+	void WriteAccolades(Stats& stat, json& config, bool more = false);
 	void ReplaceAccolades(std::map<std::string, std::string>& vars);
 	void SessionAccolades(Stats& stat, int index = 0, bool playlists = false);
 	void AllAccolades(bool force = false, bool default_value = false);

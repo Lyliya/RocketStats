@@ -77,7 +77,7 @@ void RocketStats::ReadKnockout(Stats& stat, json& config)
         stat.KnockoutAerialLightHitCumul = int(config["KnockoutAerialLightHitCumul"]);
 }
 
-void RocketStats::WriteKnockout(Stats& stat, json& config)
+void RocketStats::WriteKnockout(Stats& stat, json& config, bool more)
 {
     config["KnockoutKO"] = stat.KnockoutKO;
     config["KnockoutDeath"] = stat.KnockoutDeath;

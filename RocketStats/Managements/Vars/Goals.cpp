@@ -117,7 +117,7 @@ void RocketStats::ReadGoals(Stats& stat, json& config)
         stat.TotalHoopsSwishGoalCumul = int(config["TotalHoopsSwishGoalCumul"]);
 }
 
-void RocketStats::WriteGoals(Stats& stat, json& config)
+void RocketStats::WriteGoals(Stats& stat, json& config, bool more)
 {
     config["Goal"] = stat.Goal;
     config["OwnGoal"] = stat.OwnGoal;

@@ -29,7 +29,7 @@ void RocketStats::ReadDropshot(Stats& stat, json& config)
         stat.TotalBreakoutDamageLargeCumul = int(config["TotalBreakoutDamageLargeCumul"]);
 }
 
-void RocketStats::WriteDropshot(Stats& stat, json& config)
+void RocketStats::WriteDropshot(Stats& stat, json& config, bool more)
 {
     config["BreakoutDamage"] = stat.BreakoutDamage;
     config["BreakoutDamageLarge"] = stat.BreakoutDamageLarge;

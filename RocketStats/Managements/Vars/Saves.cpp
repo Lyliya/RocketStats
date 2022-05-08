@@ -29,7 +29,7 @@ void RocketStats::ReadSaves(Stats& stat, json& config)
         stat.TotalEpicSaveCumul = int(config["TotalEpicSaveCumul"]);
 }
 
-void RocketStats::WriteSaves(Stats& stat, json& config)
+void RocketStats::WriteSaves(Stats& stat, json& config, bool more)
 {
     config["Save"] = stat.Save;
     config["EpicSave"] = stat.EpicSave;

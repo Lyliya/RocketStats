@@ -93,7 +93,7 @@ void RocketStats::ReadMiscs(Stats& stat, json& config)
         stat.TotalDemolitionsCumul = int(config["TotalDemolitionsCumul"]);
 }
 
-void RocketStats::WriteMiscs(Stats& stat, json& config)
+void RocketStats::WriteMiscs(Stats& stat, json& config, bool more)
 {
     config["Death"] = stat.Death;
     config["Savior"] = stat.Savior;

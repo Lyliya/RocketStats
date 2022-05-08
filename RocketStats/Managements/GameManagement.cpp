@@ -183,14 +183,16 @@ json RocketStats::GetGameState()
     data["Ranked"] = current.ranked;
     data["Playlist"] = GetPlaylistName(current.playlist);
 
+    Stats stat = GetStats();
     data["Stats"] = json::object();
     data["Stats"]["Rank"] = (rs_preview_rank ? current.preview_rank : current.rank);
     data["Stats"]["Div"] = (rs_preview_rank ? current.preview_division : current.division);
+    data["Stats"]["MMR"] = stat.myMMR;
+    data["Stats"]["MMRChange"] = stat.myMMR;
     data["Stats"]["ScorePlayer"] = current.score_player;
     data["Stats"]["ScoreOpposite"] = current.score_opposite;
 
-    Stats tstats = GetStats();
-    VarsWrite(tstats, data["Stats"]);
+    VarsWrite(stat, data["Stats"], true);
 
     return data;
 }

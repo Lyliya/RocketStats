@@ -36,16 +36,16 @@ void RocketStats::VarsRead(Stats& stat, json& config)
     ReadAccolades(stat, config);
 }
 
-void RocketStats::VarsWrite(Stats& stat, json& config)
+void RocketStats::VarsWrite(Stats& stat, json& config, bool more)
 {
-    WriteOther(stat, config);
-    WriteShots(stat, config);
-    WriteSaves(stat, config);
-    WriteGoals(stat, config);
-    WriteDropshot(stat, config);
-    WriteKnockout(stat, config);
-    WriteMiscs(stat, config);
-    WriteAccolades(stat, config);
+    WriteOther(stat, config, more);
+    WriteShots(stat, config, more);
+    WriteSaves(stat, config, more);
+    WriteGoals(stat, config, more);
+    WriteDropshot(stat, config, more);
+    WriteKnockout(stat, config, more);
+    WriteMiscs(stat, config, more);
+    WriteAccolades(stat, config, more);
 }
 
 #pragma region Other

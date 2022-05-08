@@ -49,7 +49,7 @@ void RocketStats::ReadAccolades(Stats& stat, json& config)
         stat.TotalMVPCumul = int(config["TotalMVPCumul"]);
 }
 
-void RocketStats::WriteAccolades(Stats& stat, json& config)
+void RocketStats::WriteAccolades(Stats& stat, json& config, bool more)
 {
     config["MVP"] = stat.MVP;
     config["CarTouches"] = stat.CarTouches;

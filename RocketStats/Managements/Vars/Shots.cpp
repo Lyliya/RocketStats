@@ -53,7 +53,7 @@ void RocketStats::ReadShots(Stats& stat, json& config)
         stat.TotalShotOnGoalCumul = int(config["TotalShotOnGoalCumul"]);
 }
 
-void RocketStats::WriteShots(Stats& stat, json& config)
+void RocketStats::WriteShots(Stats& stat, json& config, bool more)
 {
     config["Clear"] = stat.Clear;
     config["Assist"] = stat.Assist;
