@@ -5,3 +5,6 @@ Thumbs.db
 Release/
 x64/
 Resource.aps
+
+bakkesmod/*.zip
+bakkesmod/plugins/RocketStats.dll
