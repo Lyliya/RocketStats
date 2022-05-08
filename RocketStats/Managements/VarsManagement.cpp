@@ -63,6 +63,8 @@ void RocketStats::AllOther(bool force, bool default_value)
     VarStreak(true, force, default_value);
     VarWinRatio(true, force, default_value);
     VarWinPercentage(true, force, default_value);
+    VarScorePlayer(true, force, default_value);
+    VarScoreOpposite(true, force, default_value);
     VarBoost(true, force, (!is_game_started || is_game_ended), false);
 }
 #pragma endregion

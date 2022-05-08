@@ -737,7 +737,7 @@ void RocketStats::RenderSettings()
 
         rs_select_all_file = (rs_file_games && rs_file_gm && rs_file_rank && rs_file_div &&
             rs_file_mmr && rs_file_mmrc && rs_file_mmrcc &&
-            rs_file_win && rs_file_loss && rs_file_streak && rs_file_winratio && rs_file_winpercentage &&
+            rs_file_win && rs_file_loss && rs_file_streak && rs_file_winratio && rs_file_winpercentage && rs_file_score &&
             rs_file_boost &&
             rs_file_shots && rs_file_saves && rs_file_goals && rs_file_dropshot && rs_file_knockout && rs_file_miscs && rs_file_accolades);
         select_all = rs_select_all_file;
@@ -773,7 +773,8 @@ void RocketStats::RenderSettings()
         ImGui::Checkbox(GetLang(LANG_LOSSES).c_str(), &rs_file_loss);
         ImGui::Checkbox(GetLang(LANG_STREAKS).c_str(), &rs_file_streak);
         ImGui::Checkbox(GetLang(LANG_WINRATIO).c_str(), &rs_file_winratio);
-        ImGui::Checkbox(GetLang(LANG_WINPERCENTAGE).c_str(), &rs_file_winratio);
+        ImGui::Checkbox(GetLang(LANG_WINPERCENTAGE).c_str(), &rs_file_winpercentage);
+        ImGui::Checkbox(GetLang(LANG_SCORE).c_str(), &rs_file_score);
         ImGui::Checkbox(GetLang(LANG_SHOTS).c_str(), &rs_file_shots);
         ImGui::Checkbox(GetLang(LANG_SAVES).c_str(), &rs_file_saves);
         ImGui::Checkbox(GetLang(LANG_GOALS).c_str(), &rs_file_goals);
@@ -802,6 +803,7 @@ void RocketStats::RenderSettings()
             rs_file_streak = rs_select_all_file;
             rs_file_winratio = rs_select_all_file;
             rs_file_winpercentage = rs_select_all_file;
+            rs_file_score = rs_select_all_file;
             rs_file_shots = rs_select_all_file;
             rs_file_saves = rs_select_all_file;
             rs_file_goals = rs_select_all_file;
@@ -814,7 +816,7 @@ void RocketStats::RenderSettings()
 
         rs_select_all_hide = (rs_hide_games && rs_hide_gm && rs_hide_rank && rs_hide_div &&
             rs_hide_mmr && rs_hide_mmrc && rs_hide_mmrcc &&
-            rs_hide_win && rs_hide_loss && rs_hide_streak && rs_hide_winratio && rs_hide_winpercentage &&
+            rs_hide_win && rs_hide_loss && rs_hide_streak && rs_hide_winratio && rs_hide_winpercentage && rs_hide_score &&
             rs_hide_shots && rs_hide_saves && rs_hide_goals && rs_hide_dropshot && rs_hide_knockout && rs_hide_miscs && rs_hide_accolades);
         select_all = rs_select_all_hide;
         tpos = { (column_start + (column_space * 2.f) + ((column_width * 2.f) + 16.f)), 323.f };
@@ -848,6 +850,7 @@ void RocketStats::RenderSettings()
         ImGui::Checkbox(GetLang(LANG_STREAKS).c_str(), &rs_hide_streak);
         ImGui::Checkbox(GetLang(LANG_WINRATIO).c_str(), &rs_hide_winratio);
         ImGui::Checkbox(GetLang(LANG_WINPERCENTAGE).c_str(), &rs_hide_winpercentage);
+        ImGui::Checkbox(GetLang(LANG_SCORE).c_str(), &rs_hide_score);
         ImGui::Checkbox(GetLang(LANG_SHOTS).c_str(), &rs_hide_shots);
         ImGui::Checkbox(GetLang(LANG_SAVES).c_str(), &rs_hide_saves);
         ImGui::Checkbox(GetLang(LANG_GOALS).c_str(), &rs_hide_goals);
@@ -873,6 +876,7 @@ void RocketStats::RenderSettings()
             rs_hide_streak = rs_select_all_hide;
             rs_hide_winratio = rs_select_all_hide;
             rs_hide_winpercentage = rs_select_all_hide;
+            rs_hide_score = rs_select_all_hide;
             rs_hide_shots = rs_select_all_hide;
             rs_hide_saves = rs_select_all_hide;
             rs_hide_goals = rs_select_all_hide;

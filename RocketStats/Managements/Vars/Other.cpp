@@ -45,6 +45,8 @@ void RocketStats::ReplaceOther(std::map<std::string, std::string>& vars)
     vars["Streak"] = VarStreak();
     vars["WinRatio"] = VarWinRatio();
     vars["WinPercentage"] = VarWinPercentage();
+    vars["ScorePlayer"] = VarScorePlayer();
+    vars["ScoreOpposite"] = VarScoreOpposite();
 
     // Replace underscores with spaces
     Utils::ReplaceAll(vars["Rank"], "_", " ");
@@ -356,6 +358,26 @@ std::string RocketStats::VarWinPercentage(bool write, bool force, bool default_v
 
     if (write && (force || (rs_in_file && rs_file_winpercentage)))
         WriteInFile("RocketStats_WinPercentage.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarScorePlayer(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_score ? theme_hide_value : (default_value ? "0" : std::to_string(current.score_player)));
+
+    if (write && (force || (rs_in_file && rs_file_score)))
+        WriteInFile("RocketStats_ScorePlayer.txt", tmp);
+
+    return tmp;
+}
+
+std::string RocketStats::VarScoreOpposite(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_score ? theme_hide_value : (default_value ? "0" : std::to_string(current.score_opposite)));
+
+    if (write && (force || (rs_in_file && rs_file_score)))
+        WriteInFile("RocketStats_ScoreOpposite.txt", tmp);
 
     return tmp;
 }

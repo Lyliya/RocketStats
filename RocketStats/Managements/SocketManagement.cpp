@@ -42,12 +42,12 @@ void RocketStats::SocketSend(std::string name, json data, std::string type)
     obj["data"] = data;
 
     obj["states"] = json::object();
-    obj["states"]["is_in_game"] = is_in_game;
-    obj["states"]["is_in_menu"] = is_in_menu;
-    obj["states"]["is_in_freeplay"] = is_in_freeplay;
-    obj["states"]["is_in_scoreboard"] = is_in_scoreboard;
-    obj["states"]["is_online_game"] = is_online_game;
-    obj["states"]["is_offline_game"] = is_offline_game;
+    obj["states"]["IsInGame"] = is_in_game;
+    obj["states"]["IsInMenu"] = is_in_menu;
+    obj["states"]["IsInFreeplay"] = is_in_freeplay;
+    obj["states"]["IsInScoreboard"] = is_in_scoreboard;
+    obj["states"]["IsOnlineGame"] = is_online_game;
+    obj["states"]["IsOfflineGame"] = is_offline_game;
 
     SocketBroadcast(obj);
 }

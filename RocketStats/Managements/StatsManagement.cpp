@@ -27,7 +27,7 @@ void RocketStats::onStatEvent(ServerWrapper caller, void* params)
 
     std::string name = event.GetEventName();
     SocketSend(name, {
-        { "points", event.GetPoints() }
+        { "Points", event.GetPoints() }
     }, "StatEvent");
 
     if (!is_online_game)
@@ -528,9 +528,9 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
         name = "ShotOnGoal";
 
     SocketSend(name, {
-        { "points", event.GetPoints() },
-        { "receiver", (iam_receiver ? "me" : (team_receiver ? "team" : "no")) },
-        { "victim", (iam_victim ? "me" : (team_victim ? "team" : "no")) }
+        { "Points", event.GetPoints() },
+        { "Receiver", (iam_receiver ? "me" : (team_receiver ? "team" : "no")) },
+        { "Victim", (iam_victim ? "me" : (team_victim ? "team" : "no")) }
     }, "TickerMessage");
 
     if (!is_online_game)
@@ -1487,10 +1487,20 @@ void RocketStats::onGoalScore(std::string eventName)
     TeamWrapper player = GetTeam(false);
     TeamWrapper opposite = GetTeam(true);
 
-    //if (!player.IsNull())
-    //    cvarManager->log(" --> Score Player: " + std::to_string(player.GetScore()));
-    //if (!opposite.IsNull())
-    //    cvarManager->log(" --> Score Opposite: " + std::to_string(opposite.GetScore()));
+    int score_player = current.score_player;
+    if (!player.IsNull())
+        current.score_player = player.GetScore();
+
+    int score_opposite = current.score_opposite;
+    if (!opposite.IsNull())
+        current.score_opposite = opposite.GetScore();
+
+    if (current.score_player != score_player || current.score_opposite != score_opposite)
+    {
+        SendGameState("GoalScore");
+        VarScorePlayer(true);
+        VarScoreOpposite(true);
+    }
 }
 
 void RocketStats::InitRank()
@@ -1654,4 +1664,6 @@ void RocketStats::ResetStats()
 void RocketStats::ResetBasicStats()
 {
     current.stats = Stats();
+    current.score_player = 0;
+    current.score_opposite = 0;
 }

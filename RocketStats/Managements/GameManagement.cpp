@@ -40,10 +40,7 @@ void RocketStats::GameStart(std::string eventName)
     UpdateMMR(gameWrapper->GetUniqueID());
     WriteConfig();
     UpdateFiles();
-
-    json tstats = json::object();
-    VarsWrite(current.stats, tstats);
-    SocketSend("GameState", tstats, "GameStart");
+    SendGameState("GameStart");
 
     cvarManager->log("===== !GameStart =====");
 }
@@ -123,10 +120,7 @@ void RocketStats::GameEnd(std::string eventName)
 
         WriteConfig();
         UpdateFiles();
-
-        json tstats = json::object();
-        VarsWrite(current.stats, tstats);
-        SocketSend("GameState", tstats, "GameEnd");
+        SendGameState("GameEnd");
 
         // Reset myTeamNum security
         my_team_num = -1;
@@ -177,13 +171,28 @@ void RocketStats::GameDestroyed(std::string eventName)
     is_game_ended = true;
     is_game_started = false;
     UpdateFiles();
-
-    json tstats = json::object();
-    VarsWrite(current.stats, tstats);
-    SocketSend("GameState", tstats, "GameDestroyed");
+    SendGameState("GameDestroyed");
 
     SetRefresh(RefreshFlags_Refresh);
     cvarManager->log("===== !GameDestroyed =====");
+}
+
+void RocketStats::SendGameState(std::string type)
+{
+    json data = json::object();
+    data["Ranked"] = current.ranked;
+    data["Playlist"] = GetPlaylistName(current.playlist);
+
+    data["Stats"] = json::object();
+    data["Stats"]["Rank"] = (rs_preview_rank ? current.preview_rank : current.rank);
+    data["Stats"]["Div"] = (rs_preview_rank ? current.preview_division : current.division);
+    data["Stats"]["ScorePlayer"] = current.score_player;
+    data["Stats"]["ScoreOpposite"] = current.score_opposite;
+
+    Stats tstats = GetStats();
+    VarsWrite(tstats, data["Stats"]);
+
+    SocketSend("GameState", data, type);
 }
 
 int RocketStats::GetGameTime()

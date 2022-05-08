@@ -454,6 +454,8 @@ private:
 		int division_number = 0;
 		int preview_rank_number = 0;
 		int preview_division_number = 0;
+		int score_player = 0;
+		int score_opposite = 0;
 		int boost_amount = -1;
 
 		Stats stats = {};
@@ -607,6 +609,7 @@ public:
 	bool rs_file_streak = true;
 	bool rs_file_winratio = true;
 	bool rs_file_winpercentage = true;
+	bool rs_file_score = true;
 	bool rs_file_death = true;
 	bool rs_file_deathm = true;
 	bool rs_file_deathc = true;
@@ -635,6 +638,7 @@ public:
 	bool rs_hide_streak = false;
 	bool rs_hide_winratio = false;
 	bool rs_hide_winpercentage = false;
+	bool rs_hide_score = false;
 	bool rs_hide_death = false;
 	bool rs_hide_deathm = false;
 	bool rs_hide_deathc = false;
@@ -697,6 +701,7 @@ public:
 	void GameStart(std::string eventName);
 	void GameEnd(std::string eventName);
 	void GameDestroyed(std::string eventName);
+	void SendGameState(std::string type);
 	int GetGameTime();
 	TeamWrapper GetTeam(bool opposing);
 	ImColor GetTeamColor(TeamWrapper team);
@@ -780,6 +785,8 @@ public:
 	std::string VarStreak(bool write = false, bool force = false, bool default_value = false);
 	std::string VarWinRatio(bool write = false, bool force = false, bool default_value = false);
 	std::string VarWinPercentage(bool write = false, bool force = false, bool default_value = false);
+	std::string VarScorePlayer(bool write = false, bool force = false, bool default_value = false);
+	std::string VarScoreOpposite(bool write = false, bool force = false, bool default_value = false);
 	std::string VarBoost(bool write = false, bool force = false, bool default_value = false, bool enabled = false);
 #pragma endregion
 
