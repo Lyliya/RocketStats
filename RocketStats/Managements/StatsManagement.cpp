@@ -26,6 +26,9 @@ void RocketStats::onStatEvent(ServerWrapper caller, void* params)
     StatEventWrapper event = StatEventWrapper(pstats->StatEvent);
 
     std::string name = event.GetEventName();
+    if (name == "Shot")
+        name = "ShotOnGoal";
+
     SocketSend(name, {
         { "Points", event.GetPoints() }
     }, "StatEvent");
@@ -519,13 +522,13 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
     StatEventWrapper event = StatEventWrapper(pstats->StatEvent);
 
     std::string name = event.GetEventName();
+    if (name == "Shot")
+        name = "ShotOnGoal";
+
     bool iam_receiver = (!receiver.IsNull() && isPrimaryPlayer(receiver));
     bool iam_victim = (!victim.IsNull() && isPrimaryPlayer(victim));
     bool team_receiver = (!me.IsNull() && !receiver.IsNull() && me.GetTeamNum2() == receiver.GetTeamNum2());
     bool team_victim = (!me.IsNull() && !victim.IsNull() && me.GetTeamNum2() == victim.GetTeamNum2());
-
-    if (name == "Shot")
-        name = "ShotOnGoal";
 
     SocketSend(name, {
         { "Points", event.GetPoints() },

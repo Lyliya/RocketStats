@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>RocketStats</title>
+
+		<link rel="stylesheet" href="css/main.css" />
+	</head>
+
+	<body>
+		<div class="container">
+			<div>MMR:<span rocketstats="MMR"></span></div>
+			<div>MMRCumulChange:<span rocketstats="MMRCumulChange"></span></div>
+			<div>Win:<span rocketstats="Win"></span></div>
+			<div>Loss:<span rocketstats="Loss"></span></div>
+			<div>Streak:<span rocketstats="Streak"></span></div>
+			<div>Boost:<span class="boost">Disabled</span></div>
+			<br />
+		</div>
+
+		<script type="text/javascript" src="js/socket.js"></script>
+		<script type="text/javascript" src="js/main.js"></script>
+	</body>
+
+</html>
