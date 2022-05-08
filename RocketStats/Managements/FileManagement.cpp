@@ -257,6 +257,8 @@ bool RocketStats::ReadConfig()
                             rs_file_winratio = config["settings"]["files"]["winratio"];
                         if (config["settings"]["files"]["winpercentage"].is_boolean())
                             rs_file_winpercentage = config["settings"]["files"]["winpercentage"];
+                        if (config["settings"]["files"]["score"].is_boolean())
+                            rs_file_score = config["settings"]["files"]["score"];
                         if (config["settings"]["files"]["demo"].is_boolean())
                             rs_file_demolitions = config["settings"]["files"]["demo"];
                         if (config["settings"]["files"]["demom"].is_boolean())
@@ -313,6 +315,8 @@ bool RocketStats::ReadConfig()
                             rs_hide_winratio = config["settings"]["hides"]["winratio"];
                         if (config["settings"]["hides"]["winpercentage"].is_boolean())
                             rs_hide_winpercentage = config["settings"]["hides"]["winpercentage"];
+                        if (config["settings"]["hides"]["score"].is_boolean())
+                            rs_hide_score = config["settings"]["hides"]["score"];
                         if (config["settings"]["hides"]["demo"].is_boolean())
                             rs_hide_demolitions = config["settings"]["hides"]["demo"];
                         if (config["settings"]["hides"]["demom"].is_boolean())
@@ -434,6 +438,7 @@ void RocketStats::WriteConfig()
     tmp["settings"]["files"]["streak"] = rs_file_streak;
     tmp["settings"]["files"]["winratio"] = rs_file_winratio;
     tmp["settings"]["files"]["winpercentage"] = rs_file_winpercentage;
+    tmp["settings"]["files"]["score"] = rs_file_score;
     tmp["settings"]["files"]["demo"] = rs_file_demolitions;
     tmp["settings"]["files"]["demom"] = rs_file_demolitionsm;
     tmp["settings"]["files"]["democ"] = rs_file_demolitionsc;
@@ -462,6 +467,7 @@ void RocketStats::WriteConfig()
     tmp["settings"]["hides"]["streak"] = rs_hide_streak;
     tmp["settings"]["hides"]["winratio"] = rs_hide_winratio;
     tmp["settings"]["hides"]["winpercentage"] = rs_hide_winpercentage;
+    tmp["settings"]["hides"]["score"] = rs_hide_score;
     tmp["settings"]["hides"]["demo"] = rs_hide_demolitions;
     tmp["settings"]["hides"]["demom"] = rs_hide_demolitionsm;
     tmp["settings"]["hides"]["democ"] = rs_hide_demolitionsc;

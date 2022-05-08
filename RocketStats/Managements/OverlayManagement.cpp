@@ -180,7 +180,8 @@ void RocketStats::SetRefresh(unsigned char value)
 
 void RocketStats::RefreshFiles(std::string old, CVarWrapper now)
 {
-    UpdateFiles(true);
+    if (now.getBoolValue())
+        UpdateFiles(true);
     RefreshTheme(old, now);
 }
 
@@ -292,6 +293,7 @@ void RocketStats::RefreshVars()
     SetCVar("rs_file_streak", rs_file_streak);
     SetCVar("rs_file_winratio", rs_file_winratio);
     SetCVar("rs_file_winpercentage", rs_file_winpercentage);
+    SetCVar("rs_file_score", rs_file_score);
     SetCVar("rs_file_demo", rs_file_demolitions);
     SetCVar("rs_file_demom", rs_file_demolitionsm);
     SetCVar("rs_file_democ", rs_file_demolitionsc);
@@ -319,6 +321,7 @@ void RocketStats::RefreshVars()
     SetCVar("rs_hide_streak", rs_hide_streak);
     SetCVar("rs_hide_winratio", rs_hide_winratio);
     SetCVar("rs_hide_winpercentage", rs_hide_winpercentage);
+    SetCVar("rs_hide_score", rs_hide_score);
     SetCVar("rs_hide_demo", rs_hide_demolitions);
     SetCVar("rs_hide_demom", rs_hide_demolitionsm);
     SetCVar("rs_hide_democ", rs_hide_demolitionsc);
