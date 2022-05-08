@@ -6,7 +6,7 @@ void RocketStats::SocketServer()
 
     m_server.set_open_handler(std::bind(&RocketStats::SocketOpen, this, std::placeholders::_1));
     m_server.set_close_handler(std::bind(&RocketStats::SocketClose, this, std::placeholders::_1));
-    m_server.set_message_handler(std::bind(&RocketStats::SocketMessage, this, std::placeholders::_1, std::placeholders::_2));
+    m_server.set_message_handler(std::bind(&RocketStats::SocketReceive, this, std::placeholders::_1, std::placeholders::_2));
 
     m_server.listen(8085);
     m_server.start_accept();
@@ -24,17 +24,15 @@ void RocketStats::SocketClose(connection_hdl hdl)
     m_connections.erase(hdl);
 }
 
-void RocketStats::SocketMessage(connection_hdl hdl, server::message_ptr msg)
+void RocketStats::SocketReceive(connection_hdl hdl, server::message_ptr msg)
 {
-    for (connection_hdl it : m_connections)
-        m_server.send(it, msg);
+    std::string message = Utils::tolower(msg->get_payload());
+    if (message == "request")
+        m_server.send(hdl, SocketData("GameState", GetGameState(), "Request").dump(), websocketpp::frame::opcode::text);
 }
 
-void RocketStats::SocketSend(std::string name, json data, std::string type)
+json RocketStats::SocketData(std::string name, json data, std::string type)
 {
-    if (!name.size())
-        return;
-
     json obj = json::object();
 
     obj["name"] = name;
@@ -49,7 +47,15 @@ void RocketStats::SocketSend(std::string name, json data, std::string type)
     obj["states"]["IsOnlineGame"] = is_online_game;
     obj["states"]["IsOfflineGame"] = is_offline_game;
 
-    SocketBroadcast(obj);
+    return obj;
+}
+
+void RocketStats::SocketSend(std::string name, json data, std::string type)
+{
+    if (!name.size())
+        return;
+
+    SocketBroadcast(SocketData(name, data, type));
 }
 
 void RocketStats::SocketBroadcast(json data)

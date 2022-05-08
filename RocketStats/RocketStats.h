@@ -383,7 +383,8 @@ private:
 	void SocketServer();
 	void SocketOpen(connection_hdl hdl);
 	void SocketClose(connection_hdl hdl);
-	void SocketMessage(connection_hdl hdl, server::message_ptr msg);
+	void SocketReceive(connection_hdl hdl, server::message_ptr msg);
+	json SocketData(std::string name, json data, std::string type);
 	void SocketSend(std::string name, json data, std::string type = "");
 	void SocketBroadcast(json data);
 
@@ -701,6 +702,7 @@ public:
 	void GameStart(std::string eventName);
 	void GameEnd(std::string eventName);
 	void GameDestroyed(std::string eventName);
+	json GetGameState();
 	void SendGameState(std::string type);
 	int GetGameTime();
 	TeamWrapper GetTeam(bool opposing);

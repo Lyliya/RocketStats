@@ -245,8 +245,12 @@ void RocketStats::RefreshVars()
         rs_opacity = cvar_opacity.GetMaximum();
 
     // Check for changes before modifying cvars
+    bool changed = false;
     if (SetCVar("rs_mode", rs_mode))
+    {
+        changed = true;
         UpdateFiles();
+    }
     SetCVar("rs_theme", rs_theme);
 
     SetCVar("rs_x", rs_x, true);
@@ -265,7 +269,7 @@ void RocketStats::RefreshVars()
         rs_enable_inmenu = true;
     SetCVar("rs_enable_float", rs_enable_float);
     SetCVar("rs_preview_rank", rs_preview_rank);
-    SetCVar("rs_roman_numbers", rs_roman_numbers);
+    changed = (SetCVar("rs_roman_numbers", rs_roman_numbers) || changed);
 
     if (SetCVar("rs_replace_mmr", rs_replace_mmr) && rs_replace_mmr && rs_replace_mmr_cc)
         rs_replace_mmr_cc = false;
@@ -335,6 +339,13 @@ void RocketStats::RefreshVars()
     SetCVar("rs_hide_knockout", rs_hide_knockout);
     SetCVar("rs_hide_miscs", rs_hide_miscs);
     SetCVar("rs_hide_accolades", rs_hide_accolades);
+
+    if (changed)
+    {
+        gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
+            SendGameState("SettingsChanged");
+        }, 0.1f);
+    }
 }
 
 Element RocketStats::CalculateElement(json& element, Options& options, bool& check)

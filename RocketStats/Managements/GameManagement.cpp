@@ -177,7 +177,7 @@ void RocketStats::GameDestroyed(std::string eventName)
     cvarManager->log("===== !GameDestroyed =====");
 }
 
-void RocketStats::SendGameState(std::string type)
+json RocketStats::GetGameState()
 {
     json data = json::object();
     data["Ranked"] = current.ranked;
@@ -192,7 +192,12 @@ void RocketStats::SendGameState(std::string type)
     Stats tstats = GetStats();
     VarsWrite(tstats, data["Stats"]);
 
-    SocketSend("GameState", data, type);
+    return data;
+}
+
+void RocketStats::SendGameState(std::string type)
+{
+    SocketSend("GameState", GetGameState(), type);
 }
 
 int RocketStats::GetGameTime()
