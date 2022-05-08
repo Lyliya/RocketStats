@@ -16,7 +16,8 @@ void RocketStats::SocketServer()
 void RocketStats::SocketOpen(connection_hdl hdl)
 {
     m_connections.insert(hdl);
-    SendGameState("Connected");
+    SocketSend("State", "Connected");
+    SendGameState("Initialization");
 }
 
 void RocketStats::SocketClose(connection_hdl hdl)

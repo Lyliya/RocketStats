@@ -197,9 +197,9 @@ json RocketStats::GetGameState()
     return data;
 }
 
-void RocketStats::SendGameState(std::string type)
+void RocketStats::SendGameState(std::string name)
 {
-    SocketSend("GameState", GetGameState(), type);
+    SocketSend(name, GetGameState(), "GameState");
 }
 
 int RocketStats::GetGameTime()

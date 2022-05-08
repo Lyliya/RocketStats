@@ -703,7 +703,7 @@ public:
 	void GameEnd(std::string eventName);
 	void GameDestroyed(std::string eventName);
 	json GetGameState();
-	void SendGameState(std::string type);
+	void SendGameState(std::string name);
 	int GetGameTime();
 	TeamWrapper GetTeam(bool opposing);
 	ImColor GetTeamColor(TeamWrapper team);
