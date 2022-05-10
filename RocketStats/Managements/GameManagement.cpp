@@ -188,9 +188,11 @@ json RocketStats::GetGameState()
     data["Stats"]["Rank"] = (rs_preview_rank ? current.preview_rank : current.rank);
     data["Stats"]["Div"] = (rs_preview_rank ? current.preview_division : current.division);
     data["Stats"]["MMR"] = stat.myMMR;
-    data["Stats"]["MMRChange"] = stat.myMMR;
+    data["Stats"]["MMRChange"] = stat.MMRChange;
     data["Stats"]["ScorePlayer"] = current.score_player;
     data["Stats"]["ScoreOpposite"] = current.score_opposite;
+    data["Stats"]["ColorPlayer"] = Utils::LinearColor2RGBA(GetTeamColor(GetTeam(false)));
+    data["Stats"]["ColorOpposite"] = Utils::LinearColor2RGBA(GetTeamColor(GetTeam(true)));
 
     VarsWrite(stat, data["Stats"], true);
 
@@ -241,22 +243,20 @@ TeamWrapper RocketStats::GetTeam(bool opposing)
                 for (TeamWrapper team : teams)
 #pragma warning(pop)
                 {
-                    if (opposing == (player.GetTeamNum2() != team.GetTeamNum2()))
+                    if (!team.IsNull() && opposing == (player.GetTeamNum2() != team.GetTeamNum2()))
                         return team;
                 }
             }
         }
     }
 
-    TeamWrapper team(NULL);
-    return team;
+    return TeamWrapper{ NULL };
 }
 
-ImColor RocketStats::GetTeamColor(TeamWrapper team)
+LinearColor RocketStats::GetTeamColor(TeamWrapper team)
 {
     if (!team.IsNull())
-    {
-        LinearColor color = team.GetCurrentColorList().Get(0);
-        return ImColor{ (color.R / 255.f), (color.G / 255.f), (color.B / 255.f) };
-    }
+        return team.GetCurrentColorList().Get(0);
+
+    return LinearColor{ 0.f, 0.f, 0.f, 0.f };
 }

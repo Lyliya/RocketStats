@@ -6,14 +6,14 @@ void RocketStats::OnBoostStart(std::string eventName)
     if (!rs_file_boost || gameWrapper->IsInReplay() || is_boosting)
         return;
 
-    CarWrapper cWrap = gameWrapper->GetLocalCar();
+    CarWrapper me = gameWrapper->GetLocalCar();
 
-    if (!cWrap.IsNull())
+    if (!me.IsNull())
     {
-        BoostWrapper bWrap = cWrap.GetBoostComponent();
+        BoostWrapper boost = me.GetBoostComponent();
 
         // Check that the boosting car is ours
-        if (!bWrap.IsNull() && bWrap.GetbActive() == 1 && !is_boosting)
+        if (!boost.IsNull() && boost.GetbActive() == 1 && !is_boosting)
         {
             is_boosting = true;
             //SetRefresh(RefreshFlags_Refresh);

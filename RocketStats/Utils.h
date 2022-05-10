@@ -19,6 +19,9 @@ public:
 	// Colors
 	static float GetAlpha(std::vector<float> color, float opacity = 1.f);
 	static ImColor GetImColor(std::vector<float> color, float opacity = 1.f);
+	static ImColor LinearColor2ImColor(LinearColor color);
+	static std::vector<float> ImColor2RGBA(ImColor color);
+	static std::vector<float> LinearColor2RGBA(LinearColor color);
 
 	// Strings
 	static LPSTR ConvertToLPSTR(const std::string& s);

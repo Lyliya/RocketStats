@@ -17,7 +17,9 @@ void RocketStats::SocketOpen(connection_hdl hdl)
 {
     m_connections.insert(hdl);
     SocketSend("State", "Connected");
-    SendGameState("Initialization");
+    gameWrapper->Execute([&](GameWrapper* gameWrapper) {
+        SendGameState("Initialization");
+    });
 }
 
 void RocketStats::SocketClose(connection_hdl hdl)

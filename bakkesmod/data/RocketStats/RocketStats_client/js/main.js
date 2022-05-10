@@ -68,5 +68,5 @@ document.addEventListener("RocketStats_Boost", async event => {
 	const Data = event.data;
 
 	if (typeof(Data) === "number")
-	document.querySelector(".boost").innerText = ((Data >= 0) ? `${Data}%` : "Disabled");
+		document.querySelector(".boost").innerText = ((Data >= 0) ? `${Data}%` : "Disabled");
 });

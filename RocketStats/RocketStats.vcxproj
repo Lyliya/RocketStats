@@ -50,8 +50,10 @@
       <AdditionalLibraryDirectories>$(BAKKESMOD)\bakkesmodsdk\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>"$(BAKKESMOD)\bakkesmodsdk\bakkesmod-patch.exe" $(TargetPath)
-xcopy "$(SolutionDir)bakkesmod" "$(BAKKESMOD)" /E /Y</Command>
+      <Command>"$(BAKKESMOD)\bakkesmodsdk\bakkesmod-patch.exe" "$(TargetPath)"
+del "$(SolutionDir)bakkesmod\plugins\$(TargetFileName)"
+xcopy /E /Y "$(SolutionDir)bakkesmod" "$(BAKKESMOD)"
+copy /Y "$(TargetPath)" "$(SolutionDir)bakkesmod\plugins"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

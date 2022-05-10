@@ -357,7 +357,7 @@ void RocketStats::onLoad()
     // Force InMenu variable
     is_in_menu = (!gameWrapper->IsInGame() && !gameWrapper->IsInOnlineGame() && !gameWrapper->IsInFreeplay());
 
-    gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
+    gameWrapper->Execute([&](GameWrapper* gameWrapper) {
         // Here, thread WebSocket.run()
         // SocketServer();
         server_thread = std::thread(std::bind(&RocketStats::SocketServer, this));
@@ -382,7 +382,7 @@ void RocketStats::onLoad()
 
         UpdateUIScale("onLoad");
         ShowPlugin("onLoad");
-    }, 0.1f);
+    });
 }
 
 void RocketStats::onInit()
@@ -543,7 +543,7 @@ void RocketStats::onInit()
     cvarManager->registerCvar("rs_hide_accolades", (rs_hide_accolades ? "1" : "0"), GetLang(LANG_HIDE_ACCOLADES), true, true, 0, true, 1, false).addOnValueChanged([this](std::string old, CVarWrapper now) { AllAccolades(); });
 
 
-    gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
+    gameWrapper->Execute([&](GameWrapper* gameWrapper) {
         // Displays the plugin shortly after initialization
         if (rs_recovery == RecoveryFlags_Welcome)
         {
@@ -553,7 +553,7 @@ void RocketStats::onInit()
         }
 
         SetRefresh(RefreshFlags_Refresh);
-    }, 0.1f);
+    });
 }
 
 void RocketStats::onUnload()

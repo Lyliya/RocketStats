@@ -10,6 +10,22 @@ ImColor Utils::GetImColor(std::vector<float> color, float opacity)
 {
     return ImGui::ColorConvertFloat4ToU32({ (float(color[0]) / 255.f), (float(color[1]) / 255.f), (float(color[2]) / 255.f), GetAlpha(color, opacity) });
 }
+
+ImColor Utils::LinearColor2ImColor(LinearColor color)
+{
+    return ImColor{ color.R, color.G, color.B, color.A };
+}
+
+std::vector<float> Utils::ImColor2RGBA(ImColor color)
+{
+    ImVec4 rgba = ImGui::ColorConvertU32ToFloat4(color);
+    return std::vector<float>{ (rgba.x * 255.f), (rgba.y * 255.f), (rgba.z * 255.f), rgba.w };
+}
+
+std::vector<float> Utils::LinearColor2RGBA(LinearColor color)
+{
+    return std::vector<float>{ (color.R * 255.f), (color.G * 255.f), (color.B * 255.f), color.A };
+}
 #pragma endregion
 
 #pragma region Strings

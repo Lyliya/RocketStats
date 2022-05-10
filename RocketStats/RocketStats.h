@@ -706,7 +706,7 @@ public:
 	void SendGameState(std::string name);
 	int GetGameTime();
 	TeamWrapper GetTeam(bool opposing);
-	ImColor GetTeamColor(TeamWrapper team);
+	LinearColor GetTeamColor(TeamWrapper team);
 
 	// StatsManagement
 	bool isPrimaryPlayer(PriWrapper pri);
