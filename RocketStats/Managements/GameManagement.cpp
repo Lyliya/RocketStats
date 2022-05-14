@@ -91,6 +91,7 @@ void RocketStats::GameEnd(std::string eventName)
             ++always_gm[current.playlist].streak;
 
             SetRefresh(RefreshFlags_Refresh);
+            SocketSend("GameWon");
         }
         else
         {
@@ -116,6 +117,7 @@ void RocketStats::GameEnd(std::string eventName)
             --always_gm[current.playlist].streak;
 
             SetRefresh(RefreshFlags_Refresh);
+            SocketSend("GameLost");
         }
 
         WriteConfig();
@@ -166,6 +168,7 @@ void RocketStats::GameDestroyed(std::string eventName)
         --always_gm[current.playlist].streak;
 
         WriteConfig();
+        SocketSend("GameLost");
     }
 
     is_game_ended = true;

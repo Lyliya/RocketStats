@@ -385,7 +385,7 @@ private:
 	void SocketClose(connection_hdl hdl);
 	void SocketReceive(connection_hdl hdl, server::message_ptr msg);
 	json SocketData(std::string name, json data, std::string type);
-	void SocketSend(std::string name, json data, std::string type = "");
+	void SocketSend(std::string name, json data = nullptr, std::string type = "");
 	void SocketBroadcast(json data);
 
 	std::thread server_thread;

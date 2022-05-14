@@ -2,9 +2,10 @@
 Thumbs.db
 
 .vs/
-Release/
 x64/
+Release/
 Resource.aps
+node_modules/
 
 bakkesmod/*.zip
 bakkesmod/plugins/RocketStats.dll
