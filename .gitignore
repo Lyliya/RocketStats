@@ -5,6 +5,7 @@ Thumbs.db
 x64/
 Release/
 Resource.aps
+__pycache__/
 node_modules/
 
 bakkesmod/*.zip

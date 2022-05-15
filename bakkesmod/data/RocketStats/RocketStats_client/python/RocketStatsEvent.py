@@ -1,5 +1,8 @@
-from dataclasses import dataclass
+import json
+
 from typing import Union
+from dataclasses import dataclass
+
 
 @dataclass
 class RocketStatsEvent:
@@ -8,9 +11,17 @@ class RocketStatsEvent:
     type: str
     data: Union[str, dict]
     states: dict
+    title: str = 'RocketStatsEvent'
 
     def __str__(self):
-        return f"RocketStatsEvent(name={self.name},\n"\
-               f"                 type={self.type},\n"\
-               f"                 states={self.states})\n"\
-               f"data:\n{self.data}"
+        tdata = '\n    '.join(json.dumps(self.data, indent = 4).split('\n'))
+        tstates = '\n    '.join(json.dumps(self.states, indent = 4).split('\n'))
+
+        return (
+            f'\n{self.title}(\n'\
+            f'    name = {self.name},\n'\
+            f'    type = {self.type},\n'\
+            f'    data = {tdata},\n'\
+            f'    states = {tstates}\n'\
+            f')'
+        )

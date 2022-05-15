@@ -1,28 +1,28 @@
 // Do not touch the following
 let errors = 0b11;
 const connect = () => {
-	let ws = new WebSocket("ws://127.0.0.1:8085");
+	let rs = new WebSocket('ws://localhost:8085');
 	let debug = () => (typeof(window.console_debug) !== 'undefined' && window.console_debug);
-	window.Send2RocketStats = message => ws.send(message);
+	let details = () => (typeof(window.console_details) !== 'undefined' && window.console_details);
+	window.rs = rs;
 
-	ws.onopen = () => {
+	rs.onopen = () => {
 		errors = 0b00;
 		if (debug())
-			console.log("Connected");
+			console.log('Connected');
 	};
 
-	ws.onmessage = event => {
+	rs.onmessage = event => {
 		try
 		{
 			const msg = JSON.parse(event.data);
 
-			if (debug())
+			if (details())
 			{
-				const d = new Date();
-				const date = d.toLocaleDateString() + ' ' + d.toLocaleTimeString() + '.' + d.getMilliseconds();
-				const name_color = "color: #ddd; text-decoration: underline;";
-				const value_color = "color: #0c0";
-				const date_color = "color: #cc0";
+				const date = (new Date()).toISOString().replace('T', ' ').replace('Z', '').substr(0, 23);
+				const name_color = 'color: #ddd; text-decoration: underline;';
+				const value_color = 'color: #0c0';
+				const date_color = 'color: #cc0';
 				console.log(
 					`%cName:%c ${msg.name}\n%cType:%c ${msg.type}\n%cDate:%c ${date}\n%cData & States:`,
 					name_color,
@@ -62,24 +62,24 @@ const connect = () => {
 		catch (error)
 		{
 			if (debug())
-				console.error("Error while parsing WS data:", event.data);
+				console.error('Error while parsing WS data:', event.data);
 		}
 	};
 
-	ws.onclose = event => {
+	rs.onclose = event => {
 		if (debug() && !(errors & 0b01))
-			console.log("Socket closed, try reconnect...");
+			console.log('Socket closed, try reconnect...');
 
 		errors |= 0b01;
 		setTimeout(connect, 1000);
 	};
 
-	ws.onerror = event => {
+	rs.onerror = event => {
 		if (debug() && !(errors & 0b10))
-			console.error("Socket error");
+			console.error('Socket error');
 
 		errors |= 0b10;
-		ws.close();
+		rs.close();
 	};
 };
 

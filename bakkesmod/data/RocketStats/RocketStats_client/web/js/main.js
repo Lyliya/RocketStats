@@ -1,11 +1,12 @@
 // Enable debug
 window.console_debug = true;
+window.console_details = true;
 
 // To request all statistics without an event
-//window.Send2RocketStats("request");
+//window.rs.send('request');
 
 // Events returning all statistics
-document.addEventListener("RocketStats_GameState", async event => {
+document.addEventListener('RocketStats_GameState', async event => {
 	event = event.detail;
 	const Name = event.name;
 	const Stats = event.data.Stats;
@@ -15,8 +16,8 @@ document.addEventListener("RocketStats_GameState", async event => {
 		if (target)
 		{
 			let value = Stats[key];
-			if (typeof(value) == "number")
-				value = value.toFixed(key.indexOf("MMR") ? 0 : 2);
+			if (typeof(value) == 'number')
+				value = value.toFixed(key.indexOf('MMR') ? 0 : 2);
 
 			target.innerText = value;
 		}
@@ -24,49 +25,49 @@ document.addEventListener("RocketStats_GameState", async event => {
 });
 
 // Game Notifications
-document.addEventListener("RocketStats_StatEvent", async event => {
+document.addEventListener('RocketStats_StatEvent', async event => {
 	event = event.detail;
 	const Name = event.name;
 	const Data = event.data;
 
-	let elem = document.createElement("div");
-	elem.classList.add("pop-event", "stat-event");
-	elem.style.color = "#0c0";
+	let elem = document.createElement('div');
+	elem.classList.add('pop-event', 'stat-event');
+	elem.style.color = '#0c0';
 	elem.innerText = `${Name}[${Data.Points}pts]`;
 
-	document.querySelector(".container").appendChild(elem);
+	document.querySelector('.container').appendChild(elem);
 	setTimeout(() => {
 		elem.remove();
 	}, 10000);
 })
 
 // All notifications displayed in the upper right corner of the game
-document.addEventListener("RocketStats_TickerMessage", async event => {
+document.addEventListener('RocketStats_TickerMessage', async event => {
 	event = event.detail;
 	const Name = event.name;
 	const Data = event.data;
 
-	let selem = document.createElement("span");
+	let selem = document.createElement('span');
 	selem.innerText = `Receiver=${Data.Receiver} Victim=${Data.Victim}`;
 
-	let elem = document.createElement("div");
-	elem.classList.add("pop-event", "ticket-message");
-	elem.style.color = "#cc0";
+	let elem = document.createElement('div');
+	elem.classList.add('pop-event', 'ticket-message');
+	elem.style.color = '#cc0';
 	elem.innerText = `${Name}[${Data.Points}pts]:`;
 
 	elem.appendChild(selem);
-	document.querySelector(".container").appendChild(elem);
+	document.querySelector('.container').appendChild(elem);
 
 	setTimeout(() => {
 		elem.remove();
 	}, 10000);
 });
 
-//
-document.addEventListener("RocketStats_Boost", async event => {
+// Get boost level
+document.addEventListener('RocketStats_Boost', async event => {
 	event = event.detail;
 	const Data = event.data;
 
-	if (typeof(Data) === "number")
-		document.querySelector(".boost").innerText = ((Data >= 0) ? `${Data}%` : "Disabled");
+	if (typeof(Data) === 'number')
+		document.querySelector('.boost').innerText = ((Data >= 0) ? `${Data}%` : 'Disabled');
 });
