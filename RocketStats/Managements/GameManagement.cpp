@@ -188,8 +188,8 @@ json RocketStats::GetGameState()
 
     Stats stat = GetStats();
     data["Stats"] = json::object();
-    data["Stats"]["Rank"] = (rs_preview_rank ? current.preview_rank : current.rank);
-    data["Stats"]["Div"] = (rs_preview_rank ? current.preview_division : current.division);
+    data["Stats"]["Rank"] = VarRank();
+    data["Stats"]["Div"] = VarDiv();
     data["Stats"]["MMR"] = stat.myMMR;
     data["Stats"]["MMRChange"] = stat.MMRChange;
     data["Stats"]["ScorePlayer"] = current.score_player;
