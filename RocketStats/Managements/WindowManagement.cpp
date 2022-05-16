@@ -61,7 +61,7 @@ void RocketStats::Render()
 
     // Displays the button allowing the display and the hiding of the menu
     CVarWrapper rs_toggle_logo = cvarManager->getCvar("rs_toggle_logo");
-    if (rs_toggle_logo && rs_toggle_logo.getBoolValue() && (rs_recovery != RecoveryFlags_Off || settings_open || (!overlay_move && (!is_in_game || is_in_menu))))
+    if (rs_toggle_logo && rs_toggle_logo.getBoolValue())
         RenderIcon();
 
     if (!overlay_move && settings_open)
@@ -98,19 +98,36 @@ void RocketStats::Render()
 
 void RocketStats::RenderIcon()
 {
+    bool hide = (rs_recovery == RecoveryFlags_Off && !settings_open && (overlay_move || (is_in_game && !is_in_menu)));
+    if (hide && rs_logo_flash < 0.f)
+        return;
+
     float margin = 0.f;
     float icon_size = (42.f * rs_screen_scale[0]);
     float icon_scale = (1.f - rs_screen_scale[0]);
-    ImVec2 mouse_pos = ImGui::GetIO().MousePos;
     ImVec2 icon_pos = { 0.f, (display_size.y * 0.459f * (icon_scale + (icon_scale * (0.18f - (1.f - rs_screen_scale[1]))) + 1.f)) };
-    bool mouse_click = GetAsyncKeyState(VK_LBUTTON);
     ImDrawList* drawlist = ImGui::GetBackgroundDrawList();
 
+    // Flash on GameEnd
+    if (rs_logo_flash >= 0.f)
+    {
+        rs_logo_flash += (0.1f * float(timer_30fps.frames()));
+        if (rs_logo_flash > 2.f)
+            rs_logo_flash = -1.f;
+        else
+            drawlist->AddCircleFilled({ icon_pos.x, icon_pos.y }, icon_size, ImColor{ 1.f, 1.f, 1.f, ((rs_logo_flash > 1.f) ? (2.f - rs_logo_flash) : rs_logo_flash) }, 25);
+    }
+
+    if (hide)
+        return;
+
+    ImVec2 mouse_pos = ImGui::GetIO().MousePos;
+    bool mouse_click = GetAsyncKeyState(VK_LBUTTON);
     bool hover = (mouse_pos.x > (icon_pos.x - icon_size - margin) && mouse_pos.x < (icon_pos.x + icon_size + margin));
     hover = (hover && (mouse_pos.y > (icon_pos.y - icon_size - margin) && mouse_pos.y < (icon_pos.y + icon_size + margin)));
 
     // Handles logo movement
-    rs_logo_rotate += (rs_logo_mouv ? 0.3f : -0.3f) * float(timer_30fps.frames());
+    rs_logo_rotate += ((rs_logo_mouv ? 0.3f : -0.3f) * float(timer_30fps.frames()));
     if (rs_logo_rotate < 0 || rs_logo_rotate >= 30.f)
     {
         rs_logo_mouv = !rs_logo_mouv;

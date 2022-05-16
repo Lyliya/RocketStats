@@ -60,6 +60,7 @@ void RocketStats::GameEnd(std::string eventName)
 
         // Game as ended
         is_game_ended = true;
+        is_game_started = false;
 
         ++always.games;
         ++session.games;
@@ -126,6 +127,9 @@ void RocketStats::GameEnd(std::string eventName)
 
         // Reset myTeamNum security
         my_team_num = -1;
+
+        // Flash logo
+        rs_logo_flash = 0.f;
 
         gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) { UpdateMMR(gameWrapper->GetUniqueID()); }, 3.0F);
 

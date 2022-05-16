@@ -368,8 +368,9 @@ private:
 	int rs_recovery = RecoveryFlags_Off;
 	float rs_launch = 0.f;
 	float rs_llaunch = 0.f;
-	bool rs_logo_mouv = false;
 	float rs_buttons_x = 0.f;
+	bool rs_logo_mouv = false;
+	float rs_logo_flash = -1.f;
 	float rs_logo_rotate = 0.f;
 	float rs_screen_scale[2] = { 1.f, 1.f };
 	std::vector<std::string> rs_lang;
