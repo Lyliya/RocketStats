@@ -3,7 +3,11 @@ RocketStats Plugin
 8|
 0|Toggle menu|rs_toggle_menu
 7|
-9|
+9| 
+7|
+0|Reset menu position|rs_menu_pos
+7|
+9| 
 7|
 1|Show the RocketStats logo|rs_toggle_logo
 8|

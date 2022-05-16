@@ -414,6 +414,14 @@ void RocketStats::onInit()
     cvarManager->registerNotifier("rs_toggle_menu", [this](std::vector<std::string> params) {
         ToggleSettings("rs_toggle_menu");
     }, GetLang(LANG_TOGGLE_MENU), PERMISSION_ALL);
+    cvarManager->registerNotifier("rs_menu_pos", [this](std::vector<std::string> params) {
+        ToggleSettings("rs_toggle_menu", ToggleFlags_Hide);
+
+        gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
+            rs_menu_pos = true;
+            ToggleSettings("rs_toggle_menu", ToggleFlags_Show);
+        }, 0.2f);
+    }, GetLang(LANG_RESET_MENU_POSITION), PERMISSION_ALL);
 
     // Hook on Event
     gameWrapper->HookEvent("Function TAGame.GFxData_StartMenu_TA.EventTitleScreenClicked", std::bind(&RocketStats::ShowPlugin, this, std::placeholders::_1));

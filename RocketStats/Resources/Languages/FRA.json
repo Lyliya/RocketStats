@@ -21,6 +21,7 @@
 	"Affiche/Masque le menu",
 	"Affiche les paramètres RocketStats",
 	"Affiche le menu RocketStats",
+	"Réinitialise la position du menu",
 
 	"Mode",
 	"Restreint les informations au mode de jeu en cours ou les conserver plus longtemps",

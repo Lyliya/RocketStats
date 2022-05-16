@@ -369,6 +369,7 @@ private:
 	float rs_launch = 0.f;
 	float rs_llaunch = 0.f;
 	float rs_buttons_x = 0.f;
+	bool rs_menu_pos = false;
 	bool rs_logo_mouv = false;
 	float rs_logo_flash = -1.f;
 	float rs_logo_rotate = 0.f;

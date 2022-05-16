@@ -422,8 +422,11 @@ void RocketStats::RenderSettings()
     if (menu_font)
         ImGui::PushFont(font);
 
-    ImGui::SetNextWindowPos({ 128.f, 256.f }, ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowPos({ 128.f, 256.f }, (rs_menu_pos ? ImGuiCond_Appearing : ImGuiCond_FirstUseEver));
     ImGui::SetNextWindowSize(settings_size);
+
+    if (rs_menu_pos)
+        rs_menu_pos = false;
 
     ImGui::Begin((menu_title + "##Settings").c_str(), nullptr, (ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse));
 
