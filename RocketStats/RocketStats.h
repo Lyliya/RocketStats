@@ -382,7 +382,8 @@ private:
 
 	// WebServer
 	typedef std::set<connection_hdl, std::owner_less<connection_hdl>> con_list;
-	void SocketServer();
+	void InitWebSocket();
+	void ShutdownWebSocket();
 	void SocketOpen(connection_hdl hdl);
 	void SocketClose(connection_hdl hdl);
 	void SocketReceive(connection_hdl hdl, server::message_ptr msg);

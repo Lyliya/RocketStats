@@ -3,7 +3,6 @@
  * =========================================================== */
 
 #define _WINSOCKAPI_ // stops windows.h including winsock.h
-#define ASIO_STANDALONE
 #define _WEBSOCKETPP_CPP11_TYPE_TRAITS_
 
 #include "RocketStats.h"
@@ -359,8 +358,8 @@ void RocketStats::onLoad()
 
     gameWrapper->Execute([&](GameWrapper* gameWrapper) {
         // Here, thread WebSocket.run()
-        // SocketServer();
-        server_thread = std::thread(std::bind(&RocketStats::SocketServer, this));
+        // InitWebSocket();
+        server_thread = std::thread(std::bind(&RocketStats::InitWebSocket, this));
         server_thread.detach();
 
         // Checks if the configuration file exists
@@ -566,15 +565,7 @@ void RocketStats::onInit()
 
 void RocketStats::onUnload()
 {
-    m_server.stop_listening();
-    SocketSend("State", "Disconnected");
-    for (auto& con : m_connections)
-        m_server.close(con, websocketpp::close::status::normal, "close");
-    //m_server.stop();
-
-    if (server_thread.joinable())
-        server_thread.join();
-
+    ShutdownWebSocket();
     WriteConfig(); // Save settings (if not already done)
     TogglePlugin("onUnload", ToggleFlags_Hide); // Hide the plugin before unloading it
 }
