@@ -3,7 +3,7 @@ from json import dumps as dump_json
 from typing import Union
 
 
-@dataclass
+@dataclass(frozen=True)
 class RocketStatsEvent:
     """Class to represent an event from the RocketStats websocket"""
     name: str
