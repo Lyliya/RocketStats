@@ -89,6 +89,30 @@ struct Options {
 	float opacity;
 };
 
+struct WebSocketServer {
+	int port = 8085;
+	bool rooms_aggregate = true;
+	std::vector<std::string> rooms_whitelist = {};
+};
+
+struct WebSocketClient {
+	std::string host;
+	int port;
+	std::string path;
+};
+
+struct WebSocketCommand {
+	std::string command;
+	std::vector<std::string> domains = {};
+	json payload = {};
+};
+
+struct Settings {
+	WebSocketServer ws_server;
+	std::vector<WebSocketClient> ws_clients = {};
+};
+
+
 struct Stats {
 	int games = 0;
 	float myMMR = 100.f;
@@ -380,6 +404,8 @@ private:
 	std::shared_ptr<ImageWrapper> rs_welcome;
 	ImDrawList* rs_drawlist = IM_NEW(ImDrawList(NULL));
 
+	Settings settings;
+
 	// WebServer
 	typedef std::set<connection_hdl, std::owner_less<connection_hdl>> con_list;
 	void InitWebSocket();
@@ -387,12 +413,17 @@ private:
 	void SocketOpen(connection_hdl hdl);
 	void SocketClose(connection_hdl hdl);
 	void SocketReceive(connection_hdl hdl, server::message_ptr msg);
-	json SocketData(std::string name, json data, std::string type);
+	WebSocketCommand SocketCommandParse(std::string message);
+	json SocketSubscribe(connection_hdl hdl, json rooms);
+	json SocketUnsubscribe(connection_hdl hdl, json rooms, bool all = false);
+	json SocketData(std::string name, json data, std::string type = "Default");
 	void SocketSend(std::string name, json data = nullptr, std::string type = "");
 	void SocketBroadcast(json data);
 
 	std::thread server_thread;
 	server ws_server;
+	std::map<std::string, std::vector<connection_hdl>> ws_rooms;
+	std::vector<connection_hdl> rooms_aggregated = {};
 
 	server m_server;
 	con_list m_connections;
@@ -760,6 +791,8 @@ public:
 	void ResetFiles();
 	bool ReadConfig();
 	void WriteConfig();
+	bool ReadSettings();
+	void WriteSettings();
 
 	// VarManagement
 	void VarsRead(Stats& stat, json& config);

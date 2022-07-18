@@ -406,6 +406,9 @@ void RocketStats::onInit()
     rs_recovery = (ReadConfig() ? RecoveryFlags_Off : RecoveryFlags_Welcome);
     ChangeTheme(rs_theme);
 
+    ReadSettings();
+    WriteSettings();
+
     // Reset all files (and create them if they don't exist)
     ResetFiles();
 

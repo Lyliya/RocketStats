@@ -164,7 +164,7 @@ bool RocketStats::ReadConfig()
     {
         try
         {
-            // Read the plugin settings JSON file
+            // Read the plugin configs JSON file
             json config = ReadJSON(file, true);
 
             if (config.is_object())
@@ -493,7 +493,110 @@ void RocketStats::WriteConfig()
         VarsWrite(always_gm[i], tmp["always_gm"][i]);
     }
 
-    WriteInFile("data/rocketstats.json", tmp.dump(2), true); // Save plugin settings in JSON format
+    WriteInFile("data/rocketstats.json", tmp.dump(2), true); // Save plugin configs in JSON format
 
     cvarManager->log("===== !WriteConfig =====");
+}
+
+bool RocketStats::ReadSettings()
+{
+    cvarManager->log("===== ReadSettings =====");
+
+    std::string file = "data/rocketstats_settings.json";
+    bool exists = ExistsPath(file, true);
+    if (exists)
+    {
+        try
+        {
+            // Read the plugin settings JSON file
+            json setting = ReadJSON(file, true);
+
+            if (setting.is_object())
+            {
+                if (setting["server"].is_object() && !setting["server"].is_null())
+                {
+                    if (setting["server"]["port"].is_number_unsigned())
+                        settings.ws_server.port = setting["server"]["port"];
+
+                    if (setting["server"]["rooms_whitelist"].is_array())
+                    {
+                        settings.ws_server.rooms_whitelist.clear();
+
+                        for (int i = 0, j = 0; i < setting["server"]["rooms_whitelist"].size(); ++i)
+                        {
+                            if (setting["server"]["rooms_whitelist"][i].is_string())
+                                settings.ws_server.rooms_whitelist[j++] = setting["server"]["rooms_whitelist"][i];
+                        }
+
+                        cvarManager->log("Settings: rooms_whitelist loaded");
+                    }
+
+                    cvarManager->log("Settings: server loaded");
+                }
+
+                if (setting["clients"].is_array())
+                {
+                    settings.ws_clients.clear();
+
+                    for (int i = 0, j = 0; i < setting["clients"].size(); ++i)
+                    {
+                        if (setting["clients"][i].is_object() && !setting["clients"][i].is_null())
+                        {
+                            settings.ws_clients[j] = WebSocketClient{};
+
+                            if (setting["clients"][i]["host"].is_string())
+                                settings.ws_clients[j].host = setting["clients"][i]["host"];
+
+                            if (setting["clients"][i]["port"].is_number_unsigned())
+                                settings.ws_clients[j].port = setting["clients"][i]["port"];
+
+                            if (setting["clients"][i]["path"].is_string())
+                                settings.ws_clients[j].path = setting["clients"][i]["path"];
+
+                            ++j;
+                        }
+                    }
+
+                    cvarManager->log("Settings: clients loaded");
+                }
+            }
+            else
+                cvarManager->log("Settings: bad JSON");
+        }
+        catch (json::parse_error& e)
+        {
+            cvarManager->log("Settings: bad JSON -> " + std::string(e.what()));
+        }
+    }
+
+    cvarManager->log("===== !ReadSettings =====");
+    return exists;
+}
+
+void RocketStats::WriteSettings()
+{
+    cvarManager->log("===== WriteSettings =====");
+
+    json tmp = json::object();
+
+    tmp["server"] = json::object();
+    tmp["server"]["port"] = settings.ws_server.port;
+    tmp["server"]["rooms_aggregate"] = settings.ws_server.rooms_aggregate;
+
+    tmp["server"]["rooms_whitelist"] = json::array();
+    for (int i = 0; i < settings.ws_server.rooms_whitelist.size(); ++i)
+        tmp["clients"]["rooms_whitelist"][i] = settings.ws_server.rooms_whitelist.at(i);
+
+    tmp["clients"] = json::array();
+    for (int i = 0; i < settings.ws_clients.size(); ++i)
+    {
+        tmp["clients"][i] = json::object();
+        tmp["clients"][i]["host"] = settings.ws_clients.at(i).host;
+        tmp["clients"][i]["port"] = settings.ws_clients.at(i).port;
+        tmp["clients"][i]["path"] = settings.ws_clients.at(i).path;
+    }
+
+    WriteInFile("data/rocketstats_settings.json", tmp.dump(2), true); // Save plugin settings in JSON format
+
+    cvarManager->log("===== !WriteSettings =====");
 }

@@ -31,7 +31,7 @@ void RocketStats::InitWebSocket()
 
         m_server.reset();
 
-        m_server.listen(8085);
+        m_server.listen(settings.ws_server.port);
         m_server.start_accept();
         m_server.run();
     }
@@ -69,6 +69,8 @@ void RocketStats::ShutdownWebSocket() {
 void RocketStats::SocketOpen(connection_hdl hdl)
 {
     m_connections.insert(hdl);
+    rooms_aggregated.push_back(hdl);
+
     SocketSend("State", "Connected");
     gameWrapper->Execute([&](GameWrapper* gameWrapper) {
         SendGameState("Initialization");
@@ -78,13 +80,110 @@ void RocketStats::SocketOpen(connection_hdl hdl)
 void RocketStats::SocketClose(connection_hdl hdl)
 {
     m_connections.erase(hdl);
+    SocketUnsubscribe(hdl, {}, true);
 }
 
 void RocketStats::SocketReceive(connection_hdl hdl, server::message_ptr msg)
 {
-    std::string message = Utils::tolower(msg->get_payload());
-    if (message == "request")
+    WebSocketCommand op = SocketCommandParse(msg->get_payload());
+
+    if (op.command == "request")
         m_server.send(hdl, SocketData("GameState", GetGameState(), "Request").dump(), websocketpp::frame::opcode::text);
+    else if (op.command == "subscribe" && op.domains.size() && op.domains[0] == "rooms")
+        m_server.send(hdl, SocketData("Subscribed", SocketSubscribe(hdl, op.payload["rooms"])).dump(), websocketpp::frame::opcode::text);
+}
+
+WebSocketCommand RocketStats::SocketCommandParse(std::string message)
+{
+    size_t pos = message.find(" ");
+    std::vector<std::string> tmp = Utils::Split(message.substr(0, pos), ':');
+    std::string cmd = tmp.front();
+    tmp.erase(tmp.begin());
+
+    json payload;
+    try
+    {
+        payload = json::parse(message.substr(pos + 1));
+    }
+    catch (json::parse_error& e)
+    {
+        cvarManager->log("Config: bad JSON -> " + std::string(e.what()));
+    }
+
+    return WebSocketCommand{
+        cmd,
+        tmp,
+        payload
+    };
+}
+
+json RocketStats::SocketSubscribe(connection_hdl hdl, json rooms)
+{
+    auto it = std::find(rooms_aggregated.begin(), rooms_aggregated.end(), hdl);
+    if (it != rooms_aggregated.end())
+        rooms_aggregated.erase(it);
+
+    json subscribed = json::array();
+    if (rooms.is_array())
+    {
+        for (const auto& room : rooms)
+        {
+            auto it = std::find(settings.ws_server.rooms_whitelist.begin(), settings.ws_server.rooms_whitelist.end(), std::string(room));
+            if (it != settings.ws_server.rooms_whitelist.end())
+            {
+                if (ws_rooms.find(room) == ws_rooms.end())
+                    ws_rooms[room] = {};
+
+                if (std::find(ws_rooms[room].begin(), ws_rooms[room].end(), hdl) == ws_rooms[room].end())
+                    ws_rooms[room].push_back(hdl);
+
+                subscribed.push_back(room);
+            }
+        }
+    }
+
+    return subscribed;
+}
+
+json RocketStats::SocketUnsubscribe(connection_hdl hdl, json rooms, bool all)
+{
+    auto it = std::find(rooms_aggregated.begin(), rooms_aggregated.end(), hdl);
+    if (it != rooms_aggregated.end())
+        rooms_aggregated.erase(it);
+
+    json unsubscribed = json::array();
+    for (const auto& [key, room] : ws_rooms)
+    {
+        if (all || (rooms.is_array() && std::find(rooms.begin(), rooms.end(), key) != rooms.end()))
+        {
+            auto it = std::find(room.begin(), room.end(), hdl);
+            if (it != room.end())
+            {
+                ws_rooms[key].erase(it);
+
+                unsubscribed.push_back(key);
+            }
+        }
+    }
+
+    if (rooms.is_array())
+    {
+        for (const auto& room : rooms)
+        {
+            if (ws_rooms.find(room) != ws_rooms.end())
+            {
+                auto it = std::find(ws_rooms[room].begin(), ws_rooms[room].end(), hdl);
+                if (it != ws_rooms[room].end())
+                {
+                    ws_rooms[room].erase(it);
+
+                    unsubscribed.push_back(room);
+                }
+            }
+        }
+    }
+
+    return unsubscribed;
 }
 
 json RocketStats::SocketData(std::string name, json data, std::string type)
