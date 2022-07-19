@@ -89,6 +89,13 @@ struct Options {
 	float opacity;
 };
 
+struct SocketHdlFinder
+{
+	SocketHdlFinder(const connection_hdl& st) : s(st) { }
+	const connection_hdl s;
+	bool operator()(const connection_hdl& lhs) const { return !lhs.owner_before(s) && !s.owner_before(lhs); }
+};
+
 struct WebSocketServer {
 	int port = 8085;
 	bool rooms_aggregate = true;

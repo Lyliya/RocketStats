@@ -119,7 +119,7 @@ WebSocketCommand RocketStats::SocketCommandParse(std::string message)
 
 json RocketStats::SocketSubscribe(connection_hdl hdl, json rooms)
 {
-    auto it = std::find(rooms_aggregated.begin(), rooms_aggregated.end(), hdl);
+    auto it = std::find_if(rooms_aggregated.begin(), rooms_aggregated.end(), SocketHdlFinder(hdl));
     if (it != rooms_aggregated.end())
         rooms_aggregated.erase(it);
 
@@ -134,7 +134,7 @@ json RocketStats::SocketSubscribe(connection_hdl hdl, json rooms)
                 if (ws_rooms.find(room) == ws_rooms.end())
                     ws_rooms[room] = {};
 
-                if (std::find(ws_rooms[room].begin(), ws_rooms[room].end(), hdl) == ws_rooms[room].end())
+                if (std::find_if(ws_rooms[room].begin(), ws_rooms[room].end(), SocketHdlFinder(hdl)) == ws_rooms[room].end())
                     ws_rooms[room].push_back(hdl);
 
                 subscribed.push_back(room);
@@ -147,7 +147,7 @@ json RocketStats::SocketSubscribe(connection_hdl hdl, json rooms)
 
 json RocketStats::SocketUnsubscribe(connection_hdl hdl, json rooms, bool all)
 {
-    auto it = std::find(rooms_aggregated.begin(), rooms_aggregated.end(), hdl);
+    auto it = std::find_if(rooms_aggregated.begin(), rooms_aggregated.end(), SocketHdlFinder(hdl));
     if (it != rooms_aggregated.end())
         rooms_aggregated.erase(it);
 
@@ -156,7 +156,7 @@ json RocketStats::SocketUnsubscribe(connection_hdl hdl, json rooms, bool all)
     {
         if (all || (rooms.is_array() && std::find(rooms.begin(), rooms.end(), key) != rooms.end()))
         {
-            auto it = std::find(room.begin(), room.end(), hdl);
+            auto it = std::find_if(room.begin(), room.end(), SocketHdlFinder(hdl));
             if (it != room.end())
             {
                 ws_rooms[key].erase(it);
@@ -172,7 +172,7 @@ json RocketStats::SocketUnsubscribe(connection_hdl hdl, json rooms, bool all)
         {
             if (ws_rooms.find(room) != ws_rooms.end())
             {
-                auto it = std::find(ws_rooms[room].begin(), ws_rooms[room].end(), hdl);
+                auto it = std::find_if(ws_rooms[room].begin(), ws_rooms[room].end(), SocketHdlFinder(hdl));
                 if (it != ws_rooms[room].end())
                 {
                     ws_rooms[room].erase(it);
@@ -216,5 +216,14 @@ void RocketStats::SocketSend(std::string name, json data, std::string type)
 void RocketStats::SocketBroadcast(json data)
 {
     for (connection_hdl it : m_connections)
-        m_server.send(it, data.dump(), websocketpp::frame::opcode::text);
+    {
+        try
+        {
+            m_server.send(it, data.dump(), websocketpp::frame::opcode::text);
+        }
+        catch (websocketpp::exception const& e)
+        {
+            cvarManager->log("WebSocket send error: " + std::string(e.what()));
+        }
+    }
 }
