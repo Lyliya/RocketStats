@@ -371,7 +371,8 @@ void RocketStats::onLoad()
 
                 gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
                     UpdateUIScale("onLoad");
-                    ShowPlugin("onLoad");
+                    if (is_in_menu)
+                        ShowPlugin("onLoad");
                 }, 1.f);
                 return;
             }
@@ -380,7 +381,8 @@ void RocketStats::onLoad()
         onInit();
 
         UpdateUIScale("onLoad");
-        ShowPlugin("onLoad");
+        if (is_in_menu)
+            ShowPlugin("onLoad");
     });
 }
 
