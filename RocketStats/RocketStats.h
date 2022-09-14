@@ -553,6 +553,7 @@ private:
 		{47, "Super Cube"},
 		{48, "Tactical Rumble"},
 		{49, "Spring Loaded"},
+		{52, "Gotham City Rumble"},
 		{54, "Knockout"}
 	};
 
