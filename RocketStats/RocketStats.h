@@ -1,5 +1,4 @@
 #pragma once
-#pragma warning(disable: 4099)
 #pragma comment(lib, "pluginsdk.lib")
 #include "bakkesmod/plugin/bakkesmodplugin.h"
 #include "bakkesmod/plugin/pluginwindow.h"
