@@ -79,14 +79,6 @@ void RocketStats::GameEnd(std::string eventName)
 
             cvarManager->log("GameEnd => streak:" + std::to_string(stats[current.playlist].streak));
             ComputeStreak(true);
-            /*if (stats[current.playlist].streak < 0)
-            {
-                always.streak = 0;
-                session.streak = 0;
-                stats[current.playlist].streak = 0;
-                always_gm[current.playlist].streak = 0;
-            } */
-
             ++always.streak;
             ++session.streak;
             ++stats[current.playlist].streak;
@@ -106,14 +98,6 @@ void RocketStats::GameEnd(std::string eventName)
 
             cvarManager->log("GameEnd => streak:" + std::to_string(stats[current.playlist].streak));
             ComputeStreak(false);
-            /* if (stats[current.playlist].streak > 0)
-            {
-                always.streak = 0;
-                session.streak = 0;
-                stats[current.playlist].streak = 0;
-                always_gm[current.playlist].streak = 0;
-            } */
-
             --always.streak;
             --session.streak;
             --stats[current.playlist].streak;
@@ -161,14 +145,6 @@ void RocketStats::GameDestroyed(std::string eventName)
 
         cvarManager->log("GameDestroyed => streak:" + std::to_string(stats[current.playlist].streak));
         ComputeStreak(false);
-        /* if (stats[current.playlist].streak > 0)
-        {
-            always.streak = 0;
-            session.streak = 0;
-            stats[current.playlist].streak = 0;
-            always_gm[current.playlist].streak = 0;
-        } */
-
         --always.streak;
         --session.streak;
         --stats[current.playlist].streak;
