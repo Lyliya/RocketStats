@@ -78,14 +78,7 @@ void RocketStats::GameEnd(std::string eventName)
             ++always_gm[current.playlist].win;
 
             cvarManager->log("GameEnd => streak:" + std::to_string(stats[current.playlist].streak));
-            if (stats[current.playlist].streak < 0)
-            {
-                always.streak = 0;
-                session.streak = 0;
-                stats[current.playlist].streak = 0;
-                always_gm[current.playlist].streak = 0;
-            }
-
+            ComputeStreak(true);
             ++always.streak;
             ++session.streak;
             ++stats[current.playlist].streak;
@@ -104,14 +97,7 @@ void RocketStats::GameEnd(std::string eventName)
             ++always_gm[current.playlist].loss;
 
             cvarManager->log("GameEnd => streak:" + std::to_string(stats[current.playlist].streak));
-            if (stats[current.playlist].streak > 0)
-            {
-                always.streak = 0;
-                session.streak = 0;
-                stats[current.playlist].streak = 0;
-                always_gm[current.playlist].streak = 0;
-            }
-
+            ComputeStreak(false);
             --always.streak;
             --session.streak;
             --stats[current.playlist].streak;
@@ -158,14 +144,7 @@ void RocketStats::GameDestroyed(std::string eventName)
         ++always_gm[current.playlist].loss;
 
         cvarManager->log("GameDestroyed => streak:" + std::to_string(stats[current.playlist].streak));
-        if (stats[current.playlist].streak > 0)
-        {
-            always.streak = 0;
-            session.streak = 0;
-            stats[current.playlist].streak = 0;
-            always_gm[current.playlist].streak = 0;
-        }
-
+        ComputeStreak(false);
         --always.streak;
         --session.streak;
         --stats[current.playlist].streak;
@@ -182,6 +161,21 @@ void RocketStats::GameDestroyed(std::string eventName)
 
     SetRefresh(RefreshFlags_Refresh);
     cvarManager->log("===== !GameDestroyed =====");
+}
+
+void RocketStats::ComputeStreak(bool win) {
+    if (win) {
+        always.streak = std::max(0, always.streak);
+        session.streak = std::max(0, session.streak);
+        stats[current.playlist].streak = std::max(0, stats[current.playlist].streak);
+        always_gm[current.playlist].streak = std::max(0, always_gm[current.playlist].streak);
+    }
+    else {
+        always.streak = std::min(0, always.streak);
+        session.streak = std::min(0, session.streak);
+        stats[current.playlist].streak = std::min(0, stats[current.playlist].streak);
+        always_gm[current.playlist].streak = std::min(0, always_gm[current.playlist].streak);
+    }
 }
 
 json RocketStats::GetGameState()

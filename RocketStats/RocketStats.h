@@ -705,6 +705,7 @@ public:
 	void GameStart(std::string eventName);
 	void GameEnd(std::string eventName);
 	void GameDestroyed(std::string eventName);
+	void ComputeStreak(bool win);
 	json GetGameState();
 	void SendGameState(std::string name);
 	int GetGameTime();
