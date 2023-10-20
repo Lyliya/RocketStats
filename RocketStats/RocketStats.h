@@ -505,44 +505,45 @@ private:
 	};
 
 	const std::map<int, std::string> playlist_name = {
-		{1, "Duel"},
-		{2, "Doubles"},
-		{3, "Standard"},
+        // Soccar
+		{1, "Casual Duel"},
+		{2, "Casual Doubles"},
+		{3, "Casual Standard"},
 		{4, "Chaos"},
-
-		{6, "Private Match"},
-		{7, "Season"},
-		{8, "Offline Splitscreen"},
-		{9, "Training"},
-
 		{10, "Ranked Duel"},
 		{11, "Ranked Doubles"},
-		{12, "Ranked Solo Standard"},
 		{13, "Ranked Standard"},
 
-		{15, "Casual SnowDay"},
-		{16, "Experimental"},
-		{17, "Casual Hoops"},
-		{18, "Casual Rumble"},
-
-		{19, "Workshop"},
-		{20, "UGCTrainingEditor"},
-		{21, "UGCTraining"},
-		{22, "Custom Tournament"},
-		{23, "Casual Dropshot"},
-		{24, "Local"},
-		{26, "FaceIt"},
-
-		{27, "Ranked Hoops"},
+        // Extras
+        {15, "Casual Snowday"},
+        {17, "Casual Hoops"},
+        {18, "Casual Rumble"},
+        {23, "Casual Dropshot"},
+        {27, "Ranked Hoops"},
 		{28, "Ranked Rumble"},
 		{29, "Ranked Dropshot"},
 		{30, "Ranked SnowDay"},
 
-		{31, "Ghost Hunt"},
+        // Custom Games
+		{6, "Private Match"},
+		{7, "Season"},
+		{8, "Offline Splitscreen"},
+		{9, "Training"},
+		{19, "Workshop"},
+		{20, "UGCTrainingEditor"},
+		{21, "UGCTraining"},
+		{22, "Custom Tournament"},
+        {34, "Season Tournament"},
+
+        // Misc
+        {16, "Rocket Labs"},
+        {26, "FaceIt"},
+        {35, "Rocket Labs"},
+
+        // LTMs
+        {31, "Ghost Hunt"},
 		{32, "Beachball"},
 		{33, "Spike Rush"},
-		{34, "Season Tournament"},
-		{35, "Rocket Labs"},
 		{37, "Dropshot Rumble"},
 		{38, "Heatseeker"},
 		{41, "Boomer Ball"},
@@ -552,8 +553,13 @@ private:
 		{47, "Super Cube"},
 		{48, "Tactical Rumble"},
 		{49, "Spring Loaded"},
+        {50, "Speed Demon"},
 		{52, "Gotham City Rumble"},
-		{54, "Knockout"}
+		{54, "Knockout"},
+        {62, "Nike FC Showdown"},
+        {64, "Haunted Heatseeker"},
+        {66, "Heatseeker Ricochet"},
+        {67, "Spooky Cube"}
 	};
 
 	// PluginWindow
