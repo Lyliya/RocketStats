@@ -559,7 +559,8 @@ private:
         {62, "Nike FC Showdown"},
         {64, "Haunted Heatseeker"},
         {66, "Heatseeker Ricochet"},
-        {67, "Spooky Cube"}
+        {67, "Spooky Cube"},
+		{68, "G-Force Frenzy"}
 	};
 
 	// PluginWindow

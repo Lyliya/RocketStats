@@ -7,7 +7,7 @@
 
 #include "RocketStats.h"
 
-BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "4.1.2", PERMISSION_ALL)
+BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "4.1.3", PERMISSION_ALL)
 
 #pragma region Utils
 Stats RocketStats::GetStats()
@@ -64,7 +64,7 @@ std::string RocketStats::GetPlaylistName(int playlistID)
     if (playlist_name.find(playlistID) != playlist_name.end())
         return playlist_name.at(playlistID);
     else
-        return "Unknown Game Mode";
+        return "Unknown Game Mode (" + std::to_string(playlistID) + ")";
 }
 
 std::string RocketStats::GetRoman(int number)
