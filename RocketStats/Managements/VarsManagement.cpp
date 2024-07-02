@@ -144,6 +144,8 @@ void RocketStats::AllShotsShotOnGoal(bool force, bool default_value)
     VarShotsShotOnGoalCumul(true, force, default_value);
     VarShotsTeamShotOnGoalCumul(true, force, default_value);
     VarShotsTotalShotOnGoalCumul(true, force, default_value);
+
+    VarShotsShootingPercentage(true, force, default_value);
 }
 #pragma endregion
 
@@ -213,6 +215,8 @@ void RocketStats::AllGoalsGoal(bool force, bool default_value)
     VarGoalsGoalCumul(true, force, default_value);
     VarGoalsTeamGoalCumul(true, force, default_value);
     VarGoalsTotalGoalCumul(true, force, default_value);
+
+    VarShotsShootingPercentage(true, force, default_value);
 }
 
 void RocketStats::AllGoalsOwnGoal(bool force, bool default_value)

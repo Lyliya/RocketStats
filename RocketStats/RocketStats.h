@@ -110,6 +110,7 @@ struct Stats {
 	int TotalAssist = 0;
 	int TotalShotOnGoal = 0;
 	int TotalBicycleHit = 0;
+	float ShootingPercentage = 0.f;
 
 	int ClearCumul = 0;
 	int AssistCumul = 0;
@@ -829,6 +830,7 @@ public:
 	std::string VarShotsTotalAssist(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsTotalBicycleHit(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsTotalShotOnGoal(bool write = false, bool force = false, bool default_value = false);
+	std::string VarShotsShootingPercentage(bool write = false, bool force = false, bool default_value = false);
 
 	std::string VarShotsClearMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsAssistMatch(bool write = false, bool force = false, bool default_value = false);
