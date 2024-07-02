@@ -597,6 +597,13 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
             ++current.stats.TotalShotOnGoalCumul;
             ++session.TotalShotOnGoalCumul;
 
+            if (always.ShotOnGoal > 0)
+                always.ShootingPercentage = static_cast<float>(always.Goal) / always.ShotOnGoal;
+            if (current.stats.ShotOnGoal > 0)
+                current.stats.ShootingPercentage = static_cast<float>(current.stats.Goal) / current.stats.ShotOnGoal;
+            if (session.ShotOnGoal > 0)
+                session.ShootingPercentage = static_cast<float>(session.Goal) / session.ShotOnGoal;
+
             for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
             {
                 ++stats[it->first].TotalShotOnGoalCumul;
@@ -720,6 +727,13 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
             ++always.TotalGoalCumul;
             ++current.stats.TotalGoalCumul;
             ++session.TotalGoalCumul;
+
+            if (always.ShotOnGoal > 0)
+                always.ShootingPercentage = static_cast<float>(always.Goal) / always.ShotOnGoal;
+            if (current.stats.ShotOnGoal > 0)
+                current.stats.ShootingPercentage = static_cast<float>(current.stats.Goal) / current.stats.ShotOnGoal;
+            if (session.ShotOnGoal > 0)
+                session.ShootingPercentage = static_cast<float>(session.Goal) / session.ShotOnGoal;
 
             for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
             {

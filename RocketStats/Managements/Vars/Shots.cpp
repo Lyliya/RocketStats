@@ -26,6 +26,9 @@ void RocketStats::ReadShots(Stats& stat, json& config)
         stat.TotalBicycleHit = int(config["TotalBicycleHit"]);
     if (config["TotalShotOnGoal"].is_number_unsigned())
         stat.TotalShotOnGoal = int(config["TotalShotOnGoal"]);
+    if (config["ShootingPercentage"].is_number_float()) {
+        stat.ShootingPercentage = float(config["ShootingPercentage"]);
+    }
 
     if (config["ClearCumul"].is_number_unsigned())
         stat.ClearCumul = int(config["ClearCumul"]);
@@ -67,6 +70,7 @@ void RocketStats::WriteShots(Stats& stat, json& config, bool more)
     config["TotalAssist"] = stat.TotalAssist;
     config["TotalBicycleHit"] = stat.TotalBicycleHit;
     config["TotalShotOnGoal"] = stat.TotalShotOnGoal;
+    config["ShootingPercentage"] = stat.ShootingPercentage;
 
     config["ClearCumul"] = stat.ClearCumul;
     config["AssistCumul"] = stat.AssistCumul;
@@ -97,6 +101,7 @@ void RocketStats::ReplaceShots(std::map<std::string, std::string>& vars)
     vars["TotalAssist"] = VarShotsTotalAssist();
     vars["TotalBicycleHit"] = VarShotsTotalBicycleHit();
     vars["TotalShotOnGoal"] = VarShotsTotalShotOnGoal();
+    vars["ShootingPercentage"] = VarShotsShootingPercentage();
 
     /// Match
     vars["ClearMatch"] = VarShotsClearMatch();
@@ -159,6 +164,16 @@ void RocketStats::SessionShots(Stats& stat, int index, bool playlists)
         session.TotalShotOnGoalCumul = stat.TotalShotOnGoal;
         session.TotalBicycleHitCumul = stat.TotalBicycleHit;
     }
+}
+
+std::string RocketStats::VarShotsShootingPercentage(bool write, bool force, bool default_value)
+{
+    std::string tmp = (rs_hide_shots ? theme_hide_value : (default_value ? "0" : std::format("{:.2f}", GetStats().ShootingPercentage)));
+
+    if (write && (force || (rs_in_file && rs_file_shots)))
+        WriteInFile("RocketStats_ShootingPercentage.txt", tmp);
+
+    return tmp;
 }
 
 #pragma region Base
