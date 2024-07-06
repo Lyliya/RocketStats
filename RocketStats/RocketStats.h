@@ -110,7 +110,6 @@ struct Stats {
 	int TotalAssist = 0;
 	int TotalShotOnGoal = 0;
 	int TotalBicycleHit = 0;
-	float ShootingPercentage = 0.f;
 
 	int ClearCumul = 0;
 	int AssistCumul = 0;
@@ -124,6 +123,14 @@ struct Stats {
 	int TotalAssistCumul = 0;
 	int TotalShotOnGoalCumul = 0;
 	int TotalBicycleHitCumul = 0;
+
+    /// Derived stat for Shooting Percentage
+	float ShootingPercentage = 0.f;
+	float TeamShootingPercentage = 0.f;
+	float TotalShootingPercentage = 0.f;
+	float ShootingPercentageCumul = 0.f;
+	float TeamShootingPercentageCumul = 0.f;
+	float TotalShootingPercentageCumul = 0.f;
 
 	/// Saves
 	int Save = 0;
@@ -824,13 +831,15 @@ public:
 	std::string VarShotsAerialHit(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsBicycleHit(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsShotOnGoal(bool write = false, bool force = false, bool default_value = false);
+	std::string VarShotsShootingPercentage(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsTeamAssist(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsTeamBicycleHit(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsTeamShotOnGoal(bool write = false, bool force = false, bool default_value = false);
+	std::string VarShotsTeamShootingPercentage(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsTotalAssist(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsTotalBicycleHit(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsTotalShotOnGoal(bool write = false, bool force = false, bool default_value = false);
-	std::string VarShotsShootingPercentage(bool write = false, bool force = false, bool default_value = false);
+	std::string VarShotsTotalShootingPercentage(bool write = false, bool force = false, bool default_value = false)
 
 	std::string VarShotsClearMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsAssistMatch(bool write = false, bool force = false, bool default_value = false);
@@ -838,12 +847,15 @@ public:
 	std::string VarShotsAerialHitMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsBicycleHitMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsShotOnGoalMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarShotsShootingPercentageMatch(bool write = false, bool force = false, bool default_value = false)
 	std::string VarShotsTeamAssistMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsTeamBicycleHitMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsTeamShotOnGoalMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarShotsTeamShootingPercentageMatch(bool write = false, bool force = false, bool default_value = false)
 	std::string VarShotsTotalAssistMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsTotalBicycleHitMatch(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsTotalShotOnGoalMatch(bool write = false, bool force = false, bool default_value = false);
+	std::string VarShotsTotalShootingPercentageMatch(bool write = false, bool force = false, bool default_value = false)
 
 	std::string VarShotsClearCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsAssistCumul(bool write = false, bool force = false, bool default_value = false);
@@ -851,12 +863,15 @@ public:
 	std::string VarShotsAerialHitCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsBicycleHitCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsShotOnGoalCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarShotsShootingPercentageCumul(bool write = false, bool force = false, bool default_value = false)
 	std::string VarShotsTeamAssistCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsTeamBicycleHitCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsTeamShotOnGoalCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarShotsTeamShootingPercentageCumul(bool write = false, bool force = false, bool default_value = false)
 	std::string VarShotsTotalAssistCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsTotalBicycleHitCumul(bool write = false, bool force = false, bool default_value = false);
 	std::string VarShotsTotalShotOnGoalCumul(bool write = false, bool force = false, bool default_value = false);
+	std::string VarShotsTotalShootingPercentageCumul(bool write = false, bool force = false, bool default_value = false)
 #pragma endregion
 
 #pragma region Saves

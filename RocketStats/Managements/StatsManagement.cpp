@@ -603,14 +603,46 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
                 current.stats.ShootingPercentage = static_cast<float>(current.stats.Goal) / current.stats.ShotOnGoal;
             if (session.ShotOnGoal > 0)
                 session.ShootingPercentage = static_cast<float>(session.Goal) / session.ShotOnGoal;
+            
+            if (always.TeamShotOnGoal > 0)
+                always.TeamShootingPercentage = static_cast<float>(always.TeamGoal) / always.TeamShotOnGoal;
+            if (current.stats.TeamShotOnGoal > 0)
+                current.stats.TeamShootingPercentage = static_cast<float>(current.stats.TeamGoal) / current.stats.TeamShotOnGoal;
+            if (session.TeamShotOnGoal > 0)
+                session.TeamShootingPercentage = static_cast<float>(session.TeamGoal) / session.TeamShotOnGoal;
+
+            if (stats[current.playlist].ShotOnGoal > 0)
+                stats[current.playlist].ShootingPercentage = static_cast<float>(stats[current.playlist].Goal) / stats[current.playlist].ShotOnGoal;
+            if (stats[current.playlist].TeamShotOnGoal > 0)
+                stats[current.playlist].TeamShootingPercentage = static_cast<float>(stats[current.playlist].TeamGoal) / stats[current.playlist].TeamShotOnGoal;
+
+            if (always_gm[current.playlist].ShotOnGoal > 0)
+                always_gm[current.playlist].ShootingPercentage = static_cast<float>(always_gm[current.playlist].Goal) / always_gm[current.playlist].ShotOnGoal;
+            if (always_gm[current.playlist].TeamShotOnGoal > 0)
+                always_gm[current.playlist].TeamShootingPercentage = static_cast<float>(always_gm[current.playlist].TeamGoal) / always_gm[current.playlist].TeamShotOnGoal;
 
             for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
             {
                 ++stats[it->first].TotalShotOnGoalCumul;
                 ++always_gm[it->first].TotalShotOnGoalCumul;
 
+                if (stats[it->first].TotalShotOnGoalCumul > 0)
+                    stats[it->first].TotalShootingPercentageCumul = static_cast<float>(stats[it->first].TotalGoalCumul) / stats[it->first].TotalShotOnGoalCumul;
+                if (always_gm[it->first].TotalShotOnGoalCumul > 0)
+                    always_gm[it->first].TotalShootingPercentageCumul = static_cast<float>(always_gm[it->first].TotalGoalCumul) / always_gm[it->first].TotalShotOnGoalCumul;
+
                 ++(iam_receiver ? stats[it->first].ShotOnGoalCumul : stats[it->first].TeamShotOnGoalCumul);
                 ++(iam_receiver ? always_gm[it->first].ShotOnGoalCumul : always_gm[it->first].TeamShotOnGoalCumul);
+
+                if (stats[it->first].ShotOnGoalCumul > 0)
+                    stats[it->first].ShootingPercentageCumul = static_cast<float>(stats[it->first].GoalCumul) / stats[it->first].ShotOnGoalCumul;
+                if (stats[it->first].TeamShotOnGoalCumul > 0)
+                    stats[it->first].TeamShootingPercentageCumul = static_cast<float>(stats[it->first].TeamGoalCumul) / stats[it->first].TeamShotOnGoalCumul;
+
+                if (always_gm[it->first].ShotOnGoalCumul > 0)
+                    always_gm[it->first].ShootingPercentageCumul = static_cast<float>(always_gm[it->first].GoalCumul) / always_gm[it->first].ShotOnGoalCumul;
+                if (always_gm[it->first].TeamShotOnGoalCumul > 0)
+                    always_gm[it->first].TeamShootingPercentageCumul = static_cast<float>(always_gm[it->first].TeamGoalCumul) / always_gm[it->first].TeamShotOnGoalCumul;
             }
 
             AllShotsShotOnGoal(true);
@@ -735,13 +767,45 @@ void RocketStats::onStatTickerMessage(ServerWrapper caller, void* params)
             if (session.ShotOnGoal > 0)
                 session.ShootingPercentage = static_cast<float>(session.Goal) / session.ShotOnGoal;
 
+            if (always.TeamShotOnGoal > 0)
+                always.TeamShootingPercentage = static_cast<float>(always.TeamGoal) / always.TeamShotOnGoal;
+            if (current.stats.TeamShotOnGoal > 0)
+                current.stats.TeamShootingPercentage = static_cast<float>(current.stats.TeamGoal) / current.stats.TeamShotOnGoal;
+            if (session.TeamShotOnGoal > 0)
+                session.TeamShootingPercentage = static_cast<float>(session.TeamGoal) / session.TeamShotOnGoal;
+
+            if (stats[current.playlist].ShotOnGoal > 0)
+                stats[current.playlist].ShootingPercentage = static_cast<float>(stats[current.playlist].Goal) / stats[current.playlist].ShotOnGoal;
+            if (stats[current.playlist].TeamShotOnGoal > 0)
+                stats[current.playlist].TeamShootingPercentage = static_cast<float>(stats[current.playlist].TeamGoal) / stats[current.playlist].TeamShotOnGoal;
+
+            if (always_gm[current.playlist].ShotOnGoal > 0)
+                always_gm[current.playlist].ShootingPercentage = static_cast<float>(always_gm[current.playlist].Goal) / always_gm[current.playlist].ShotOnGoal;
+            if (always_gm[current.playlist].TeamShotOnGoal > 0)
+                always_gm[current.playlist].TeamShootingPercentage = static_cast<float>(always_gm[current.playlist].TeamGoal) / always_gm[current.playlist].TeamShotOnGoal;
+
             for (auto it = playlist_name.begin(); it != playlist_name.end(); ++it)
             {
                 ++stats[it->first].TotalGoalCumul;
                 ++always_gm[it->first].TotalGoalCumul;
 
+                if (stats[it->first].TotalShotOnGoalCumul > 0)
+                    stats[it->first].TotalShootingPercentageCumul = static_cast<float>(stats[it->first].TotalGoalCumul) / stats[it->first].TotalShotOnGoalCumul;
+                if (always_gm[it->first].TotalShotOnGoalCumul > 0)
+                    always_gm[it->first].TotalShootingPercentageCumul = static_cast<float>(always_gm[it->first].TotalGoalCumul) / always_gm[it->first].TotalShotOnGoalCumul;
+
                 ++(iam_receiver ? stats[it->first].GoalCumul : stats[it->first].TeamGoalCumul);
                 ++(iam_receiver ? always_gm[it->first].GoalCumul : always_gm[it->first].TeamGoalCumul);
+
+                if (stats[it->first].ShotOnGoalCumul > 0)
+                    stats[it->first].ShootingPercentageCumul = static_cast<float>(stats[it->first].GoalCumul) / stats[it->first].ShotOnGoalCumul;
+                if (stats[it->first].TeamShotOnGoalCumul > 0)
+                    stats[it->first].TeamShootingPercentageCumul = static_cast<float>(stats[it->first].TeamGoalCumul) / stats[it->first].TeamShotOnGoalCumul;
+
+                if (always_gm[it->first].ShotOnGoalCumul > 0)
+                    always_gm[it->first].ShootingPercentageCumul = static_cast<float>(always_gm[it->first].GoalCumul) / always_gm[it->first].ShotOnGoalCumul;
+                if (always_gm[it->first].TeamShotOnGoalCumul > 0)
+                    always_gm[it->first].TeamShootingPercentageCumul = static_cast<float>(always_gm[it->first].TeamGoalCumul) / always_gm[it->first].TeamShotOnGoalCumul;
             }
 
             AllGoalsGoal(true);
