@@ -125,12 +125,12 @@ struct Stats {
 	int TotalBicycleHitCumul = 0;
 
     /// Derived stat for Shooting Percentage
-	float ShootingPercentage = 0.f;
-	float TeamShootingPercentage = 0.f;
-	float TotalShootingPercentage = 0.f;
-	float ShootingPercentageCumul = 0.f;
-	float TeamShootingPercentageCumul = 0.f;
-	float TotalShootingPercentageCumul = 0.f;
+	int ShootingPercentage = 0;
+	int TeamShootingPercentage = 0;
+	int TotalShootingPercentage = 0;
+	int ShootingPercentageCumul = 0;
+	int TeamShootingPercentageCumul = 0;
+	int TotalShootingPercentageCumul = 0;
 
 	/// Saves
 	int Save = 0;

@@ -14,24 +14,24 @@ void RocketStats::ReadShots(Stats& stat, json& config)
         stat.BicycleHit = int(config["BicycleHit"]);
     if (config["ShotOnGoal"].is_number_unsigned())
         stat.ShotOnGoal = int(config["ShotOnGoal"]);
-    if (config["ShootingPercentage"].is_number_float())
-        stat.ShootingPercentage = float(config["ShootingPercentage"]);
+    if (config["ShootingPercentage"].is_number_unsigned())
+        stat.ShootingPercentage = int(config["ShootingPercentage"]);
     if (config["TeamAssist"].is_number_unsigned())
         stat.TeamAssist = int(config["TeamAssist"]);
     if (config["TeamBicycleHit"].is_number_unsigned())
         stat.TeamBicycleHit = int(config["TeamBicycleHit"]);
     if (config["TeamShotOnGoal"].is_number_unsigned())
         stat.TeamShotOnGoal = int(config["TeamShotOnGoal"]);
-    if (config["TeamShootingPercentage"].is_number_float())
-        stat.TeamShootingPercentage = float(config["TeamShootingPercentage"]);
+    if (config["TeamShootingPercentage"].is_number_unsigned())
+        stat.TeamShootingPercentage = int(config["TeamShootingPercentage"]);
     if (config["TotalAssist"].is_number_unsigned())
         stat.TotalAssist = int(config["TotalAssist"]);
     if (config["TotalBicycleHit"].is_number_unsigned())
         stat.TotalBicycleHit = int(config["TotalBicycleHit"]);
     if (config["TotalShotOnGoal"].is_number_unsigned())
         stat.TotalShotOnGoal = int(config["TotalShotOnGoal"]);
-    if (config["TotalShootingPercentage"].is_number_float())
-        stat.TotalShootingPercentage = float(config["TotalShootingPercentage"]);
+    if (config["TotalShootingPercentage"].is_number_unsigned())
+        stat.TotalShootingPercentage = int(config["TotalShootingPercentage"]);
 
     if (config["ClearCumul"].is_number_unsigned())
         stat.ClearCumul = int(config["ClearCumul"]);
@@ -45,24 +45,24 @@ void RocketStats::ReadShots(Stats& stat, json& config)
         stat.BicycleHitCumul = int(config["BicycleHitCumul"]);
     if (config["ShotOnGoalCumul"].is_number_unsigned())
         stat.ShotOnGoalCumul = int(config["ShotOnGoalCumul"]);
-    if (config["ShootingPercentageCumul"].is_number_float())
-        stat.ShootingPercentageCumul = float(config["ShootingPercentageCumul"]);    
+    if (config["ShootingPercentageCumul"].is_number_unsigned())
+        stat.ShootingPercentageCumul = int(config["ShootingPercentageCumul"]);    
     if (config["TeamAssistCumul"].is_number_unsigned())
         stat.TeamAssistCumul = int(config["TeamAssistCumul"]);
     if (config["TeamBicycleHitCumul"].is_number_unsigned())
         stat.TeamBicycleHitCumul = int(config["TeamBicycleHitCumul"]);
     if (config["TeamShotOnGoalCumul"].is_number_unsigned())
         stat.TeamShotOnGoalCumul = int(config["TeamShotOnGoalCumul"]);
-    if (config["TeamShootingPercentageCumul"].is_number_float())
-        stat.TeamShootingPercentageCumul = float(config["TeamShootingPercentageCumul"]); 
+    if (config["TeamShootingPercentageCumul"].is_number_unsigned())
+        stat.TeamShootingPercentageCumul = int(config["TeamShootingPercentageCumul"]); 
     if (config["TotalAssistCumul"].is_number_unsigned())
         stat.TotalAssistCumul = int(config["TotalAssistCumul"]);
     if (config["TotalBicycleHitCumul"].is_number_unsigned())
         stat.TotalBicycleHitCumul = int(config["TotalBicycleHitCumul"]);
     if (config["TotalShotOnGoalCumul"].is_number_unsigned())
         stat.TotalShotOnGoalCumul = int(config["TotalShotOnGoalCumul"]);
-    if (config["TotalShootingPercentageCumul"].is_number_float())
-        stat.TotalShootingPercentageCumul = float(config["TotalShootingPercentageCumul"]); 
+    if (config["TotalShootingPercentageCumul"].is_number_unsigned())
+        stat.TotalShootingPercentageCumul = int(config["TotalShootingPercentageCumul"]); 
 }
 
 void RocketStats::WriteShots(Stats& stat, json& config, bool more)
@@ -251,7 +251,7 @@ std::string RocketStats::VarShotsShotOnGoal(bool write, bool force, bool default
 
 std::string RocketStats::VarShotsShootingPercentage(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_shots ? theme_hide_value : (default_value ? "0" : std::format("{:.2f}", GetStats().ShootingPercentage)));
+    std::string tmp = (rs_hide_shots ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().ShootingPercentage)));
 
     if (write && (force || (rs_in_file && rs_file_shots)))
         WriteInFile("RocketStats_ShootingPercentage.txt", tmp);
@@ -292,7 +292,7 @@ std::string RocketStats::VarShotsTeamShotOnGoal(bool write, bool force, bool def
 
 std::string RocketStats::VarShotsTeamShootingPercentage(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_shots ? theme_hide_value : (default_value ? "0" : std::format("{:.2f}", GetStats().TeamShootingPercentage)));
+    std::string tmp = (rs_hide_shots ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TeamShootingPercentage)));
 
     if (write && (force || (rs_in_file && rs_file_shots)))
         WriteInFile("RocketStats_TeamShootingPercentage.txt", tmp);
@@ -335,7 +335,7 @@ std::string RocketStats::VarShotsTotalShotOnGoal(bool write, bool force, bool de
 
 std::string RocketStats::VarShotsTotalShootingPercentage(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_shots ? theme_hide_value : (default_value ? "0" : std::format("{:.2f}", GetStats().TotalShootingPercentage)));
+    std::string tmp = (rs_hide_shots ? theme_hide_value : (default_value ? "0" : std::to_string(GetStats().TotalShootingPercentage)));
 
     if (write && (force || (rs_in_file && rs_file_shots)))
         WriteInFile("RocketStats_TotalShootingPercentage.txt", tmp);
@@ -409,7 +409,7 @@ std::string RocketStats::VarShotsShotOnGoalMatch(bool write, bool force, bool de
 
 std::string RocketStats::VarShotsShootingPercentageMatch(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_shots ? theme_hide_value : (default_value ? "0" : std::format("{:.2f}", current.stats.ShootingPercentage)));
+    std::string tmp = (rs_hide_shots ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.ShootingPercentage)));
 
     if (write && (force || (rs_in_file && rs_file_shots)))
         WriteInFile("RocketStats_ShootingPercentageMatch.txt", tmp);
@@ -450,7 +450,7 @@ std::string RocketStats::VarShotsTeamShotOnGoalMatch(bool write, bool force, boo
 
 std::string RocketStats::VarShotsTeamShootingPercentageMatch(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_shots ? theme_hide_value : (default_value ? "0" : std::format("{:.2f}", current.stats.TeamShootingPercentage)));
+    std::string tmp = (rs_hide_shots ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.TeamShootingPercentage)));
 
     if (write && (force || (rs_in_file && rs_file_shots)))
         WriteInFile("RocketStats_TeamShootingPercentageMatch.txt", tmp);
@@ -492,7 +492,7 @@ std::string RocketStats::VarShotsTotalShotOnGoalMatch(bool write, bool force, bo
 
 std::string RocketStats::VarShotsTotalShootingPercentageMatch(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_shots ? theme_hide_value : (default_value ? "0" : std::format("{:.2f}", current.stats.TotalShootingPercentage)));
+    std::string tmp = (rs_hide_shots ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.TotalShootingPercentage)));
 
     if (write && (force || (rs_in_file && rs_file_shots)))
         WriteInFile("RocketStats_TotalShootingPercentageMatch.txt", tmp);
@@ -565,7 +565,7 @@ std::string RocketStats::VarShotsShotOnGoalCumul(bool write, bool force, bool de
 
 std::string RocketStats::VarShotsShootingPercentageCumul(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_shots ? theme_hide_value : (default_value ? "0" : std::format("{:.2f}", current.stats.ShootingPercentageCumul)));
+    std::string tmp = (rs_hide_shots ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.ShootingPercentageCumul)));
 
     if (write && (force || (rs_in_file && rs_file_shots)))
         WriteInFile("RocketStats_ShootingPercentageCumul.txt", tmp);
@@ -606,7 +606,7 @@ std::string RocketStats::VarShotsTeamShotOnGoalCumul(bool write, bool force, boo
 
 std::string RocketStats::VarShotsTeamShootingPercentageCumul(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_shots ? theme_hide_value : (default_value ? "0" : std::format("{:.2f}", current.stats.TeamShootingPercentageCumul)));
+    std::string tmp = (rs_hide_shots ? theme_hide_value : (default_value ? "0" : std::to_string(current.stats.TeamShootingPercentageCumul)));
 
     if (write && (force || (rs_in_file && rs_file_shots)))
         WriteInFile("RocketStats_TeamShootingPercentageCumul.txt", tmp);
@@ -648,7 +648,7 @@ std::string RocketStats::VarShotsTotalShotOnGoalCumul(bool write, bool force, bo
 
 std::string RocketStats::VarShotsTotalShootingPercentageCumul(bool write, bool force, bool default_value)
 {
-    std::string tmp = (rs_hide_shots ? theme_hide_value : (default_value ? "0" : std::format("{:.2f}", current.stats.TotalShootingPercentageCumul)));
+    std::string tmp = (rs_hide_shots ? theme_hide_value : (default_value ? "0" : std::to_string( current.stats.TotalShootingPercentageCumul)));
 
     if (write && (force || (rs_in_file && rs_file_shots)))
         WriteInFile("RocketStats_TotalShootingPercentageCumul.txt", tmp);
