@@ -146,6 +146,16 @@ void RocketStats::AllShotsShotOnGoal(bool force, bool default_value)
     VarShotsTotalShotOnGoalCumul(true, force, default_value);
 
     VarShotsShootingPercentage(true, force, default_value);
+    VarShotsTeamShootingPercentage(true, force, default_value);
+    VarShotsTotalShootingPercentage(true, force, default_value);
+
+    VarShotsShootingPercentageMatch(true, force, default_value);
+    VarShotsTeamShootingPercentageMatch(true, force, default_value);
+    VarShotsTotalShootingPercentageMatch(true, force, default_value);
+
+    VarShotsShootingPercentageCumul(true, force, default_value);
+    VarShotsTeamShootingPercentageCumul(true, force, default_value);
+    VarShotsTotalShootingPercentageCumul(true, force, default_value);
 }
 #pragma endregion
 
@@ -217,6 +227,16 @@ void RocketStats::AllGoalsGoal(bool force, bool default_value)
     VarGoalsTotalGoalCumul(true, force, default_value);
 
     VarShotsShootingPercentage(true, force, default_value);
+    VarShotsTeamShootingPercentage(true, force, default_value);
+    VarShotsTotalShootingPercentage(true, force, default_value);
+
+    VarShotsShootingPercentageMatch(true, force, default_value);
+    VarShotsTeamShootingPercentageMatch(true, force, default_value);
+    VarShotsTotalShootingPercentageMatch(true, force, default_value);
+
+    VarShotsShootingPercentageCumul(true, force, default_value);
+    VarShotsTeamShootingPercentageCumul(true, force, default_value);
+    VarShotsTotalShootingPercentageCumul(true, force, default_value);
 }
 
 void RocketStats::AllGoalsOwnGoal(bool force, bool default_value)
