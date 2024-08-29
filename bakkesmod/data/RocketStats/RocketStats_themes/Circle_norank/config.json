@@ -1,0 +1,69 @@
+{
+	"author":		"Rimey",
+	"version":		"v1.0.2",
+	"date":			"14/09/2019",
+	"x":			"100vw - (100% + 150px)",
+	"y":			"100vh - (100% - 55px)",
+	"width":		400,
+	"height":		300,
+	"font":			[ "Azonix.otf", 42 ],
+	"scale":		1.25,
+	"opacity":		1.0,
+	"elements": [
+		{
+			"name":			"background",
+			"type":			"image",
+			"file":			"background.png",
+			"x":			0,
+			"y":			0,
+			"scale":		1.5
+		},
+		{
+			"name":			"mmrcumulchange",
+			"type":			"text",
+			"value":		"{{MMRCumulChange}}",
+			"sign":			"MMRCumulChange",
+			"x":			254,
+			"y":			75,
+			"align":		"right",
+			"valign":		"middle",
+			"color":		[ 255, 255, 255 ],
+			"scale":		0.32
+		},
+		{
+			"name":			"streak",
+			"type":			"text",
+			"value":		"{{Streak}}",
+			"chameleon":	"Streak",
+			"sign":			"Streak",
+			"x":			243,
+			"y":			111,
+			"align":		"right",
+			"valign":		"middle",
+			"color":		[ 0, 255, 0 ],
+			"scale":		0.35
+		},
+		{
+			"name":			"win",
+			"type":			"text",
+			"value":		"{{Win}}",
+			"x":			243,
+			"y":			141,
+			"align":		"right",
+			"valign":		"middle",
+			"color":		[ 0, 255, 0 ],
+			"scale":		0.28
+		},
+		{
+			"name":			"loss",
+			"type":			"text",
+			"value":		"{{Loss}}",
+			"x":			243,
+			"y":			167,
+			"align":		"right",
+			"valign":		"middle",
+			"color":		[ 255, 0, 0 ],
+			"scale":		0.28
+		}
+	]
+}
