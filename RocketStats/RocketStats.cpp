@@ -7,7 +7,7 @@
 
 #include "RocketStats.h"
 
-BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "4.1.4", PERMISSION_ALL)
+BAKKESMOD_PLUGIN(RocketStats, "RocketStats", "4.1.3", PERMISSION_ALL)
 
 #pragma region Utils
 Stats RocketStats::GetStats()
@@ -107,14 +107,14 @@ void RocketStats::LoadImgs()
 {
     int load_check = 0;
 
-    casual = LoadImg("RocketStats_images/Casual.png");
+    casual = LoadImg("RocketStats_images/Casual.tga");
     load_check += (int)casual->IsLoadedForImGui();
     if (!load_check)
         cvarManager->log("Casual: failed to load");
 
     for (int i = 0; i < rank_nb; ++i)
     {
-        rank[i].image = LoadImg("RocketStats_images/" + rank[i].name + ".png");
+        rank[i].image = LoadImg("RocketStats_images/" + rank[i].name + ".tga");
         load_check += (int)rank[i].image->IsLoadedForImGui();
         LogImageLoadStatus(rank[i].image->IsLoadedForImGui(), rank[i].name);
     }
@@ -243,7 +243,7 @@ void RocketStats::CloseWelcome()
         cvarManager->log("CloseWelcome");
 
         rs_recovery = RecoveryFlags_Process;
-        RemoveFile("RocketStats_images/welcome.png");
+        RemoveFile("RocketStats_images/welcome.tga");
 
         gameWrapper->SetTimeout([&](GameWrapper* gameWrapper) {
             cvarManager->executeCommand("exec config");
@@ -391,10 +391,10 @@ void RocketStats::onInit()
     gui.LoadFont("Ubuntu-Regular28", "Ubuntu-Regular.ttf", 28);
 
     // Loads important and rank images
-    std::string logo_path = "RocketStats_images/logo.png";
-    std::string title_path = "RocketStats_images/title.png";
-    WriteResInFile(logo_path, IDB_LOGO, "PNG");
-    WriteResInFile(title_path, IDB_TITLE, "PNG");
+    std::string logo_path = "RocketStats_images/logo.tga";
+    std::string title_path = "RocketStats_images/title.tga";
+    WriteResInFile(logo_path, IDB_LOGO, "TGA");
+    WriteResInFile(title_path, IDB_TITLE, "TGA");
     rs_logo = LoadImg(logo_path);
     rs_title = LoadImg(title_path);
     LoadImgs();
@@ -554,8 +554,8 @@ void RocketStats::onInit()
         // Displays the plugin shortly after initialization
         if (rs_recovery == RecoveryFlags_Welcome)
         {
-            std::string path = "RocketStats_images/welcome.png";
-            if (WriteResInFile(path, ((gameWrapper->GetUILanguage().ToString() == "FRA") ? IDB_WEL_FRA : IDB_WEL_INT), "PNG"))
+            std::string path = "RocketStats_images/welcome.tga";
+            if (WriteResInFile(path, ((gameWrapper->GetUILanguage().ToString() == "FRA") ? IDB_WEL_FRA : IDB_WEL_INT), "TGA"))
                 rs_welcome = LoadImg(path);
         }
 
