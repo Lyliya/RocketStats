@@ -36,7 +36,7 @@ const connect = () => {
 				);
 			}
 
-			document.dispatchEvent(new CustomEvent(`RocketStats_${msg.type}`), {
+			document.dispatchEvent(new CustomEvent(`RocketStats_${msg.type}`, {
 				//bubbles: true,
 				detail: {
 					name: msg.name,
@@ -46,7 +46,7 @@ const connect = () => {
 				}
 			}));
 
-			document.dispatchEvent(new CustomEvent(`RocketStats_${msg.name}`), {
+			document.dispatchEvent(new CustomEvent(`RocketStats_${msg.name}`, {
 				//bubbles: true,
 				detail: {
 					name: msg.name,
