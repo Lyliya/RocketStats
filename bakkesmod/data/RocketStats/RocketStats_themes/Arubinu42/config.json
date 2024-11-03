@@ -79,7 +79,7 @@
 		{
 			"name":			"win_image",
 			"type":			"image",
-			"file":			"win.png",
+			"file":			"win.tga",
 			"x":			"170px + 40px",
 			"y":			21,
 			"align":		"center",
@@ -110,7 +110,7 @@
 		{
 			"name":			"loss_image",
 			"type":			"image",
-			"file":			"loss.png",
+			"file":			"loss.tga",
 			"x":			"300px + 40px",
 			"y":			21,
 			"align":		"center",
@@ -141,7 +141,7 @@
 		{
 			"name":			"streak_image",
 			"type":			"image",
-			"file":			"streak.png",
+			"file":			"streak.tga",
 			"x":			"430px + 40px",
 			"y":			21,
 			"align":		"center",
