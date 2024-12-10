@@ -569,7 +569,10 @@ private:
         {64, "Haunted Heatseeker"},
         {66, "Heatseeker Ricochet"},
         {67, "Spooky Cube"},
-		{68, "G-Force Frenzy"}
+		{68, "G-Force Frenzy"},
+		{72, "Split Shot"},
+		{73, "Online Free Play"},
+		{76, "Split Shot Heatseeker Doubles"}
 	};
 
 	// PluginWindow
