@@ -57,16 +57,16 @@ IDB_LANG_FRA            TEXT                    "Languages\\FRA.json"
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// PNG
+// TGA
 //
 
-IDB_LOGO                PNG                     "logo.png"
+IDB_LOGO                TGA                     "logo.tga"
 
-IDB_TITLE               PNG                     "title.png"
+IDB_TITLE               TGA                     "title.tga"
 
-IDB_WEL_INT             PNG                     "Welcome\\INT.png"
+IDB_WEL_INT             TGA                     "Welcome\\INT.tga"
 
-IDB_WEL_FRA             PNG                     "Welcome\\FRA.png"
+IDB_WEL_FRA             TGA                     "Welcome\\FRA.tga"
 
 #endif    // resources
 /////////////////////////////////////////////////////////////////////////////
