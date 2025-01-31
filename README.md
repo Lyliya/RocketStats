@@ -1,4 +1,8 @@
-# RocketStats
+# RocketStats Dual Theme
+
+This is a modified version of the plugin to have two different themes, one theme for in game and one while in menu. There is no UI changes yet, simply select one theme in menu, then go into a freeplay game or some other match and select your in game theme there. The themes will switch automatically and will be saved while restarting the game.
+
+Original description:
 
 __RocketStats__ is a Plugin working with __BakkesMod__, allowing you to display session information (MMR, win, loss, streak, eg.) __in game__ and/or __in OBS__.
 
