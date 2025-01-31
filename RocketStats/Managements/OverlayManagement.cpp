@@ -33,8 +33,22 @@ void RocketStats::LoadThemes()
     cvarManager->log("===== !LoadThemes =====");
 }
 
+void RocketStats::BacktoMenu()
+{
+    backupGame = currentTheme;
+    ChangeTheme(backupMenu);
+}
+
+void RocketStats::InGameTheme()
+{
+    backupMenu = currentTheme;
+    cvarManager->log("====================================Is In Menu: " + std::to_string(is_in_menu));
+    ChangeTheme(backupGame);
+}
+
 bool RocketStats::ChangeTheme(int idx)
 {
+    currentTheme = idx;
     cvarManager->log("===== ChangeTheme =====");
 
     // Stores current theme variables on error
