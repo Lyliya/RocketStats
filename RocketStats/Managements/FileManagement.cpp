@@ -174,8 +174,8 @@ bool RocketStats::ReadConfig()
                     if (config["settings"]["mode"].is_number_unsigned())
                         rs_mode = config["settings"]["mode"];
 
-                    if (config["settings"]["theme"].is_string())
-                        SetTheme(config["settings"]["theme"]);
+         //           if (config["settings"]["theme"].is_string())
+         //               SetTheme(config["settings"]["theme"]);
 
                     if (config["settings"]["themes"].is_object() && !config["settings"]["themes"].is_null() && config["settings"]["themes"].size())
                     {
@@ -202,6 +202,13 @@ bool RocketStats::ReadConfig()
 
                     if (config["settings"]["overlay"].is_boolean())
                         rs_disp_overlay = config["settings"]["overlay"];
+
+                    if (config["settings"]["GameTheme"].is_string())
+                        currentTheme = config["settings"]["GameTheme"];
+                         backupGame = config["settings"]["GameTheme"];
+                    if (config["settings"]["MenuTheme"].is_string())
+                        backupMenu = config["settings"]["MenuTheme"];
+                           ChangeTheme(config["settings"]["MenuTheme"]);
 
                     if (config["settings"]["inmenu"].is_boolean())
                         rs_enable_inmenu = config["settings"]["inmenu"];
@@ -399,6 +406,13 @@ void RocketStats::WriteConfig()
     tmp["settings"] = json::object();
     tmp["settings"]["mode"] = rs_mode;
     tmp["settings"]["theme"] = theme_render.name;
+    if (is_in_menu) {
+        tmp["settings"]["MenuTheme"] = currentTheme;
+    }
+    if (!is_in_menu) {
+        tmp["settings"]["GameTheme"] = currentTheme;
+    }
+    tmp["settings"]["MenuTheme"] = backupMenu;
     tmp["settings"]["overlay"] = rs_disp_overlay;
     tmp["settings"]["inmenu"] = rs_enable_inmenu;
     tmp["settings"]["ingame"] = rs_enable_ingame;
