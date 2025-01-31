@@ -601,6 +601,9 @@ private:
 public:
 	int rs_mode = 0;
 	int rs_theme = 0;
+	int backupMenu;  // Speichert den Index des Themes im Menü
+	int backupGame;  // Speichert den Index des Themes im Spiel
+	int currentTheme;
 
 	bool rs_disp_obs = false;
 	bool rs_disp_overlay = true;
@@ -752,6 +755,8 @@ public:
 	//void StopBoost();
 
 	// OverlayManagement
+	void BacktoMenu();
+	void InGameTheme();
 	void LoadThemes();
 	bool ChangeTheme(int idx);
 	void SetTheme(std::string name);
