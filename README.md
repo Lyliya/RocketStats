@@ -8,6 +8,12 @@ Just replace the RocketStats.dll file in the plugins folder of Bakkesmod.
 
 If your game crashes on first launch, you need to delete your old "rocketstats.json" file located in the data folder. Your settings will get lost.
 
+
+
+
+
+
+
 Original description:
 
 __RocketStats__ is a Plugin working with __BakkesMod__, allowing you to display session information (MMR, win, loss, streak, eg.) __in game__ and/or __in OBS__.
