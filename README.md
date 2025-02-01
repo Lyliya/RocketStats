@@ -4,7 +4,7 @@ This is a modified version of the plugin to have two different themes, one theme
 
 Just replace the RocketStats.dll file in the plugins folder of Bakkesmod.
 
-Bugs and errors may happen, use at your own risk.
+Pre-Release, so bugs and errors may happen, use at your own risk.
 If your game crashes on first launch, you need to delete your old "rocketstats.json" file located in the data folder. Your settings will get lost.
 
 
