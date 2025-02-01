@@ -601,6 +601,9 @@ private:
 public:
 	int rs_mode = 0;
 	int rs_theme = 0;
+	int rs_themeMenu = 0;
+	int rs_themeGame = 0;
+	bool is_in_MainMenu = true;
 	std::string MenuTheme;
 	std::string GameTheme;
 	int currentTheme;

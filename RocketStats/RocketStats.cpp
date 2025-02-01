@@ -426,14 +426,14 @@ void RocketStats::onInit()
     gameWrapper->HookEvent("Function TAGame.GFxData_StartMenu_TA.EventTitleScreenClicked", std::bind(&RocketStats::ShowPlugin, this, std::placeholders::_1));
     gameWrapper->HookEvent("Function TAGame.GameViewportClient_TA.SetUIScaleModifier", std::bind(&RocketStats::UpdateUIScale, this, std::placeholders::_1));
     gameWrapper->HookEvent("Function Engine.GameViewportClient.IsFullScreenViewport", std::bind(&RocketStats::UpdateUIScale, this, std::placeholders::_1));
-    gameWrapper->HookEvent("Function GameEvent_TA.Countdown.BeginState", std::bind([this](std::string event) {GameStart(event);InGameTheme();}, std::placeholders::_1));
+    gameWrapper->HookEvent("Function GameEvent_TA.Countdown.BeginState", std::bind([this](std::string event) {GameStart(event);InGameTheme();is_in_MainMenu = false;}, std::placeholders::_1));
     gameWrapper->HookEvent("Function TAGame.GameEvent_Soccar_TA.OnMatchWinnerSet", std::bind(&RocketStats::GameEnd, this, std::placeholders::_1));
     gameWrapper->HookEvent("Function TAGame.GameEvent_TA.Destroyed", std::bind([this](std::string event) {GameDestroyed(event);}, std::placeholders::_1));
     gameWrapper->HookEvent("Function CarComponent_Boost_TA.Active.BeginState", std::bind(&RocketStats::OnBoostStart, this, std::placeholders::_1));
     gameWrapper->HookEvent("Function TAGame.CarComponent_Boost_TA.EventBoostAmountChanged", std::bind(&RocketStats::OnBoostChanged, this, std::placeholders::_1));
     gameWrapper->HookEvent("Function CarComponent_Boost_TA.Active.EndState", std::bind(&RocketStats::OnBoostEnd, this, std::placeholders::_1));
     gameWrapper->HookEvent("Function TAGame.GameEvent_Soccar_TA.TriggerGoalScoreEvent", std::bind(&RocketStats::onGoalScore, this, std::placeholders::_1));
-    gameWrapper->HookEvent("Function TAGame.GFxData_MainMenu_TA.OnEnteredMainMenu", std::bind([this]() { BacktoMenu();menu_stack = 0; is_in_menu = true;}));
+    gameWrapper->HookEvent("Function TAGame.GFxData_MainMenu_TA.OnEnteredMainMenu", std::bind([this]() { BacktoMenu();menu_stack = 0; is_in_menu = true; is_in_MainMenu = true;}));
     gameWrapper->HookEvent("Function TAGame.GFxData_MenuStack_TA.PushMenu", std::bind([this]() { ++menu_stack;  is_in_menu = true; }));
     gameWrapper->HookEvent("Function TAGame.GFxData_MenuStack_TA.PopMenu", std::bind([this]() { if (menu_stack) --menu_stack; is_in_menu = (menu_stack > 0); }));
     gameWrapper->HookEvent("Function TAGame.MenuSequence_TA.EnterSequence", std::bind([this]() { is_in_menu = true; }));
