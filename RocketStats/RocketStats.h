@@ -601,8 +601,8 @@ private:
 public:
 	int rs_mode = 0;
 	int rs_theme = 0;
-	int backupMenu;  // Speichert den Index des Themes im Menü
-	int backupGame;  // Speichert den Index des Themes im Spiel
+	std::string MenuTheme;
+	std::string GameTheme;
 	int currentTheme;
 
 	bool rs_disp_obs = false;
