@@ -35,16 +35,17 @@ void RocketStats::LoadThemes()
 
 void RocketStats::BacktoMenu()
 {
-    if (!is_in_menu) {
+    if (!is_in_MainMenu)
+    {
         SetTheme(MenuTheme);
-        ChangeTheme(rs_theme);
+        ChangeTheme(rs_themeMenu);
     }
 }
 
 void RocketStats::InGameTheme()
 {
     SetTheme(GameTheme);
-    ChangeTheme(rs_theme);
+    ChangeTheme(rs_themeGame);
 }
 
 bool RocketStats::ChangeTheme(int idx)

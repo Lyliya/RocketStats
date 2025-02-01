@@ -528,20 +528,24 @@ void RocketStats::RenderSettings()
             ++rs_mode;
 
         ImGui::SetWindowFontScale(1.3f / (font ? 2.f : 1.f));
-        ImGui::SetCursorPos({ 585.f, 43.f });
-        ImGui::TextColored(ImVec4{ 0.8f, 0.8f, 0.8f, 1.f }, GetLang(LANG_THEME).c_str());
+        ImGui::SetCursorPos({ 565.f, 23.f });
+        ImGui::TextColored(ImVec4{ 0.8f, 0.8f, 0.8f, 1.f }, (GetLang(LANG_MENU) + " " + GetLang(LANG_THEME)).c_str());
 
         ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
-        ImGui::SetCursorPos({ 525.f, 68.f });
+        ImGui::SetCursorPos({ 525.f, 43.f });
         ImGui::SetNextItemWidth(142.f);
-        if (ImGui::BeginCombo("##themes_combo", theme_render.name.c_str(), ImGuiComboFlags_NoArrowButton))
+        if (ImGui::BeginCombo("##themes_combo", themes.at(rs_themeMenu).name.c_str(), ImGuiComboFlags_NoArrowButton))
         {
-            int Trs_theme = rs_theme;
+            int Trs_theme = rs_themeMenu;
             for (int i = 0; i < themes.size(); ++i)
             {
                 bool is_selected = (Trs_theme == i);
                 if (ImGui::Selectable(themes.at(i).name.c_str(), is_selected))
-                    rs_theme = i;
+                {
+                    rs_themeMenu = i;
+                    if (is_in_MainMenu)
+                        rs_theme = rs_themeMenu;
+                }
 
                 if (is_selected)
                     ImGui::SetItemDefaultFocus();
@@ -552,11 +556,62 @@ void RocketStats::RenderSettings()
         if (ImGui::IsItemHovered())
             tooltip = GetLang(LANG_THEME_TOOLTIP);
         ImGui::SameLine(0.f, 0.f);
-        if (ImGui::ArrowButton("##themes_left", ImGuiDir_Left) && rs_theme > 0)
-            --rs_theme;
+        if (ImGui::ArrowButton("##themes_left", ImGuiDir_Left) && rs_themeMenu > 0)
+        {
+            --rs_themeMenu;
+            if (is_in_MainMenu)
+                rs_theme = rs_themeMenu;
+        }
         ImGui::SameLine(0.f, 0.f);
-        if (ImGui::ArrowButton("##themes_right", ImGuiDir_Right) && themes.size() && rs_theme < (themes.size() - 1))
-            ++rs_theme;
+        if (ImGui::ArrowButton("##themes_right", ImGuiDir_Right) && themes.size() && rs_themeMenu < (themes.size() - 1))
+        {
+            ++rs_themeMenu;
+            if (is_in_MainMenu)
+                rs_theme = rs_themeMenu;
+        }
+
+        ImGui::SetWindowFontScale(1.3f / (font ? 2.f : 1.f));
+        ImGui::SetCursorPos({ 565.f, 68.f });
+        ImGui::TextColored(ImVec4{ 0.8f, 0.8f, 0.8f, 1.f }, (GetLang(LANG_GAME) + " " + GetLang(LANG_THEME)).c_str());
+
+        ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
+        ImGui::SetCursorPos({ 525.f, 88.f });
+        ImGui::SetNextItemWidth(142.f);
+        if (ImGui::BeginCombo("##themes2_combo", themes.at(rs_themeGame).name.c_str(), ImGuiComboFlags_NoArrowButton))
+        {
+            int Trs_theme2 = rs_themeGame;
+            for (int i = 0; i < themes.size(); ++i)
+            {
+                bool is_selected = (Trs_theme2 == i);
+                if (ImGui::Selectable(themes.at(i).name.c_str(), is_selected))
+                    rs_themeGame = i;
+                {
+                    if (!is_in_MainMenu)
+                        rs_theme = rs_themeGame;
+                }
+
+                if (is_selected)
+                    ImGui::SetItemDefaultFocus();
+            }
+
+            ImGui::EndCombo();
+        }
+        if (ImGui::IsItemHovered())
+            tooltip = GetLang(LANG_THEME_TOOLTIP);
+        ImGui::SameLine(0.f, 0.f);
+        if (ImGui::ArrowButton("##themes2_left", ImGuiDir_Left) && rs_themeGame > 0)
+            --rs_themeGame;
+        {
+            if (!is_in_MainMenu)
+                rs_theme = rs_themeGame;
+        }
+        ImGui::SameLine(0.f, 0.f);
+        if (ImGui::ArrowButton("##themes2_right", ImGuiDir_Right) && themes.size() && rs_themeGame < (themes.size() - 1))
+            ++rs_themeGame;
+        {
+            if (!is_in_MainMenu)
+                rs_theme = rs_themeGame;
+        }
 
         ImGui::SetCursorPos({ 103.f, 120.f });
         if (ImGui::Button(GetLang(LANG_X).c_str(), { 65.f, 0.f }))

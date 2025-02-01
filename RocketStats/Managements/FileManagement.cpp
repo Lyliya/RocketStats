@@ -205,8 +205,24 @@ bool RocketStats::ReadConfig()
 
                     if (config["settings"]["GameTheme"].is_string())
                         GameTheme = config["settings"]["GameTheme"];
+                        for (int i = 0; i < themes.size(); ++i)
+                        {
+                            if (themes.at(i).name == GameTheme)
+                             {
+                                rs_themeGame = i;
+                                break;
+                             }
+                         }
                     if (config["settings"]["MenuTheme"].is_string())
                         MenuTheme = config["settings"]["MenuTheme"];
+                    for (int i = 0; i < themes.size(); ++i)
+                    {
+                        if (themes.at(i).name == MenuTheme)
+                        {
+                            rs_themeMenu = i;
+                            break;
+                        }
+                    }
                            SetTheme(config["settings"]["MenuTheme"]);
 
                     if (config["settings"]["inmenu"].is_boolean())
@@ -405,14 +421,10 @@ void RocketStats::WriteConfig()
     tmp["settings"] = json::object();
     tmp["settings"]["mode"] = rs_mode;
     tmp["settings"]["theme"] = theme_render.name;
-    if (is_in_menu) {
-        MenuTheme = theme_render.name;
-        tmp["settings"]["MenuTheme"] = MenuTheme;
-    }
-    if (!is_in_menu) {
-        GameTheme = theme_render.name;
-        tmp["settings"]["GameTheme"] = GameTheme;
-    }
+        GameTheme = themes.at(rs_themeGame).name.c_str();
+    tmp["settings"]["GameTheme"] = GameTheme;
+        MenuTheme = themes.at(rs_themeMenu).name.c_str();
+    tmp["settings"]["MenuTheme"] = MenuTheme;
     tmp["settings"]["overlay"] = rs_disp_overlay;
     tmp["settings"]["inmenu"] = rs_enable_inmenu;
     tmp["settings"]["ingame"] = rs_enable_ingame;
