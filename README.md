@@ -1,14 +1,14 @@
 # RocketStats Dual Theme
 
-This is still a work in progress, so bugs and errors may happen.
-
-This is a modified version of the plugin to have two different themes, one theme for in game and one while in menu. There is no UI changes yet, simply select one theme in menu, then go into a freeplay game or some other match and select your in game theme there. The themes will switch automatically and will be saved while restarting the game.
+This is a modified version of the plugin to have two different themes, one theme for in game and one while in menu.
 
 Just replace the RocketStats.dll file in the plugins folder of Bakkesmod.
 
+Bugs and errors may happen, use at your own risk.
 If your game crashes on first launch, you need to delete your old "rocketstats.json" file located in the data folder. Your settings will get lost.
 
 
+![Screenshot](https://github.com/user-attachments/assets/53389098-3cbc-4b68-9e53-3216abd4ea19)
 
 
 
