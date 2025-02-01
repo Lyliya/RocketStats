@@ -35,15 +35,16 @@ void RocketStats::LoadThemes()
 
 void RocketStats::BacktoMenu()
 {
-    backupGame = currentTheme;
-    ChangeTheme(backupMenu);
+    if (!is_in_menu) {
+        SetTheme(MenuTheme);
+        ChangeTheme(rs_theme);
+    }
 }
 
 void RocketStats::InGameTheme()
 {
-    backupMenu = currentTheme;
-    cvarManager->log("====================================Is In Menu: " + std::to_string(is_in_menu));
-    ChangeTheme(backupGame);
+    SetTheme(GameTheme);
+    ChangeTheme(rs_theme);
 }
 
 bool RocketStats::ChangeTheme(int idx)
