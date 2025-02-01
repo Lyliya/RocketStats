@@ -213,17 +213,20 @@ bool RocketStats::ReadConfig()
                                 break;
                              }
                          }
-                    if (config["settings"]["MenuTheme"].is_string())
-                        MenuTheme = config["settings"]["MenuTheme"];
-                    for (int i = 0; i < themes.size(); ++i)
-                    {
-                        if (themes.at(i).name == MenuTheme)
+                        if (config["settings"]["MenuTheme"].is_string())
                         {
-                            rs_themeMenu = i;
-                            break;
+                            MenuTheme = config["settings"]["MenuTheme"];
+                            for (int i = 0; i < themes.size(); ++i)
+                            {
+                                if (themes.at(i).name == MenuTheme)
+                                {
+                                    rs_themeMenu = i;
+                                    break;
+                                }
+                            }
+                            SetTheme(config["settings"]["MenuTheme"]);
+                            ChangeTheme(rs_theme);
                         }
-                    }
-                           SetTheme(config["settings"]["MenuTheme"]);
 
                     if (config["settings"]["inmenu"].is_boolean())
                         rs_enable_inmenu = config["settings"]["inmenu"];
