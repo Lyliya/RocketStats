@@ -44,8 +44,10 @@ void RocketStats::BacktoMenu()
 
 void RocketStats::InGameTheme()
 {
-    SetTheme(GameTheme);
-    ChangeTheme(rs_themeGame);
+    if (dualtheme) {
+        SetTheme(GameTheme);
+        ChangeTheme(rs_themeGame);
+    }
 }
 
 bool RocketStats::ChangeTheme(int idx)

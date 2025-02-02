@@ -570,11 +570,16 @@ void RocketStats::RenderSettings()
                 rs_theme = rs_themeMenu;
         }
 
+        ImGui::SetWindowFontScale(0.8f / (font ? 2.f : 1.f));
+        ImGui::SetCursorPos({ 545.f, 70.f });
+        ImGui::Checkbox("##dualtheme", &dualtheme);
+
         ImGui::SetWindowFontScale(1.3f / (font ? 2.f : 1.f));
         ImGui::SetCursorPos({ 565.f, 68.f });
         ImGui::TextColored(ImVec4{ 0.8f, 0.8f, 0.8f, 1.f }, (GetLang(LANG_GAME) + " " + GetLang(LANG_THEME)).c_str());
 
         ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
+        if (dualtheme) {
         ImGui::SetCursorPos({ 525.f, 88.f });
         ImGui::SetNextItemWidth(142.f);
         if (ImGui::BeginCombo("##themes2_combo", themes.at(rs_themeGame).name.c_str(), ImGuiComboFlags_NoArrowButton))
@@ -611,6 +616,26 @@ void RocketStats::RenderSettings()
         {
             if (!is_in_MainMenu)
                 rs_theme = rs_themeGame;
+        }
+        }
+        else {
+            ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.5f);
+            ImGui::SetCursorPos({ 525.f, 88.f });
+            ImGui::SetNextItemWidth(142.f);
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.2f, 0.2f, 1.0f));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.3f, 0.3f, 0.3f, 1.0f));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.4f, 0.4f, 0.4f, 1.0f));
+            ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, ImVec2(0.f, 0.5f));
+            if (ImGui::Button(themes.at(rs_themeGame).name.c_str(), ImVec2(142.f, ImGui::GetTextLineHeightWithSpacing()))) {
+            }
+            ImGui::PopStyleVar();
+            ImGui::PopStyleColor(3);
+            ImGui::SameLine(0.f, 0.f);
+            ImGui::ArrowButton("##themes2_left", ImGuiDir_Left);
+            ImGui::SameLine(0.f, 0.f);
+            ImGui::ArrowButton("##themes2_right", ImGuiDir_Right);
+            ImGui::PopStyleVar();
+            rs_theme = rs_themeMenu;
         }
 
         ImGui::SetCursorPos({ 103.f, 120.f });

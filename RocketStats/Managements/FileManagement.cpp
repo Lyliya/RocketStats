@@ -175,7 +175,34 @@ bool RocketStats::ReadConfig()
                         rs_mode = config["settings"]["mode"];
 
                     if (config["settings"]["theme"].is_string())
-                        SetTheme(config["settings"]["theme"]);
+ //                       SetTheme(config["settings"]["theme"]);
+
+                    if (config["settings"]["overlay"].is_boolean())
+                        rs_disp_overlay = config["settings"]["overlay"];
+
+                    if (config["settings"]["GameTheme"].is_string())
+                        GameTheme = config["settings"]["GameTheme"];
+                    for (int i = 0; i < themes.size(); ++i)
+                    {
+                        if (themes.at(i).name == GameTheme)
+                        {
+                            rs_themeGame = i;
+                            break;
+                        }
+                    }
+                    if (config["settings"]["MenuTheme"].is_string())
+                    {
+                        MenuTheme = config["settings"]["MenuTheme"];
+                        for (int i = 0; i < themes.size(); ++i)
+                        {
+                            if (themes.at(i).name == MenuTheme)
+                            {
+                                rs_themeMenu = i;
+                                break;
+                            }
+                        }
+                        SetTheme(config["settings"]["MenuTheme"]);
+                    }
 
                     if (config["settings"]["themes"].is_object() && !config["settings"]["themes"].is_null() && config["settings"]["themes"].size())
                     {
@@ -200,36 +227,10 @@ bool RocketStats::ReadConfig()
                             themes_values = tmp;
                     }
 
-                    if (config["settings"]["overlay"].is_boolean())
-                        rs_disp_overlay = config["settings"]["overlay"];
-
-                    if (config["settings"]["GameTheme"].is_string())
-                        GameTheme = config["settings"]["GameTheme"];
-                        for (int i = 0; i < themes.size(); ++i)
-                        {
-                            if (themes.at(i).name == GameTheme)
-                             {
-                                rs_themeGame = i;
-                                break;
-                             }
-                         }
-                        if (config["settings"]["MenuTheme"].is_string())
-                        {
-                            MenuTheme = config["settings"]["MenuTheme"];
-                            for (int i = 0; i < themes.size(); ++i)
-                            {
-                                if (themes.at(i).name == MenuTheme)
-                                {
-                                    rs_themeMenu = i;
-                                    break;
-                                }
-                            }
-                            SetTheme(config["settings"]["MenuTheme"]);
-                            ChangeTheme(rs_theme);
-                        }
-
                     if (config["settings"]["inmenu"].is_boolean())
                         rs_enable_inmenu = config["settings"]["inmenu"];
+                    if (config["settings"]["enableDualTheme"].is_boolean())
+                        dualtheme = config["settings"]["enableDualTheme"];
                     if (config["settings"]["ingame"].is_boolean())
                         rs_enable_ingame = config["settings"]["ingame"];
                     if (config["settings"]["inscoreboard"].is_boolean())
@@ -428,6 +429,7 @@ void RocketStats::WriteConfig()
     tmp["settings"]["GameTheme"] = GameTheme;
         MenuTheme = themes.at(rs_themeMenu).name.c_str();
     tmp["settings"]["MenuTheme"] = MenuTheme;
+    tmp["settings"]["enableDualTheme"] = dualtheme;
     tmp["settings"]["overlay"] = rs_disp_overlay;
     tmp["settings"]["inmenu"] = rs_enable_inmenu;
     tmp["settings"]["ingame"] = rs_enable_ingame;
