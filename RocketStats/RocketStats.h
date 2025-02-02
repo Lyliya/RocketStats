@@ -599,6 +599,7 @@ private:
 	virtual void OnClose() override;
 
 public:
+	bool dualtheme = true;
 	int rs_mode = 0;
 	int rs_theme = 0;
 	int rs_themeMenu = 0;
