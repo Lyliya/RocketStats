@@ -8,8 +8,10 @@ Pre-Release, so bugs and errors may happen, use at your own risk.
 If your game crashes on first launch, you need to delete your old "rocketstats.json" file located in the data folder. Your settings will get lost.
 
 
-![Screenshot](https://github.com/user-attachments/assets/53389098-3cbc-4b68-9e53-3216abd4ea19)
 
+
+![disabled](https://github.com/user-attachments/assets/b719a6ff-b175-47d6-9c8f-20e6642b57c0)
+![enabled](https://github.com/user-attachments/assets/6502b280-286c-4ab2-bcda-37a316b593e2)
 
 
 
