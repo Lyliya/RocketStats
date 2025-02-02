@@ -9,9 +9,10 @@ If your game crashes on first launch, you need to delete your old "rocketstats.j
 
 
 
+![disabled](https://github.com/user-attachments/assets/c28a76e9-1f08-4727-a35d-30c6f65213ef)
+![enabled](https://github.com/user-attachments/assets/74300829-2a03-4fe3-8912-54337f8c4d4d)
 
-![disabled](https://github.com/user-attachments/assets/b719a6ff-b175-47d6-9c8f-20e6642b57c0)
-![enabled](https://github.com/user-attachments/assets/6502b280-286c-4ab2-bcda-37a316b593e2)
+
 
 
 
