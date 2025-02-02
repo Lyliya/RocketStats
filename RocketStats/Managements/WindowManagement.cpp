@@ -571,11 +571,11 @@ void RocketStats::RenderSettings()
         }
 
         ImGui::SetWindowFontScale(0.8f / (font ? 2.f : 1.f));
-        ImGui::SetCursorPos({ 545.f, 70.f });
+        ImGui::SetCursorPos({ 535.f, 70.f });
         ImGui::Checkbox("##dualtheme", &dualtheme);
 
         ImGui::SetWindowFontScale(1.3f / (font ? 2.f : 1.f));
-        ImGui::SetCursorPos({ 565.f, 68.f });
+        ImGui::SetCursorPos({ 555.f, 68.f });
         ImGui::TextColored(ImVec4{ 0.8f, 0.8f, 0.8f, 1.f }, (GetLang(LANG_GAME) + " " + GetLang(LANG_THEME)).c_str());
 
         ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
