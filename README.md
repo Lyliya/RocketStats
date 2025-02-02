@@ -1,28 +1,6 @@
-# RocketStats Dual Theme
+# RocketStats
 
-This is a modified version of the plugin to have two different themes, one theme for in game and one while in menu.
-By checking the box for alt. in-game theme, the themes will switch automatically between main and alt. theme, depending if you are in game or in menu.
-If the box is unchecked (deactivated) the main theme will be applied all the time (behaviour of the standard version of rocketstats).
-You can change the settings of the in-game theme, by going into a freeplay match, the theme switches automatically and you can edit the settings.
-
-Just replace the RocketStats.dll file in the plugins folder of Bakkesmod.
-
-Pre-Release, so bugs and errors may happen, use at your own risk.
-If your game crashes on first launch, you need to delete your old "rocketstats.json" file located in the data folder. Your settings will get lost.
-
-
-
-![disabled](https://github.com/user-attachments/assets/c28a76e9-1f08-4727-a35d-30c6f65213ef)
-![enabled](https://github.com/user-attachments/assets/74300829-2a03-4fe3-8912-54337f8c4d4d)
-
-
-
-
-
-
-Original description:
-
-__RocketStats__ is a Plugin working with __BakkesMod__, allowing you to display session information (MMR, win, loss, streak, eg.) __in game__ and/or __in OBS__.
+**RocketStats** is a Plugin working with **BakkesMod**, allowing you to display session information (MMR, win, loss, streak, eg.) **in game** and/or **in OBS**.
 
 ![](screenshot.png)
 
@@ -49,10 +27,12 @@ You can come and ask your questions or discuss with the community in our [discor
 Thanks to all the people who helped us during the development.
 
 ##### Thanks for ideas and support:
+
 - [Maylie](https://www.twitch.tv/Maylie_tv)
 
 ##### Thanks for tests:
-- [Daakiii_](https://www.twitch.tv/daakiii_)
+
+- [Daakiii\_](https://www.twitch.tv/daakiii_)
 - [Ekon](https://www.twitch.tv/ekonrl)
 - [Fuury](https://www.twitch.tv/FuuRy_Off)
 - [Loppeur](https://www.twitch.tv/loppeur)
