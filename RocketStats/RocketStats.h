@@ -602,12 +602,10 @@ public:
 	bool dualtheme = true;
 	int rs_mode = 0;
 	int rs_theme = 0;
-	int rs_themeMenu = 0;
-	int rs_themeGame = 0;
+	int rs_gameTheme = 0;
 	bool is_in_MainMenu = true;
 	std::string MenuTheme;
 	std::string GameTheme;
-	int currentTheme;
 
 	bool rs_disp_obs = false;
 	bool rs_disp_overlay = true;
@@ -764,6 +762,7 @@ public:
 	void LoadThemes();
 	bool ChangeTheme(int idx);
 	void SetTheme(std::string name);
+	void SetGameTheme(std::string name);
 	void SetRefresh(unsigned char value);
 	void RefreshFiles(std::string old, CVarWrapper now);
 	void RefreshTheme(std::string old, CVarWrapper now);

@@ -475,8 +475,13 @@ void RocketStats::onInit()
 
     cvarManager->registerCvar("rs_mode", std::to_string(rs_mode), GetLang(LANG_MODE), true, true, 0, true, float(modes.size() - 1), false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
     cvarManager->registerCvar("rs_theme", std::to_string(rs_theme), GetLang(LANG_THEME), true, true, 0, false, 99, false).addOnValueChanged([this](std::string old, CVarWrapper now) {
-        if (!ChangeTheme(now.getIntValue()))
+        if (is_in_MainMenu && !ChangeTheme(now.getIntValue()))
             now.setValue(old);
+    });
+    cvarManager->registerCvar("rs_gameTheme", std::to_string(rs_gameTheme), GetLang(LANG_MENU) + GetLang(LANG_THEME), true, true, 0, false, 99, false).addOnValueChanged([this](std::string old, CVarWrapper now) {
+        if (!is_in_MainMenu && !ChangeTheme(now.getIntValue())) {
+            now.setValue(old);
+        }
     });
 
     cvarManager->registerCvar("rs_x", std::to_string(rs_x), GetLang(LANG_X), true, true, 0.f, true, 1.f, false).addOnValueChanged(std::bind(&RocketStats::RefreshTheme, this, std::placeholders::_1, std::placeholders::_2));
