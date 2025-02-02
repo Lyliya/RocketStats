@@ -1,6 +1,9 @@
 # RocketStats Dual Theme
 
 This is a modified version of the plugin to have two different themes, one theme for in game and one while in menu.
+By checking the box for alt. in-game theme, the themes will switch automatically between main and alt. theme, depending if you are in game or in menu.
+If the box is unchecked (deactivated) the main theme will be applied all the time (behaviour of the standard version of rocketstats).
+You can change the settings of the in-game theme, by going into a freeplay match, the theme switches automatically and you can edit the settings.
 
 Just replace the RocketStats.dll file in the plugins folder of Bakkesmod.
 
