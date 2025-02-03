@@ -568,7 +568,18 @@ void RocketStats::RenderSettings()
 
         ImGui::SetWindowFontScale(0.8f / (font ? 2.f : 1.f));
         ImGui::SetCursorPos({ 535.f, 70.f });
-        ImGui::Checkbox("##dualtheme", &dualtheme);
+        if (ImGui::Checkbox("##dualtheme", &dualtheme)) {
+            // We activate dualtheme
+            if (dualtheme && !is_in_MainMenu) {
+                SetGameTheme(themes.at(rs_gameTheme).name.c_str());
+                ChangeTheme(rs_gameTheme);
+            }
+            else {
+                // We deactivate dualtheme;
+                SetTheme(themes.at(rs_theme).name.c_str());
+                ChangeTheme(rs_theme);
+            }
+        };
 
         ImGui::SetWindowFontScale(1.3f / (font ? 2.f : 1.f));
         ImGui::SetCursorPos({ 555.f, 68.f });
@@ -576,37 +587,37 @@ void RocketStats::RenderSettings()
 
         ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
         if (dualtheme) {
-        ImGui::SetCursorPos({ 525.f, 88.f });
-        ImGui::SetNextItemWidth(142.f);
-        if (ImGui::BeginCombo("##themes2_combo", themes.at(rs_gameTheme).name.c_str(), ImGuiComboFlags_NoArrowButton))
-        {
-            int Trs_theme2 = rs_gameTheme;
-            for (int i = 0; i < themes.size(); ++i)
+            ImGui::SetCursorPos({ 525.f, 88.f });
+            ImGui::SetNextItemWidth(142.f);
+            if (ImGui::BeginCombo("##themes2_combo", themes.at(rs_gameTheme).name.c_str(), ImGuiComboFlags_NoArrowButton))
             {
-                bool is_selected = (Trs_theme2 == i);
-                if (ImGui::Selectable(themes.at(i).name.c_str(), is_selected))
+                int Trs_theme2 = rs_gameTheme;
+                for (int i = 0; i < themes.size(); ++i)
                 {
-                        rs_gameTheme = i;
+                    bool is_selected = (Trs_theme2 == i);
+                    if (ImGui::Selectable(themes.at(i).name.c_str(), is_selected))
+                    {
+                            rs_gameTheme = i;
+                    }
+
+                    if (is_selected)
+                        ImGui::SetItemDefaultFocus();
                 }
 
-                if (is_selected)
-                    ImGui::SetItemDefaultFocus();
+                ImGui::EndCombo();
             }
-
-            ImGui::EndCombo();
-        }
-        if (ImGui::IsItemHovered())
-            tooltip = GetLang(LANG_THEME_TOOLTIP);
-        ImGui::SameLine(0.f, 0.f);
-        if (ImGui::ArrowButton("##themes2_left", ImGuiDir_Left) && rs_gameTheme > 0)
-            --rs_gameTheme;
-        {
-        }
-        ImGui::SameLine(0.f, 0.f);
-        if (ImGui::ArrowButton("##themes2_right", ImGuiDir_Right) && themes.size() && rs_gameTheme < (themes.size() - 1))
-            ++rs_gameTheme;
-        {
-        }
+            if (ImGui::IsItemHovered())
+                tooltip = GetLang(LANG_THEME_TOOLTIP);
+            ImGui::SameLine(0.f, 0.f);
+            if (ImGui::ArrowButton("##themes2_left", ImGuiDir_Left) && rs_gameTheme > 0)
+                --rs_gameTheme;
+            {
+            }
+            ImGui::SameLine(0.f, 0.f);
+            if (ImGui::ArrowButton("##themes2_right", ImGuiDir_Right) && themes.size() && rs_gameTheme < (themes.size() - 1))
+                ++rs_gameTheme;
+            {
+            }
         }
         else {
             ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.5f);
@@ -777,7 +788,7 @@ void RocketStats::RenderSettings()
         if (ImGui::Button(GetLang(LANG_RELOAD_THEME).c_str(), { 103.f, 0.f }))
         {
             LoadImgs();
-            ChangeTheme(is_in_MainMenu ? rs_theme : rs_gameTheme);
+            ChangeTheme(dualtheme && !is_in_MainMenu ? rs_gameTheme: rs_theme);
         }
         if (ImGui::IsItemHovered())
             tooltip = GetLang(LANG_RELOAD_THEME_TOOLTIP);
@@ -787,7 +798,7 @@ void RocketStats::RenderSettings()
             LoadImgs();
             LoadThemes();
             SetTheme(theme_render.name);
-            ChangeTheme(is_in_MainMenu ? rs_theme : rs_gameTheme);
+            ChangeTheme(dualtheme && !is_in_MainMenu ? rs_gameTheme: rs_theme);
         }
         if (ImGui::IsItemHovered())
             tooltip = GetLang(LANG_RELOAD_THEME_A_TOOLTIP);

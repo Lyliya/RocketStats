@@ -618,8 +618,7 @@ Element RocketStats::CalculateElement(json& element, Options& options, bool& che
                 {
                     // Get the requested image
                     element_size = { 0, 0 };
-                    int current_theme = is_in_MainMenu ? rs_theme : rs_gameTheme;
-                    std::string image_path = "RocketStats_themes/" + themes.at(current_theme).name + "/images/" + calculated.value;
+                    std::string image_path = "RocketStats_themes/" + theme_render.name + "/images/" + calculated.value;
 
                     cvarManager->log("Load image: " + image_path);
                     theme_images[calculated.value] = LoadImg(image_path);
