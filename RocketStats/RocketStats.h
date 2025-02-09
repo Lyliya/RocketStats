@@ -599,7 +599,7 @@ private:
 	virtual void OnClose() override;
 
 public:
-	bool dualtheme = true;
+	bool dualtheme = false;
 	int rs_mode = 0;
 	int rs_theme = 0;
 	int rs_gameTheme = 0;
