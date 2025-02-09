@@ -33,7 +33,7 @@
 		{
 			"name":			"mmr_image",
 			"type":			"image",
-			"file":			"crown.png",
+			"file":			"crown.tga",
 			"x":			50,
 			"y":			60,
 			"align":		"right",
@@ -54,7 +54,7 @@
 		{
 			"name":			"win_image",
 			"type":			"image",
-			"file":			"win.png",
+			"file":			"win.tga",
 			"x":			50,
 			"y":			110,
 			"align":		"right",
@@ -75,7 +75,7 @@
 		{
 			"name":			"loss_image",
 			"type":			"image",
-			"file":			"loss.png",
+			"file":			"loss.tga",
 			"x":			50,
 			"y":			160,
 			"align":		"right",
@@ -96,7 +96,7 @@
 		{
 			"name":			"streak_image",
 			"type":			"image",
-			"file":			"streak.png",
+			"file":			"streak.tga",
 			"x":			190,
 			"y":			133,
 			"align":		"right",

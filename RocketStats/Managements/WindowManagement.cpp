@@ -1038,8 +1038,8 @@ void RocketStats::RenderSettings()
             LoadImgs();
             LoadThemes();
             ChangeTheme(rs_theme);
-            rs_logo = LoadImg("RocketStats_images/logo.png");
-            rs_title = LoadImg("RocketStats_images/title.png");
+            rs_logo = LoadImg("RocketStats_images/logo.tga");
+            rs_title = LoadImg("RocketStats_images/title.tga");
         }
     }
 
