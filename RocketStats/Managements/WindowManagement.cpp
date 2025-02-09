@@ -531,7 +531,7 @@ void RocketStats::RenderSettings()
 
         ImGui::SetWindowFontScale(1.3f / (font ? 2.f : 1.f));
         ImGui::SetCursorPos({ 565.f, 23.f });
-        ImGui::TextColored(ImVec4{ 0.8f, 0.8f, 0.8f, 1.f }, (GetLang(LANG_MENU) + " " + GetLang(LANG_THEME)).c_str());
+        ImGui::TextColored(ImVec4{ 0.8f, 0.8f, 0.8f, 1.f }, GetLang(LANG_MENU_THEME).c_str());
 
         ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
         ImGui::SetCursorPos({ 525.f, 43.f });
@@ -567,7 +567,7 @@ void RocketStats::RenderSettings()
         }
 
         ImGui::SetWindowFontScale(0.8f / (font ? 2.f : 1.f));
-        ImGui::SetCursorPos({ 535.f, 70.f });
+        ImGui::SetCursorPos({ 545.f, 70.f });
         if (ImGui::Checkbox("##dualtheme", &dualtheme)) {
             // We activate dualtheme
             if (dualtheme && !is_in_MainMenu) {
@@ -582,8 +582,8 @@ void RocketStats::RenderSettings()
         };
 
         ImGui::SetWindowFontScale(1.3f / (font ? 2.f : 1.f));
-        ImGui::SetCursorPos({ 555.f, 68.f });
-        ImGui::TextColored(ImVec4{ 0.8f, 0.8f, 0.8f, 1.f }, (GetLang(LANG_GAME) + " " + GetLang(LANG_THEME)).c_str());
+        ImGui::SetCursorPos({ 565.f, 68.f });
+        ImGui::TextColored(ImVec4{ 0.8f, 0.8f, 0.8f, 1.f }, (GetLang(LANG_GAME_THEME)).c_str());
 
         ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
         if (dualtheme) {
