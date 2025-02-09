@@ -1,6 +1,6 @@
 # RocketStats
 
-__RocketStats__ is a Plugin working with __BakkesMod__, allowing you to display session information (MMR, win, loss, streak, eg.) __in game__ and/or __in OBS__.
+**RocketStats** is a Plugin working with **BakkesMod**, allowing you to display session information (MMR, win, loss, streak, eg.) **in game** and/or **in OBS**.
 
 ![](screenshot.png)
 
@@ -27,10 +27,12 @@ You can come and ask your questions or discuss with the community in our [discor
 Thanks to all the people who helped us during the development.
 
 ##### Thanks for ideas and support:
+
 - [Maylie](https://www.twitch.tv/Maylie_tv)
 
 ##### Thanks for tests:
-- [Daakiii_](https://www.twitch.tv/daakiii_)
+
+- [Daakiii\_](https://www.twitch.tv/daakiii_)
 - [Ekon](https://www.twitch.tv/ekonrl)
 - [Fuury](https://www.twitch.tv/FuuRy_Off)
 - [Loppeur](https://www.twitch.tv/loppeur)

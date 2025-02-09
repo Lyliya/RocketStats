@@ -175,7 +175,14 @@ bool RocketStats::ReadConfig()
                         rs_mode = config["settings"]["mode"];
 
                     if (config["settings"]["theme"].is_string())
-                        SetTheme(config["settings"]["theme"]);
+                       SetTheme(config["settings"]["theme"]);
+
+                    if (config["settings"]["overlay"].is_boolean())
+                        rs_disp_overlay = config["settings"]["overlay"];
+
+                    if (config["settings"]["GameTheme"].is_string()) {
+                        SetGameTheme(config["settings"]["GameTheme"]);
+                    }
 
                     if (config["settings"]["themes"].is_object() && !config["settings"]["themes"].is_null() && config["settings"]["themes"].size())
                     {
@@ -200,11 +207,10 @@ bool RocketStats::ReadConfig()
                             themes_values = tmp;
                     }
 
-                    if (config["settings"]["overlay"].is_boolean())
-                        rs_disp_overlay = config["settings"]["overlay"];
-
                     if (config["settings"]["inmenu"].is_boolean())
                         rs_enable_inmenu = config["settings"]["inmenu"];
+                    if (config["settings"]["enableDualTheme"].is_boolean())
+                        dualtheme = config["settings"]["enableDualTheme"];
                     if (config["settings"]["ingame"].is_boolean())
                         rs_enable_ingame = config["settings"]["ingame"];
                     if (config["settings"]["inscoreboard"].is_boolean())
@@ -398,7 +404,9 @@ void RocketStats::WriteConfig()
 
     tmp["settings"] = json::object();
     tmp["settings"]["mode"] = rs_mode;
-    tmp["settings"]["theme"] = theme_render.name;
+    tmp["settings"]["theme"] = themes.at(rs_theme).name.c_str();
+    tmp["settings"]["GameTheme"] = themes.at(rs_gameTheme).name.c_str();
+    tmp["settings"]["enableDualTheme"] = dualtheme;
     tmp["settings"]["overlay"] = rs_disp_overlay;
     tmp["settings"]["inmenu"] = rs_enable_inmenu;
     tmp["settings"]["ingame"] = rs_enable_ingame;

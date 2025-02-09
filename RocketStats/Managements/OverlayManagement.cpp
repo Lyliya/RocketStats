@@ -33,6 +33,26 @@ void RocketStats::LoadThemes()
     cvarManager->log("===== !LoadThemes =====");
 }
 
+void RocketStats::BacktoMenu()
+{
+    if (!is_in_MainMenu) {
+        cvarManager->log("===== BackToMenu =====");
+        SetTheme(themes.at(rs_theme).name.c_str());
+        ChangeTheme(rs_theme);
+        cvarManager->log("===== !BackToMenu =====");
+    }
+}
+
+void RocketStats::InGameTheme()
+{
+    cvarManager->log("===== InGameTheme =====");
+    if (dualtheme) {
+        SetGameTheme(themes.at(rs_gameTheme).name.c_str());
+        ChangeTheme(rs_gameTheme);
+    }
+    cvarManager->log("===== !InGameTheme =====");
+}
+
 bool RocketStats::ChangeTheme(int idx)
 {
     cvarManager->log("===== ChangeTheme =====");
@@ -135,11 +155,12 @@ bool RocketStats::ChangeTheme(int idx)
             }
 
             cvarManager->log("Theme changed: " + theme.name + " (old: " + theme_render.name + ")");
-            rs_theme = idx;
             SetRefresh(RefreshFlags_RefreshAndImages);
         }
-        else
+        else {
             cvarManager->log("Theme config: " + theme.name + " bad JSON");
+            return false;
+        }
     }
     catch (json::parse_error& e)
     {
@@ -151,10 +172,11 @@ bool RocketStats::ChangeTheme(int idx)
         theme_render.version = old.version;
         theme_render.date = old.date;
         theme_render.fonts = old.fonts;
+        return false;
     }
 
     cvarManager->log("===== !ChangeTheme =====");
-    return (rs_theme == idx);
+    return true;
 }
 
 void RocketStats::SetTheme(std::string name)
@@ -167,6 +189,21 @@ void RocketStats::SetTheme(std::string name)
             cvarManager->log("SetTheme: [" + std::to_string(i) + "] " + name);
 
             rs_theme = i;
+            break;
+        }
+    }
+}
+
+void RocketStats::SetGameTheme(std::string name)
+{
+    // Search the index of a theme with its name (changes current theme if found)
+    for (int i = 0; i < themes.size(); ++i)
+    {
+        if (themes.at(i).name == name)
+        {
+            cvarManager->log("SetGameTheme: [" + std::to_string(i) + "] " + name);
+
+            rs_gameTheme = i;
             break;
         }
     }
@@ -252,6 +289,7 @@ void RocketStats::RefreshVars()
         UpdateFiles();
     }
     SetCVar("rs_theme", rs_theme);
+    SetCVar("rs_gameTheme", rs_gameTheme);
 
     SetCVar("rs_x", rs_x, true);
     SetCVar("rs_y", rs_y, true);
@@ -580,7 +618,7 @@ Element RocketStats::CalculateElement(json& element, Options& options, bool& che
                 {
                     // Get the requested image
                     element_size = { 0, 0 };
-                    std::string image_path = "RocketStats_themes/" + themes.at(rs_theme).name + "/images/" + calculated.value;
+                    std::string image_path = "RocketStats_themes/" + theme_render.name + "/images/" + calculated.value;
 
                     cvarManager->log("Load image: " + image_path);
                     theme_images[calculated.value] = LoadImg(image_path);

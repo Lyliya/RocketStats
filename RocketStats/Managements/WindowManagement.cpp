@@ -187,10 +187,12 @@ void RocketStats::RenderOverlay()
 
     ImGui::Begin(menu_title.c_str(), (bool*)1, (ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoMouseInputs | ImGuiWindowFlags_NoFocusOnAppearing));
 
+    int currentTheme = is_in_MainMenu ? rs_theme : rs_gameTheme;
+
     try
     {
         // Calculation each element of the theme (only during a modification)
-        if (overlay_move || theme_refresh || theme_render.name == "" || (themes.size() > rs_theme && theme_render.name != themes.at(rs_theme).name))
+        if (overlay_move || theme_refresh || theme_render.name == "" || (themes.size() > currentTheme && theme_render.name != themes.at(currentTheme).name))
         {
             Stats tstats = GetStats();
 
@@ -528,20 +530,22 @@ void RocketStats::RenderSettings()
             ++rs_mode;
 
         ImGui::SetWindowFontScale(1.3f / (font ? 2.f : 1.f));
-        ImGui::SetCursorPos({ 585.f, 43.f });
-        ImGui::TextColored(ImVec4{ 0.8f, 0.8f, 0.8f, 1.f }, GetLang(LANG_THEME).c_str());
+        ImGui::SetCursorPos({ 565.f, 23.f });
+        ImGui::TextColored(ImVec4{ 0.8f, 0.8f, 0.8f, 1.f }, GetLang(LANG_MENU_THEME).c_str());
 
         ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
-        ImGui::SetCursorPos({ 525.f, 68.f });
+        ImGui::SetCursorPos({ 525.f, 43.f });
         ImGui::SetNextItemWidth(142.f);
-        if (ImGui::BeginCombo("##themes_combo", theme_render.name.c_str(), ImGuiComboFlags_NoArrowButton))
+        if (ImGui::BeginCombo("##themes_combo", themes.at(rs_theme).name.c_str(), ImGuiComboFlags_NoArrowButton))
         {
             int Trs_theme = rs_theme;
             for (int i = 0; i < themes.size(); ++i)
             {
                 bool is_selected = (Trs_theme == i);
                 if (ImGui::Selectable(themes.at(i).name.c_str(), is_selected))
+                {
                     rs_theme = i;
+                }
 
                 if (is_selected)
                     ImGui::SetItemDefaultFocus();
@@ -553,10 +557,86 @@ void RocketStats::RenderSettings()
             tooltip = GetLang(LANG_THEME_TOOLTIP);
         ImGui::SameLine(0.f, 0.f);
         if (ImGui::ArrowButton("##themes_left", ImGuiDir_Left) && rs_theme > 0)
+        {
             --rs_theme;
+        }
         ImGui::SameLine(0.f, 0.f);
         if (ImGui::ArrowButton("##themes_right", ImGuiDir_Right) && themes.size() && rs_theme < (themes.size() - 1))
+        {
             ++rs_theme;
+        }
+
+        ImGui::SetWindowFontScale(0.8f / (font ? 2.f : 1.f));
+        ImGui::SetCursorPos({ 545.f, 70.f });
+        if (ImGui::Checkbox("##dualtheme", &dualtheme)) {
+            // We activate dualtheme
+            if (dualtheme && !is_in_MainMenu) {
+                SetGameTheme(themes.at(rs_gameTheme).name.c_str());
+                ChangeTheme(rs_gameTheme);
+            }
+            else {
+                // We deactivate dualtheme;
+                SetTheme(themes.at(rs_theme).name.c_str());
+                ChangeTheme(rs_theme);
+            }
+        };
+
+        ImGui::SetWindowFontScale(1.3f / (font ? 2.f : 1.f));
+        ImGui::SetCursorPos({ 565.f, 68.f });
+        ImGui::TextColored(ImVec4{ 0.8f, 0.8f, 0.8f, 1.f }, (GetLang(LANG_GAME_THEME)).c_str());
+
+        ImGui::SetWindowFontScale(1.f / (font ? 2.f : 1.f));
+        if (dualtheme) {
+            ImGui::SetCursorPos({ 525.f, 88.f });
+            ImGui::SetNextItemWidth(142.f);
+            if (ImGui::BeginCombo("##themes2_combo", themes.at(rs_gameTheme).name.c_str(), ImGuiComboFlags_NoArrowButton))
+            {
+                int Trs_theme2 = rs_gameTheme;
+                for (int i = 0; i < themes.size(); ++i)
+                {
+                    bool is_selected = (Trs_theme2 == i);
+                    if (ImGui::Selectable(themes.at(i).name.c_str(), is_selected))
+                    {
+                            rs_gameTheme = i;
+                    }
+
+                    if (is_selected)
+                        ImGui::SetItemDefaultFocus();
+                }
+
+                ImGui::EndCombo();
+            }
+            if (ImGui::IsItemHovered())
+                tooltip = GetLang(LANG_THEME_TOOLTIP);
+            ImGui::SameLine(0.f, 0.f);
+            if (ImGui::ArrowButton("##themes2_left", ImGuiDir_Left) && rs_gameTheme > 0)
+                --rs_gameTheme;
+            {
+            }
+            ImGui::SameLine(0.f, 0.f);
+            if (ImGui::ArrowButton("##themes2_right", ImGuiDir_Right) && themes.size() && rs_gameTheme < (themes.size() - 1))
+                ++rs_gameTheme;
+            {
+            }
+        }
+        else {
+            ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.5f);
+            ImGui::SetCursorPos({ 525.f, 88.f });
+            ImGui::SetNextItemWidth(142.f);
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.2f, 0.2f, 1.0f));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.3f, 0.3f, 0.3f, 1.0f));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.4f, 0.4f, 0.4f, 1.0f));
+            ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, ImVec2(0.f, 0.5f));
+            if (ImGui::Button(themes.at(rs_gameTheme).name.c_str(), ImVec2(142.f, ImGui::GetTextLineHeightWithSpacing()))) {
+            }
+            ImGui::PopStyleVar();
+            ImGui::PopStyleColor(3);
+            ImGui::SameLine(0.f, 0.f);
+            ImGui::ArrowButton("##themes2_left", ImGuiDir_Left);
+            ImGui::SameLine(0.f, 0.f);
+            ImGui::ArrowButton("##themes2_right", ImGuiDir_Right);
+            ImGui::PopStyleVar();
+        }
 
         ImGui::SetCursorPos({ 103.f, 120.f });
         if (ImGui::Button(GetLang(LANG_X).c_str(), { 65.f, 0.f }))
@@ -708,7 +788,7 @@ void RocketStats::RenderSettings()
         if (ImGui::Button(GetLang(LANG_RELOAD_THEME).c_str(), { 103.f, 0.f }))
         {
             LoadImgs();
-            ChangeTheme(rs_theme);
+            ChangeTheme(dualtheme && !is_in_MainMenu ? rs_gameTheme: rs_theme);
         }
         if (ImGui::IsItemHovered())
             tooltip = GetLang(LANG_RELOAD_THEME_TOOLTIP);
@@ -718,7 +798,7 @@ void RocketStats::RenderSettings()
             LoadImgs();
             LoadThemes();
             SetTheme(theme_render.name);
-            ChangeTheme(rs_theme);
+            ChangeTheme(dualtheme && !is_in_MainMenu ? rs_gameTheme: rs_theme);
         }
         if (ImGui::IsItemHovered())
             tooltip = GetLang(LANG_RELOAD_THEME_A_TOOLTIP);
