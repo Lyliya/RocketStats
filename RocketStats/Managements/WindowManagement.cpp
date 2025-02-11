@@ -220,7 +220,7 @@ void RocketStats::RenderOverlay()
                 {
                     rs_scale = 1.f;
                     if (theme_config["scale"].is_string())
-                        rs_scale = std::stof(std::string(theme_config["scale"])) * (0.7 + (display_size.y - 1080) / 520 * 0.3);
+                    rs_scale = std::stof(std::string(theme_config["scale"])) * (0.500 + (display_size.y - 720) / 880 * 0.61);
                     else if (theme_config["scale"].is_number()) {
                         rs_scale = float(theme_config["scale"]);
                     }
@@ -706,7 +706,7 @@ void RocketStats::RenderSettings()
             {
                 rs_scale = 1.f;
                     if (theme_config["scale"].is_string())
-                        rs_scale = std::stof(std::string(theme_config["scale"])) * (0.7 + (display_size.y - 1080) / 520 * 0.3);
+                    rs_scale = std::stof(std::string(theme_config["scale"])) * (0.500 + (display_size.y - 720) / 880 * 0.61);
                     else if (theme_config["scale"].is_number()) {
                         rs_scale = float(theme_config["scale"]);
                     }
