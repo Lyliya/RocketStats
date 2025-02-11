@@ -219,8 +219,11 @@ void RocketStats::RenderOverlay()
                 if (rs_recovery != RecoveryFlags_Finish && !GetCVar("rs_scale", rs_scale))
                 {
                     rs_scale = 1.f;
-                    if (theme_config["scale"].is_number())
+                    if (theme_config["scale"].is_string())
+                        rs_scale = std::stof(std::string(theme_config["scale"])) * (0.7 + (display_size.y - 1080) / 520 * 0.3);
+                    else if (theme_config["scale"].is_number()) {
                         rs_scale = float(theme_config["scale"]);
+                    }
                 }
 
                 if (!GetCVar("rs_rotate", rs_rotate))
@@ -702,8 +705,11 @@ void RocketStats::RenderSettings()
             if (ImGui::Button("R##Rscale"))
             {
                 rs_scale = 1.f;
-                if (theme_config["scale"].is_number())
-                    rs_scale = float(theme_config["scale"]);
+                    if (theme_config["scale"].is_string())
+                        rs_scale = std::stof(std::string(theme_config["scale"])) * (0.7 + (display_size.y - 1080) / 520 * 0.3);
+                    else if (theme_config["scale"].is_number()) {
+                        rs_scale = float(theme_config["scale"]);
+                    }
             }
             if (ImGui::IsItemHovered())
                 tooltip = GetLang(LANG_RESET_TOOLTIP);
