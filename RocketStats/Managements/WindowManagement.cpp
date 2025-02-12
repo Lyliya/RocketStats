@@ -568,7 +568,7 @@ void RocketStats::RenderSettings()
 
         ImGui::SetWindowFontScale(0.8f / (font ? 2.f : 1.f));
         ImGui::SetCursorPos({ 545.f, 70.f });
-        if (ImGui::Checkbox("##dualtheme", &dualtheme)) {
+        ImGui::Checkbox("##dualtheme", &dualtheme);
             // We activate dualtheme
             if (dualtheme && !is_in_MainMenu) {
                 SetGameTheme(themes.at(rs_gameTheme).name.c_str());
@@ -579,7 +579,6 @@ void RocketStats::RenderSettings()
                 SetTheme(themes.at(rs_theme).name.c_str());
                 ChangeTheme(rs_theme);
             }
-        };
 
         ImGui::SetWindowFontScale(1.3f / (font ? 2.f : 1.f));
         ImGui::SetCursorPos({ 565.f, 68.f });
