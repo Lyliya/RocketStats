@@ -35,22 +35,18 @@ void RocketStats::LoadThemes()
 
 void RocketStats::BacktoMenu()
 {
-    if (!is_in_MainMenu) {
-        cvarManager->log("===== BackToMenu =====");
+    if (is_in_MainMenu) {
         SetTheme(themes.at(rs_theme).name.c_str());
         ChangeTheme(rs_theme);
-        cvarManager->log("===== !BackToMenu =====");
     }
 }
 
 void RocketStats::InGameTheme()
 {
-    cvarManager->log("===== InGameTheme =====");
     if (dualtheme) {
         SetGameTheme(themes.at(rs_gameTheme).name.c_str());
         ChangeTheme(rs_gameTheme);
     }
-    cvarManager->log("===== !InGameTheme =====");
 }
 
 bool RocketStats::ChangeTheme(int idx)
@@ -76,8 +72,6 @@ bool RocketStats::ChangeTheme(int idx)
 
         // Read the JSON file including the settings of the chosen theme
         theme_config = ReadJSON("RocketStats_themes/" + theme.name + "/config.json");
-        //if (!theme_config.is_null())
-        //    cvarManager->log(nlohmann::to_string(theme_config));
 
         if (theme_config.is_object())
         {

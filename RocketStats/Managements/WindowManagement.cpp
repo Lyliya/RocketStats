@@ -571,12 +571,10 @@ void RocketStats::RenderSettings()
         if (ImGui::Checkbox("##dualtheme", &dualtheme)) {
             // We activate dualtheme
             if (dualtheme && !is_in_MainMenu) {
-                SetGameTheme(themes.at(rs_gameTheme).name.c_str());
                 ChangeTheme(rs_gameTheme);
             }
             else {
                 // We deactivate dualtheme;
-                SetTheme(themes.at(rs_theme).name.c_str());
                 ChangeTheme(rs_theme);
             }
         };
