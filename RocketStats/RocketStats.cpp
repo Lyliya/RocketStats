@@ -413,6 +413,11 @@ void RocketStats::onInit()
     cvarManager->registerNotifier("rs_toggle_menu", [this](std::vector<std::string> params) {
         ToggleSettings("rs_toggle_menu");
     }, GetLang(LANG_TOGGLE_MENU), PERMISSION_ALL);
+
+    cvarManager->registerNotifier("rs_reset_stats", [this](std::vector<std::string> params) {
+        ResetStats();
+    }, GetLang(LANG_RESET_STATS), PERMISSION_ALL);
+    
     cvarManager->registerNotifier("rs_menu_pos", [this](std::vector<std::string> params) {
         ToggleSettings("rs_toggle_menu", ToggleFlags_Hide);
 
