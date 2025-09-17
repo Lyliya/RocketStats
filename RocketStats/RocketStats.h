@@ -124,7 +124,7 @@ struct Stats {
 	int TotalShotOnGoalCumul = 0;
 	int TotalBicycleHitCumul = 0;
 
-    /// Derived stat for Shooting Percentage
+	/// Derived stat for Shooting Percentage
 	int ShootingPercentage = 0;
 	int TeamShootingPercentage = 0;
 	int TotalShootingPercentage = 0;
@@ -513,66 +513,83 @@ private:
 	};
 
 	const std::map<int, std::string> playlist_name = {
-        // Soccar
-    	{1, "Casual Duel"},
-    	{2, "Casual Doubles"},
-    	{3, "Casual Standard"},
-    	{4, "Chaos"},
-    	{10, "Ranked Duel"},
-    	{11, "Ranked Doubles"},
-    	{13, "Ranked Standard"},
+		// Soccar
+		{1, "Casual Duel"},
+		{2, "Casual Doubles"},
+		{3, "Casual Standard"},
+		{4, "Casual Quads"},
 
-        // Extras
-        {15, "Casual Snowday"},
-        {17, "Casual Hoops"},
-        {18, "Casual Rumble"},
-        {23, "Casual Dropshot"},
-        {27, "Ranked Hoops"},
-    	{28, "Ranked Rumble"},
-    	{29, "Ranked Dropshot"},
-    	{30, "Ranked SnowDay"},
+		{10, "Ranked Duel"},
+		{11, "Ranked Doubles"},
+		{13, "Ranked Standard"},
+		{61, "Ranked Quads"},
 
-        // Custom Games
-    	{6, "Private Match"},
-    	{7, "Season"},
-    	{8, "Offline Splitscreen"},
-    	{9, "Training"},
-    	{19, "Workshop"},
-    	{20, "UGCTrainingEditor"},
-    	{21, "UGCTraining"},
-    	{22, "Custom Tournament"},
-        {34, "Season Tournament"},
+		// Extras
+		{15, "Casual Snowday"},
+		{17, "Casual Hoops"},
+		{18, "Casual Rumble"},
+		{23, "Casual Dropshot"},
 
-        // Misc
-        {16, "Rocket Labs"},
-        {26, "FaceIt"},
-        {35, "Rocket Labs"},
+		{27, "Ranked Hoops"},
+		{28, "Ranked Rumble"},
+		{29, "Ranked Dropshot"},
+		{30, "Ranked SnowDay"},
 
-        // LTMs
-        {31, "Ghost Hunt"},
-    	{32, "Beachball"},
-    	{33, "Spike Rush"},
-    	{37, "Dropshot Rumble"},
-    	{38, "Heatseeker"},
-    	{41, "Boomer Ball"},
-    	{43, "Heatseeker Doubles"},
-    	{44, "Winter Breakaway"},
-    	{46, "Gridiron"},
-    	{47, "Super Cube"},
-    	{48, "Tactical Rumble"},
-    	{49, "Spring Loaded"},
-        {50, "Speed Demon"},
-    	{52, "Gotham City Rumble"},
-    	{54, "Knockout"},
-    	{55, "confidential_thirdwheel_test"},
-        {62, "Nike FC Showdown"},
-        {64, "Haunted Heatseeker"},
-        {66, "Heatseeker Ricochet"},
-        {67, "Spooky Cube"},
+		// Custom Games
+		{6, "Private Match"},
+		{7, "Season"},
+		{8, "Offline Splitscreen"},
+		{9, "Training"},
+		{19, "Workshop"},
+		{20, "UGCTrainingEditor"}, // ???
+		{21, "UGCTraining"}, // ???
+		{22, "Custom Tournament"},
+		{34, "Season Tournament"},
+
+		// Misc
+		{16, "Rocket Labs"},
+		{26, "FaceIt"},
+		{35, "Rocket Labs"},
+
+		// LTMs
+		{31, "Ghost Hunt"},
+		{32, "Beachball"},
+		{33, "Spike Rush"},
+		{37, "Dropshot Rumble"},
+		{38, "Heatseeker"},
+		{41, "Boomer Ball"},
+		{43, "Heatseeker Doubles"},
+		{44, "Winter Breakaway"},
+		{46, "Gridiron"},
+		{47, "Super Cube"},
+		{48, "Tactical Rumble"},
+		{49, "Spring Loaded"},
+		{50, "Speed Demon"},
+		{52, "Gotham City Rumble"},
+		{54, "Knockout"},
+		{55, "confidential_thirdwheel_test"}, // ???
+		{62, "Nike FC Showdown"},
+		{64, "Spooky Heatseeker"},
+		{65, "Haunted Heatseeker"},
+		{66, "Heatseeker Ricochet"},
+		{67, "Spooky Cube"},
 		{68, "G-Force Frenzy"},
+		{70, "Dropshot Rumble Doubles"},
 		{72, "Split Shot"},
 		{73, "Online Free Play"},
-		{76, "Split Shot Heatseeker Doubles"}
+		{74, "Split Shot Doubles"},
+		{75, "Split Shot Heatseeker"},
+		{76, "Split Shot Heatseeker Doubles"},
+		{77, "NonStandardSoccar"},
+		{79, "Split Shot Snowday"},
+		{80, "RunItBack"}, // ???
+		{81, "CarWars"}, // ???
+		{82, "PizzaParty"}, // ???
+		{83, "PushThePuck"}, // ???
+		{84, "Possession"}, // ???
+		{86, "FCShowdown"}, // ???
+		{87, "Sacrifice"}, // ???
+		{88, "JumpJam"}, // ???
 	};
 
 	// PluginWindow
