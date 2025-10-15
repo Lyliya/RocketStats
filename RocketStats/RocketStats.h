@@ -590,6 +590,7 @@ private:
 		{86, "FCShowdown"}, // ???
 		{87, "Sacrifice"}, // ???
 		{88, "JumpJam"}, // ???
+		{90, "Up to No Good"},
 	};
 
 	// PluginWindow
