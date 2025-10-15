@@ -512,6 +512,21 @@ private:
 		{"Supersonic_Legend", nullptr},
 	};
 
+	/*
+	// Find link in "Documents\My Games\Rocket League\TAGame\Logs\Launch.log" and searching for psynet.gg
+	// This only contains gamemode slugs, need manual mapping for "official" names
+	curl -s "https://config.psynet.gg/v2/Config/BattleCars/-1514904541/Prod/Steam/INT/" | jq -r '
+	  "{" ,
+	  (to_entries
+		| map(select(.value.PlaylistID != null))
+		| sort_by(.value.PlaylistID)
+		| .[]
+		| "    {\(.value.PlaylistID), \"\(.key)\"},"
+	  ),
+	  "}"
+	'
+	*/
+
 	const std::map<int, std::string> playlist_name = {
 		// Soccar
 		{1, "Casual Duel"},
